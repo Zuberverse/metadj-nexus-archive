@@ -5,10 +5,10 @@ import { clsx } from "clsx"
 import { ChevronRight } from "lucide-react"
 import { getMoodChannelIcon } from "@/components/mood/MoodChannelIcons"
 import { SearchBar } from "@/components/search/SearchBar"
-import { COLLECTION_NARRATIVES } from "@/data/collectionNarratives"
+import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import { MOOD_CHANNELS, getTracksForMoodChannel, getMoodChannelHoverStyles } from "@/data/moodChannels"
+import { FEATURE_MOOD_CHANNELS, RECENTLY_PLAYED_COLLECTION_ID } from "@/lib/app.constants"
 import { getCollectionHoverStyles } from "@/lib/collection-theme"
-import { FEATURE_MOOD_CHANNELS, RECENTLY_PLAYED_COLLECTION_ID } from "@/lib/constants"
 import type { Collection, Track } from "@/types"
 
 interface BrowseViewProps {

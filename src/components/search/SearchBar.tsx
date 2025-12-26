@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Search, X } from 'lucide-react';
 import { EmptyState } from '@/components/ui';
 import { useDebounce } from '@/hooks/use-debounce';
-import { SEARCH_DEBOUNCE_MS, Z_INDEX } from '@/lib/constants';
+import { SEARCH_DEBOUNCE_MS, Z_INDEX } from '@/lib/app.constants';
 import { getTracksByCollection } from '@/lib/music';
 import { filterTracks, filterCollections } from '@/lib/music/filters';
 import { SearchResultItem } from './SearchResultItem';
@@ -366,7 +366,7 @@ export function SearchBar({
           onChange={(e) => updateQuery(e.target.value)}
           onKeyDown={handleSearchInputKeyDown}
           ref={searchInputRef}
-          className={`w-full bg-white/5 border border-white/20 rounded-lg py-2 ${hideIcon ? "pl-3 pr-10" : "pl-9 pr-10"} text-xs text-white placeholder:text-white/60 focus:outline-hidden focus:bg-white/10 focus:border-white/30 transition-all`}
+          className={`w-full bg-white/5 border border-white/20 rounded-lg py-2 ${hideIcon ? "pl-3 pr-10" : "pl-9 pr-10"} text-xs text-white placeholder:text-white/60 focus-ring focus:bg-white/10 focus:border-white/30 transition-all`}
           aria-label="Search tracks by title"
           aria-describedby={instructionsId}
           role="combobox"
@@ -386,7 +386,7 @@ export function SearchBar({
       {query && (
         <button
           onClick={() => updateQuery('')}
-          className="absolute right-0.5 top-1/2 -translate-y-1/2 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full hover:bg-(--glass-light) active:bg-(--glass-medium) flex items-center justify-center transition-colors z-10 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+          className="absolute right-0.5 top-1/2 -translate-y-1/2 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full hover:bg-(--glass-light) active:bg-(--glass-medium) flex items-center justify-center transition-colors z-10 touch-manipulation focus-ring"
           aria-label="Clear search"
         >
           <X className="h-4 w-4 text-(--text-muted)" />

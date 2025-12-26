@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useRef, useCallback, useState } from 'react'
 import 'driver.js/dist/driver.css'
 import { useUI } from '@/contexts/UIContext'
-import { BREAKPOINTS } from '@/lib/constants'
+import { BREAKPOINTS } from '@/lib/app.constants'
 import { GLOBAL_TOUR_STEPS } from '@/lib/tour/tour-config'
 import type { Driver } from 'driver.js'
 

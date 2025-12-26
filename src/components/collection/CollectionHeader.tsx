@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from "react"
-import { COLLECTION_NARRATIVES } from "@/data/collectionNarratives"
+import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import { getCollectionGradient } from "@/lib/collection-theme"
 
 interface CollectionHeaderProps {
@@ -44,7 +44,7 @@ export function CollectionHeader({
               key={collection.id}
               type="button"
               onClick={() => onCollectionChange(collection.id)}
-              className={`group relative flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all duration-300 focus-visible:outline-hidden ${isActive ? activeClasses : inactiveClasses
+              className={`group relative flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all duration-300 focus-ring ${isActive ? activeClasses : inactiveClasses
                 }`}
             >
               <div className="relative min-w-0 flex-1 overflow-hidden rounded-xl">

@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { MetaDjAiChat } from "@/components/metadjai/MetaDjAiChat"
 import { ErrorBoundary } from "@/components/ui"
 import { useUI } from "@/contexts/UIContext"
-import { PANEL_POSITIONING } from "@/lib/constants"
+import { PANEL_POSITIONING } from "@/lib/app.constants"
 import type { MetaDjAiChatProps } from "@/types/metadjai"
 
 interface RightPanelProps extends MetaDjAiChatProps {

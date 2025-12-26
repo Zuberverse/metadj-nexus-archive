@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { VIDEO_RETRY_DELAY_MS, MAX_VIDEO_RETRY_ATTEMPTS } from '@/lib/constants'
+import { VIDEO_RETRY_DELAY_MS, MAX_VIDEO_RETRY_ATTEMPTS } from '@/lib/app.constants'
 import { logger } from '@/lib/logger'
 import type { Track } from '@/types'
 import type React from 'react'

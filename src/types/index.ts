@@ -260,4 +260,4 @@ export * from './playlist';
 // Audio Player Types
 // ============================================================================
 
-export * from './audio-player';
+export * from './audio-player.types';

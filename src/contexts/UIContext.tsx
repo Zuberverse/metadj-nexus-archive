@@ -94,7 +94,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { announce } from '@/components/accessibility/ScreenReaderAnnouncer';
-import { DEFAULT_COLLECTION_ID } from '@/lib/constants';
+import { DEFAULT_COLLECTION_ID } from '@/lib/app.constants';
 import { logger } from '@/lib/logger';
 import { STORAGE_KEYS, getBoolean, setBoolean, getString, setString, getValue, setValue, isStorageAvailable } from '@/lib/storage';
 import { useModal } from './ModalContext';

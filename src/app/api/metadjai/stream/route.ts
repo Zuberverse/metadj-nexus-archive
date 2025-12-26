@@ -38,12 +38,13 @@ import { createCacheKey, getCachedResponse, setCachedResponse } from '@/lib/ai/c
 import { isCircuitOpen, isProviderError, recordFailure, recordSuccess } from '@/lib/ai/circuit-breaker'
 import { createStopCondition, getAIRequestTimeout, isTimeoutError } from '@/lib/ai/config'
 import { isFailoverEnabled } from '@/lib/ai/failover'
-import { buildMetaDjAiSystemPrompt } from '@/lib/ai/metaDjAiPrompt'
+import { buildMetaDjAiSystemPrompt } from '@/lib/ai/meta-dj-ai-prompt'
 import { MODEL_LABELS } from '@/lib/ai/model-preferences'
 import {
   getModel,
   getModelInfo,
   getModelSettingsForProvider,
+  getProviderOptions,
   getFallbackModel,
   getFallbackModelInfo,
   getFallbackModelSettings,
@@ -359,6 +360,7 @@ export async function POST(request: NextRequest) {
     const tools = getTools(settings.provider, {
       webSearchAvailable: settings.provider === 'openai' && hasOpenAI,
     })
+    const providerOptions = getProviderOptions(settings.provider)
 
     return streamText({
       model,
@@ -367,6 +369,7 @@ export async function POST(request: NextRequest) {
       system: buildSystemPrompt(settings.provider, providerInfo.model),
       messages: sanitizedMessages,
       tools,
+      providerOptions,
       stopWhen: createStopCondition(),
       abortSignal: controller.signal,
       onFinish: ({ usage, steps, text }) => {
@@ -473,6 +476,7 @@ export async function POST(request: NextRequest) {
           const fallbackTools = getTools(fallbackSettings.provider, {
             webSearchAvailable: fallbackSettings.provider === 'openai' && hasOpenAI,
           })
+          const fallbackProviderOptions = getProviderOptions(fallbackSettings.provider)
 
           const result = streamText({
             model: fallbackModel,
@@ -481,6 +485,7 @@ export async function POST(request: NextRequest) {
             system: buildSystemPrompt(fallbackSettings.provider, fallbackModelInfo.model),
             messages: sanitizedMessages,
             tools: fallbackTools,
+            providerOptions: fallbackProviderOptions,
             stopWhen: createStopCondition(),
             abortSignal: fallbackController.signal,
             onFinish: ({ usage, steps }) => {

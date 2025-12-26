@@ -294,6 +294,20 @@ export function getModelSettingsForProvider(providerOverride: AIProvider): Model
   }
 }
 
+const GOOGLE_TEXT_ONLY_OPTIONS = {
+  google: {
+    responseModalities: ['TEXT'] as string[],
+    thinkingConfig: {
+      includeThoughts: false,
+    },
+  },
+}
+
+export function getProviderOptions(provider: AIProvider) {
+  if (provider !== 'google') return undefined
+  return GOOGLE_TEXT_ONLY_OPTIONS
+}
+
 /**
  * Get the fallback AI model for failover scenarios
  *

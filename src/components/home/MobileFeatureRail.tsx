@@ -75,7 +75,7 @@ export function MobileFeatureRail({
         <button
           type="button"
           onClick={onOpenGuide}
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 min-h-[44px] text-[0.75rem] font-semibold text-white/80 transition hover:border-white/30 hover:text-white focus-visible:outline-hidden"
+          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 min-h-[44px] text-[0.75rem] font-semibold text-white/80 transition hover:border-white/30 hover:text-white focus-ring"
         >
           <span>Help & shortcuts</span>
         </button>
@@ -91,7 +91,7 @@ export function MobileFeatureRail({
               type="button"
               onClick={() => handleViewChange(feature.id)}
               disabled={isLoading}
-              className={`relative overflow-hidden rounded-2xl border px-3 py-2.5 text-left transition focus-visible:outline-hidden ${
+              className={`relative overflow-hidden rounded-2xl border px-3 py-2.5 text-left transition focus-ring ${
                 isActive
                   ? "border-white/30 bg-linear-to-r from-[#5F6CFF]/60 via-[#38D4FF]/55 to-[#A250FF]/65 shadow-[0_18px_40px_rgba(6,8,28,0.55)]"
                   : "border-white/15 bg-black/35 hover:border-white/25 hover:bg-black/45"
@@ -124,7 +124,7 @@ export function MobileFeatureRail({
           type="button"
           onClick={handleMetaDjAiToggle}
           disabled={isMetaDjAiLoading}
-          className={`relative overflow-hidden rounded-2xl border px-3 py-2.5 text-left transition focus-visible:outline-hidden ${
+          className={`relative overflow-hidden rounded-2xl border px-3 py-2.5 text-left transition focus-ring ${
             isMetaDjAiOpen
               ? "border-white/30 bg-linear-to-r from-[#5F6CFF]/60 via-[#38D4FF]/55 to-[#A250FF]/65 shadow-[0_18px_40px_rgba(6,8,28,0.55)]"
               : "border-white/15 bg-black/35 hover:border-white/25 hover:bg-black/45"

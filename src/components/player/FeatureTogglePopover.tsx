@@ -127,7 +127,7 @@ export function FeatureTogglePopover({
   useEscapeKey(() => setIsOpen(false), { enabled: isOpen });
 
   const baseButtonClasses =
-    "inline-flex min-h-[44px] min-w-[44px] h-11 w-11 items-center justify-center rounded-full border border-white/20 transition focus-visible:outline-hidden touch-manipulation"
+    "inline-flex min-h-[44px] min-w-[44px] h-11 w-11 items-center justify-center rounded-full border border-white/20 transition focus-ring touch-manipulation"
 
   const getStateClasses = (isActive: boolean) =>
     isActive

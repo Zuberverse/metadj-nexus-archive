@@ -1,7 +1,6 @@
 # Architecture Documentation Index
 
-**Last Modified**: 2025-12-19 20:50 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 Quick reference for all architecture documentation in MetaDJ Nexus.
 
 ## System Architecture
@@ -30,7 +29,7 @@ Quick reference for all architecture documentation in MetaDJ Nexus.
 
 ### Data Architecture
 - Static JSON: `collections.json`, `tracks.json`
-- Rich content: `collectionNarratives.ts`, `scenes.ts`, `moodChannels.ts`
+- Rich content: `collection-narratives.ts`, `scenes.ts`, `moodChannels.ts`
 - Media streaming: Replit App Storage via `/api/audio/` and `/api/video/`
 
 ### Routing Architecture

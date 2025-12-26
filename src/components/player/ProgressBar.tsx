@@ -29,7 +29,7 @@
 
 import { memo, useState, useCallback, useRef, useEffect } from "react"
 import { formatDuration } from "@/lib/utils"
-import type { ProgressBarProps } from "./types"
+import type { ProgressBarProps } from "./player.types"
 
 function ProgressBarComponent({
   currentTime,

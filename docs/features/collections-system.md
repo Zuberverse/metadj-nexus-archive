@@ -2,8 +2,7 @@
 
 > **Comprehensive collection tracking and metadata management for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-22 13:13 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Overview
 
 The Collections system is the official organizational structure for MetaDJ Nexus, grouping tracks into cohesive units that can represent either full-length collections or curated singles collections. This document serves as the canonical reference for all collection metadata, tracking standards, and update procedures.
@@ -93,7 +92,7 @@ interface Track {
   - This applies to the Hub, Left Panel browsing, and Wisdom sections (mapped to collection themes).
 
 **Narrative System**:
-- `COLLECTION_NARRATIVES` (`src/data/collectionNarratives.ts`) stores `heading`, `subtitle`, and `paragraphs`.
+- `COLLECTION_NARRATIVES` (`src/data/collection-narratives.ts`) stores `heading`, `subtitle`, and `paragraphs`.
 - The Left Panel uses these narratives to power **About Collection** (non‑Featured collections) and for consistent catalog context across the app.
 
 ### Asset Strategy

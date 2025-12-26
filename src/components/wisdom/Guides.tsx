@@ -101,7 +101,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
                   document.body.scrollTop = 0
                 }
               }}
-              className="group relative rounded-2xl border border-white/15 bg-black/45 p-6 backdrop-blur-xl transition-all duration-300 cursor-pointer hover:bg-black/55 hover:border-white/25 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-cyan-500/50"
+              className="group relative rounded-2xl border border-white/15 bg-black/45 p-6 backdrop-blur-xl transition-all duration-300 cursor-pointer hover:bg-black/55 hover:border-white/25 focus-ring"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 space-y-2">

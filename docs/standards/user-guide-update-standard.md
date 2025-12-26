@@ -1,7 +1,6 @@
 # User Guide Update Standard
 
-**Last Modified**: 2025-12-19 18:34 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Purpose
 
 This standard ensures the MetaDJ Nexus User Guide remains synchronized with feature releases. Every new feature, UI change, or capability addition must be reflected in the user guide to maintain accurate user documentation.
@@ -9,8 +8,8 @@ This standard ensures the MetaDJ Nexus User Guide remains synchronized with feat
 ## Scope
 
 Applies to all files that comprise the User Guide system:
-- `src/lib/content/metaDjNexusGuideCopy.ts` — Primary guide content
-- `src/lib/content/metaDjNexusWelcomeCopy.ts` — Welcome screen content
+- `src/lib/content/meta-dj-nexus-guide-copy.ts` — Primary guide content
+- `src/lib/content/meta-dj-nexus-welcome-copy.ts` — Welcome screen content
 - `src/components/guide/UserGuideOverlay.tsx` — Guide UI component
 - `src/components/guide/MetaDJNexusGuide.tsx` — Full guide page component
 
@@ -37,7 +36,7 @@ Before any feature release (version bump), verify:
 ```markdown
 ## User Guide Update Checklist
 
-### Content Updates (`metaDjNexusGuideCopy.ts`)
+### Content Updates (`meta-dj-nexus-guide-copy.ts`)
 - [ ] GUIDE_QUICK_START — Does the quick start reflect new features?
 - [ ] GUIDE_CORE_SURFACES — Are all core surfaces accurately described?
 - [ ] GUIDE_COLLECTIONS — Are collection descriptions current?
@@ -101,7 +100,7 @@ Maintain a mapping of features to guide sections:
 ### Pre-Release
 1. Review CHANGELOG for all features being released
 2. Complete User Guide Update Checklist
-3. Update `metaDjNexusGuideCopy.ts` with new content
+3. Update `meta-dj-nexus-guide-copy.ts` with new content
 4. Update component if navigation sections changed
 5. Test guide renders correctly
 
@@ -114,7 +113,7 @@ Maintain a mapping of features to guide sections:
 
 MetaDJai's system prompt includes platform feature awareness. When guide content changes significantly:
 
-1. Update `src/lib/ai/metaDjAiPrompt.ts` if core features change
+1. Update `src/lib/ai/meta-dj-ai-prompt.ts` if core features change
 2. Ensure MetaDJai can answer questions about new features
 3. Add new features to the `<core_instructions>` section if they're navigational
 

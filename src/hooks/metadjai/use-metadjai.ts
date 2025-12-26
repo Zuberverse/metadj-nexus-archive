@@ -24,7 +24,7 @@ import { logger } from '@/lib/logger'
 import { getString, setString, STORAGE_KEYS } from '@/lib/storage'
 import { useMetaDjAiMessages, createMessageId } from './use-metadjai-messages'
 import { useMetaDjAiRateLimit } from './use-metadjai-rate-limit'
-import { processVercelAIBuffer } from './use-metadjai-stream'
+import { processVercelAIBuffer, resetToolCallAccumulator, unwrapGeminiStructuredResponse } from './use-metadjai-stream'
 import type {
   MetaDjAiApiRequestBody,
   MetaDjAiApiResponseBody,
@@ -158,11 +158,18 @@ async function executeFallbackRequest(
   }
 
   const data = (await response.json()) as MetaDjAiApiResponseBody
-  const sources = extractSources(data.reply)
+  const normalizedReply = unwrapGeminiStructuredResponse(data.reply)
+  const reply = normalizedReply ?? data.reply
+
+  if (!reply.trim()) {
+    throw new Error('MetaDJai returned an empty response')
+  }
+
+  const sources = extractSources(reply)
   updateMessages((prev) =>
     prev.map((message) =>
       message.id === assistantMessageId
-        ? { ...message, content: data.reply, status: 'complete', sources }
+        ? { ...message, content: reply, status: 'complete', sources }
         : message
     )
   )
@@ -427,14 +434,26 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
 
         const currentMessage = messagesRef.current.find((m) => m.id === assistantMessageId)
         const currentContent = currentMessage?.content ?? ''
+        const normalizedContent = unwrapGeminiStructuredResponse(currentContent)
+        const finalContent = normalizedContent ?? currentContent
         const hasProposal = Boolean(currentMessage?.proposal)
 
-        if (!currentContent.trim() && !hasProposal) {
+        if (normalizedContent !== null && normalizedContent !== currentContent) {
+          updateMessages((prev) =>
+            prev.map((message) =>
+              message.id === assistantMessageId
+                ? { ...message, content: finalContent }
+                : message
+            )
+          )
+        }
+
+        if (!finalContent.trim() && !hasProposal) {
           throw new Error('MetaDJai returned an empty response')
         }
 
         // Extract sources from model output for export/history
-        const sources = extractSourcesFromMarkdown(currentContent)
+        const sources = extractSourcesFromMarkdown(finalContent)
         if (sources) {
           updateMessages((prev) =>
             prev.map((message) =>
@@ -445,8 +464,8 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
 
         // If web search was used without citations, append a gentle reminder
         if (toolsUsedSet.has('web_search')) {
-          const hasMarkdownLinks = /\[.+?\]\(https?:\/\/.+?\)/.test(currentContent)
-          if (!hasMarkdownLinks && !currentContent.includes('Web search was used')) {
+          const hasMarkdownLinks = /\[.+?\]\(https?:\/\/.+?\)/.test(finalContent)
+          if (!hasMarkdownLinks && !finalContent.includes('Web search was used')) {
             updateMessages((prev) =>
               prev.map((message) =>
                 message.id === assistantMessageId
@@ -487,6 +506,7 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
           markAssistantStatus('error')
         }
       } finally {
+        resetToolCallAccumulator()
         setIsStreaming(false)
         streamingMessageIdRef.current = null
         requestControllerRef.current = null
@@ -500,6 +520,7 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     requestControllerRef.current = null
     streamingMessageIdRef.current = null
     clearMessages()
+    resetToolCallAccumulator()
     setError(null)
     setIsStreaming(false)
   }, [clearMessages])
@@ -686,16 +707,28 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
 
       const currentMessage = messagesRef.current.find((m) => m.id === lastAssistantMessage.id)
       const currentContent = currentMessage?.content ?? ''
+      const normalizedContent = unwrapGeminiStructuredResponse(currentContent)
+      const finalContent = normalizedContent ?? currentContent
       const hasProposal = Boolean(currentMessage?.proposal)
 
-      if (!currentContent.trim() && !hasProposal) {
+      if (normalizedContent !== null && normalizedContent !== currentContent) {
+        updateMessages((prev) =>
+          prev.map((message) =>
+            message.id === lastAssistantMessage.id
+              ? { ...message, content: finalContent }
+              : message
+          )
+        )
+      }
+
+      if (!finalContent.trim() && !hasProposal) {
         throw new Error('MetaDJai returned an empty response')
       }
 
       // If web search was used without citations, append a gentle reminder
       if (toolsUsedSet.has('web_search')) {
-        const hasMarkdownLinks = /\[.+?\]\(https?:\/\/.+?\)/.test(currentContent)
-        if (!hasMarkdownLinks && !currentContent.includes('Web search was used')) {
+        const hasMarkdownLinks = /\[.+?\]\(https?:\/\/.+?\)/.test(finalContent)
+        if (!hasMarkdownLinks && !finalContent.includes('Web search was used')) {
           updateMessages((prev) =>
             prev.map((message) =>
               message.id === lastAssistantMessage.id
@@ -735,6 +768,7 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
         markAssistantStatus('error')
       }
     } finally {
+      resetToolCallAccumulator()
       setIsStreaming(false)
       streamingMessageIdRef.current = null
       requestControllerRef.current = null

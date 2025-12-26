@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react"
-import { PANEL_POSITIONING } from "@/lib/constants"
+import { PANEL_POSITIONING } from "@/lib/app.constants"
 
 /**
  * Debounce delay for resize events (ms)

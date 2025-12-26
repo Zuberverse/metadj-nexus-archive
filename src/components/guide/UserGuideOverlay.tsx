@@ -7,7 +7,7 @@ import { GuideContent, NAV_ICONS, GUIDE_NAV_SECTIONS } from "@/components/guide"
 import { useTour } from "@/contexts/TourContext"
 import { useUI } from "@/contexts/UIContext"
 import { useFocusTrap } from "@/hooks/use-focus-trap"
-import { BREAKPOINTS } from "@/lib/constants"
+import { BREAKPOINTS } from "@/lib/app.constants"
 
 interface UserGuideOverlayProps {
   onClose: () => void

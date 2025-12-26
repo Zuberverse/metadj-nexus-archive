@@ -1,5 +1,5 @@
 import { useUI } from "@/contexts/UIContext"
-import { PANEL_POSITIONING } from "@/lib/constants"
+import { PANEL_POSITIONING } from "@/lib/app.constants"
 import type { ActiveView } from "@/types"
 import type { ReactNode } from "react"
 

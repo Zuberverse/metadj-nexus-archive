@@ -2,8 +2,9 @@
 
 import Image from "next/image"
 import { X, Music2 } from "lucide-react"
-import { ShareButton } from "@/components/ui"
-import { FEATURED_TRACK_IDS } from "@/lib/constants"
+import { Modal, ShareButton } from "@/components/ui"
+import { DEFAULT_ARTWORK_SRC, FEATURED_TRACK_IDS } from "@/lib/app.constants"
+import { formatDuration } from "@/lib/utils"
 import type { Collection, Track } from "@/types"
 
 interface CollectionDetailsModalProps {
@@ -21,16 +22,21 @@ export function CollectionDetailsModal({ collection, tracks, onClose }: Collecti
   const heroTrack = collectionTracks[0]
 
   return (
-    <div className="fixed inset-0 z-150 flex items-center justify-center">
-      <div className="absolute inset-0 bg-(--bg-overlay)/90 backdrop-blur-2xl" onClick={onClose} />
-      <div className="relative w-full max-w-3xl mx-4 sm:mx-8 rounded-[28px] border border-(--border-elevated) bg-(--bg-modal) shadow-[0_28px_70px_rgba(5,6,18,0.7)] overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_20%_20%,rgba(88,101,242,0.25),transparent),radial-gradient(120%_120%_at_80%_10%,rgba(56,212,255,0.18),transparent)] opacity-70" />
-        <div className="relative p-6 sm:p-8 space-y-4">
+    <Modal
+      isOpen
+      onClose={onClose}
+      size="lg"
+      showCloseButton={false}
+      overlayClassName="bg-(--bg-overlay)/90 backdrop-blur-2xl"
+      className="border border-(--border-elevated) bg-(--bg-modal) shadow-[0_28px_70px_rgba(5,6,18,0.7)]"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_20%_20%,rgba(88,101,242,0.25),transparent),radial-gradient(120%_120%_at_80%_10%,rgba(56,212,255,0.18),transparent)] opacity-70" />
+      <div className="relative p-6 sm:p-8 space-y-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-4">
               <div className="relative h-20 w-20 overflow-hidden rounded-2xl border border-white/15 bg-white/5">
                 <Image
-                  src={collection.artworkUrl ?? '/images/placeholder-artwork.svg'}
+                  src={collection.artworkUrl ?? DEFAULT_ARTWORK_SRC}
                   alt={collection.title}
                   fill
                   sizes="80px"
@@ -51,7 +57,7 @@ export function CollectionDetailsModal({ collection, tracks, onClose }: Collecti
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-white/30 hover:text-white focus-visible:outline-hidden"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-white/30 hover:text-white focus-ring"
                 aria-label="Close collection details"
               >
                 <X className="h-4 w-4" />
@@ -67,7 +73,7 @@ export function CollectionDetailsModal({ collection, tracks, onClose }: Collecti
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 flex items-center gap-4">
               <div className="relative h-14 w-14 overflow-hidden rounded-xl border border-white/10">
                 <Image
-                  src={heroTrack.artworkUrl || "/images/default-artwork.jpg"}
+                  src={heroTrack.artworkUrl || DEFAULT_ARTWORK_SRC}
                   alt={heroTrack.title}
                   fill
                   sizes="56px"
@@ -92,7 +98,7 @@ export function CollectionDetailsModal({ collection, tracks, onClose }: Collecti
               >
                 <div className="relative h-10 w-10 overflow-hidden rounded-lg border border-white/10">
                   <Image
-                    src={track.artworkUrl || "/images/default-artwork.jpg"}
+                    src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
                     alt={track.title}
                     fill
                     sizes="40px"
@@ -104,7 +110,9 @@ export function CollectionDetailsModal({ collection, tracks, onClose }: Collecti
                   <p className="text-xs text-(--text-muted) truncate">{track.artist}</p>
                 </div>
                 {track.duration && (
-                  <span className="text-xs text-(--text-muted) tabular-nums">{Math.floor(track.duration / 60)}:{`${Math.floor(track.duration % 60)}`.padStart(2, "0")}</span>
+                  <span className="text-xs text-(--text-muted) tabular-nums">
+                    {formatDuration(track.duration)}
+                  </span>
                 )}
               </div>
             ))}
@@ -120,8 +128,7 @@ export function CollectionDetailsModal({ collection, tracks, onClose }: Collecti
               </div>
             )}
           </div>
-        </div>
       </div>
-    </div>
+    </Modal>
   )
 }

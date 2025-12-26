@@ -2,7 +2,7 @@
 
 > **Platform‑level home surface for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-22 17:45 EST
+**Last Modified**: 2025-12-22 19:12 EST
 **Status**: Active (Hero + Wisdom Spotlight + Platform Pulse).
 
 ## Overview
@@ -42,7 +42,7 @@ Order matters; it matches the intended "discover → engage → deepen" rhythm.
 
 The hero journey uses a single anchor track:
 
-- `HUB_HERO_TRACK_ID` in `src/lib/constants.ts`
+- `HUB_HERO_TRACK_ID` in `src/lib/app.constants.ts`
   - currently pinned to **Metaversal Odyssey** (a Featured track).
   - chosen because it's a current MetaDJ hit and its narrative pairs with the "start listening / start exploring" intent.
   - can be rotated seasonally without editing Hub components.

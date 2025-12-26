@@ -11,11 +11,10 @@
  * - Responsive grid sizing
  */
 
-import Image from "next/image"
 import { clsx } from "clsx"
-import { Play, History } from "lucide-react"
+import { History } from "lucide-react"
 import { BrandGradientIcon } from "@/components/icons/BrandGradientIcon"
-import { Card, PlayingIndicator, EmptyState } from "@/components/ui"
+import { Card, EmptyState, TrackArtwork } from "@/components/ui"
 import { getCollectionHoverStyles } from "@/lib/collection-theme"
 import type { Track } from "@/types"
 
@@ -85,30 +84,19 @@ export function RecentlyPlayedRail({
                 )}
               >
                 {/* Artwork with Play Overlay - smaller on mobile for compact fit */}
-                <div className="relative h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-lg overflow-hidden shrink-0 shadow-md border border-(--border-subtle)">
-                  <Image
-                    src={track.artworkUrl || "/images/default-artwork.jpg"}
-                    alt={track.title}
-                    fill
-                    sizes="(max-width: 640px) 48px, (max-width: 1024px) 56px, 64px"
-                    className="object-cover transition duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300" />
-
-                  {/* Currently Playing Indicator */}
-                  {isPlaying ? (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <PlayingIndicator isPlaying={true} size="lg" color="purple" />
-                    </div>
-                  ) : (
-                    /* Play Button Overlay on Artwork */
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
-                      <div className="p-2 rounded-full bg-white/90 shadow-lg shadow-purple-500/30">
-                        <Play className="h-4 w-4 text-black fill-current" />
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <TrackArtwork
+                  artworkUrl={track.artworkUrl}
+                  title={track.title}
+                  sizes="(max-width: 640px) 48px, (max-width: 1024px) 56px, 64px"
+                  className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-lg shadow-md border border-(--border-subtle)"
+                  imageClassName="transition duration-500 group-hover:scale-110"
+                  showPlayingIndicator={true}
+                  isPlaying={isPlaying}
+                  playingIndicatorSize="lg"
+                  playingIndicatorColor="purple"
+                  playButtonClassName="p-2"
+                  playIconClassName="h-4 w-4"
+                />
 
                 {/* Track Info */}
                 <div className="flex-1 min-w-0">

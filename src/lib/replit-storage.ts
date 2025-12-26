@@ -1,7 +1,7 @@
 import { Client } from '@replit/object-storage';
 import { trackEvent } from '@/lib/analytics';
 import { logger } from '@/lib/logger';
-import type { StorageBucket } from '@/lib/storage/types';
+import type { StorageBucket } from '@/lib/storage/storage.types';
 
 /**
  * Replit Object Storage Configuration

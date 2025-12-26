@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Play, Pause, SkipBack, SkipForward, Loader2 } from "lucide-react"
 import { IconButton } from "@/components/ui"
 import { usePlaybackTime } from "@/contexts/PlayerContext"
+import { DEFAULT_ARTWORK_SRC } from "@/lib/app.constants"
 import type { Track } from "@/types"
 
 interface MobileNowPlayingDockProps {
@@ -62,7 +63,7 @@ export function MobileNowPlayingDock({
         >
           <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/20 shadow-md">
             <Image
-              src={track.artworkUrl || "/images/default-artwork.jpg"}
+              src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
               alt={track.title}
               fill
               sizes="40px"
@@ -144,4 +145,3 @@ export function MobileNowPlayingDock({
     </div>
   )
 }
-

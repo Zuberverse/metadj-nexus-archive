@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
-import Image from "next/image"
-import { Check, Info, ListPlus, Play } from "lucide-react"
+import { Check, Info, ListPlus } from "lucide-react"
 import { AddToPlaylistButton } from "@/components/playlist"
-import { ShareButton } from "@/components/ui"
+import { ShareButton, TrackArtwork } from "@/components/ui"
 import { preloadTrackOnHover } from "@/hooks/audio/use-audio-preloader"
 import { getCollectionGradient, getCollectionHoverStyles } from "@/lib/collection-theme"
-import { formatDuration, type Track } from "@/lib/music"
+import { formatDuration } from "@/lib/utils"
+import type { Track } from "@/types"
 
 interface TrackCardProps {
   track: Track;
@@ -97,27 +97,20 @@ export const TrackCard = React.memo(function TrackCard({
         <button
           type="button"
           onClick={handleArtworkClick}
-          className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-(--border-elevated) bg-(--glass-light) transition-all duration-75 group-hover:border-(--border-active) cursor-pointer focus-ring-glow"
+          className="relative h-12 w-12 shrink-0 rounded-lg border border-(--border-elevated) bg-(--glass-light) transition-all duration-75 group-hover:border-(--border-active) cursor-pointer focus-ring-glow"
           aria-label={`Play ${track.title}`}
         >
-          <Image
-            src={track.artworkUrl || "/images/placeholder-artwork.svg"}
-            alt={track.title}
-            fill
+          <TrackArtwork
+            artworkUrl={track.artworkUrl}
+            title={track.title}
             sizes="48px"
-            className="object-cover"
-            priority={false}
+            className="h-full w-full rounded-lg"
+            showPlayOverlay={!isPlaying}
+            overlayClassName="rounded-lg bg-black/0 group-hover:bg-black/35"
+            playButtonClassName="w-8 h-8 sm:w-9 sm:h-9"
+            playIconClassName="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5"
+            hoverScale={false}
           />
-          {/* Play Button Overlay - Always show on hover when not playing */}
-          {!isPlaying && (
-            <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 group-hover:bg-black/35 transition-all duration-75">
-              <div className="opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-75">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-white/90 shadow-[0_0_18px_rgba(80,40,140,0.35)]">
-                  <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black ml-0.5" fill="currentColor" />
-                </div>
-              </div>
-            </div>
-          )}
         </button>
 
         {/* Track Info */}

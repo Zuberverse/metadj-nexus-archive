@@ -2,8 +2,7 @@
 
 > **First-time visitor onboarding experience for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-22 13:13 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Overview
 
 The Welcome Overlay is a modal dialog presented to first-time visitors, introducing MetaDJ Nexus and its core experiences. It appears at most once per session and provides immediate pathways to explore the platform.
@@ -24,7 +23,7 @@ The overlay communicates:
 
 ### Content Exports
 ```typescript
-// From metaDjNexusWelcomeCopy.ts
+// From meta-dj-nexus-welcome-copy.ts
 export const METADJNEXUS_PREVIEW_BADGE = "Public Preview"
 export const METADJNEXUS_PREVIEW_NOTICE = {
   title: "Public Preview",
@@ -36,10 +35,10 @@ export const METADJNEXUS_PREVIEW_NOTICE = {
 
 **Primary Component**: `src/components/modals/WelcomeOverlay.tsx`
 
-**Content Source**: `src/lib/content/metaDjNexusWelcomeCopy.ts`
+**Content Source**: `src/lib/content/meta-dj-nexus-welcome-copy.ts`
 
 ```
-metaDjNexusWelcomeCopy.ts
+meta-dj-nexus-welcome-copy.ts
        ↓
 ┌──────────────────────────┐
 │   Welcome Overlay        │
@@ -193,7 +192,7 @@ src/
 │       └── ModalOrchestrator.tsx   # Display orchestration
 ├── lib/
 │   └── content/
-│       └── metaDjNexusWelcomeCopy.ts # Content definitions
+│       └── meta-dj-nexus-welcome-copy.ts # Content definitions
 └── hooks/
     └── use-body-scroll-lock.ts     # Scroll lock utility
 ```
@@ -208,7 +207,7 @@ src/
 
 ### Content Updates
 When updating welcome content:
-1. Edit `metaDjNexusWelcomeCopy.ts` only
+1. Edit `meta-dj-nexus-welcome-copy.ts` only
 2. Maintain artist-direct voice (I/me/my)
 3. Keep messaging concise and inviting
 4. Test on mobile viewports

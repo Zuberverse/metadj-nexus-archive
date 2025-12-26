@@ -42,7 +42,7 @@ export function CinemaVideoError({
           e.stopPropagation();
           onRetry();
         }}
-        className="mt-4 rounded-full border border-(--border-subtle) px-4 py-2 text-sm text-(--text-muted) transition hover:border-(--border-active) hover:text-white focus-visible:outline-hidden pointer-events-auto"
+        className="mt-4 rounded-full border border-(--border-subtle) px-4 py-2 text-sm text-(--text-muted) transition hover:border-(--border-active) hover:text-white focus-ring pointer-events-auto"
       >
         Retry Loading
       </button>
@@ -275,7 +275,7 @@ export function CinemaWebGLContextLoss({
             e.stopPropagation()
             onSwitchTo2D()
           }}
-          className="mt-4 rounded-full border border-(--border-subtle) px-4 py-2 text-sm text-(--text-muted) transition hover:border-(--border-active) hover:text-white focus-visible:outline-hidden pointer-events-auto"
+          className="mt-4 rounded-full border border-(--border-subtle) px-4 py-2 text-sm text-(--text-muted) transition hover:border-(--border-active) hover:text-white focus-ring pointer-events-auto"
         >
           Switch to 2D Visualizer
         </button>
@@ -288,4 +288,3 @@ export function CinemaWebGLContextLoss({
     </div>
   )
 }
-

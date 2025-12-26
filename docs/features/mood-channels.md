@@ -2,9 +2,9 @@
 
 > **Curated listening experiences based on mood and activity states**
 
-**Last Modified**: 2025-12-22 14:03 EST
+**Last Modified**: 2025-12-22 19:12 EST
 **Status**: GATED (Left Panel only, behind feature flag)
-**Feature Flag**: `FEATURE_MOOD_CHANNELS` gates the Left Panel list (`src/lib/constants.ts`)
+**Feature Flag**: `FEATURE_MOOD_CHANNELS` gates the Left Panel list (`src/lib/app.constants.ts`)
 
 ---
 
@@ -13,7 +13,7 @@
 Mood Channels are currently **gated behind the `FEATURE_MOOD_CHANNELS` feature flag**. The Left Panel Mood Channel list will be enabled when the catalog is broad enough to make channel browsing feel distinct.
 
 **To enable the Left Panel list**:
-1. Set `FEATURE_MOOD_CHANNELS = true` in `src/lib/constants.ts`
+1. Set `FEATURE_MOOD_CHANNELS = true` in `src/lib/app.constants.ts`
 2. The Library tab will render Mood Channels under Collections (`BrowseView.tsx`).
 
 **Code Preserved In**:

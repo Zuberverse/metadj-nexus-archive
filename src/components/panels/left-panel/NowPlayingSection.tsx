@@ -21,6 +21,7 @@ import clsx from "clsx"
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1, Info } from "lucide-react"
 import { ShareButton } from "@/components/ui"
 import { usePlaybackTime } from "@/contexts/PlayerContext"
+import { DEFAULT_ARTWORK_SRC } from "@/lib/app.constants"
 import { formatDuration } from "@/lib/utils"
 import type { Track, RepeatMode } from "@/types"
 
@@ -263,7 +264,7 @@ function NowPlayingSectionComponent({
                   aria-label={onOpenCollection ? `Open ${track.collection} collection` : undefined}
                 >
                   <Image
-                    src={track.artworkUrl || "/images/placeholder-artwork.svg"}
+                    src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
                     alt={track.title}
                     fill
                     sizes="44px"
@@ -421,7 +422,7 @@ function NowPlayingSectionComponent({
             <div className="relative z-10 mb-2 sm:mb-2.5 md:mb-3 flex items-start gap-2.5 sm:gap-3">
               <div className="relative h-14 w-14 rounded-lg overflow-hidden shadow-lg shrink-0 bg-white/5">
                 <Image
-                  src={track.artworkUrl || "/images/placeholder-artwork.svg"}
+                  src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
                   alt={track.title}
                   fill
                   sizes="56px"

@@ -78,6 +78,13 @@ function assertStreamOwnership(req: NextRequest, streamId: string) {
   const { id: clientId } = getClientIdentifier(req)
   const activeStream = getActiveStream(clientId)
   if (!activeStream || activeStream.streamId !== streamId) {
+    if (process.env.NODE_ENV !== "production") {
+      logger.warn("[Dream] WHIP session mismatch", {
+        clientId,
+        streamId,
+        activeStreamId: activeStream?.streamId,
+      })
+    }
     throw new Response("Stream not owned by active session", { status: 403 })
   }
 }

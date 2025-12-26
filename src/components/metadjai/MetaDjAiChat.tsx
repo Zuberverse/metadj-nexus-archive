@@ -13,7 +13,7 @@ import { useFocusTrap } from "@/hooks/use-focus-trap"
 import { usePanelPosition } from "@/hooks/use-panel-position"
 import { useSwipeGesture } from "@/hooks/use-swipe-gesture"
 import { MODEL_OPTIONS } from "@/lib/ai/model-preferences"
-import { PANEL_POSITIONING } from "@/lib/constants"
+import { PANEL_POSITIONING } from "@/lib/app.constants"
 import type { MetaDjAiChatProps } from "@/types/metadjai"
 
 interface MetaDjAiChatComponentProps extends MetaDjAiChatProps {

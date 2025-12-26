@@ -1,3 +1,5 @@
+const path = require('path');
+
 // Bundle analyzer is optional - only load if package is installed
 let withBundleAnalyzer = (config) => config;
 try {
@@ -124,6 +126,14 @@ const nextConfig = {
         ],
       },
     ];
+  },
+
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      'zod/v3': path.resolve(__dirname, 'src/lib/zod-v3-shim.ts'),
+    };
+    return config;
   },
 };
 

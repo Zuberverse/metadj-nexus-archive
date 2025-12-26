@@ -5,7 +5,7 @@
 > The primary creative hub for MetaDJ — where human vision meets AI-driven execution to uplift and inspire as you pioneer the Metaverse
 
 *Version: 0.9.46*
-**Last Modified**: 2025-12-22 16:51 EST
+**Last Modified**: 2025-12-22 19:12 EST
 **Platform:** MetaDJ Nexus at **metadj.ai**
 **Social:** **@metadjai**
 
@@ -367,7 +367,7 @@ These features are fully implemented but temporarily disabled until the music ca
 - [x] ~~**Smart Play Next** — Removed feature.~~
 - [ ] **Left Panel Mood Channels** — Curated experiences (Deep Reflection, Energy Boost, Creative Inspiration). Hub micro‑sets use this system now; the Left Panel list stays behind `FEATURE_MOOD_CHANNELS` until the catalog expands.
 
-*Enable via feature flags in `src/lib/constants.ts` when catalog reaches sufficient size for meaningful results.*
+*Enable via feature flags in `src/lib/app.constants.ts` when catalog reaches sufficient size for meaningful results.*
 
 ### Future Vision (2025+)
 

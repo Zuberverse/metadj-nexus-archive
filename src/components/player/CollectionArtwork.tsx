@@ -15,6 +15,7 @@
 import { useState, memo } from 'react';
 import Image from 'next/image';
 import { Music } from 'lucide-react';
+import { DEFAULT_ARTWORK_SRC } from '@/lib/app.constants';
 
 interface CollectionArtworkProps {
   /** URL of the artwork image */
@@ -49,10 +50,10 @@ function CollectionArtworkComponent({
   const [hasError, setHasError] = useState(false);
 
   const sizeValue = typeof size === 'number' ? size : SIZE_PRESETS[size];
-  const artworkUrl = src || '/images/default-artwork.jpg';
+  const artworkUrl = src || DEFAULT_ARTWORK_SRC;
 
   // Fallback placeholder when image fails to load
-  if (hasError || !src) {
+  if (hasError) {
     return (
       <div
         className={`relative flex items-center justify-center bg-linear-to-br from-white/10 to-white/5 backdrop-blur-xs border border-white/10 rounded-lg overflow-hidden ${className}`}

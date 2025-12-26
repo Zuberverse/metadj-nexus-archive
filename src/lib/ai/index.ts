@@ -50,7 +50,7 @@ export {
 } from "./rate-limiter"
 
 // System prompt
-export { buildMetaDjAiSystemPrompt } from "./metaDjAiPrompt"
+export { buildMetaDjAiSystemPrompt } from "./meta-dj-ai-prompt"
 
 // Tools
 export { getTools } from "./tools"

@@ -438,7 +438,7 @@ export function useDream({ getCaptureStream, prompt, onContextLost, enabled = fa
             streamActiveRef.current = false
             return
           }
-          logger.error("[Dream] WHIP failed", { error: state.error })
+          logger.error("[Dream] WHIP failed", { error: state.error, whipUrl })
           streamActiveRef.current = false
           setStatus((prev) => {
             if (prev.streamId && prev.streamId !== streamId) return prev
@@ -495,7 +495,7 @@ export function useDream({ getCaptureStream, prompt, onContextLost, enabled = fa
         if (scheduleWhipRetry(message, "connect")) {
           return
         }
-        logger.error("[Dream] WHIP connect error", { error })
+        logger.error("[Dream] WHIP connect error", { error: message, whipUrl })
         await stopWhip()
         setStatus((prev) => {
           if (prev.streamId && prev.streamId !== streamId) return prev

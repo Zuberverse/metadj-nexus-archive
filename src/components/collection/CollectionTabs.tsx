@@ -46,7 +46,7 @@ function CollectionTabsComponent({
         {/* Dropdown Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative z-0 w-full rounded-[24px] border border-white/15 px-5 py-3.5 sm:px-6 sm:py-4 text-white shadow-[0_12px_30px_rgba(5,8,24,0.45)] hover:border-white/25 focus-visible:outline-hidden transition-all duration-150 cursor-pointer overflow-hidden"
+          className="relative z-0 w-full rounded-[24px] border border-white/15 px-5 py-3.5 sm:px-6 sm:py-4 text-white shadow-[0_12px_30px_rgba(5,8,24,0.45)] hover:border-white/25 focus-ring transition-all duration-150 cursor-pointer overflow-hidden"
           aria-label="Select collection"
           aria-haspopup="listbox"
           aria-expanded={isOpen}

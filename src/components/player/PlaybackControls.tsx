@@ -25,7 +25,7 @@ import { useToast } from "@/contexts/ToastContext"
 import { trackPlaybackControl } from "@/lib/analytics"
 import { logger } from "@/lib/logger"
 import { toasts } from "@/lib/toast-helpers"
-import type { PlaybackControlsProps } from "./types"
+import type { PlaybackControlsProps } from "./player.types"
 import type { RepeatMode } from "@/types"
 
 function PlaybackControlsComponent({

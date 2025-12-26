@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
-import type { StorageBucket } from "@/lib/storage/types";
+import type { StorageBucket } from "@/lib/storage/storage.types";
 
 export interface StreamRequestConfig {
   defaultContentType: string;

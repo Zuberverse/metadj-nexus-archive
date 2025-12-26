@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { CINEMA_CONTROLS_TIMEOUT_MS } from '@/lib/constants'
+import { CINEMA_CONTROLS_TIMEOUT_MS } from '@/lib/app.constants'
 
 interface UseCinemaControlsOptions {
   /** Whether cinema is currently enabled */

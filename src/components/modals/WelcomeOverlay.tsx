@@ -12,7 +12,7 @@ import {
   METADJNEXUS_WELCOME_PARAGRAPHS,
   METADJNEXUS_PREVIEW_NOTICE,
   METADJNEXUS_FEATURE_CARDS,
-} from "@/lib/content/metaDjNexusWelcomeCopy"
+} from "@/lib/content/meta-dj-nexus-welcome-copy"
 
 interface WelcomeOverlayProps {
   onClose: () => void

@@ -11,8 +11,9 @@
  * - WCAG compliant with clear label
  */
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { ListPlus } from "lucide-react"
+import { useClickAway, useEscapeKey } from "@/hooks"
 import { PlaylistSelector } from "./PlaylistSelector"
 
 interface AddToPlaylistButtonProps {
@@ -32,20 +33,14 @@ export function AddToPlaylistButton({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
 
-  // Close on Escape key
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsOpen(false)
-        buttonRef.current?.focus()
-      }
-    }
-
-    document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [isOpen])
+  useClickAway([buttonRef, popoverRef], () => setIsOpen(false), { enabled: isOpen })
+  useEscapeKey(
+    () => {
+      setIsOpen(false)
+      buttonRef.current?.focus()
+    },
+    { enabled: isOpen }
+  )
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -63,7 +58,7 @@ export function AddToPlaylistButton({
         ref={buttonRef}
         type="button"
         onClick={handleToggle}
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-(--border-standard) bg-white/5 transition-all hover:border-(--border-elevated) hover:bg-white/10 hover:scale-110 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-(--border-standard) bg-white/5 transition-all hover:border-(--border-elevated) hover:bg-white/10 hover:scale-110 focus-ring-glow"
         aria-label={`Add ${trackTitle} to playlist`}
         aria-haspopup="menu"
         aria-expanded={isOpen}

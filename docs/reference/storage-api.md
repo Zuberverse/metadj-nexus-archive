@@ -2,8 +2,7 @@
 
 > Unified persistence layer for MetaDJ Nexus client-side state management.
 
-**Last Modified**: 2025-12-22 13:13 EST
-
+**Last Modified**: 2025-12-22 19:15 EST
 ## Overview
 
 The storage layer provides type-safe localStorage management with:
@@ -21,7 +20,7 @@ src/lib/storage/
 ├── persistence.ts              # Main persistence API
 ├── metadjai-history-storage.ts # Chat session history
 ├── metadjai-session-storage.ts # Active session messages
-├── types.ts                    # Replit bucket types
+├── storage.types.ts            # Replit bucket types
 └── index.ts                    # Public exports
 ```
 
@@ -461,7 +460,7 @@ metadjAiSessionStorage.clearRateLimitWindow();
 
 ## Replit Bucket Types
 
-**Location**: `src/lib/storage/types.ts`
+**Location**: `src/lib/storage/storage.types.ts`
 
 Types for Replit App Storage integration (server-side media storage).
 
@@ -640,7 +639,7 @@ export {
 export { metadjAiSessionStorage } from "./metadjai-session-storage";
 
 // Storage types (Replit bucket types)
-export type { StorageBucket, StorageBucketFile } from "./types";
+export type { StorageBucket, StorageBucketFile } from "./storage.types";
 ```
 
 **Note**: `metadjAiHistoryStorage` is imported directly from its module when needed for chat history management.

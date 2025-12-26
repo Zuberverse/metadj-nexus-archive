@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { COLLECTION_NARRATIVES } from "@/data/collectionNarratives"
+import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import type { usePlayer } from "@/contexts/PlayerContext"
 import type { useQueue } from "@/contexts/QueueContext"
 import type { useUI } from "@/contexts/UIContext"

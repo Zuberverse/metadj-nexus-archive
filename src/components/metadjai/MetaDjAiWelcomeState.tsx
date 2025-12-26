@@ -60,7 +60,7 @@ export function MetaDjAiWelcomeState({
             disabled={isDisabled}
             className={clsx(
               "group relative flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/2 px-4 py-2 min-[1100px]:py-3 text-left transition-all duration-300",
-              "hover:border-purple-500/40 hover:bg-purple-500/10 hover:shadow-[0_0_25px_rgba(168,85,247,0.1)] focus-visible:outline-hidden",
+              "hover:border-purple-500/40 hover:bg-purple-500/10 hover:shadow-[0_0_25px_rgba(168,85,247,0.1)] focus-ring",
               isDisabled && "cursor-not-allowed opacity-50",
             )}
           >

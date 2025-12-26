@@ -1347,7 +1347,7 @@ export function CinemaOverlay({
                   aria-label="Dream prompt"
                   placeholder="Describe your visual style..."
                   rows={1}
-                  className="w-full min-h-[24px] max-h-[120px] resize-none bg-transparent text-sm text-white focus:outline-none font-medium placeholder:text-white/40 leading-relaxed translate-y-[1px]"
+                  className="w-full min-h-[24px] max-h-[120px] resize-none bg-transparent text-sm text-white focus-ring font-medium placeholder:text-white/40 leading-relaxed translate-y-[1px]"
                   style={{
                     height: 'auto',
                     overflow: 'hidden'

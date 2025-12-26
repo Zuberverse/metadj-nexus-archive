@@ -575,7 +575,7 @@ export const Journal: FC = () => {
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 placeholder="TITLE"
-                                className="w-full bg-transparent text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white placeholder:text-white/10 focus:outline-hidden tracking-tight"
+                                className="w-full bg-transparent text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white placeholder:text-white/10 focus-ring tracking-tight"
                             />
                             <div
                                 className="flex-1 min-h-[60vh] rounded-2xl border border-white/10 bg-white/5 shadow-[inset_0_0_30px_rgba(0,0,0,0.35)] overflow-hidden"
@@ -586,7 +586,7 @@ export const Journal: FC = () => {
                                     onInput={handleEditorChange}
                                     role="textbox"
                                     aria-multiline="true"
-                                    className="h-full min-h-full w-full overflow-y-auto px-5 sm:px-8 py-6 text-lg sm:text-xl text-white/85 focus:outline-hidden leading-relaxed pb-12 custom-scrollbar prose prose-invert prose-purple max-w-none prose-headings:font-heading prose-headings:tracking-tight prose-p:text-lg sm:prose-p:text-xl prose-p:leading-relaxed"
+                                    className="h-full min-h-full w-full overflow-y-auto px-5 sm:px-8 py-6 text-lg sm:text-xl text-white/85 focus-ring leading-relaxed pb-12 custom-scrollbar prose prose-invert prose-purple max-w-none prose-headings:font-heading prose-headings:tracking-tight prose-p:text-lg sm:prose-p:text-xl prose-p:leading-relaxed"
                                     data-placeholder="Write your thoughts..."
                                 />
                             </div>

@@ -51,7 +51,7 @@ export function WisdomBreadcrumb({ path, className = "" }: WisdomBreadcrumbProps
             bg-white/5 border border-white/10
             text-white/60 hover:text-white hover:bg-white/10 hover:border-white/20
             transition-all duration-200
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50
+            focus-ring
             shrink-0
           "
           aria-label="Go back"
@@ -80,7 +80,7 @@ export function WisdomBreadcrumb({ path, className = "" }: WisdomBreadcrumbProps
                   className="
                     text-white/60 hover:text-cyan-400
                     transition-colors duration-200
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:rounded
+                    focus-ring
                     truncate max-w-[150px] sm:max-w-[200px]
                   "
                   aria-current={undefined}

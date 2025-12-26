@@ -1,12 +1,10 @@
 'use client';
 
 import { forwardRef, type ReactNode, type KeyboardEvent } from 'react';
-import Image from 'next/image';
-import { Play } from 'lucide-react';
 import { getCollectionHoverStyles } from '@/lib/collection-theme';
 import { cn, formatDuration } from '@/lib/utils';
-import { PlayingIndicator } from './PlayingIndicator';
 import { ShareButton } from './ShareButton';
+import { TrackArtwork } from './TrackArtwork';
 import { TrackOptionsMenu } from './TrackOptionsMenu';
 import type { Track } from '@/types';
 
@@ -126,7 +124,7 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
         data-queue-item={dataQueueItem}
         className={cn(
           'group relative w-full flex items-center rounded-xl border text-left cursor-pointer',
-          'transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50',
+          'transition-all duration-300 focus-ring',
           'active:scale-[0.98] active:bg-white/12 touch-manipulation',
           isCurrent
             ? 'border-purple-500/30 bg-linear-to-r from-purple-500/10 to-blue-500/10 shadow-[0_0_20px_rgba(124,58,237,0.1)]'
@@ -150,39 +148,21 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
         ) : null}
 
         {/* Artwork (with playing indicator overlay) */}
-        <div
+        <TrackArtwork
+          artworkUrl={track.artworkUrl}
+          title={track.title}
+          sizes="(max-width: 640px) 32px, 40px"
           className={cn(
-            'relative overflow-hidden shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300',
+            "shadow-lg border border-white/15",
             styles.artwork
           )}
-        >
-          <Image
-            src={track.artworkUrl || '/images/default-artwork.jpg'}
-            alt={track.title}
-            fill
-            sizes="(max-width: 640px) 32px, 40px"
-            className="object-cover"
-          />
-          {/* Glassmorphic border overlay */}
-          <div
-            className="absolute inset-0 rounded-[inherit] border border-white/15 pointer-events-none"
-            aria-hidden="true"
-          />
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300" />
-          {/* Playing indicator overlay or Play button overlay */}
-          {(isCurrent || isPlaying) && showPlayingIndicator ? (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-[1px]">
-              <PlayingIndicator isPlaying={isPlaying} size="md" />
-            </div>
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
-              <div className="p-1.5 rounded-full bg-white/90 shadow-lg shadow-purple-500/30">
-                <Play className="h-3 w-3 text-black fill-current" />
-              </div>
-            </div>
-          )}
-        </div>
+          playButtonClassName="p-1.5"
+          playIconClassName="h-3 w-3"
+          showPlayingIndicator={showPlayingIndicator}
+          isPlaying={isCurrent || isPlaying}
+          playingIndicatorSize="md"
+          playingOverlayClassName="backdrop-blur-[1px]"
+        />
 
         {/* Track Info */}
         <div className="flex-1 min-w-0 relative z-10">

@@ -30,4 +30,4 @@ export {
 export { metadjAiSessionStorage } from "./metadjai-session-storage"
 
 // Storage types (Replit bucket types)
-export type { StorageBucket, StorageBucketFile } from "./types"
+export type { StorageBucket, StorageBucketFile } from "./storage.types"

@@ -2,11 +2,10 @@
 
 > **React Context providers for MetaDJ Nexus state management**
 
-**Last Modified**: 2025-12-22 13:13 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Overview
 
-MetaDJ Nexus uses 7 React Context providers for global state. Contexts are imported directly from their files (no `src/contexts/index.ts` barrel export).
+MetaDJ Nexus uses 7 React Context providers for global state. Contexts can be imported directly from their files or via the `@/contexts` barrel export.
 
 ```ts
 import { useModal } from '@/contexts/ModalContext';
@@ -16,6 +15,10 @@ import { useToast } from '@/contexts/ToastContext';
 import { useQueue } from '@/contexts/QueueContext';
 import { usePlayer, usePlaybackTime } from '@/contexts/PlayerContext';
 import { usePlaylist } from '@/contexts/PlaylistContext';
+```
+
+```ts
+import { useQueue, usePlayer } from '@/contexts';
 ```
 
 ### What Lives In Context vs Hooks

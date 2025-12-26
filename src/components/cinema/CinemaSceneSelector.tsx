@@ -149,7 +149,7 @@ export function CinemaSceneSelector({
       tabIndex={focusedIndex === index ? 0 : -1}
       onClick={() => onSelect(scene)}
       onKeyDown={(e) => handleKeyDown(e, index)}
-      className={`w-full px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-purple-500/50 ${scene.id === selectedScene
+      className={`w-full px-4 py-3 text-left transition-colors focus-ring ${scene.id === selectedScene
         ? 'bg-(--border-standard) text-white'
         : 'text-(--text-secondary) hover:bg-(--glass-strong) hover:text-white'
         }`}
@@ -183,7 +183,7 @@ export function CinemaSceneSelector({
         type="button"
         onClick={onToggle}
         onKeyDown={handleTriggerKeyDown}
-        className="group flex items-center gap-2 rounded-full border border-white/30 bg-black/50 backdrop-blur-md px-4 py-2 text-xs uppercase tracking-[0.3em] text-white transition hover:bg-black/40 hover:border-white/50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon"
+        className="group flex items-center gap-2 rounded-full border border-white/30 bg-black/50 backdrop-blur-md px-4 py-2 text-xs uppercase tracking-[0.3em] text-white transition hover:bg-black/40 hover:border-white/50 focus-ring-glow"
         aria-label="Select cinema scene"
         aria-haspopup="listbox"
         aria-expanded={isOpen}

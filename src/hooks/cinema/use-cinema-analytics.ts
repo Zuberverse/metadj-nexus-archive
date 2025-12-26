@@ -13,7 +13,7 @@ import {
   trackCinemaClosed,
   trackCinemaToggled,
 } from '@/lib/analytics'
-import { COMPLETION_THRESHOLD_SECONDS } from '@/lib/constants'
+import { COMPLETION_THRESHOLD_SECONDS } from '@/lib/app.constants'
 import { msToSeconds } from '@/lib/utils'
 import type { Track } from '@/types'
 

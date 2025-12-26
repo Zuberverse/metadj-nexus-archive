@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { PANEL_POSITIONING } from "@/lib/constants"
+import { PANEL_POSITIONING } from "@/lib/app.constants"
 
 /**
  * usePanelPosition - Shared positioning hook for overlay panels

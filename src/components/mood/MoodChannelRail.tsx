@@ -67,7 +67,7 @@ export function MoodChannelRail({ tracks, onPlayChannel, className }: MoodChanne
                 "bg-black/20 backdrop-blur-2xl shadow-lg",
                 "hover:scale-[1.02] hover:border-white/30 hover:shadow-[0_0_25px_rgba(139,92,246,0.15)]",
                 getMoodChannelHoverStyles(channel.id),
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50",
+                "focus-ring-light",
                 trackCount === 0 && "opacity-50 cursor-not-allowed"
               )}
             >

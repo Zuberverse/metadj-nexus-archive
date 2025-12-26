@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { createPortal } from "react-dom"
 import { Share2, Link2, X as XIcon } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
+import { useClickAway, useEscapeKey } from "@/hooks"
 import { trackEvent } from "@/lib/analytics"
 import type { Track, Collection } from "@/types"
 import type { Playlist } from "@/types/playlist"
@@ -105,40 +106,23 @@ export function ShareButton({
     return undefined
   }, [showMenu, updateMenuPosition])
 
-  // Close menu when clicking outside or pressing Escape
+  useClickAway([menuRef, buttonRef], () => setShowMenu(false), { enabled: showMenu })
+  useEscapeKey(
+    () => {
+      setShowMenu(false)
+      buttonRef.current?.focus()
+    },
+    { enabled: showMenu }
+  )
+
+  // Focus first menu item when menu opens
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        buttonRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setShowMenu(false)
-      }
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setShowMenu(false)
-        buttonRef.current?.focus()
-      }
-    }
-
-    if (showMenu) {
-      document.addEventListener('mousedown', handleClickOutside)
-      document.addEventListener('keydown', handleKeyDown)
-      // Focus first menu item when menu opens
-      requestAnimationFrame(() => {
-        const firstButton = menuRef.current?.querySelector('button')
-        firstButton?.focus()
-      })
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside)
-        document.removeEventListener('keydown', handleKeyDown)
-      }
-    }
-    return undefined
+    if (!showMenu) return undefined
+    const rafId = requestAnimationFrame(() => {
+      const firstButton = menuRef.current?.querySelector("button")
+      firstButton?.focus()
+    })
+    return () => cancelAnimationFrame(rafId)
   }, [showMenu])
 
 
@@ -437,7 +421,7 @@ export function ShareButton({
             onPointerUp={(e) => e.stopPropagation()}
             onPointerCancel={(e) => e.stopPropagation()}
             onKeyDown={(e) => handleMenuKeyDown(e, 0)}
-            className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm text-white/80 hover:bg-white/10 hover:text-white transition duration-75 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+            className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm text-white/80 hover:bg-white/10 hover:text-white transition duration-75 focus-ring"
             aria-label={`Copy link to ${track ? `"${track.title}"` : collection ? collection.title : playlist ? playlist.name : 'MetaDJ Nexus'}`}
           >
             <Link2 className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -454,7 +438,7 @@ export function ShareButton({
             onPointerUp={(e) => e.stopPropagation()}
             onPointerCancel={(e) => e.stopPropagation()}
             onKeyDown={(e) => handleMenuKeyDown(e, 1)}
-            className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm text-white/80 hover:bg-white/10 hover:text-white transition duration-75 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+            className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm text-white/80 hover:bg-white/10 hover:text-white transition duration-75 focus-ring"
             aria-label={`Share ${track ? `"${track.title}"` : collection ? collection.title : playlist ? playlist.name : 'MetaDJ Nexus'} to X`}
           >
             <XIcon className="h-4 w-4 shrink-0" aria-hidden="true" />

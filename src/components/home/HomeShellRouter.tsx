@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useState } from "react"
 import { DesktopShell, MobileShell } from "@/components/home/shells"
-import { BREAKPOINTS } from "@/lib/constants"
+import { BREAKPOINTS } from "@/lib/app.constants"
 import type { DesktopShellProps, MobileShellProps } from "@/components/home/shells"
 
 const useIsomorphicLayoutEffect =

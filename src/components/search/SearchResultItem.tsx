@@ -8,10 +8,9 @@
  */
 
 import { memo, type KeyboardEvent as ReactKeyboardEvent } from 'react';
-import Image from 'next/image';
 import { clsx } from 'clsx';
-import { ListPlus, Play } from 'lucide-react';
-import { IconButton } from '@/components/ui';
+import { ListPlus } from 'lucide-react';
+import { IconButton, TrackArtwork } from '@/components/ui';
 import { getCollectionHoverStyles } from '@/lib/collection-theme';
 import type { Track } from '@/types';
 
@@ -92,23 +91,15 @@ export const SearchResultItem = memo(function SearchResultItem({
         className="flex-1 text-left focus-ring-glow rounded-lg"
       >
         <div className="flex items-center gap-3">
-          {track.artworkUrl && (
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-white/20 shadow-lg group-hover:scale-105 transition-transform duration-300">
-              <Image
-                src={track.artworkUrl}
-                alt={track.title}
-                fill
-                sizes="40px"
-                className="object-cover"
-              />
-              <div
-                className={`absolute inset-0 flex items-center justify-center bg-black/55 transition ${shouldShowPlayIcon ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                  }`}
-              >
-                <Play className="h-4 w-4 text-white" />
-              </div>
-            </div>
-          )}
+          <TrackArtwork
+            artworkUrl={track.artworkUrl}
+            title={track.title}
+            sizes="40px"
+            className="h-10 w-10 rounded-lg border border-white/20 shadow-lg"
+            playOverlayVisible={shouldShowPlayIcon}
+            playButtonClassName="p-2"
+            playIconClassName="h-4 w-4"
+          />
 
           <div className="min-w-0 flex-1">
             <p className={clsx(

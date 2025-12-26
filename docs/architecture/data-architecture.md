@@ -2,13 +2,12 @@
 
 > How MetaDJ Nexus loads music metadata today and how we will transition to Neon in the future.
 
-**Last Modified**: 2025-12-22 13:13 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Current Snapshot
 
 - `src/data/collections.json` — canonical collection records (name, release date, internal part notes).
 - `src/data/tracks.json` — track metadata (IDs, durations, audio paths, genres, BPM, key).
-- `src/data/collectionNarratives.ts` — rich collection descriptions and stories.
+- `src/data/collection-narratives.ts` — rich collection descriptions and stories.
 - `src/data/scenes.ts` — Cinema visual scene configurations.
 - `src/data/moodChannels.ts` — mood-based playlist definitions.
 - `src/data/wisdom-content.ts` — Wisdom hub knowledge content.

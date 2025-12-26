@@ -303,13 +303,19 @@ export class WHIPClient {
       },
       this.options.connectionTimeout ?? 45000,
     )
-    logger.debug("[Dream] WHIP response", { status: response.status })
+    logger.debug("[Dream] WHIP response", { status: response.status, statusText: response.statusText })
 
     if (!response.ok) {
       const text = await response.text().catch(() => "")
       const snippet = text ? ` - ${text.slice(0, 160)}` : ""
-      logger.error("[Dream] WHIP offer rejected", { status: response.status, snippet })
-      throw new Error(`WHIP offer failed: ${response.status}${snippet}`)
+      logger.error("[Dream] WHIP offer rejected", {
+        status: response.status,
+        statusText: response.statusText,
+        url: this.options.whipUrl,
+        snippet,
+      })
+      const statusDetail = response.statusText ? ` ${response.statusText}` : ""
+      throw new Error(`WHIP offer failed: ${response.status}${statusDetail}${snippet}`)
     }
 
     const answerSdp = await response.text()

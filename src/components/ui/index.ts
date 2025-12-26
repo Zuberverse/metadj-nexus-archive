@@ -57,6 +57,9 @@ export { PlayingIndicator, type PlayingIndicatorProps } from './PlayingIndicator
 // TrackListItem
 export { TrackListItem, type TrackListItemProps } from './TrackListItem';
 
+// TrackArtwork
+export { TrackArtwork, type TrackArtworkProps } from './TrackArtwork';
+
 // ShareButton
 export { ShareButton, type ShareButtonProps } from './ShareButton';
 

@@ -76,7 +76,7 @@ function PlaylistListComponent({
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Playlists..."
             aria-label="Search playlists"
-            className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus:outline-hidden focus:bg-white/10 focus:border-white/30 transition-all"
+            className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus-ring focus:bg-white/10 focus:border-white/30 transition-all"
           />
           {searchQuery && (
             <button
@@ -104,7 +104,7 @@ function PlaylistListComponent({
             onClick={() => setShowCreator(true)}
             variant="primary"
             leftIcon={<Plus className="h-4 w-4" />}
-            className="h-11 shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon"
+            className="h-11 shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
           >
             Create Playlist
           </Button>
@@ -124,7 +124,7 @@ function PlaylistListComponent({
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search Playlists..."
           aria-label="Search playlists"
-          className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus:outline-hidden focus:bg-white/10 focus:border-white/30 transition-all"
+          className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus-ring focus:bg-white/10 focus:border-white/30 transition-all"
         />
         {searchQuery && (
           <button
@@ -172,7 +172,7 @@ function PlaylistListComponent({
               <button
                 type="button"
                 onClick={() => onPlaylistSelect(playlist.id)}
-                className={`flex w-full items-center gap-3 px-2 py-2 rounded-lg transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon ${isActive
+                className={`flex w-full items-center gap-3 px-2 py-2 rounded-lg transition-all focus-ring-glow ${isActive
                   ? "bg-linear-to-r from-purple-500/10 via-blue-500/10 to-cyan-400/10 border border-purple-neon/50"
                   : "hover:bg-black/30 hover:scale-102"
                   }`}

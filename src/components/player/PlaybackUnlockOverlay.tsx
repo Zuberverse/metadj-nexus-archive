@@ -88,8 +88,7 @@ export function PlaybackUnlockOverlay({
           className={`
             group relative flex h-20 w-20 items-center justify-center
             rounded-full bg-primary transition-all duration-200
-            hover:scale-110 focus:outline-hidden focus-visible:ring-2 
-            focus-visible:ring-primary focus-visible:ring-offset-2
+            hover:scale-110 focus-ring-glow
             ${isPressed ? 'scale-95' : ''}
           `}
           aria-label="Tap to enable audio playback"

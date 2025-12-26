@@ -1,6 +1,6 @@
 # Changelog
 
-**Last Modified**: 2025-12-22 16:51 EST
+**Last Modified**: 2025-12-22 23:43 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
@@ -17,6 +17,12 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 **Fixes**
 - Removed deprecated `middleware.ts` stub that conflicted with Next.js 16's `proxy.ts`.
 - Restored MetaDJai provider error copy to the "thinking too hard" messaging.
+- Unwrapped Gemini JSON envelopes and ignored thought-only payloads in MetaDJai streaming output.
+- Normalized Gemini JSON envelopes across streaming + fallback (ignore empty wrappers, reset accumulators).
+- Removed the MetaDJai input focus-outline rectangle while preserving the container glow focus state.
+- Stabilized Daydream stream limiter state during dev reloads and expanded WHIP error logging for session mismatches.
+- Added Google provider options to suppress thought output and enforce text-only responses.
+- Added a Zod v3 shim alias to resolve provider-utils build failures.
 
 **Security**
 - Enforced streamed request-size limits in API handlers when Content-Length is missing.

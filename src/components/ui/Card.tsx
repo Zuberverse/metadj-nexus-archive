@@ -38,7 +38,7 @@ const variantStyles: Record<CardVariant, string> = {
     'cursor-pointer transform-gpu',
     'hover:-translate-y-0.5 hover:border-(--border-active)',
     'active:scale-[0.99]',
-    'focus-visible:outline-none focus-ring-glow',
+    'focus-ring-glow',
   ),
   info: cn(
     'bg-white/5 border-white/10',

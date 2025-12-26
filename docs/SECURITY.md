@@ -1,7 +1,6 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2025-12-20 19:03 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 > Pragmatic security approach for a music showcasing MVP
 
 *Last Reviewed: 2025-10-13*
@@ -41,7 +40,7 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 ## MetaDJai AI Surface Security
 
 **Prompt injection resistance**
-- Playback/context fields interpolated into prompts are sanitized (`src/lib/ai/metaDjAiPrompt.ts`).
+- Playback/context fields interpolated into prompts are sanitized (`src/lib/ai/meta-dj-ai-prompt.ts`).
 - Raw user input is never concatenated into system prompt sections.
 
 **Rate limiting + session isolation**

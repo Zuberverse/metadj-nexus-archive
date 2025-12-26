@@ -2,8 +2,7 @@
 
 > **Complete reference for Vercel AI SDK implementation in MetaDJ Nexus**
 
-**Last Modified**: 2025-12-22 14:03 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Overview
 
 MetaDJ Nexus uses **Vercel AI SDK** as the foundation for all AI capabilities, providing a unified, type-safe interface for working with multiple AI providers without vendor lock-in.
@@ -790,7 +789,7 @@ const key = process.env.OPENAI_API_KEY // Unsafe
 ### MetaDJ Nexus Implementation Files
 - **Provider Config**: `src/lib/ai/providers.ts`
 - **Tools Config**: `src/lib/ai/tools.ts`
-- **System Prompt**: `src/lib/ai/metaDjAiPrompt.ts`
+- **System Prompt**: `src/lib/ai/meta-dj-ai-prompt.ts`
 - **Streaming Route**: `src/app/api/metadjai/stream/route.ts`
 - **Environment Validation**: `src/lib/env.ts`
 

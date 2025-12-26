@@ -1,7 +1,7 @@
 # MetaDJ Nexus — User Testing Checklist & Validation Plan
 
 **Applies To**: Public Preview (v0.8.0+)
-**Last Modified**: 2025-12-19 20:50 EST
+**Last Modified**: 2025-12-22 19:12 EST
 **Status**: Living testing checklist
 
 ## Executive Summary
@@ -124,7 +124,7 @@ This document provides a complete testing framework for MetaDJ Nexus covering al
 **Expected Behavior**:
 - User Guide button visible in header
 - Clicking opens the User Guide overlay (not the Welcome Overlay)
-- Guide content matches `metaDjNexusGuideCopy.ts`
+- Guide content matches `meta-dj-nexus-guide-copy.ts`
 - No localStorage issues
 
 **Pass Criteria**:

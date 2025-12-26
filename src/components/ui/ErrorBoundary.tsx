@@ -124,7 +124,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             {canRetry && (
               <button
                 onClick={this.handleRetry}
-                className="text-sm text-purple-400 hover:text-purple-300 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40 rounded"
+                className="text-sm text-purple-400 hover:text-purple-300 underline focus-ring rounded"
               >
                 Retry
               </button>
@@ -132,7 +132,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             {onClose && (
               <button
                 onClick={this.handleClose}
-                className="text-sm text-white/60 hover:text-white underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40 rounded"
+                className="text-sm text-white/60 hover:text-white underline focus-ring rounded"
               >
                 Close
               </button>
@@ -165,7 +165,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             {canRetry && (
               <button
                 onClick={this.handleRetry}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/10 text-white text-sm hover:bg-white/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/10 text-white text-sm hover:bg-white/20 transition-colors focus-ring"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 Try Again
@@ -174,7 +174,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             {onClose && (
               <button
                 onClick={this.handleClose}
-                className="inline-flex items-center px-4 py-2 rounded-full border border-white/10 text-white/70 text-sm hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
+                className="inline-flex items-center px-4 py-2 rounded-full border border-white/10 text-white/70 text-sm hover:text-white hover:bg-white/10 transition-colors focus-ring"
               >
                 Close
               </button>

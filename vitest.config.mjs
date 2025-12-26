@@ -4,12 +4,14 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 const srcPath = fileURLToPath(new URL('./src', import.meta.url));
+const zodV3ShimPath = fileURLToPath(new URL('./src/lib/zod-v3-shim.ts', import.meta.url));
 
 export default defineConfig({
   plugins: [react(), tsconfigPaths({ ignoreConfigErrors: true })],
   resolve: {
     alias: {
       '@': srcPath,
+      'zod/v3': zodV3ShimPath,
     },
   },
   test: {

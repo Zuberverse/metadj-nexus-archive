@@ -30,7 +30,7 @@ import {
   GUIDE_SEARCH,
   GUIDE_SHORTCUTS,
   GUIDE_HELP,
-} from "@/lib/content/metaDjNexusGuideCopy"
+} from "@/lib/content/meta-dj-nexus-guide-copy"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import { SectionHeader, FeatureItem, ShortcutItem } from "./GuideComponents"
 import type React from "react"

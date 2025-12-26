@@ -121,7 +121,7 @@ export function PlaylistCreator({
         <button
           type="button"
           onClick={onClose}
-          className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-white/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon"
+          className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-white/10 focus-ring"
           aria-label="Close playlist creator"
         >
           <X className="h-5 w-5 text-white/80" />
@@ -144,7 +144,7 @@ export function PlaylistCreator({
             maxLength={100}
             autoFocus
             disabled={isCreating}
-            className={`w-full rounded-lg border bg-black/30 px-4 py-3 font-sans text-sm text-white placeholder-white/40 transition-colors focus:border-purple-neon focus:outline-hidden focus:ring-2 focus:ring-purple-neon/50 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`w-full rounded-lg border bg-black/30 px-4 py-3 font-sans text-sm text-white placeholder-white/40 transition-colors focus:border-purple-neon focus-ring disabled:cursor-not-allowed disabled:opacity-50 ${
               error ? "border-red-500" : "border-(--border-standard)"
             }`}
             aria-invalid={!!error}
@@ -177,7 +177,7 @@ export function PlaylistCreator({
           type="button"
           onClick={onClose}
           disabled={isCreating}
-          className="flex h-11 flex-1 items-center justify-center rounded-lg border border-(--border-standard) bg-white/5 px-4 font-sans text-sm font-semibold text-white/80 transition-all hover:border-(--border-elevated) hover:bg-white/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 flex-1 items-center justify-center rounded-lg border border-(--border-standard) bg-white/5 px-4 font-sans text-sm font-semibold text-white/80 transition-all hover:border-(--border-elevated) hover:bg-white/10 focus-ring disabled:cursor-not-allowed disabled:opacity-50"
         >
           Cancel
         </button>
@@ -185,7 +185,7 @@ export function PlaylistCreator({
           type="button"
           onClick={handleCreate}
           disabled={isCreating || name.trim().length === 0}
-          className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-linear-to-r from-purple-500 via-blue-500 to-cyan-400 px-4 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-linear-to-r from-purple-500 via-blue-500 to-cyan-400 px-4 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Plus className="h-4 w-4" />
           {isCreating ? "Creating..." : "Create Playlist"}

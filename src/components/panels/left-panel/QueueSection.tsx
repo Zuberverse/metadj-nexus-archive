@@ -3,6 +3,7 @@ import Image from "next/image"
 import clsx from "clsx"
 import { GripVertical, X, Clock, Search, Music, ListPlus } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
+import { DEFAULT_ARTWORK_SRC } from "@/lib/app.constants"
 import { getTracksByCollection } from "@/lib/music"
 import { filterTracks, filterCollections } from "@/lib/music/filters"
 import type { Collection, Track } from "@/types"
@@ -107,7 +108,7 @@ export function QueueSection({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search Queue..."
             aria-label="Search queue"
-            className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus:outline-hidden focus:bg-white/10 focus:border-white/30 transition-all"
+            className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus-ring focus:bg-white/10 focus:border-white/30 transition-all"
           />
           {query && (
             <button
@@ -214,7 +215,7 @@ export function QueueSection({
                            Collection interface has artworkUrl? Yes.
                        */}
                             <Image
-                              src={collection.artworkUrl || "/images/default-artwork.jpg"}
+                              src={collection.artworkUrl || DEFAULT_ARTWORK_SRC}
                               alt={collection.title}
                               fill
                               sizes="40px"
@@ -251,7 +252,7 @@ export function QueueSection({
                         >
                           <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-xs shrink-0 border border-white/20">
                             <Image
-                              src={track.artworkUrl || "/images/default-artwork.jpg"}
+                              src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
                               alt={track.title}
                               fill
                               sizes="40px"
@@ -273,7 +274,7 @@ export function QueueSection({
                                   e.stopPropagation()
                                   onSearchQueueAdd(track)
                                 }}
-                                className="rounded-full bg-white/10 px-2.5 py-1 min-h-[32px] text-[10px] font-medium text-white hover:bg-white/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+                                className="rounded-full bg-white/10 px-2.5 py-1 min-h-[32px] text-[10px] font-medium text-white hover:bg-white/20 transition-colors focus-ring"
                                 aria-label={`Add ${track.title} to queue`}
                               >
                                 Add
@@ -286,7 +287,7 @@ export function QueueSection({
                                   e.stopPropagation()
                                   onSearchSelect(track)
                                 }}
-                                className="rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2.5 py-1 min-h-[32px] text-[10px] font-medium hover:bg-cyan-500/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/50"
+                                className="rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2.5 py-1 min-h-[32px] text-[10px] font-medium hover:bg-cyan-500/30 transition-colors focus-ring"
                                 aria-label={`Play ${track.title}`}
                               >
                                 Play
@@ -356,7 +357,7 @@ export function QueueSection({
 
                       <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-xs shrink-0 border border-white/20">
                         <Image
-                          src={track.artworkUrl || "/images/default-artwork.jpg"}
+                          src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
                           alt={track.title}
                           fill
                           sizes="40px"
@@ -374,7 +375,7 @@ export function QueueSection({
                           <button
                             type="button"
                             onClick={() => handleRemove(track.id)}
-                            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-white/60 hover:text-red-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-1 focus-visible:ring-offset-transparent rounded-full"
+                            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-white/60 hover:text-red-400 transition-colors focus-ring rounded-full"
                             aria-label={`Remove ${track.title} from queue`}
                           >
                             <X className="h-4 w-4" />

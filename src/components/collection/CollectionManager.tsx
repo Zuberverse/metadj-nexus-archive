@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, Music } from "lucide-react"
 import { CollectionHeader } from "@/components/collection/CollectionHeader"
 import { TrackCard } from "@/components/playlist/TrackCard"
 import { EmptyState } from "@/components/ui"
-import { COLLECTION_NARRATIVES } from "@/data/collectionNarratives"
+import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import {
   trackCollectionViewed,
   trackCollectionBrowsed,

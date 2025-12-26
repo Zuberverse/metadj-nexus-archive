@@ -2,8 +2,7 @@
 
 > **Desktop side panel architecture for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-19 21:41 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Overview
 
 The Panel System provides a two-panel desktop layout with responsive behavior. The **Left Panel** hosts navigation, queue, and playback controls, while the **Right Panel** hosts the MetaDJai chat experience.
@@ -42,7 +41,7 @@ setLeftPanelTab: (tab) => void
 
 ### Positioning Constants
 
-Defined in `src/lib/constants.ts`:
+Defined in `src/lib/app.constants.ts`:
 
 ```typescript
 export const PANEL_POSITIONING = {
@@ -252,7 +251,7 @@ When Cinema view is active:
 
 ### Breakpoint Configuration
 
-Defined in `src/lib/constants.ts`:
+Defined in `src/lib/app.constants.ts`:
 
 ```typescript
 export const PANEL_BREAKPOINT = 1100; // pixels - desktop panels visible above this width

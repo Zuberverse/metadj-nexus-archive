@@ -5,7 +5,7 @@
 
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { MS_PER_SECOND, MS_PER_MINUTE, MS_PER_HOUR } from "./constants";
+import { MS_PER_SECOND, MS_PER_MINUTE, MS_PER_HOUR } from "./app.constants";
 
 // ============================================================================
 // CSS & Styling Utilities

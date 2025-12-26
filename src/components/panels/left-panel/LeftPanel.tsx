@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { PlaylistList, PlaylistDetailView } from "@/components/playlist"
 import { useUI } from "@/contexts/UIContext"
-import { COLLECTION_NARRATIVES } from "@/data/collectionNarratives"
+import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import { MOOD_CHANNELS, getTracksForMoodChannel, sortTracksByMoodRelevance } from "@/data/moodChannels"
-import { PANEL_POSITIONING, FEATURED_TRACK_IDS, RECENTLY_PLAYED_COLLECTION_ID, RECENTLY_PLAYED_MAX_ITEMS } from "@/lib/constants"
+import { PANEL_POSITIONING, FEATURED_TRACK_IDS, RECENTLY_PLAYED_COLLECTION_ID, RECENTLY_PLAYED_MAX_ITEMS, DEFAULT_ARTWORK_SRC } from "@/lib/app.constants"
 import { BrowseView } from "./BrowseView"
 import { CollectionDetailView } from "./CollectionDetailView"
 import { MoodChannelDetailView } from "./MoodChannelDetailView"
@@ -158,7 +158,7 @@ export function LeftPanel({
       if (collectionId === RECENTLY_PLAYED_COLLECTION_ID) {
         return "/images/recently-played-badge.svg"
       }
-      return collections.find((c) => c.id === collectionId)?.artworkUrl || "/images/default-artwork.jpg"
+      return collections.find((c) => c.id === collectionId)?.artworkUrl || DEFAULT_ARTWORK_SRC
     },
     [collections],
   )
@@ -304,7 +304,7 @@ export function LeftPanel({
                           document.getElementById("tab-queue")?.focus()
                         }
                       }}
-                      className={`flex-1 rounded-lg sm:rounded-xl py-1.5 sm:py-2 text-xs sm:text-sm font-heading font-semibold transition-all duration-300 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-1 focus-visible:ring-offset-transparent ${activeTab === tab
+                      className={`flex-1 rounded-lg sm:rounded-xl py-1.5 sm:py-2 text-xs sm:text-sm font-heading font-semibold transition-all duration-300 border focus-ring ${activeTab === tab
                           ? "border-white/20 bg-linear-to-br from-white/10 to-white/5 text-white shadow-[0_0_20px_rgba(120,100,255,0.15)]"
                           : "border-white/8 text-white/70 hover:bg-white/5 hover:text-white"
                         }`}

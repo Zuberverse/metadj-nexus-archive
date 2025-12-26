@@ -46,10 +46,21 @@ interface StreamRateLimit {
   resetAt: number
 }
 
-// In-memory storage
-const activeStreams = new Map<string, ActiveStream>()
-const streamRateLimits = new Map<string, StreamRateLimit>()
-let lastCleanup = 0
+const globalStore = globalThis as typeof globalThis & {
+  __daydreamActiveStreams?: Map<string, ActiveStream>
+  __daydreamStreamRateLimits?: Map<string, StreamRateLimit>
+  __daydreamLastCleanup?: number
+  __daydreamCleanupInterval?: ReturnType<typeof setInterval>
+}
+
+// In-memory storage (hoisted to global for dev HMR resilience)
+const activeStreams = globalStore.__daydreamActiveStreams ?? new Map<string, ActiveStream>()
+globalStore.__daydreamActiveStreams = activeStreams
+
+const streamRateLimits = globalStore.__daydreamStreamRateLimits ?? new Map<string, StreamRateLimit>()
+globalStore.__daydreamStreamRateLimits = streamRateLimits
+
+let lastCleanup = globalStore.__daydreamLastCleanup ?? 0
 
 /**
  * Cleanup expired streams and rate limits
@@ -70,6 +81,7 @@ function cleanupExpired(now: number): void {
   }
 
   lastCleanup = now
+  globalStore.__daydreamLastCleanup = lastCleanup
 }
 
 /**
@@ -208,16 +220,18 @@ export function clearAllStreams(): void {
 }
 
 // Periodic cleanup
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, stream] of activeStreams.entries()) {
-    if (stream.expiresAt <= now) {
-      activeStreams.delete(key)
+if (!globalStore.__daydreamCleanupInterval) {
+  globalStore.__daydreamCleanupInterval = setInterval(() => {
+    const now = Date.now()
+    for (const [key, stream] of activeStreams.entries()) {
+      if (stream.expiresAt <= now) {
+        activeStreams.delete(key)
+      }
     }
-  }
-  for (const [key, limit] of streamRateLimits.entries()) {
-    if (limit.resetAt <= now) {
-      streamRateLimits.delete(key)
+    for (const [key, limit] of streamRateLimits.entries()) {
+      if (limit.resetAt <= now) {
+        streamRateLimits.delete(key)
+      }
     }
-  }
-}, CLEANUP_INTERVAL_MS)
+  }, CLEANUP_INTERVAL_MS)
+}

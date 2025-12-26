@@ -52,7 +52,7 @@ export function Breadcrumb({
         <li>
           <button
             onClick={onNavigateHome}
-            className="text-white/70 hover:text-white transition-colors duration-150 focus:outline-hidden focus-visible:outline-hidden rounded-lg px-1"
+            className="text-white/70 hover:text-white transition-colors duration-150 focus-ring rounded-lg px-1"
             aria-label="Navigate to home"
           >
             Home
@@ -69,7 +69,7 @@ export function Breadcrumb({
           {currentTrack ? (
             <button
               onClick={onNavigateCollection}
-              className="text-white/70 hover:text-white transition-colors duration-150 focus:outline-hidden focus-visible:outline-hidden rounded-lg px-1 truncate max-w-[200px]"
+              className="text-white/70 hover:text-white transition-colors duration-150 focus-ring rounded-lg px-1 truncate max-w-[200px]"
               aria-label={`Navigate to ${collectionName}`}
             >
               {collectionName}

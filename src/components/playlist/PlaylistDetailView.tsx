@@ -116,7 +116,7 @@ export function PlaylistDetailView({
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon rounded-lg px-2 py-1 -ml-2"
+          className="flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white focus-ring rounded-lg px-2 py-1 -ml-2"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Playlists
@@ -144,7 +144,7 @@ export function PlaylistDetailView({
             <button
               type="button"
               onClick={() => setShowMenu(!showMenu)}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-(--border-standard) bg-white/5 transition-all hover:border-(--border-elevated) hover:bg-white/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-(--border-standard) bg-white/5 transition-all hover:border-(--border-elevated) hover:bg-white/10 focus-ring"
               aria-label="Playlist options"
               aria-haspopup="menu"
               aria-expanded={showMenu}
@@ -179,7 +179,7 @@ export function PlaylistDetailView({
             <button
               type="button"
               onClick={handlePlayAll}
-              className="flex h-11 items-center gap-2 rounded-lg bg-linear-to-r from-purple-500 via-blue-500 to-cyan-400 px-6 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon"
+              className="flex h-11 items-center gap-2 rounded-lg bg-linear-to-r from-purple-500 via-blue-500 to-cyan-400 px-6 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
             >
               <Play className="h-4 w-4" />
               Start
@@ -226,7 +226,7 @@ export function PlaylistDetailView({
                   <button
                     type="button"
                     onClick={() => handleRemoveTrack(track.id)}
-                    className="flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-white/40 opacity-0 transition-opacity hover:text-red-400 hover:bg-white/10 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon touch-manipulation"
+                    className="flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-white/40 opacity-0 transition-opacity hover:text-red-400 hover:bg-white/10 group-hover:opacity-100 focus-visible:opacity-100 focus-ring touch-manipulation"
                     aria-label={`Remove ${track.title} from playlist`}
                   >
                     <X className="h-4 w-4" />
@@ -255,14 +255,14 @@ export function PlaylistDetailView({
               <button
                 type="button"
                 onClick={() => setConfirmDelete(false)}
-                className="flex-1 rounded-lg border border-(--border-standard) bg-white/5 px-4 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-neon"
+                className="flex-1 rounded-lg border border-(--border-standard) bg-white/5 px-4 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-ring"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleDelete}
-                className="flex-1 rounded-lg bg-red-500 px-4 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-red-600 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-400"
+                className="flex-1 rounded-lg bg-red-500 px-4 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-red-600 focus-ring"
               >
                 Delete Playlist
               </button>

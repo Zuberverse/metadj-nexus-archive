@@ -2,8 +2,7 @@
 
 > **Design strategy and implementation for the MetaDJ Nexus User Guide**
 
-**Last Modified**: 2025-12-21 11:26 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Overview
 
 The User Guide system provides comprehensive onboarding and feature documentation through two complementary surfaces:
@@ -11,14 +10,14 @@ The User Guide system provides comprehensive onboarding and feature documentatio
 1. **User Guide Overlay** (`src/components/guide/UserGuideOverlay.tsx`) - Quick-access modal via the header info button (ⓘ), Hub “User Guide” chip, or Welcome Overlay CTA.
 2. **Guide Page** (`src/components/guide/MetaDJNexusGuide.tsx`) - Full standalone page at `/guide`
 
-Both surfaces share the same content source (`src/lib/content/metaDjNexusGuideCopy.ts`) and the same renderer (`src/components/guide/GuideContent.tsx`) to avoid drift between overlay and page.
+Both surfaces share the same content source (`src/lib/content/meta-dj-nexus-guide-copy.ts`) and the same renderer (`src/components/guide/GuideContent.tsx`) to avoid drift between overlay and page.
 
 ## Design Strategy
 
 ### Unified Content Architecture
 
 ```
-metaDjNexusGuideCopy.ts (Single Source of Truth)
+meta-dj-nexus-guide-copy.ts (Single Source of Truth)
        ↓
 ┌──────────────────┐     ┌──────────────────┐
 │  Guide Overlay   │     │   Guide Page     │
@@ -169,7 +168,7 @@ src/
 │       └── GuideContent.tsx         # Shared guide renderer
 ├── lib/
 │   └── content/
-│       └── metaDjNexusGuideCopy.ts # Shared content definitions
+│       └── meta-dj-nexus-guide-copy.ts # Shared content definitions
 └── app/
     └── guide/
         └── page.tsx                # Standalone /guide route
@@ -187,7 +186,7 @@ src/
 ### Content Updates
 
 When updating guide content:
-1. Edit `metaDjNexusGuideCopy.ts` only
+1. Edit `meta-dj-nexus-guide-copy.ts` only
 2. Both surfaces automatically reflect changes
 3. Update this spec if structure changes
 4. Test both overlay and page rendering

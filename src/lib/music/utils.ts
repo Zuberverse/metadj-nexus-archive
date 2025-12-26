@@ -1,27 +1,6 @@
 import type { Track } from "@/types";
 
-export function toCollectionSlug(input: string): string {
-  const slug = input
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-
-  return slug;
-}
-
-/**
- * Normalizes collection slugs while preserving backward compatibility with previous IDs.
- */
-const COLLECTION_SLUG_ALIASES: Record<string, string> = {
-  "metaverse-revalation": "metaverse-revelation",
-};
-
-export function normalizeCollectionSlug(input: string): string {
-  const slug = toCollectionSlug(input);
-  return COLLECTION_SLUG_ALIASES[slug] ?? slug;
-}
+export { normalizeCollectionSlug, toCollectionSlug } from "@/lib/collection-utils";
 
 /** 
  * Shuffle tracks array with optional anchor track that should appear first

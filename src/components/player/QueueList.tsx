@@ -303,7 +303,7 @@ export function QueueList({
                             }}
                             aria-label={`${qTrack.title} by ${qTrack.artist}. Position ${index + 1} of ${queueItems.length}. Use arrow keys to reorder, Enter to play, Delete to remove.`}
                             className={cn(
-                                "group relative overflow-hidden flex items-center gap-2.5 rounded-xl border px-3 py-2.5 shadow-[0_12px_26px_rgba(6,8,28,0.4)] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-1 focus:ring-offset-transparent select-none",
+                                "group relative overflow-hidden flex items-center gap-2.5 rounded-xl border px-3 py-2.5 shadow-[0_12px_26px_rgba(6,8,28,0.4)] transition-all duration-150 focus-ring select-none",
                                 isDragging
                                     ? "opacity-50 scale-[1.02] z-50 shadow-[0_20px_40px_rgba(6,8,28,0.6)] cursor-grabbing"
                                     : isDragOver

@@ -19,7 +19,7 @@
 
 import { memo, useCallback, useId } from "react"
 import { Volume2, VolumeX } from "lucide-react"
-import type { VolumeControlProps } from "./types"
+import type { VolumeControlProps } from "./player.types"
 import type React from "react"
 
 function VolumeControlComponent({
@@ -93,4 +93,3 @@ function VolumeControlComponent({
 }
 
 export const VolumeControl = memo(VolumeControlComponent)
-

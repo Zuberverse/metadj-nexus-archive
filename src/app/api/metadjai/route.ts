@@ -3,12 +3,13 @@ import { generateText } from 'ai';
 import { isCircuitOpen, isProviderError, recordFailure, recordSuccess } from '@/lib/ai/circuit-breaker';
 import { createStopCondition, getAIRequestTimeout, isTimeoutError } from '@/lib/ai/config';
 import { isFailoverEnabled } from '@/lib/ai/failover';
-import { buildMetaDjAiSystemPrompt } from '@/lib/ai/metaDjAiPrompt';
+import { buildMetaDjAiSystemPrompt } from '@/lib/ai/meta-dj-ai-prompt';
 import { MODEL_LABELS } from '@/lib/ai/model-preferences';
 import {
   getModel,
   getModelInfo,
   getModelSettingsForProvider,
+  getProviderOptions,
   getFallbackModel,
   getFallbackModelInfo,
   getFallbackModelSettings,
@@ -254,6 +255,7 @@ export async function POST(request: NextRequest) {
 
     if (fallbackModel && fallbackModelInfo && fallbackSettings) {
       try {
+        const providerOptions = getProviderOptions(fallbackSettings.provider);
         const result = await generateText({
           model: fallbackModel,
           maxOutputTokens: fallbackSettings.maxOutputTokens,
@@ -263,6 +265,7 @@ export async function POST(request: NextRequest) {
           tools: getTools(fallbackSettings.provider, {
             webSearchAvailable: isWebSearchAvailable(fallbackSettings.provider),
           }),
+          providerOptions,
           stopWhen: createStopCondition(),
           abortSignal: controller.signal,
         });
@@ -291,6 +294,7 @@ export async function POST(request: NextRequest) {
   try {
     const model = getModel(preferredProvider);
     const modelSettings = getModelSettingsForProvider(preferredProvider);
+    const providerOptions = getProviderOptions(modelSettings.provider);
 
     const result = await generateText({
       model,
@@ -301,6 +305,7 @@ export async function POST(request: NextRequest) {
       tools: getTools(modelSettings.provider, {
         webSearchAvailable: isWebSearchAvailable(modelSettings.provider),
       }),
+      providerOptions,
       stopWhen: createStopCondition(),
       abortSignal: controller.signal,
     });
@@ -345,6 +350,7 @@ export async function POST(request: NextRequest) {
         const fallbackTimeout = setTimeout(() => fallbackController.abort(), timeoutMs);
 
         try {
+          const fallbackProviderOptions = getProviderOptions(fallbackSettings.provider);
           const result = await generateText({
             model: fallbackModel,
             maxOutputTokens: fallbackSettings.maxOutputTokens,
@@ -354,6 +360,7 @@ export async function POST(request: NextRequest) {
             tools: getTools(fallbackSettings.provider, {
               webSearchAvailable: isWebSearchAvailable(fallbackSettings.provider),
             }),
+            providerOptions: fallbackProviderOptions,
             stopWhen: createStopCondition(),
             abortSignal: fallbackController.signal,
           });

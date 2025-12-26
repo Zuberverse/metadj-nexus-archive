@@ -5,6 +5,8 @@
  * Decoupled from generic utility functions for better maintainability.
  */
 
+import { normalizeCollectionSlug } from "@/lib/collection-utils";
+
 /**
  * Collection gradient definitions for consistent theming across the app
  * Maps collection slugs to Tailwind gradient classes
@@ -19,16 +21,6 @@ const COLLECTION_GRADIENTS: Record<string, string> = {
 
 /** Default gradient for unknown collections */
 const DEFAULT_COLLECTION_GRADIENT = "from-[#5F6CFF]/35 via-[#38D4FF]/25 to-[#A250FF]/35";
-
-/**
- * Normalize collection ID/title to slug format for gradient matching
- *
- * @param collectionIdOrTitle - Collection ID, title, or slug
- * @returns Normalized slug for gradient lookup
- */
-function normalizeCollectionSlug(collectionIdOrTitle: string): string {
-    return collectionIdOrTitle.toLowerCase().replace(/\s+/g, "-");
-}
 
 /**
  * Get collection-specific background gradient for consistent theming
@@ -64,7 +56,7 @@ export function getCollectionGradientRaw(collectionIdOrTitle: string): string {
  * @returns Tailwind class string for hover effects
  */
 export function getCollectionHoverStyles(collectionIdOrTitle: string): string {
-    const normalized = collectionIdOrTitle.toLowerCase().replace(/\s+/g, "-");
+    const normalized = normalizeCollectionSlug(collectionIdOrTitle);
 
     const hoverStyles: Array<{ matches: string[]; classes: string }> = [
         {

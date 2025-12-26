@@ -15,6 +15,7 @@
 import { useState, useCallback, useRef, useEffect, type KeyboardEvent } from "react"
 import { Plus, Check, Music, ArrowLeft } from "lucide-react"
 import { usePlaylist } from "@/contexts/PlaylistContext"
+import { useClickAway, useEscapeKey } from "@/hooks"
 import { logger } from "@/lib/logger"
 import { PlaylistCreator } from "./PlaylistCreator"
 
@@ -82,10 +83,7 @@ export function PlaylistSelector({
     (e: KeyboardEvent) => {
       const totalItems = playlists.length + 1 // +1 for "Create New" option
 
-      if (e.key === "Escape") {
-        e.preventDefault()
-        onClose()
-      } else if (e.key === "ArrowDown") {
+      if (e.key === "ArrowDown") {
         e.preventDefault()
         setSelectedIndex((prev) => (prev + 1) % totalItems)
       } else if (e.key === "ArrowUp") {
@@ -108,7 +106,7 @@ export function PlaylistSelector({
         }
       }
     },
-    [playlists, selectedIndex, isTrackInPlaylist, handleAddToPlaylist, onClose]
+    [playlists, selectedIndex, isTrackInPlaylist, handleAddToPlaylist]
   )
 
   // Scroll selected item into view
@@ -120,17 +118,8 @@ export function PlaylistSelector({
     }
   }, [selectedIndex])
 
-  // Focus trap
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        onClose()
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [onClose])
+  useClickAway(containerRef, onClose)
+  useEscapeKey(onClose)
 
   // Show creator if requested
   if (showCreator) {
@@ -201,7 +190,7 @@ export function PlaylistSelector({
             type="button"
             onClick={() => setShowCreator(true)}
             onMouseEnter={() => setSelectedIndex(0)}
-            className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors focus-visible:outline-hidden ${selectedIndex === 0
+            className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors focus-ring ${selectedIndex === 0
               ? "bg-white/10"
               : "hover:bg-white/5"
               }`}
@@ -236,7 +225,7 @@ export function PlaylistSelector({
                   onClick={() => !inPlaylist && handleAddToPlaylist(playlist.id)}
                   onMouseEnter={() => setSelectedIndex(itemIndex)}
                   disabled={inPlaylist}
-                  className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors focus-visible:outline-hidden disabled:cursor-not-allowed ${selectedIndex === itemIndex && !inPlaylist
+                  className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors focus-ring disabled:cursor-not-allowed ${selectedIndex === itemIndex && !inPlaylist
                     ? "bg-white/10"
                     : inPlaylist
                       ? "opacity-60"

@@ -252,6 +252,9 @@ export const RECENTLY_PLAYED_COLLECTION_ID = "recently-played";
 /** Maximum number of tracks kept in local playback history */
 export const RECENTLY_PLAYED_MAX_ITEMS = 50;
 
+/** Default artwork fallback for tracks and collections */
+export const DEFAULT_ARTWORK_SRC = "/images/placeholder-artwork.svg";
+
 // ============================================================================
 // Platform Configuration - MetaDJ Nexus
 // ============================================================================

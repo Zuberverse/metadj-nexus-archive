@@ -7,19 +7,14 @@
 
 import { trackQueueRestored, trackQueueExpired } from './analytics'
 import { APP_VERSION } from './app-version'
-import { QUEUE_EXPIRATION_MS } from './constants'
+import { QUEUE_EXPIRATION_MS } from './app.constants'
 import { logger } from './logger'
 import { isStorageAvailable, STORAGE_KEYS, getRawValue, setRawValue, removeValue } from './storage/persistence'
 import { getAgeInMinutes, getAgeInHours } from './utils'
-import type { Track } from '@/types'
+import type { Track, QueueContext } from '@/types'
 
 // Configuration
 const VERSION = APP_VERSION || '0.0.0'
-
-/**
- * Queue context types
- */
-export type QueueContext = 'collection' | 'search' | 'playlist'
 
 /**
  * Persisted queue state structure

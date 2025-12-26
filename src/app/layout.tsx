@@ -15,8 +15,8 @@ import { TourProvider } from '@/contexts/TourContext';
 import { UIProvider } from '@/contexts/UIContext';
 import tracks from '@/data/tracks.json';
 import { getAppBaseUrl } from '@/lib/app-url';
+import { FEATURED_TRACK_IDS } from '@/lib/app.constants';
 import { initAxe } from '@/lib/axe';
-import { FEATURED_TRACK_IDS } from '@/lib/constants';
 import { generateArtistSchema, generateWebsiteSchema, generateFeaturedPlaylistSchema, combineSchemas } from '@/lib/structured-data';
 import type { Metadata } from 'next';
 
@@ -157,7 +157,7 @@ export default async function RootLayout({
         {/* Visible only on keyboard focus, allows screen reader and keyboard users to skip navigation */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-200 focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-hidden focus:ring-0"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-200 focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded-lg focus:shadow-lg focus-ring-light"
         >
           Skip to main content
         </a>

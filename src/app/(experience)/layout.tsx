@@ -1,6 +1,6 @@
 import { HomePageClient } from "@/components/home/HomePageClient"
 import wisdomData from "@/data/wisdom-content.json"
-import { FEATURED_TRACK_IDS, FEATURES } from "@/lib/constants"
+import { FEATURED_TRACK_IDS, FEATURES } from "@/lib/app.constants"
 import { getMusicSnapshot } from "@/lib/music/server"
 
 export default async function ExperienceLayout({

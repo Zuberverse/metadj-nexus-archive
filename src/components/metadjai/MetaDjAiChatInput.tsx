@@ -248,7 +248,7 @@ export function MetaDjAiChatInput({
             <button
               type="button"
               onClick={onRetry}
-              className="flex items-center gap-1.5 rounded-lg bg-red-500/20 px-2.5 py-1 text-xs font-medium text-red-100 transition-all hover:bg-red-500/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-400/50 shrink-0"
+              className="flex items-center gap-1.5 rounded-lg bg-red-500/20 px-2.5 py-1 text-xs font-medium text-red-100 transition-all hover:bg-red-500/30 hover:text-white focus-ring shrink-0"
               aria-label="Retry last message"
             >
               <RotateCcw className="h-3 w-3" />
@@ -273,7 +273,7 @@ export function MetaDjAiChatInput({
             enterKeyHint="send"
             rows={1}
             placeholder="Ask MetaDJai..."
-            className="w-full resize-none bg-transparent px-3 py-2.5 text-base text-white placeholder:text-white/70 focus:outline-hidden max-h-32 overflow-y-auto overscroll-contain font-medium"
+            className="w-full resize-none bg-transparent px-3 py-2.5 text-base text-white placeholder:text-white/70 max-h-32 overflow-y-auto overscroll-contain font-medium focus:outline-none focus-visible:outline-none"
           />
         </div>
         <div className="flex items-center justify-end pb-0.5 pr-0.5 gap-2">

@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 import { Loader2 } from "lucide-react"
 import { CollectionManager } from "@/components/collection/CollectionManager"
-import type { Track } from "@/lib/music"
+import type { Track, QueueContext } from "@/types"
 
 const WisdomFeature = dynamic(
   () => import('@/components/wisdom/WisdomExperience').then(mod => mod.WisdomExperience),
@@ -37,7 +37,7 @@ interface CollectionSurfaceProps {
 
   // Queue state
   queue: Track[]
-  onQueueContextChange: (context: "search" | "collection") => void
+  onQueueContextChange: (context: QueueContext) => void
 
   // Handlers
   onTrackClick: (track: Track, tracks?: Track[]) => void

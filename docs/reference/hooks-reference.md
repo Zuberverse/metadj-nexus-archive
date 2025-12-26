@@ -2,15 +2,15 @@
 
 > **Complete reference for all custom React hooks in MetaDJ Nexus**
 
-**Last Modified**: 2025-12-20 22:59 EST
-
+**Last Modified**: 2025-12-22 19:12 EST
 ## Overview
 
-MetaDJ Nexus uses 48 custom React hooks organized by domain. Hooks are imported directly from their files (no top‑level barrel at present).
+MetaDJ Nexus uses 48 custom React hooks organized by domain. Hooks can be imported directly from their files or via the `@/hooks` barrel export.
 
 ```typescript
 import { useAudioPlayback } from '@/hooks/use-audio-playback';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { useClickAway, useEscapeKey } from '@/hooks';
 ```
 
 ---
@@ -513,7 +513,13 @@ MetaDJai panel open/close controls.
 
 ## Import Patterns
 
-### Direct Import
+### Barrel Import (recommended for shared utilities)
+
+```typescript
+import { useClickAway, useEscapeKey, useDebounce } from '@/hooks';
+```
+
+### Direct Import (explicit paths)
 
 ```typescript
 import { useAudioPlayback } from '@/hooks/use-audio-playback';

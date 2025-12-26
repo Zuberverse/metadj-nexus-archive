@@ -10,14 +10,14 @@ import { useSwipeGesture } from "@/hooks/use-swipe-gesture"
 import {
   trackPlaybackControl,
 } from "@/lib/analytics"
-import { PANEL_POSITIONING } from "@/lib/constants"
+import { DEFAULT_ARTWORK_SRC, PANEL_POSITIONING } from "@/lib/app.constants"
 import { logger } from "@/lib/logger"
 import { ControlPanelOverlay } from "./ControlPanelOverlay"
 import { PlaybackUnlockOverlay } from "./PlaybackUnlockOverlay"
-import type { AudioPlayerProps } from "@/types/audio-player"
+import type { AudioPlayerProps } from "@/types/audio-player.types"
 
 /**
- * AudioPlayer Props use the grouped format from `src/types/audio-player.ts`.
+ * AudioPlayer Props use the grouped format from `src/types/audio-player.types.ts`.
  */
 
 function AudioPlayer({
@@ -163,17 +163,15 @@ function AudioPlayer({
     }
 
     // Set metadata for lock screen display
+    const artwork = track.artworkUrl
+      ? [{ src: track.artworkUrl, sizes: "512x512" }]
+      : [{ src: DEFAULT_ARTWORK_SRC, sizes: "512x512", type: "image/svg+xml" }]
+
     navigator.mediaSession.metadata = new MediaMetadata({
       title: track.title,
       artist: track.artist,
       album: track.collection,
-      artwork: [
-        {
-          src: track.artworkUrl || '/images/default-artwork.jpg',
-          sizes: '512x512',
-          type: 'image/jpeg'
-        }
-      ]
+      artwork,
     })
 
     // Set action handlers for lock screen controls

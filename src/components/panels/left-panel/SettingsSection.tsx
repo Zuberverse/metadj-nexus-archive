@@ -40,7 +40,7 @@ export function SettingsSection({
                 type="button"
                 onClick={onShuffleToggle}
                 className={clsx(
-                  "w-11 h-6 rounded-full transition focus-visible:outline-hidden",
+                  "w-11 h-6 rounded-full transition focus-ring",
                   shuffle ? "bg-primary" : "bg-white/20"
                 )}
                 aria-pressed={shuffle}
@@ -63,7 +63,7 @@ export function SettingsSection({
               <button
                 type="button"
                 onClick={cycleRepeat}
-                className="px-3 py-1.5 rounded-lg border border-(--border-standard) text-xs text-white hover:border-(--border-elevated) hover:bg-black/20 transition focus-visible:outline-hidden"
+                className="px-3 py-1.5 rounded-lg border border-(--border-standard) text-xs text-white hover:border-(--border-elevated) hover:bg-black/20 transition focus-ring"
                 aria-label={`Repeat mode ${repeat}`}
               >
                 {repeat === "none" && "Off"}

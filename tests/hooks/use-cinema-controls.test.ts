@@ -14,7 +14,7 @@ vi.mock('@/lib/analytics', () => ({
 }))
 
 // Mock constants
-vi.mock('@/lib/constants', () => ({
+vi.mock('@/lib/app.constants', () => ({
   CINEMA_CONTROLS_TIMEOUT_MS: 2500,
 }))
 
