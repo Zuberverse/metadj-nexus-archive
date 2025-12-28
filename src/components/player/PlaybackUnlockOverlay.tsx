@@ -22,7 +22,7 @@ export function PlaybackUnlockOverlay({
   const handlePointerDown = useCallback(() => {
     setIsPressed(true)
     // Create silent audio context to prewarm on iOS
-    // Uses webkitAudioContext for Safari compatibility (type declared in types/global.d.ts)
+    // Uses webkitAudioContext for Safari (type declared in types/global.d.ts)
     if (typeof window !== 'undefined') {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext
       if (AudioContextClass) {

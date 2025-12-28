@@ -133,11 +133,11 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
     key: "wisdom",
     title: "Wisdom Hub",
     icon: "📚",
-    description: "Long-form content sharing the philosophy, frameworks, and journey behind MetaDJ.",
+    description: "Long-form content sharing the philosophy, frameworks, and evolution behind MetaDJ.",
     features: [
       "Thoughts: essays on creativity, AI collaboration, and building in public",
       "Guides: practical frameworks you can apply to your own work",
-      "Reflections: stories behind the music and the MetaDJ journey",
+      "Reflections: stories behind the music and the MetaDJ evolution",
       "Share links: deep links to specific Thoughts, Guides, or Reflections",
       "Clean reading layouts with section navigation",
     ]
@@ -165,7 +165,7 @@ export const GUIDE_COLLECTIONS: CollectionInfo[] = [
   },
   {
     name: "Majestic Ascent",
-    description: "Cinematic orchestral compositions with epic, sweeping soundscapes. Portal narration meets orchestral/electronic fusion powered by AI-driven creation.",
+    description: "Cinematic orchestral compositions with sweeping soundscapes. Portal narration meets orchestral/electronic fusion powered by AI-driven creation.",
     vibe: "Epic • Orchestral • Cinematic"
   },
   {
@@ -183,7 +183,7 @@ export const GUIDE_COLLECTIONS: CollectionInfo[] = [
 // MetaDJai section
 export const GUIDE_METADJAI = {
   title: "MetaDJai",
-  description: "MetaDJai is an AI-driven creative companion built on my creative philosophy and methods. It knows what you're listening to, which surface you're exploring, and what you might need. Transparent about being AI while channeling MetaDJ's voice to help you navigate, create, and explore.",
+  description: "MetaDJai is an AI-driven creative companion built on my creative philosophy and methods. It tracks what you're listening to and which surface you're exploring, then uses that context to respond. Transparent about being AI while channeling MetaDJ's voice to help you navigate, create, and explore.",
   howToOpen: "Click MetaDJai in the header (desktop) or the bottom nav (mobile).",
   features: [
     {

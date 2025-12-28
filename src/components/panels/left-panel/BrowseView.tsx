@@ -129,8 +129,8 @@ export function BrowseView({
             </h3>
             <p className="text-xs text-white/70 truncate group-hover:text-white/85">
               {recentlyPlayedCount > 0
-                ? "Continue your journey"
-                : "Your listening journey starts here"}
+                ? "Continue your flow"
+                : "Your listening flow starts here"}
             </p>
           </div>
           <ChevronRight className="h-5 w-5 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all" />

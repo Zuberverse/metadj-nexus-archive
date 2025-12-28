@@ -2,7 +2,7 @@
 
 > **Get up and running with MetaDJ Nexus in 5 minutes**
 
-**Last Modified**: 2025-12-19 17:18 EST
+**Last Modified**: 2025-12-27 17:19 EST
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ npm run dev
 # Opens at https://localhost:8100
 ```
 
-> **Note**: The GitHub repo and local folder are both `metadj-nexus`. `npm run dev` is webpack dev mode (most stable). If you want Turbopack, use `npm run dev:turbo`. HTTPS is required for secure context features like Camera/Microphone access. Use `npm run dev:http` if you need HTTP fallback.
+> **Note**: The GitHub repo and local folder are both `metadj-nexus`. `npm run dev` uses Turbopack (default). If you hit Turbopack issues, use `npm run dev:webpack`. HTTPS is required for secure context features like Camera/Microphone access. Use `npm run dev:http` if you need HTTP fallback.
 
 ## Environment Variables
 
@@ -86,9 +86,9 @@ src/
 ### Run Development Server
 
 ```bash
-npm run dev          # Port 8100 with HTTPS (webpack dev, default)
-npm run dev:turbo    # Port 8100 with HTTPS (Turbopack dev)
-npm run dev:http     # Port 8100 with HTTP (webpack dev, fallback)
+npm run dev          # Port 8100 with HTTPS (Turbopack dev, default)
+npm run dev:webpack  # Port 8100 with HTTPS (webpack dev, most stable)
+npm run dev:http     # Port 8100 with HTTP (HTTP fallback)
 npm run dev:replit   # Port 5000 (Replit deployment)
 ```
 

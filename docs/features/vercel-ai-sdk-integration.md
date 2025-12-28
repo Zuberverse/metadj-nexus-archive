@@ -2,7 +2,7 @@
 
 > **Complete reference for Vercel AI SDK implementation in MetaDJ Nexus**
 
-**Last Modified**: 2025-12-27 14:57 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ## Overview
 
@@ -100,9 +100,9 @@ MetaDJ Nexus is fully on AI SDK 6.x. This table clarifies what is live now vs pl
 |-----------|--------|-------|
 | `generateText` + `streamText` | In use | Primary `/api/metadjai` and `/api/metadjai/stream` endpoints |
 | Tool calling | In use | Local tools + OpenAI `web_search` when available |
-| UI message streaming | In use | SSE via `toUIMessageStreamResponse()`; parser supports SSE + legacy data stream |
+| UI message streaming | In use | SSE via `toUIMessageStreamResponse()`; parser supports SSE + data stream |
 | ToolLoopAgent | Planned | Multi-step tool chains with a shared loop controller |
-| Structured output (`Output.*`) | Planned | Replace legacy structured examples and standardize schemas |
+| Structured output (`Output.*`) | Planned | Replace previous structured examples and standardize schemas |
 | Tool approval (`needsApproval`) | Planned | Align with "propose -> confirm -> execute" UI gating |
 | Tool schema strict mode + `inputExamples` | Planned | Improve tool-call reliability and validation |
 | Tool output shaping (`toModelOutput`) | Planned | Control model-visible tool output for safety and brevity |
@@ -117,7 +117,7 @@ MetaDJ Nexus is fully on AI SDK 6.x. This table clarifies what is live now vs pl
 **Provider Selection**: Model dropdown (GPT/Gemini/Claude/Grok) per request, default GPT; server default via `AI_PROVIDER`
 **Failover**: Priority order GPT → Gemini → Claude → Grok (skips the active provider) when enabled
 **Model Disclosure**: The active provider + model display name (date suffix removed) are injected into the system prompt so MetaDJai can answer “what model are you?” accurately, but it only shares this when asked.
-**Streaming Format**: SSE UI message stream via `toUIMessageStreamResponse()`; the client parser accepts SSE + legacy data stream for compatibility.
+**Streaming Format**: SSE UI message stream via `toUIMessageStreamResponse()`; the client parser accepts SSE + data stream as a fallback.
 
 ### Resilience Features
 
@@ -764,7 +764,7 @@ const model = openai(PRIMARY_MODEL) // Crashes if no key
 
 ### 4. Scale-Ready Defaults
 
-- Keep SSE UI message streams as the standard wire format; keep parsers backward compatible.
+- Keep SSE UI message streams as the standard wire format; keep parsers tolerant of alternate stream formats.
 - Enforce rate limits, circuit breakers, and caching to control cost and reliability.
 - Keep tool outputs small; when adding heavy tools, offload work to async jobs.
 - Gate action tools with approvals; adopt `needsApproval` when enabled.
@@ -773,7 +773,7 @@ const model = openai(PRIMARY_MODEL) // Crashes if no key
 
 ### AI SDK 5.x → 6.0 Migration (Reference Only)
 
-MetaDJ Nexus runs on AI SDK 6.x (`ai` 6.0.3). Keep this section for legacy branches or historical backports.
+MetaDJ Nexus runs on AI SDK 6.x (`ai` 6.0.3). Keep this section for older branches or historical backports.
 
 **Automated Migration**:
 ```bash
@@ -876,7 +876,7 @@ AI_PROVIDER=openai # or google/anthropic/xai
 // ✅ CORRECT - MetaDJai uses SSE UI message streaming
 return result.toUIMessageStreamResponse()
 
-// NOT STANDARD - Data stream format is supported for compatibility, but SSE UI stream is the default
+// NOT STANDARD - Data stream format is supported as a fallback, but SSE UI stream is the default
 return result.toDataStreamResponse()
 
 // ❌ INCORRECT - Plain text stream omits SSE event framing
@@ -1039,7 +1039,7 @@ Provider packages are active in production: GPT (OpenAI), Gemini (Google), Claud
 }
 ```
 
-**Note**: AI SDK 6.0 shipped December 22, 2025. Use `npx @ai-sdk/codemod v6` only for legacy branches.
+**Note**: AI SDK 6.0 shipped December 22, 2025. Use `npx @ai-sdk/codemod v6` only for older branches.
 
 ---
 

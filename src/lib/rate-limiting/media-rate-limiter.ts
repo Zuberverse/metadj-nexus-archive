@@ -14,6 +14,7 @@
 
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
+import { logger } from '@/lib/logger'
 import type { NextRequest } from 'next/server'
 
 // ============================================================================
@@ -131,9 +132,11 @@ function getUpstashMediaRatelimit(): Ratelimit | null {
         prefix: 'media',
       })
 
-      console.log('[Media Rate Limiter] Upstash Redis initialized')
+      logger.info('[Media Rate Limiter] Upstash Redis initialized')
     } catch (error) {
-      console.error('[Media Rate Limiter] Failed to initialize Upstash:', error)
+      logger.error('[Media Rate Limiter] Failed to initialize Upstash', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return null
     }
   }
@@ -182,7 +185,7 @@ export async function checkMediaRateLimit(
   if (!ratelimit) {
     // Fail-closed: deny if Redis unavailable and fail-closed enabled
     if (isFailClosedEnabled) {
-      console.warn('[Media Rate Limiter] Redis unavailable, denying request (fail-closed mode)')
+      logger.warn('[Media Rate Limiter] Redis unavailable, denying request (fail-closed mode)')
       return { allowed: false, remainingMs: 30000, remaining: 0 }
     }
     return checkMediaRateLimitInMemory(ip)
@@ -200,10 +203,14 @@ export async function checkMediaRateLimit(
   } catch (error) {
     // Fail-closed: deny if Redis errors and fail-closed enabled
     if (isFailClosedEnabled) {
-      console.error('[Media Rate Limiter] Upstash check failed, denying request (fail-closed mode):', error)
+      logger.error('[Media Rate Limiter] Upstash check failed, denying request (fail-closed mode)', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return { allowed: false, remainingMs: 30000, remaining: 0 }
     }
-    console.error('[Media Rate Limiter] Upstash check failed, falling back to in-memory:', error)
+    logger.error('[Media Rate Limiter] Upstash check failed, falling back to in-memory', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     return checkMediaRateLimitInMemory(ip)
   }
 }

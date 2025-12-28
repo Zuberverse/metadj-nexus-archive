@@ -2,7 +2,7 @@
  * Global type definitions for browser APIs
  */
 
-// Vendor-prefixed AudioContext for Safari compatibility
+// Vendor-prefixed AudioContext for Safari support
 interface Window {
   webkitAudioContext?: typeof AudioContext;
   /**

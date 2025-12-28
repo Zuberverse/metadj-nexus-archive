@@ -42,7 +42,7 @@ export async function PATCH(
     // Daydream PATCH (per official OpenAPI) expects: { pipeline, params }.
     // In practice, we accept a few client shapes and normalize them:
     // - { pipeline: "streamdiffusion", params: {...} } (preferred)
-    // - { params: {...} } (compatibility)
+    // - { params: {...} } (accepted)
     // - {...} (flat params object)
     const record =
       incoming && typeof incoming === "object"

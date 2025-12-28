@@ -57,7 +57,7 @@ export function RecentlyPlayedRail({
           <EmptyState
             icon={<History className="h-full w-full" />}
             title="Your listening history will appear here"
-            description="Start exploring to build your journey"
+            description="Start exploring to build your flow"
             size="md"
             iconVariant="subtle"
           />

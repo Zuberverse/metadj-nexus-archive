@@ -2,7 +2,7 @@
 
 > **Comprehensive playback behavior and UX patterns for MetaDJ Nexus's audio player**
 
-**Last Modified**: 2025-12-27 13:22 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ---
 
@@ -548,7 +548,7 @@ Planned improvements to player functionality:
 - Parent Docs: `/docs/architecture/`
 
 **Audio Hooks Architecture:**
-- `use-audio-playback.ts` — Main orchestrating hook for playback lifecycle. Features a **playPromiseRef** mutex to prevent DOM racing and a **NotAllowedError** handler for mobile browser compatibility.
+- `use-audio-playback.ts` — Main orchestrating hook for playback lifecycle. Features a **playPromiseRef** mutex to prevent DOM racing and a **NotAllowedError** handler for mobile browser support.
 - `use-audio-preloader.ts` — **Predictive Preloading Engine**. Uses an adaptive cache strategy that scales based on network type (4G, 3G, SaveData). Prefetches upcoming queue items (lookahead 3), visible tracks, and featured content.
 - `use-audio-source.ts` — Resolves blob URLs with intelligent **cache bypassing** for the first play on mobile to ensure reliable audio unlocking.
 - `use-audio-volume.ts` — Volume state management with localStorage persistence and smooth ~80ms warmup ramp.

@@ -1,6 +1,6 @@
 # MetaDJai Knowledge Base Standard
 
-**Last Modified**: 2025-12-26 22:55 EST
+**Last Modified**: 2025-12-27 15:26 EST
 
 ## Purpose
 
@@ -17,9 +17,9 @@ Applies to:
 - **Third-person only**: No first-person narration in entries (no "I," "me," "my," "we," "our").
 - **Exceptions**: Quoted user prompts, proper titles (track names like "I Want to Believe"), and canonical taglines (quoted) may include first/second-person phrasing.
 - **Z / MetaDJ / MetaDJai**:
-  - Z = the person behind MetaDJ and Zuberant.
+  - Z = the creator behind MetaDJ and Zuberant.
   - MetaDJ = the avatar Z embodies.
-  - MetaDJai = the AI companion built by Z and serving the user.
+  - MetaDJai = the AI companion built by Z (the creator behind MetaDJ) and serving the user.
 
 ## Terminology Rules
 
@@ -41,7 +41,7 @@ Source: `1-system/1-context/1-knowledge/0-core/core-mission-vision.md`.
 
 - MetaDJai emulates the **MetaDJai persona** (AI companion identity), not a human.
 - MetaDJai may be represented through the MetaDJ avatar with explicit AI disclosure.
-- Never frame MetaDJai as the person behind MetaDJ.
+- Never frame MetaDJai as the human behind MetaDJ.
 
 ## Update Protocol
 

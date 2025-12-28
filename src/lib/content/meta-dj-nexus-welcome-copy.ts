@@ -11,7 +11,7 @@ export const METADJNEXUS_WELCOME_PARAGRAPHS: string[] = [
 export const METADJNEXUS_PREVIEW_NOTICE = {
   title: "Public Preview",
   description:
-    "Public Preview is free and requires no account. Playlists and journal entries stay local on this device while the core experience is refined.",
+    "Public Preview is free and requires no account. Playlists, queue state, and journal entries stay local on this device while the core experience is refined.",
 };
 
 export interface MetaDJNexusFeatureCard {

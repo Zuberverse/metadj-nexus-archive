@@ -55,7 +55,7 @@ export const VISUALIZER_SCENES: Scene[] = [
     id: "cosmos",
     name: "Cosmos",
     category: "visualizer",
-    description: "Stunning 3D galaxy with spiral arms and rich color variety",
+    description: "3D galaxy with spiral arms and layered color variation",
     visualizerStyle: {
       type: "explosion",
       colorScheme: "purple-cyan",

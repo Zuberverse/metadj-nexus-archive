@@ -31,6 +31,7 @@
     "analyze": "ANALYZE=true npm run build",
     "lint": "eslint --max-warnings=0 .",
     "type-check": "tsc --noEmit",
+    "format": "eslint --fix .",
     "pretest": "node scripts/validate-tracks.js",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

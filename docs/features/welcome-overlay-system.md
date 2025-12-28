@@ -2,7 +2,7 @@
 
 > **First-time visitor onboarding experience for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-27 10:26 EST
+**Last Modified**: 2025-12-27 15:24 EST
 ## Overview
 
 The Welcome Overlay is a modal dialog presented to first-time visitors, introducing MetaDJ Nexus and its core experiences. It appears at most once per session and provides immediate pathways to explore the platform.
@@ -51,7 +51,7 @@ User Guide / Main Experience
 ## Display Logic
 
 ### Show Conditions
-- Not dismissed (`STORAGE_KEYS.WELCOME_DISMISSED` not set; compatibility key)
+- Not dismissed (`STORAGE_KEYS.WELCOME_DISMISSED` not set; alternate key)
 - Not already shown (`STORAGE_KEYS.WELCOME_SHOWN` not set)
 - Not already shown in this session (`metadj_welcome_shown_session`)
 
@@ -157,7 +157,7 @@ Events tracked via `trackEvent()`:
 
 **Storage Keys**:
 - `STORAGE_KEYS.WELCOME_SHOWN` (`metadj-nexus-welcome-shown`)
-- `STORAGE_KEYS.WELCOME_DISMISSED` (`metadj-nexus-welcome-dismissed`, compatibility key)
+- `STORAGE_KEYS.WELCOME_DISMISSED` (`metadj-nexus-welcome-dismissed`, alternate key)
 **Session Key**: `metadj_welcome_shown_session`
 
 **Error Handling**: Gracefully handles localStorage errors (private browsing)

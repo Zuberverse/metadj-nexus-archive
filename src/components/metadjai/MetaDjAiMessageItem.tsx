@@ -1124,9 +1124,9 @@ export const MetaDjAiMessageItem = memo(forwardRef<HTMLDivElement, MessageItemPr
                 <span
                   className="inline-flex items-center gap-1"
                   role="status"
-                  aria-label="MetaDJai is thinking"
+                  aria-label="MetaDJai is responding"
                 >
-                  <span className="sr-only">Thinking</span>
+                  <span className="sr-only">Responding</span>
                   <span className="h-2 w-2 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400 animate-[pulse_1s_ease-in-out_infinite]" />
                   <span className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-400 animate-[pulse_1s_ease-in-out_0.2s_infinite]" />
                   <span className="h-2 w-2 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400 animate-[pulse_1s_ease-in-out_0.4s_infinite]" />

@@ -1,6 +1,6 @@
 # Replit Deployment Guide — MetaDJ Nexus
 
-**Last Modified**: 2025-12-27 10:26 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ## Overview
 
@@ -39,7 +39,7 @@ MetaDJ Nexus requires **two App Storage buckets**:
 #### 1. `music` Bucket
 - **Purpose**: Audio tracks (320 kbps MP3 files)
 - **Bucket ID**: `replit-objstore-f682fa8b-5108-41aa-8e9f-6015fa3766ec`
-- **Environment Variable**: `MUSIC_BUCKET_ID` (compatibility `AUDIO_BUCKET_ID` still supported)
+- **Environment Variable**: `MUSIC_BUCKET_ID` (alternate `AUDIO_BUCKET_ID` supported)
 - **Default in Code**: Development-only fallbacks live in `src/lib/replit-storage.ts`
 - **Structure**:
   ```
@@ -78,7 +78,7 @@ Set these in Replit Secrets for production (or to override dev fallbacks):
 ```bash
 # .env or Replit Secrets
 MUSIC_BUCKET_ID=replit-objstore-YOUR-MUSIC-BUCKET-ID
-# Optional compatibility fallback:
+# Optional alternate key:
 # AUDIO_BUCKET_ID=replit-objstore-YOUR-MUSIC-BUCKET-ID
 VISUALS_BUCKET_ID=replit-objstore-YOUR-VISUALS-BUCKET-ID
 ```
@@ -107,7 +107,7 @@ NEXT_PUBLIC_PLAUSIBLE_DOMAIN=metadj.ai
 ```bash
 # Bucket Overrides (only if pointing to custom buckets)
 MUSIC_BUCKET_ID=replit-objstore-YOUR-MUSIC-BUCKET-ID
-# Optional compatibility fallback
+# Optional alternate key
 # AUDIO_BUCKET_ID=replit-objstore-YOUR-MUSIC-BUCKET-ID
 VISUALS_BUCKET_ID=replit-objstore-YOUR-VISUALS-BUCKET-ID
 

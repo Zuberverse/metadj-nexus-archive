@@ -2,7 +2,7 @@
 
 > **Source of truth for MetaDJ Nexus's premium glass-neon presentation**
 
-**Last Modified**: 2025-12-27 13:22 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ---
 
@@ -234,7 +234,7 @@ Empty states maintain the premium glass-neon aesthetic even when content is abse
 
 - Full-screen overlay (`z-100`) using the shared `gradient-1` + `--bg-overlay` blur stack.
 - Container: `rounded-[30px]` with `gradient-2-border`, inner `gradient-media` + `gradient-media-bloom`.
-- **Auto-open gating**: `STORAGE_KEYS.WELCOME_SHOWN` + a per-session flag (`metadj_welcome_shown_session`) keep it first-time-only by default (compatibility override: `STORAGE_KEYS.WELCOME_DISMISSED`).
+- **Auto-open gating**: `STORAGE_KEYS.WELCOME_SHOWN` + a per-session flag (`metadj_welcome_shown_session`) keep it first-time-only by default (alternate key: `STORAGE_KEYS.WELCOME_DISMISSED`).
 - **Header**: "Welcome to MetaDJ Nexus" with wordmark integration.
 - **Tagline**: "Where music, visuals, and wisdom converge".
 - **Feature Cards**: Original Music / Immersive Visuals / Beyond the Sound (glass cards with icon + heading + description).

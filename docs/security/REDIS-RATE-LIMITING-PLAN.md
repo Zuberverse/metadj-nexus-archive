@@ -1,6 +1,6 @@
 # Redis Rate Limiting Migration Plan
 
-**Last Modified**: 2025-12-22 14:03 EST
+**Last Modified**: 2025-12-27 15:24 EST
 **Status**: Implemented (Hybrid In-Memory + Upstash)
 **Priority**: Low-Medium (enable Upstash when scaling beyond single instance)
 **Estimated Effort**: 2-4 hours (completed)
@@ -100,7 +100,7 @@ Migrate to distributed rate limiting that:
 1. **Persists across restarts**: Rate limit state survives deployments
 2. **Works across instances**: All serverless function instances share state
 3. **Edge-compatible**: Works with edge runtimes (Vercel Edge, Cloudflare Workers)
-4. **Maintains API compatibility**: Drop-in replacement for existing functions
+4. **Maintains API parity**: Drop-in replacement for existing functions
 
 ---
 
@@ -119,7 +119,7 @@ Migrate to distributed rate limiting that:
 
 **Recommendation**: Upstash provides the best combination of:
 - Purpose-built `@upstash/ratelimit` library
-- Edge runtime compatibility
+- Edge runtime support
 - Generous free tier for beta/MVP
 - Simple REST-based API (no connection pooling needed)
 
@@ -256,7 +256,7 @@ export function isRedisEnabled(): boolean {
  * 1. Session cookie (ensures per-device isolation)
  * 2. High-entropy fingerprint from request headers
  *
- * Unchanged from in-memory implementation for compatibility.
+ * Unchanged from in-memory implementation.
  */
 export function getClientIdentifier(request: NextRequest): ClientIdentifier {
   // Priority 1: Check for session cookie
@@ -326,12 +326,12 @@ export async function checkRateLimit(
  * Update rate limit counter after successful request
  *
  * Note: With Upstash Ratelimit, the counter is automatically updated
- * in checkRateLimit(). This function is kept for API compatibility
+ * in checkRateLimit(). This function is kept for API parity
  * but is a no-op for the Redis implementation.
  */
 export function updateRateLimit(identifier: string): void {
   // No-op: Upstash Ratelimit automatically increments on limit() call
-  // This function exists only for API compatibility with in-memory version
+  // This function exists only for API parity with the in-memory version
 }
 
 /**
@@ -753,7 +753,7 @@ Implement when ANY of these conditions occur:
 ### Official Documentation
 
 - [Upstash Ratelimit](https://upstash.com/docs/redis/sdks/ratelimit-ts/overview)
-- [Upstash Redis REST](https://upstash.com/docs/redis/overall/rediscompatibility)
+- [Upstash Redis REST](https://upstash.com/docs/redis/overall/rest)
 - [Next.js Rate Limiting Guide](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#rate-limiting)
 
 ### Related Files
@@ -767,7 +767,7 @@ Implement when ANY of these conditions occur:
 ## 12. Success Criteria
 
 - [ ] Redis rate limiter created and tested
-- [ ] Unified interface maintains API compatibility
+- [ ] Unified interface maintains API parity
 - [ ] In-memory fallback works when Redis unavailable
 - [ ] Environment variables documented
 - [ ] Cost estimation validated

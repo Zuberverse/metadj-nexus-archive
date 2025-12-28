@@ -170,7 +170,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             </h3>
             <p className="text-xs text-white/60 mb-2">{data.thoughts.length} essays</p>
             <p className="text-sm text-white/70 leading-relaxed">
-              Personal dispatches on music, AI, creativity, and the evolving MetaDJ journey.
+              Personal dispatches on music, AI, creativity, and the evolving MetaDJ work.
             </p>
           </button>
 
@@ -188,7 +188,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             <p className="text-xs text-white/60 mb-2">{data.guides.length} guides</p>
             <p className="text-sm text-white/70 leading-relaxed">
               In-depth guides on music production, DJing, AI tools, the Metaverse, and creative
-              techniques that empower your journey.
+              techniques that empower your work.
             </p>
           </button>
 
@@ -205,7 +205,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             </h3>
             <p className="text-xs text-white/60 mb-2">{data.reflections.length} entries</p>
             <p className="text-sm text-white/70 leading-relaxed">
-              Deep dives into the journey—stories, experiences, and the path from music curator to Digital Jockey.
+              Deep dives into the evolution—stories, experiences, and the path from music curator to Digital Jockey.
             </p>
           </button>
         </div>

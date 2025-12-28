@@ -1,7 +1,7 @@
 # MetaDJ Nexus — User Testing Checklist & Validation Plan
 
 **Applies To**: Public Preview (v0.8.0+)
-**Last Modified**: 2025-12-22 19:12 EST
+**Last Modified**: 2025-12-27 15:24 EST
 **Status**: Living testing checklist
 
 ## Executive Summary
@@ -30,7 +30,7 @@ This document provides a complete testing framework for MetaDJ Nexus covering al
 - Performance benchmarks (Core Web Vitals)
 
 **P1 (High)** - Should pass before launch:
-- Cross-browser compatibility
+- Cross-browser support
 - Mobile responsiveness
 - User experience flows
 
@@ -1315,7 +1315,7 @@ This document provides a complete testing framework for MetaDJ Nexus covering al
 #### Firefox (Desktop & Mobile)
 
 **Test Focus**:
-- Web Audio API compatibility
+- Web Audio API support
 - CSS gradient rendering
 - Backdrop filter support
 - Font rendering
@@ -1352,7 +1352,7 @@ This document provides a complete testing framework for MetaDJ Nexus covering al
 #### Edge (Desktop)
 
 **Test Focus**:
-- Chromium compatibility
+- Chromium support
 - Font rendering on Windows
 - Gradient rendering
 
@@ -2310,7 +2310,7 @@ This comprehensive testing framework covers:
 
 **Recommended Testing Priority**:
 1. **P0 (Critical)**: Audio playback, WCAG compliance, Core Web Vitals
-2. **P1 (High)**: Cross-browser compatibility, mobile responsiveness, UX flows
+2. **P1 (High)**: Cross-browser support, mobile responsiveness, UX flows
 3. **P2 (Medium)**: Visual polish, advanced features, edge cases
 
 **Next Steps**:

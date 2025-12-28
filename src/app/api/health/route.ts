@@ -13,6 +13,7 @@
 
 import { NextResponse } from 'next/server';
 import { getEnv } from '@/lib/env';
+import { logger } from '@/lib/logger';
 import packageJson from '../../../../package.json';
 
 export const runtime = 'nodejs';
@@ -221,7 +222,7 @@ export async function GET() {
   // Log detailed diagnostics server-side only (not exposed to client)
   // This information is valuable for debugging but should not be public
   if (overallStatus !== 'healthy') {
-    console.log('[Health Check] Detailed diagnostics:', JSON.stringify({
+    logger.warn('Health check diagnostics', {
       timestamp,
       version,
       status: overallStatus,
@@ -230,7 +231,7 @@ export async function GET() {
         storage: storageCheck,
         ai: aiCheck,
       },
-    }, null, 2));
+    });
   }
 
   // Public response: minimal information disclosure

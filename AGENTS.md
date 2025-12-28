@@ -4,7 +4,7 @@
 
 **Platform Notice**: This `AGENTS.md` is optimized for OpenAI Codex workflows running through the Codex CLI. Claude Code uses the paired `CLAUDE.md`, and Cursor IDE relies on the `.cursor/rules/` file when available; each platform gets the same standards.
 
-**Last Modified**: 2025-12-27 14:56 EST
+**Last Modified**: 2025-12-27 15:36 EST
 *Parent: /3-projects/5-software/AGENTS.md*
 
 ## Scope
@@ -57,6 +57,28 @@
 - creative (visual QA)
 - writer (documentation and copy)
 - optional: dj, ai, product
+
+## Relevant Skills
+- accessibility-validator (WCAG checks)
+- agent-router (coordination guidance)
+- code-review-automator (quality + security scan)
+- secure-code-guardian (security posture)
+- performance-optimizer (Core Web Vitals + runtime perf)
+- dependency-manager (dependency audit)
+- documentation-gap-finder (docs coverage)
+- test-generator (coverage gaps)
+- timestamp-updater (docs maintenance)
+
+## Coordination Patterns
+- Small UI or copy changes: coder solo, then writer for docs if needed.
+- Feature work: software (architecture) → coder (implementation) → software (review).
+- Cross-cutting audits: product + software + coder inputs synthesized into one report (Codex sequential).
+
+## Quality Gates
+- `npm run lint` and `npm run type-check` clean.
+- `npm run test` + `npm run test:e2e` for user-facing changes.
+- `npm run build` before release.
+- Update `CHANGELOG.md` and relevant docs for meaningful changes.
 
 ## Commands
 - Dev server: `npm run dev` (port 8100)

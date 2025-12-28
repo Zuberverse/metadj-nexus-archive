@@ -118,7 +118,7 @@ export function FeatureTogglePopover({
 
   const inactiveFeatures = getInactiveFeatures()
 
-  // Check if component is mounted (for SSR compatibility)
+  // Check if component is mounted (SSR guard)
   useEffect(() => {
     setIsMounted(true)
   }, [])

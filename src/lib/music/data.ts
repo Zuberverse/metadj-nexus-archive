@@ -8,7 +8,7 @@ import type { Collection, Track } from "@/types";
 const allTracks = validateTracks(tracksJson) as Track[];
 const allCollections = validateCollections(collectionsJson) as Collection[];
 
-// Filter to only enabled collections (enabled: true or enabled not set defaults to true for backwards compat)
+// Filter to only enabled collections (enabled defaults to true when unset)
 export const collectionList = allCollections.filter((c) => c.enabled !== false);
 
 // Get set of enabled collection titles for filtering tracks

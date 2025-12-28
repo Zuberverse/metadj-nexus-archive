@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { logger } from "@/lib/logger";
 import { generateNonce } from "@/lib/nonce";
 import { buildPayloadTooLargeResponse, getMaxRequestSize } from "@/lib/validation/request-size";
 
@@ -140,7 +141,11 @@ export default async function proxy(request: NextRequest) {
         const maxSize = getMaxRequestSize(path);
 
         if (size > maxSize) {
-          console.warn(`[Request Size] Rejected ${path}: ${size} bytes (max ${maxSize})`);
+          logger.warn("[Request Size] Rejected oversized payload", {
+            path,
+            size,
+            maxSize,
+          });
           return buildPayloadTooLargeResponse(maxSize);
         }
       }
@@ -148,8 +153,9 @@ export default async function proxy(request: NextRequest) {
     }
 
     // B. Rate Limiting
+    const forwardedFor = request.headers.get("x-forwarded-for");
     const ip =
-      request.headers.get("x-forwarded-for") ||
+      forwardedFor?.split(",")[0]?.trim() ||
       request.headers.get("x-real-ip") ||
       "unknown";
 
@@ -177,7 +183,9 @@ export default async function proxy(request: NextRequest) {
         };
       } catch (err) {
         // Fallback to local on redis error
-        console.error("Redis rate limit error, falling back to local:", err);
+        logger.error("Redis rate limit error, falling back to local", {
+          error: err instanceof Error ? err.message : String(err),
+        });
         allowed = checkLocalRateLimit(`${limitKey}:${ip}`, RATE_LIMITS[limitKey]);
       }
     } else {
@@ -186,7 +194,7 @@ export default async function proxy(request: NextRequest) {
     }
 
     if (!allowed) {
-      console.warn(`[Rate Limit] Blocked ${ip} on ${path} (${limitKey})`);
+      logger.warn("Rate limit blocked request", { ip, path, limitKey });
       return new NextResponse(
         JSON.stringify({
           error: "Too Many Requests",
@@ -241,6 +249,8 @@ export default async function proxy(request: NextRequest) {
     "'self'",
     "https://api.openai.com",
     "https://api.anthropic.com",
+    "https://generativelanguage.googleapis.com",
+    "https://api.x.ai",
     "https://api.daydream.live",
     "https://*.daydream.live",
     "wss://*.daydream.live",

@@ -2,7 +2,7 @@
 
 > How MetaDJ Nexus loads music metadata today and how we will transition to Neon in the future.
 
-**Last Modified**: 2025-12-22 19:12 EST
+**Last Modified**: 2025-12-27 15:24 EST
 ## Current Snapshot
 
 - `src/data/collections.json` — canonical collection records (name, release date, internal part notes).
@@ -161,7 +161,7 @@ toCollectionSlug('Metaverse Revelation')
 ```
 
 ### `normalizeCollectionSlug(input: string): string`
-Normalizes slugs with alias support for backward compatibility.
+Normalizes slugs with alias support for known variations.
 
 ```typescript
 // Handles known typos

@@ -6,7 +6,7 @@
  * - ARIA live regions for dynamic content announcements
  * - Keyboard navigation patterns (combobox, listbox roles)
  * - Focus management and visible indicators
- * - Screen reader compatibility
+ * - Screen reader support
  * - Color contrast and touch target sizes
  * - Modal focus trap and escape key handling
  * - Audio player accessibility

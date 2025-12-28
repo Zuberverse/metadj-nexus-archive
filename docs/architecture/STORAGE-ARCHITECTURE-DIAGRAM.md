@@ -1,4 +1,4 @@
-**Last Modified**: 2025-12-22 13:13 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 # MetaDJ Nexus Storage Architecture — Visual Reference
 
@@ -87,12 +87,12 @@ USER CLICKS PLAY
 │       (CRITICAL - Only accessed via API routes)            │
 ├─────────────────────────────────────────────────────────────┤
 │  src/lib/replit-storage.ts                                  │
-│  - getMusicBucket() / getAudioBucket() (compatibility)      │
-│  - getVisualsBucket() / getVideoBucket() (compatibility)    │
+│  - getMusicBucket() / getAudioBucket() (alternate)          │
+│  - getVisualsBucket() / getVideoBucket() (alternate)        │
 │                                                              │
 │  Replit Object Storage Buckets                              │
-│  - MUSIC_BUCKET_ID (compatibility AUDIO_BUCKET_ID): replit-objstore-d115d11f-...     │
-│  - VISUALS_BUCKET_ID (compatibility VIDEO_BUCKET_ID): replit-objstore-2f704fe3-...   │
+│  - MUSIC_BUCKET_ID (alternate AUDIO_BUCKET_ID): replit-objstore-d115d11f-...         │
+│  - VISUALS_BUCKET_ID (alternate VIDEO_BUCKET_ID): replit-objstore-2f704fe3-...       │
 │                                                              │
 │  MUST STAY INTACT:                                          │
 │  - Bucket IDs                                               │

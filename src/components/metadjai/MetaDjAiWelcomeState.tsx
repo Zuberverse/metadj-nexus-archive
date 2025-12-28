@@ -42,7 +42,7 @@ export function MetaDjAiWelcomeState({
             alt="MetaDJai"
             width={64}
             height={64}
-            className="object-cover w-16 h-16"
+            className="object-cover"
             priority
           />
         </div>
@@ -99,7 +99,7 @@ export function buildWelcomeStarters(details?: MetaDjAiWelcomeDetails | null): W
   const exploreSongPrompt = trackLabel
     ? `Let's explore ${trackLabel} together. Share what this track evokes—the mood, the story it tells, and one unexpected creative direction it inspires. Then ask what it stirs in me. Keep each insight on its own line.`
     : hasCollection
-      ? `Let's explore ${collectionLabel} together. Share what this collection evokes—the mood, the journey it suggests, and one unexpected creative direction it inspires. Then ask what draws me to it. Keep each insight on its own line.`
+      ? `Let's explore ${collectionLabel} together. Share what this collection evokes—the mood, the arc it suggests, and one unexpected creative direction it inspires. Then ask what draws me to it. Keep each insight on its own line.`
       : `I notice no music is playing yet—that's the perfect blank canvas. Ask me what mood or feeling I want to explore, then guide me toward finding the right soundtrack. Suggest how to browse collections or discover tracks that match my creative headspace. Keep each suggestion on its own line.`
 
   const exploreSongDescription = hasAnyMusic
@@ -135,7 +135,7 @@ export function buildNoTrackStarters(nowPlayingTitle?: string, nowPlayingArtist?
   const collectionLabel = collectionTitle ?? "Featured blends"
 
   const exploreSongPrompt = hasCollection
-    ? `Let's explore ${collectionLabel} together. Share what this collection evokes—the mood, the journey it suggests, and one unexpected creative direction it inspires. Then ask what draws me to it. Keep each insight on its own line.`
+    ? `Let's explore ${collectionLabel} together. Share what this collection evokes—the mood, the arc it suggests, and one unexpected creative direction it inspires. Then ask what draws me to it. Keep each insight on its own line.`
     : `I notice no music is playing yet—that's the perfect blank canvas. Ask me what mood or feeling I want to explore, then guide me toward finding the right soundtrack. Suggest how to browse collections or discover tracks that match my creative headspace. Keep each suggestion on its own line.`
 
   const exploreSongDescription = hasCollection

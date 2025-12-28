@@ -147,9 +147,11 @@ function getUpstashRatelimit(): Ratelimit | null {
         prefix: 'metadjai',
       })
 
-      console.log('[Rate Limiter] Upstash Redis initialized (distributed mode)')
+      logger.info('[Rate Limiter] Upstash Redis initialized (distributed mode)')
     } catch (error) {
-      console.error('[Rate Limiter] Failed to initialize Upstash Redis:', error)
+      logger.error('[Rate Limiter] Failed to initialize Upstash Redis', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return null
     }
   }
@@ -184,7 +186,9 @@ function getUpstashBurstRatelimit(): Ratelimit | null {
         prefix: 'metadjai-burst',
       })
     } catch (error) {
-      console.error('[Rate Limiter] Failed to initialize Upstash burst limiter:', error)
+      logger.error('[Rate Limiter] Failed to initialize Upstash burst limiter', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return null
     }
   }
@@ -219,9 +223,11 @@ function getUpstashTranscribeRatelimit(): Ratelimit | null {
         prefix: 'metadjai-transcribe',
       })
 
-      console.log('[Rate Limiter] Upstash Redis transcription limiter initialized')
+      logger.info('[Rate Limiter] Upstash Redis transcription limiter initialized')
     } catch (error) {
-      console.error('[Rate Limiter] Failed to initialize Upstash transcription limiter:', error)
+      logger.error('[Rate Limiter] Failed to initialize Upstash transcription limiter', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return null
     }
   }
@@ -256,7 +262,9 @@ function getUpstashTranscribeBurstRatelimit(): Ratelimit | null {
         prefix: 'metadjai-transcribe-burst',
       })
     } catch (error) {
-      console.error('[Rate Limiter] Failed to initialize Upstash transcription burst limiter:', error)
+      logger.error('[Rate Limiter] Failed to initialize Upstash transcription burst limiter', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return null
     }
   }
@@ -309,10 +317,14 @@ export async function checkRateLimitDistributed(
   } catch (error) {
     // Fail-closed: deny if Redis errors and fail-closed enabled
     if (isFailClosedEnabled) {
-      console.error('[Rate Limiter] Upstash check failed, denying request (fail-closed mode):', error)
+      logger.error('[Rate Limiter] Upstash check failed, denying request (fail-closed mode)', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       return { allowed: false, remainingMs: 30000 }
     }
-    console.error('[Rate Limiter] Upstash check failed, falling back to in-memory:', error)
+    logger.error('[Rate Limiter] Upstash check failed, falling back to in-memory', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     return checkRateLimit(identifier, isFingerprint)
   }
 }
@@ -363,10 +375,15 @@ export async function checkTranscribeRateLimitDistributed(
   } catch (error) {
     // Fail-closed: deny if Redis errors and fail-closed enabled
     if (isFailClosedEnabled) {
-      console.error('[Rate Limiter] Upstash transcription check failed, denying request (fail-closed mode):', error)
+      logger.error(
+        '[Rate Limiter] Upstash transcription check failed, denying request (fail-closed mode)',
+        { error: error instanceof Error ? error.message : String(error) }
+      )
       return { allowed: false, remainingMs: 30000 }
     }
-    console.error('[Rate Limiter] Upstash transcription check failed, falling back to in-memory:', error)
+    logger.error('[Rate Limiter] Upstash transcription check failed, falling back to in-memory', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     return checkTranscribeRateLimit(identifier, isFingerprint)
   }
 }

@@ -2,7 +2,7 @@
 
 > **Complete reference for all custom React hooks in MetaDJ Nexus**
 
-**Last Modified**: 2025-12-27 14:48 EST
+**Last Modified**: 2025-12-27 15:24 EST
 ## Overview
 
 MetaDJ Nexus uses 48 custom React hooks organized by domain. Hooks can be imported directly from their files or via the `@/hooks` barrel export.
@@ -220,7 +220,7 @@ Message state management and persistence. As of v0.8.1, messages are grouped int
 
 **File**: `src/hooks/use-metadjai-stream.ts`
 
-Handles AI SDK 6 streaming responses (SSE UI message stream) with legacy data stream/plain text fallback parsing.
+Handles AI SDK 6 streaming responses (SSE UI message stream) with data stream/plain text fallback parsing.
 
 **Exports**:
 - `processVercelAIBuffer` — Process streaming buffer (text, errors, tool calls/results)
@@ -294,7 +294,7 @@ useClickAway(ref, () => setIsOpen(false), { enabled: isOpen });
 
 **Features**:
 - Supports single `RefObject` or an array of `RefObject`s (for complex overlays/portals).
-- Handles both `mousedown` and `touchstart` for mobile compatibility.
+- Handles both `mousedown` and `touchstart` for mobile support.
 - Configurable event list and enabled state.
 
 ### useBodyScrollLock

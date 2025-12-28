@@ -1,9 +1,8 @@
 "use client"
 
 import { type FC, useCallback, useEffect, useMemo, useState } from "react"
-import { Calendar, BookOpen, ChevronRight, Clock, MessageSquare, Share2, Sparkles } from "lucide-react"
+import { Calendar, BookOpen, ChevronRight, Clock, Share2, Sparkles } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
-import { useUI } from "@/contexts/UIContext"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import { buildWisdomDeepLinkUrl, estimateReadTime, formatReadTime, stripSignoffParagraphs } from "@/lib/wisdom"
 import { WisdomBreadcrumb, type BreadcrumbItem } from "./WisdomBreadcrumb"
@@ -18,7 +17,6 @@ interface ThoughtsProps {
 }
 
 export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDeeplinkConsumed }) => {
-  const ui = useUI()
   const { showToast } = useToast()
   const [selectedPost, setSelectedPost] = useState<ThoughtPost | null>(null)
 
@@ -89,7 +87,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
             Ideas & Inspiration
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
-            Personal dispatches on music, AI, creativity, and the evolving MetaDJ journey.
+            Personal dispatches on music, AI, creativity, and the evolving MetaDJ work.
             One essay at a time, intentionally surfaced.
           </p>
         </header>
@@ -149,15 +147,6 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
   const currentIndex = sortedThoughts.findIndex((post) => post.id === selectedPost.id)
   const newerPost = currentIndex > 0 ? sortedThoughts[currentIndex - 1] : null
   const olderPost = currentIndex >= 0 && currentIndex < sortedThoughts.length - 1 ? sortedThoughts[currentIndex + 1] : null
-
-  const handleAskMetaDjAi = () => {
-    if (!ui.modals.isMetaDjAiOpen) {
-      ui.setMetaDjAiOpen(true)
-    }
-    if (!ui.panels.right.isOpen) {
-      ui.toggleRightPanel()
-    }
-  }
 
   const handleSummarizeWithMetaDjAi = () => {
     dispatchMetaDjAiPrompt({
@@ -241,14 +230,6 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Summarize
-              </button>
-              <button
-                type="button"
-                onClick={handleAskMetaDjAi}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/80 hover:bg-white/10 hover:text-white transition"
-              >
-                <MessageSquare className="h-3.5 w-3.5" />
-                Ask MetaDJai
               </button>
             </div>
           </div>

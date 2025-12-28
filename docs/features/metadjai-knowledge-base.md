@@ -2,10 +2,10 @@
 
 > **Complete reference for the MetaDJai knowledge base architecture, content, and extension**
 
-**Last Modified**: 2025-12-27 15:01 EST
+**Last Modified**: 2025-12-27 15:26 EST
 ## Overview
 
-MetaDJai is the AI companion built by Z (the person behind MetaDJ) and serves as MetaDJ's AI extension inside MetaDJ Nexus. It includes a comprehensive knowledge base system that provides accurate, curated information about MetaDJ, Zuberant, the broader ecosystem vision, creative philosophy, and brand identity. This enables MetaDJai to answer questions about the artist, studio, and creative approach with grounded, consistent responses.
+MetaDJai is the AI companion built by Z (the creator behind MetaDJ) and serves as MetaDJ's AI extension inside MetaDJ Nexus. It includes a comprehensive knowledge base system that provides accurate, curated information about MetaDJ, Zuberant, the broader ecosystem vision, creative philosophy, and brand identity. This enables MetaDJai to answer questions about the artist, studio, and creative approach with grounded, consistent responses.
 
 ### Why a Knowledge Base?
 
@@ -73,7 +73,7 @@ The avatar and Digital Jockey.
 
 **Topics Covered**:
 - Artist identity and origin story
-- The person behind the MetaDJ avatar
+- The creator behind the MetaDJ avatar
 - Creative journey and evolution
 - Digital Jockey archetype
 - Synthetic Orchaistra production method

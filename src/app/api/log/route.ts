@@ -28,6 +28,8 @@ const DEV_ORIGINS = new Set([
   'https://127.0.0.1:3000',
   'https://127.0.0.1:8100',
 ]);
+const LOG_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const LOG_MAX_REQUESTS_PER_WINDOW = 10;
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -37,6 +39,13 @@ interface IncomingLogPayload {
   context?: unknown;
   timestamp?: unknown;
 }
+
+interface RateLimitRecord {
+  count: number;
+  resetAt: number;
+}
+
+const rateLimitMap = new Map<string, RateLimitRecord>();
 
 const SENSITIVE_CONTEXT_KEY_REGEX =
   /(prompt|messages?|content|transcript|audio|email|phone|token|secret|api[_-]?key|authorization|cookie|session|password)/i;
@@ -84,6 +93,47 @@ function sanitizeContext(context: unknown) {
   } catch {
     return undefined;
   }
+}
+
+function getClientId(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    const ip = forwarded.split(',')[0]?.trim();
+    if (ip) return `log-${ip}`;
+  }
+
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) return `log-${realIp}`;
+
+  const ua = request.headers.get('user-agent') || 'unknown';
+  const lang = request.headers.get('accept-language') || 'unknown';
+  return `log-anon-${Buffer.from(`${ua}|${lang}`).toString('base64').slice(0, 16)}`;
+}
+
+function checkRateLimit(clientId: string): { limited: boolean; retryAfter?: number } {
+  const now = Date.now();
+  let record = rateLimitMap.get(clientId);
+
+  if (rateLimitMap.size > 1000) {
+    for (const [key, rec] of rateLimitMap.entries()) {
+      if (rec.resetAt <= now) {
+        rateLimitMap.delete(key);
+      }
+    }
+  }
+
+  if (!record || now >= record.resetAt) {
+    rateLimitMap.set(clientId, { count: 1, resetAt: now + LOG_RATE_LIMIT_WINDOW_MS });
+    return { limited: false };
+  }
+
+  if (record.count >= LOG_MAX_REQUESTS_PER_WINDOW) {
+    const retryAfter = Math.ceil((record.resetAt - now) / 1000);
+    return { limited: true, retryAfter };
+  }
+
+  record.count += 1;
+  return { limited: false };
 }
 
 export const runtime = 'nodejs';
@@ -157,6 +207,22 @@ export async function POST(request: NextRequest) {
   const providedClientKey = request.headers.get('x-logging-client-key');
   if (!providedClientKey || !safeCompare(providedClientKey, clientKey)) {
     return NextResponse.json({ delivered: false, reason: 'unauthorized' }, { status: 403 });
+  }
+
+  const clientId = getClientId(request);
+  const rateLimit = checkRateLimit(clientId);
+  if (rateLimit.limited) {
+    return NextResponse.json(
+      { delivered: false, reason: 'rate_limited' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': String(rateLimit.retryAfter ?? 60),
+          'X-RateLimit-Limit': String(LOG_MAX_REQUESTS_PER_WINDOW),
+          'X-RateLimit-Reset': String(rateLimit.retryAfter ?? 60),
+        },
+      }
+    );
   }
 
   const bodyResult = await readRequestBodyWithLimit(

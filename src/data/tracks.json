@@ -9,7 +9,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/01 - Majestic Ascent (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Retro Future", "Techno"],
-    "description": "Uplifting orchestral journey reaching for the stars",
+    "description": "Uplifting orchestral arc reaching for the stars",
     "bpm": 120,
     "key": "C major"
   },
@@ -47,7 +47,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/04 - Synthetic Emergence (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Retro Future", "Techno"],
-    "description": "Witness the birth of digital consciousness through layered synths and driving techno rhythms."
+    "description": "Witness the birth of a digital signal through layered synths and driving techno rhythms."
   },
   {
     "id": "metadj-005",
@@ -59,7 +59,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/05 - Infinite Spark (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Orchestral", "Techno"],
-    "description": "Limitless creative energy radiates through cascading arpeggios and euphoric buildups that ignite the imagination."
+    "description": "Surging creative energy radiates through cascading arpeggios and euphoric buildups that ignite the imagination."
   },
   {
     "id": "metadj-006",
@@ -193,7 +193,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/16 - Transformer (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Melodic", "Techno"],
-    "description": "Shape-shifting sonic journey through evolving electronic landscapes."
+    "description": "Shape-shifting sonic arc through evolving electronic landscapes."
   },
   {
     "id": "metadj-017",
@@ -301,7 +301,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/25 - Lucid (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Trance", "Techno"],
-    "description": "Crystal clear consciousness in a dreamlike sonic landscape."
+    "description": "Crystal clear focus in a dreamlike sonic landscape."
   },
   {
     "id": "metadj-026",
@@ -397,7 +397,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/33 - Euphoric Vision (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Trance", "Techno"],
-    "description": "Blissful sonic transcendence lifting consciousness to new heights."
+    "description": "Blissful sonic lift that opens the headspace and raises the energy."
   },
   {
     "id": "metadj-034",
@@ -409,7 +409,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/34 - Portal to Infinity (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Retro Future", "Techno"],
-    "description": "Transcendent gateway between dimensions where reality bends and endless creative potential awaits discovery."
+    "description": "Transcendent gateway between dimensions where reality bends and deep creative potential awaits discovery."
   },
   {
     "id": "metadj-035",
@@ -421,7 +421,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/35 - Electric Horizon (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Orchestral", "Retro Future"],
-    "description": "Expansive sonic vistas stretch toward infinite possibilities on the bleeding edge of tomorrow's sound."
+    "description": "Expansive sonic vistas stretch toward wide-open possibilities on the edge of tomorrow's sound."
   },
   {
     "id": "metadj-036",
@@ -433,7 +433,7 @@
     "audioUrl": "/api/audio/Majestic Ascent/36 - Virtual Awakening (v0) - Mastered.mp3",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
     "genres": ["Orchestral", "Techno"],
-    "description": "Consciousness emerging into digital existence, exploring the first moments of virtual sentience and wonder."
+    "description": "A signal emerging into digital space, tracing the first moments of virtual presence and wonder."
   },
   {
     "id": "metadj-037",
@@ -493,7 +493,7 @@
     "audioUrl": "/api/audio/Bridging Reality/02 - Metaversal Odyssey (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["Rock", "Techno"],
-    "description": "Epic rock-techno fusion chronicling humanity's journey into boundless virtual frontiers and metaversal discovery."
+    "description": "Epic rock-techno fusion chronicling humanity's push into wide virtual frontiers and metaversal discovery."
   },
   {
     "id": "br-003",
@@ -517,7 +517,7 @@
     "audioUrl": "/api/audio/Bridging Reality/04 - Rave in the Matrix (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["Hip Hop", "Techno"],
-    "description": "High-energy celebration of virtual communities where digital souls gather to create, connect, and evolve together."
+    "description": "High-energy celebration of virtual communities where people gather to create, connect, and evolve together."
   },
   {
     "id": "br-005",
@@ -529,7 +529,7 @@
     "audioUrl": "/api/audio/Bridging Reality/05 - Metaverse Is Here (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["Techno", "Anthem"],
-    "description": "Announcement of arrival—the Metaverse has manifested and creative possibilities are now limitless."
+    "description": "Announcement of arrival: the Metaverse is here, and creative possibilities expand fast."
   },
   {
     "id": "br-006",
@@ -541,7 +541,7 @@
     "audioUrl": "/api/audio/Bridging Reality/06 - Wake Up in the Metaverse (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["Hip Hop", "Techno"],
-    "description": "Immersive trance journey through virtual realms where consciousness expands beyond physical limitations."
+    "description": "Immersive trance arc through virtual realms where perception widens beyond physical constraints."
   },
   {
     "id": "br-007",
@@ -553,7 +553,7 @@
     "audioUrl": "/api/audio/Bridging Reality/07 - I Met a DJ (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["EDM", "Tech House"],
-    "description": "A serendipitous encounter with a DJ who opens the portal to infinite creative possibilities."
+    "description": "A serendipitous encounter with a DJ who opens the portal to new creative possibilities."
   },
   {
     "id": "br-008",
@@ -577,7 +577,7 @@
     "audioUrl": "/api/audio/Bridging Reality/09 - Pinch to Zoom (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["Hip Hop", "EDM"],
-    "description": "Playful interaction with digital spaces, exploring the gestural magic of manipulating virtual worlds."
+    "description": "Playful interaction with digital spaces, exploring the gestural thrill of manipulating virtual worlds."
   },
   {
     "id": "br-010",
@@ -589,7 +589,7 @@
     "audioUrl": "/api/audio/Bridging Reality/10 - New Universe (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["Hip Hop", "Retro"],
-    "description": "Fresh cosmic perspective on reality where old rules dissolve and new creative universes emerge infinite."
+    "description": "Fresh cosmic perspective on reality where old rules dissolve and new creative universes emerge."
   },
   {
     "id": "br-011",
@@ -709,7 +709,7 @@
     "audioUrl": "/api/audio/Bridging Reality/20 - Next Frontier (v0) - Mastered.mp3",
     "artworkUrl": "/images/bridging-reality-collection.svg",
     "genres": ["Psychedelic", "Anthem"],
-    "description": "Pioneer spirit pushing beyond known horizons into psychedelic explorations of consciousness and creation."
+    "description": "Pioneer spirit pushing beyond known horizons into psychedelic explorations of sound and creation."
   },
   {
     "id": "mr-001",
@@ -733,7 +733,7 @@
     "audioUrl": "/api/audio/Metaverse Revelation/02 - Embrace the Moment (v0) - Mastered.mp3",
     "artworkUrl": "/images/metaverse-revelation-collection.svg",
     "genres": ["Trance", "Techno"],
-    "description": "Seize the creative power of now where every moment holds infinite potential."
+    "description": "Seize the creative power of now where every moment holds real potential."
   },
   {
     "id": "mr-003",
@@ -757,7 +757,7 @@
     "audioUrl": "/api/audio/Metaverse Revelation/04 - Cosmic Journey (v0) - Mastered.mp3",
     "artworkUrl": "/images/metaverse-revelation-collection.svg",
     "genres": ["EDM", "Trance"],
-    "description": "An epic voyage through the cosmos, exploring infinite possibilities and boundless creativity."
+    "description": "An epic voyage through the cosmos, exploring wide-open possibilities and bold creativity."
   },
   {
     "id": "mr-005",
@@ -805,7 +805,7 @@
     "audioUrl": "/api/audio/Metaverse Revelation/08 - Dreaming of a World (v0) - Mastered.mp3",
     "artworkUrl": "/images/metaverse-revelation-collection.svg",
     "genres": ["Nu Disco", "Pop"],
-    "description": "Visionary soundscapes painting a Metaverse of empowered creativity and boundless expression."
+    "description": "Visionary soundscapes painting a Metaverse of empowered creativity and open expression."
   },
   {
     "id": "mr-009",

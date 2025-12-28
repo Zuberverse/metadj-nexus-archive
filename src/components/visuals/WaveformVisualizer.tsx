@@ -45,7 +45,7 @@ function WaveformVisualizer({
   const particlesRef = useRef<{ x: number, y: number, vx: number, vy: number, alpha: number, color: string }[]>([]);
 
   // Lazy initialization to check Web Audio API support without causing render loop
-  // Uses webkitAudioContext for Safari compatibility (type declared in types/global.d.ts)
+  // Uses webkitAudioContext for Safari (type declared in types/global.d.ts)
   const [supportsWebAudio, setSupportsWebAudio] = useState(() => {
     if (typeof window === 'undefined') return false;
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;

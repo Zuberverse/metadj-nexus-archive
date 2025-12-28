@@ -1,4 +1,4 @@
-**Last Modified**: 2025-12-20 19:03 EST
+**Last Modified**: 2025-12-27 EST
 
 # Wisdom System
 
@@ -184,7 +184,7 @@ Wisdom remembers where a user last was:
 - List view with date, excerpt, and read time
 - Detail view with full content
 - Read time estimation displayed in both views
-- Header actions: **Summarize** starts a fresh MetaDJai chat with a structured summary prompt; **Ask MetaDJai** opens chat for follow‑up questions
+- Header actions: **Share** copies the deep link; **Summarize** starts a fresh MetaDJai chat with a structured summary prompt for the content
 
 ### Guides
 
@@ -205,7 +205,7 @@ Wisdom remembers where a user last was:
 - Detail view with table of contents
 - Smooth scroll navigation to sections
 - Read time estimation
-- Header actions: **Summarize** starts a fresh MetaDJai chat for this guide; **Ask MetaDJai** opens chat for discussion
+- Header actions: **Share** copies the deep link; **Summarize** starts a fresh MetaDJai chat with a context-aware summary prompt
 
 ### Reflections
 
@@ -225,7 +225,7 @@ Wisdom remembers where a user last was:
 - Detail view with table of contents and smooth scroll navigation
 - Read time estimation
 - Footer signs as "— MetaDJ" (sign-offs in body are stripped from render)
-- Header actions: **Summarize** starts a fresh MetaDJai chat for this reflection; **Ask MetaDJai** opens chat for follow‑up
+- Header actions: **Share** copies the deep link; **Summarize** starts a fresh MetaDJai chat with a context-aware summary prompt
 
 ### Journal
 

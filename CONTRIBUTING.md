@@ -1,6 +1,6 @@
 # Contributing to MetaDJ Nexus
 
-**Last Modified**: 2025-12-27 13:22 EST
+**Last Modified**: 2025-12-27 17:19 EST
 
 Thank you for your interest in contributing to MetaDJ Nexus. This guide covers the development workflow, code standards, and submission process.
 
@@ -50,8 +50,9 @@ At minimum, configure these in `.env.local`:
 OPENAI_API_KEY=sk-...
 
 # Optional: Additional AI providers
-GOOGLE_GENERATIVE_AI_API_KEY=...
+GOOGLE_API_KEY=...
 ANTHROPIC_API_KEY=...
+XAI_API_KEY=...
 ```
 
 See `.env.example` for all available options with detailed descriptions.
@@ -68,11 +69,10 @@ See `.env.example` for all available options with detailed descriptions.
 ### Development Server Options
 
 ```bash
-npm run dev           # Webpack dev + HTTPS (default, most stable)
-npm run dev:turbo     # Turbopack dev + HTTPS
-npm run dev:http      # Webpack dev + HTTP fallback
-npm run dev:http:turbo # Turbopack dev + HTTP fallback
-npm run dev:replit    # Replit port 5000
+npm run dev          # Turbopack dev + HTTPS (default)
+npm run dev:webpack  # Webpack dev + HTTPS (most stable)
+npm run dev:http     # HTTP fallback
+npm run dev:replit   # Replit port 5000
 ```
 
 ## Code Standards

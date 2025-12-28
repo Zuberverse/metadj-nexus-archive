@@ -1,6 +1,6 @@
 # App Storage Setup Guide — Audio & Visuals Streaming
 
-**Last Modified**: 2025-12-22 14:03 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ## Overview
 
@@ -32,7 +32,7 @@ MetaDJ Nexus uses **two separate App Storage buckets** for optimal organization:
 
 1. **`music` Bucket** (Bucket ID: `replit-objstore-9b258123-d246-442b-98a6-0acf8a8770e5`)
    - **Bucket Name**: `music` (as seen in Replit UI)
-   - **Environment Variable**: `MUSIC_BUCKET_ID` (compatibility: `AUDIO_BUCKET_ID`)
+   - **Environment Variable**: `MUSIC_BUCKET_ID` (alternate: `AUDIO_BUCKET_ID`)
    - **Purpose**: Hosts all audio tracks (320 kbps MP3 format)
    - **Organization**: Flat structure with numbered filenames (01 - Track Name (v0) - Mastered.mp3)
    - **API Route**: `/api/audio/[...path]`
@@ -44,7 +44,7 @@ MetaDJ Nexus uses **two separate App Storage buckets** for optimal organization:
    - **Organization**: Root folder with MetaDJ Performance Loop files
    - **API Route**: `/api/video/[...path]`
 
-> **Configuration Note**: Set `MUSIC_BUCKET_ID` (or compatibility `AUDIO_BUCKET_ID`) and `VISUALS_BUCKET_ID` in your environment
+> **Configuration Note**: Set `MUSIC_BUCKET_ID` (or alternate `AUDIO_BUCKET_ID`) and `VISUALS_BUCKET_ID` in your environment
 > for every production or Replit deployment. The defaults in `src/lib/replit-storage.ts` are a **development-only fallback**
 > and are automatically disabled in production builds unless `ALLOW_OBJECT_STORAGE_FALLBACK=true`.
 
@@ -142,7 +142,7 @@ visuals/
 
 Instead of instantiating `@replit/object-storage` clients inside every route, MetaDJ Nexus now uses:
 
-- `src/lib/replit-storage.ts` — exposes `getMusicBucket()`/`getVisualsBucket()` with development fallbacks and production-required bucket IDs via `MUSIC_BUCKET_ID` (compatibility `AUDIO_BUCKET_ID`) / `VISUALS_BUCKET_ID`.
+- `src/lib/replit-storage.ts` — exposes `getMusicBucket()`/`getVisualsBucket()` with development fallbacks and production-required bucket IDs via `MUSIC_BUCKET_ID` (alternate `AUDIO_BUCKET_ID`) / `VISUALS_BUCKET_ID`.
 - `src/lib/media/streaming.ts` — a shared `streamBucketFile()` helper that handles:
   - path sanitization + allowed-extension checks
   - metadata lookup, MIME enforcement, and ETag / Last-Modified headers
@@ -165,7 +165,7 @@ That shared pattern means:
 ### Environment & Secrets Handling
 
 - **Bucket defaults**: `replit-objstore-f682fa8b-5108-41aa-8e9f-6015fa3766ec` (`music`) and `replit-objstore-b107c12b-a7be-47ed-96ff-3decd5e445a3` (`visuals`) are the baked-in IDs used for production. Leave them untouched unless you’re purposely pointing at staging/forks.
-- **Overrides**: Set `MUSIC_BUCKET_ID` (or `AUDIO_BUCKET_ID` for older host configs) / `VISUALS_BUCKET_ID` only through the Replit Secrets UI. That keeps forks, staging repls, and CI runs isolated without editing source.
+- **Overrides**: Set `MUSIC_BUCKET_ID` (or `AUDIO_BUCKET_ID` where configured) / `VISUALS_BUCKET_ID` only through the Replit Secrets UI. That keeps forks, staging repls, and CI runs isolated without editing source.
 - **Other secrets** (Plausible domains, logging webhook, future Sentry keys) follow the same rule—document them in `.env.example`, but store real values exclusively in Replit Secrets. No additional `.env` files should be checked in.
 
 ### Track Configuration
@@ -565,7 +565,7 @@ Target File Size: 5-10 MB per track (3-5 min duration)
 - Highest quality MP3 encoding (near-transparent to source)
 - Constant bitrate ensures consistent quality throughout track
 - Balances file size (~10 MB) with streaming performance
-- Universal browser support with no compatibility issues
+- Universal browser support with no browser issues
 - Perceptually indistinguishable from lossless for most listeners
 
 **44.1 kHz Sample Rate:**
@@ -580,7 +580,7 @@ Target File Size: 5-10 MB per track (3-5 min duration)
 - **Streaming**: Fast loading and progressive playback
 - **Bandwidth**: Reasonable data usage for users
 - **Quality**: 320 kbps CBR is transparent for web playback
-- **Compatibility**: Universal support across all browsers/devices
+- **Support**: Universal across all browsers/devices
 - **Performance**: No decoding overhead vs lossless formats
 
 #### Production Workflow
@@ -612,11 +612,11 @@ Target File Size: 5-10 MB per track (3-5 min duration)
 
 ### Video Format Specifications
 
-MetaDJ Nexus cinema videos are optimized for quality, performance, and cross-browser compatibility.
+MetaDJ Nexus cinema videos are optimized for quality, performance, and cross-browser support.
 
 #### Dual-Format Strategy
 
-Provide two formats for maximum compatibility:
+Provide two formats for maximum support:
 
 **Primary: WebM (VP9 Codec)**
 ```
@@ -661,7 +661,7 @@ Browsers: Safari, iOS, all others (100% coverage)
 - ✅ Smooth motion for abstract/ambient content
 - ✅ 50% smaller file size vs 60 fps
 - ✅ Lower CPU/GPU load during playback
-- ✅ Better mobile device compatibility
+- ✅ Better mobile device support
 
 **60 fps (High-Motion):**
 - Use only for fast-motion or performance content
@@ -734,7 +734,7 @@ ffmpeg -i source-video.mp4 \
 - ✅ Use `metadj-avatar/` folder (or other descriptive folders) for cinema assets
 - ✅ Provide both WebM (primary) and MP4 (fallback) formats
 - ✅ Optimize encoding per specifications above
-- ✅ Test on Safari/iOS to ensure H.264 compatibility
+- ✅ Test on Safari/iOS to ensure H.264 support
 - ✅ Verify file sizes stay under 200 MB per file
 
 ### Performance Optimization

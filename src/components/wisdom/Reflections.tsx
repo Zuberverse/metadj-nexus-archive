@@ -1,9 +1,8 @@
 "use client"
 
 import { type FC, useCallback, useEffect, useMemo, useState } from "react"
-import { User, Layers, ChevronRight, Clock, MessageSquare, Share2, Sparkles } from "lucide-react"
+import { User, Layers, ChevronRight, Clock, Share2, Sparkles } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
-import { useUI } from "@/contexts/UIContext"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import { buildWisdomDeepLinkUrl, estimateSectionedReadTime, formatReadTime, stripSignoffParagraphs } from "@/lib/wisdom"
 import { TableOfContents } from "./TableOfContents"
@@ -19,7 +18,6 @@ interface ReflectionsProps {
 }
 
 export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, deeplinkId, onDeeplinkConsumed }) => {
-  const ui = useUI()
   const { showToast } = useToast()
   const [selectedReflection, setSelectedReflection] = useState<Reflection | null>(null)
 
@@ -74,7 +72,7 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
             Personal Stories & Insights
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
-            Explore MetaDJ&apos;s reality—personal narratives, origin stories, and the journey that
+            Explore MetaDJ&apos;s reality—personal narratives, origin stories, and the path that
             shaped this creative vision.
           </p>
         </header>
@@ -136,15 +134,6 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
     currentIndex >= 0 && currentIndex < reflectionsData.length - 1
       ? reflectionsData[currentIndex + 1]
       : null
-
-  const handleAskMetaDjAi = () => {
-    if (!ui.modals.isMetaDjAiOpen) {
-      ui.setMetaDjAiOpen(true)
-    }
-    if (!ui.panels.right.isOpen) {
-      ui.toggleRightPanel()
-    }
-  }
 
   const handleSummarizeWithMetaDjAi = () => {
     dispatchMetaDjAiPrompt({
@@ -229,14 +218,6 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Summarize
-              </button>
-              <button
-                type="button"
-                onClick={handleAskMetaDjAi}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/80 hover:bg-white/10 hover:text-white transition"
-              >
-                <MessageSquare className="h-3.5 w-3.5" />
-                Ask MetaDJai
               </button>
             </div>
           </div>

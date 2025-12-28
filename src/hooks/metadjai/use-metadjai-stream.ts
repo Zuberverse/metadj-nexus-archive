@@ -86,7 +86,7 @@ const KNOWN_TOOL_NAMES = new Set([
 ])
 
 /**
- * Track structured JSON accumulation state (Gemini compatibility)
+ * Track structured JSON accumulation state (Gemini JSON envelopes)
  * When we detect the start of a JSON payload, we track it until complete.
  */
 let structuredJsonBuffer = ''

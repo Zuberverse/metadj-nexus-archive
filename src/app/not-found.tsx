@@ -14,7 +14,7 @@ export default function NotFound() {
         </h1>
         
         <p className="text-white/80 font-sans mb-8 leading-relaxed">
-          The signal you&apos;re looking for isn&apos;t in my catalog. Head back to the hub to explore the frequency.
+          The signal you&apos;re looking for isn&apos;t in my catalog. Head back to the Hub to explore the frequency.
         </p>
 
         <Link

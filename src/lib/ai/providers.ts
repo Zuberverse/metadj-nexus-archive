@@ -20,6 +20,7 @@ import { createGoogleGenerativeAI, google } from '@ai-sdk/google'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createXai, xai } from '@ai-sdk/xai'
 import { getServerEnv } from '@/lib/env'
+import { logger } from '@/lib/logger'
 
 export type AIProvider = 'openai' | 'anthropic' | 'google' | 'xai'
 
@@ -115,7 +116,7 @@ function loadTokenCosts(): Record<string, { input: number; output: number }> {
       const overrides = JSON.parse(overrideEnv) as Record<string, { input: number; output: number }>
       Object.assign(costs, overrides)
     } catch {
-      console.warn('[AI Providers] Invalid AI_TOKEN_COSTS JSON, using defaults')
+      logger.warn('[AI Providers] Invalid AI_TOKEN_COSTS JSON, using defaults')
     }
   }
 

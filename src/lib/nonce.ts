@@ -9,7 +9,7 @@
  * Generate a cryptographically secure nonce for CSP headers
  *
  * Uses crypto.getRandomValues for randomness, with multiple encoding
- * strategies for runtime compatibility (Buffer, btoa, hex fallback).
+ * strategies for runtime support (Buffer, btoa, hex fallback).
  *
  * @returns Base64-encoded nonce string (or hex if no encoder available)
  * @example
@@ -36,4 +36,3 @@ export function generateNonce(): string {
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("")
 }
-

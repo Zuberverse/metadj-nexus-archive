@@ -2,7 +2,7 @@
 
 > **React Context providers for MetaDJ Nexus state management**
 
-**Last Modified**: 2025-12-22 19:12 EST
+**Last Modified**: 2025-12-27 15:24 EST
 ## Overview
 
 MetaDJ Nexus uses 7 React Context providers for global state. Contexts can be imported directly from their files or via the `@/contexts` barrel export.
@@ -51,7 +51,7 @@ Providers are nested in this order in `src/app/layout.tsx` (omitting non-provide
 ```
 
 **Why this order matters**
-- `UIProvider` depends on `ModalProvider` (UI re-exports modal state/setters for backward compatibility).
+- `UIProvider` depends on `ModalProvider` (UI re-exports modal state/setters for centralized access).
 - `TourProvider` depends on `UIProvider` (tour steps open panels and modals).
 - `PlayerProvider` depends on `ToastProvider` (volume/mute feedback toasts).
 - `PlaylistProvider` depends on `ToastProvider` + `QueueProvider` (`playPlaylist()` and playlist CRUD toasts).
@@ -71,7 +71,7 @@ import { ModalProvider, useModal } from '@/contexts/ModalContext';
 ```
 
 **Persistence**
-- Welcome auto-open gating uses `STORAGE_KEYS.WELCOME_SHOWN` + `metadj_welcome_shown_session` (compatibility override: `STORAGE_KEYS.WELCOME_DISMISSED`).
+- Welcome auto-open gating uses `STORAGE_KEYS.WELCOME_SHOWN` + `metadj_welcome_shown_session` (alternate key: `STORAGE_KEYS.WELCOME_DISMISSED`).
 
 ---
 

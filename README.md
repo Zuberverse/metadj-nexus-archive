@@ -5,7 +5,7 @@
 > The primary creative hub for MetaDJ — where human vision meets AI-driven execution to uplift and inspire as you pioneer the Metaverse
 
 *Version: 0.9.46*
-**Last Modified**: 2025-12-27 13:11 EST
+**Last Modified**: 2025-12-27 17:19 EST
 **Platform:** MetaDJ Nexus at **metadj.ai**
 **Social:** **@metadjai**
 
@@ -145,14 +145,14 @@ For detailed setup instructions, environment configuration, and troubleshooting,
 ## Development
 
 ```bash
-npm run dev         # https://localhost:8100 (webpack dev, most stable)
-npm run dev:turbo   # https://localhost:8100 (Turbopack dev)
-npm run dev:http    # http://localhost:8100 (webpack dev, HTTP fallback)
+npm run dev         # https://localhost:8100 (Turbopack dev, default)
+npm run dev:webpack # https://localhost:8100 (webpack dev, most stable)
+npm run dev:http    # http://localhost:8100 (HTTP fallback)
 ```
 
 ### Troubleshooting
 
-- If you hit Turbopack HMR issues (e.g. `No link element found for chunk ...globals...css`), run `npm run dev` (webpack) or `npm run dev:webpack`.
+- If you hit Turbopack HMR issues (e.g. `No link element found for chunk ...globals...css`), run `npm run dev:webpack`.
 - If `npm run dev` or `npm run build` hangs at `Compiling …`, check that Tailwind’s PostCSS `base` is scoped to `src/` (avoids scanning `node_modules.nosync`) in `postcss.config.js`.
 - If you see a dev-only hydration warning involving the JSON-LD `structured-data` script, confirm `src/app/layout.tsx` includes `suppressHydrationWarning` on that `<script>`.
 

@@ -1,7 +1,7 @@
 /**
  * Collection Utilities Tests
  *
- * Tests for collection slug normalization and legacy alias handling.
+ * Tests for collection slug normalization and alias handling.
  */
 
 import { describe, it, expect } from 'vitest'
@@ -63,7 +63,7 @@ describe('normalizeCollectionSlug', () => {
     expect(normalizeCollectionSlug('Ethereal AI')).toBe('ethereal-ai')
   })
 
-  it('resolves legacy alias for metaverse-revalation', () => {
+  it('resolves alias for metaverse-revalation', () => {
     // Typo: "revalation" should be "revelation"
     expect(normalizeCollectionSlug('metaverse-revalation')).toBe('metaverse-revelation')
   })

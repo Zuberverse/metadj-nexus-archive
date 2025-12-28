@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-26 18:36 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ## Overview
 
@@ -104,7 +104,7 @@ vec3 colorBlend = brandCyan * c1 + brandPurple * c2 + brandMagenta * c3;
 
 All visualizers use `@react-three/postprocessing` Bloom:
 
-**Implementation Note**: `three` is intentionally pinned to the 0.181.x line to satisfy `postprocessing` peer compatibility. If upgrading Three.js, upgrade postprocessing in lockstep and re‑verify visualizer stability.
+**Implementation Note**: `three` is intentionally pinned to the 0.181.x line to satisfy `postprocessing` peer dependency requirements. If upgrading Three.js, upgrade postprocessing in lockstep and re‑verify visualizer stability.
 
 | Visualizer | Threshold | Intensity | Radius |
 |------------|-----------|-----------|--------|

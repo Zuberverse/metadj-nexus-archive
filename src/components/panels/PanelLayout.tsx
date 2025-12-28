@@ -41,6 +41,7 @@ export function PanelLayout({
 
       <main
         id="main-content"
+        tabIndex={-1}
         className="min-h-screen flex flex-col overflow-x-hidden"
         style={wrapperStyle}
       >

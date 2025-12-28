@@ -1,6 +1,6 @@
 # MetaDJ Nexus API Documentation
 
-**Last Modified**: 2025-12-27 15:01 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ## Overview
 
@@ -456,7 +456,7 @@ curl https://localhost:8100/api/daydream/streams/stream_abc123/status
 
 Updates stream parameters (prompt, guidance, etc.) for an active stream. Used to update prompts, guidance scale, and other dynamic parameters during streaming.
 
-**IMPORTANT**: Per Daydream’s official OpenAPI, upstream expects `PATCH /v1/streams/{id}` with `{ pipeline, params }`. This proxy endpoint accepts `{ pipeline, params }` (preferred) and also supports compatibility `{ params }` or a flat params object, then normalizes upstream.
+**IMPORTANT**: Per Daydream’s official OpenAPI, upstream expects `PATCH /v1/streams/{id}` with `{ pipeline, params }`. This proxy endpoint accepts `{ pipeline, params }` (preferred) and also accepts `{ params }` or a flat params object, then normalizes upstream.
 
 **Request Body**:
 ```typescript
@@ -667,7 +667,7 @@ data: {"type":"text-delta","delta":" there"}
 data: {"type":"finish"}
 ```
 
-**Note**: The frontend stream parser accepts SSE UI streams and legacy data stream formats for compatibility, but the server emits SSE UI events by default.
+**Note**: The frontend stream parser accepts SSE UI streams and data stream formats as a fallback, but the server emits SSE UI events by default.
 
 **Status Codes**:
 Same as `/api/metadjai`

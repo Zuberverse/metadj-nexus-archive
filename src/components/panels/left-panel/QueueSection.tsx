@@ -151,8 +151,8 @@ export function QueueSection({
               </div>
 
               <div className="space-y-2 max-w-[240px]">
-                <h3 className="text-base font-heading font-bold text-white/90">Your journey starts here</h3>
-                <p className="text-xs text-muted-accessible leading-relaxed">The queue is waiting for your selection. Find a track to begin your experience.</p>
+                <h3 className="text-base font-heading font-bold text-white/90">Your session starts here</h3>
+                <p className="text-xs text-muted-accessible leading-relaxed">The queue is waiting for your selection. Find a track to begin the session.</p>
               </div>
 
               <button

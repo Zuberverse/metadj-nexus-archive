@@ -2,7 +2,7 @@
 
 > **Canonical naming standards for consistent code organization**
 
-**Last Modified**: 2025-12-19 20:50 EST
+**Last Modified**: 2025-12-27 15:24 EST
 **Status**: Authoritative Standard
 
 ## Overview
@@ -370,7 +370,7 @@ src/components/
     index.ts              ✓ barrel export
 ```
 
-**Rationale**: Directory names use kebab-case for URL/filesystem compatibility, while component files use PascalCase to match their exported component names (React convention).
+**Rationale**: Directory names use kebab-case for URL/filesystem support, while component files use PascalCase to match their exported component names (React convention).
 
 ### Feature Directories
 

@@ -26,7 +26,7 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
         element: '#tour-start-cinematic',
         popover: {
             title: 'Start Cinematic Experience',
-            description: 'Launch the hero track and open Cinema for a full-screen visual ride.',
+            description: 'Launch the hero track and open Cinema for a full-screen visual layer.',
             side: 'bottom',
             align: 'start',
         },

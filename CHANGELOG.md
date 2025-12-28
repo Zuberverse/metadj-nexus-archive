@@ -1,11 +1,32 @@
 # Changelog
 
-**Last Modified**: 2025-12-26 11:17 EST
+**Last Modified**: 2025-12-27 17:19 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2025-12-27
+
+**Security**
+- Wired `src/middleware.ts` to activate CSP/nonce headers and proxy rate limiting.
+- Expanded CSP `connect-src` to include Gemini and xAI endpoints.
+- Added per-client rate limiting on `/api/log`.
+
+**Accessibility**
+- Ensured skip-link targets are focusable across desktop and mobile shells.
+
+**Standards**
+- Added `npm run format` (eslint --fix) and aligned project coordination docs.
+
+**Logging**
+- Routed middleware and rate limiter warnings/errors through `logger` for consistent handling.
+- Normalized forwarded IP parsing for API rate limit keys.
+
+**Documentation**
+- Aligned dev server commands in README, Quickstart, and Contributing docs with package scripts.
+- Corrected Google provider env var naming in Contributing setup notes.
 
 ### 2025-12-26
 

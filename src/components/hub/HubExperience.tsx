@@ -147,7 +147,7 @@ export function HubExperience({
         icon: Sparkles,
         title: reflection.title,
         excerpt: reflection.excerpt,
-        meta: "Journey notes",
+        meta: "Reflection notes",
         accent: "from-indigo-900/60 via-purple-900/50 to-violet-900/40",
       },
     ]
@@ -190,7 +190,7 @@ export function HubExperience({
             className="group w-full xs:w-auto min-w-48 h-14 py-3 text-lg bg-white/5 hover:bg-white/10 border-purple-400/30 hover:border-cyan-400/50 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]"
             leftIcon={<MessageSquare className="h-5 w-5 shrink-0 text-cyan-300 group-hover:text-cyan-200 transition-colors" />}
           >
-            <span className="text-gradient-hero font-semibold">Chat With MetaDJai</span>
+            <span className="text-gradient-hero font-semibold">Chat with MetaDJai</span>
           </Button>
         </div>
       </section>

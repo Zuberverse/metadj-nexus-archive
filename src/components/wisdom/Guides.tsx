@@ -1,9 +1,8 @@
 "use client"
 
 import { type FC, useCallback, useEffect, useMemo, useState } from "react"
-import { BookOpen, Layers, ChevronRight, Clock, MessageSquare, Share2, Sparkles } from "lucide-react"
+import { BookOpen, Layers, ChevronRight, Clock, Share2, Sparkles } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
-import { useUI } from "@/contexts/UIContext"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import { buildWisdomDeepLinkUrl, estimateSectionedReadTime, formatReadTime, stripSignoffParagraphs } from "@/lib/wisdom"
 import { TableOfContents } from "./TableOfContents"
@@ -19,7 +18,6 @@ interface GuidesProps {
 }
 
 export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplinkConsumed }) => {
-  const ui = useUI()
   const { showToast } = useToast()
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null)
 
@@ -77,7 +75,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
             In-depth guides for you—music production, DJing, AI tools, the Metaverse, and creative
-            techniques that empower your journey.
+            techniques that empower your work.
           </p>
         </header>
 
@@ -140,15 +138,6 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
   const currentIndex = guides.findIndex((guide) => guide.id === selectedGuide.id)
   const previousGuide = currentIndex > 0 ? guides[currentIndex - 1] : null
   const nextGuide = currentIndex >= 0 && currentIndex < guides.length - 1 ? guides[currentIndex + 1] : null
-
-  const handleAskMetaDjAi = () => {
-    if (!ui.modals.isMetaDjAiOpen) {
-      ui.setMetaDjAiOpen(true)
-    }
-    if (!ui.panels.right.isOpen) {
-      ui.toggleRightPanel()
-    }
-  }
 
   const handleSummarizeWithMetaDjAi = () => {
     dispatchMetaDjAiPrompt({
@@ -241,14 +230,6 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Summarize
-              </button>
-              <button
-                type="button"
-                onClick={handleAskMetaDjAi}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/80 hover:bg-white/10 hover:text-white transition"
-              >
-                <MessageSquare className="h-3.5 w-3.5" />
-                Ask MetaDJai
               </button>
             </div>
           </div>

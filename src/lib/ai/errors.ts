@@ -33,19 +33,19 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
   // Provider errors
   {
     pattern: /openai|gpt|api error/i,
-    userMessage: "MetaDJai is thinking too hard. Let's try that again.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
   },
   {
     pattern: /anthropic|claude/i,
-    userMessage: "MetaDJai is thinking too hard. Let's try that again.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
   },
   {
     pattern: /google|gemini/i,
-    userMessage: "MetaDJai is thinking too hard. Let's try that again.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
   },
   {
     pattern: /grok|xai/i,
-    userMessage: "MetaDJai is thinking too hard. Let's try that again.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
   },
 
   // Streaming errors
@@ -63,7 +63,7 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
   // Server errors
   {
     pattern: /500|502|503|504|server error|internal error/i,
-    userMessage: "Something's off on our end. Give it another try in a moment.",
+    userMessage: "Server issue. Give it another try in a moment.",
   },
 
   // Validation errors

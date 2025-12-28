@@ -1,6 +1,6 @@
 # Error Tracking Setup Guide
 
-**Last Modified**: 2025-12-22 16:51 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 > **Capture and triage client-side errors automatically with Sentry**
 
@@ -759,7 +759,7 @@ Error: "AbortError: The play() request was interrupted"
   Fix: User interaction before playback
 
 Error: "DOMException: The element has no supported sources"
-  Context: Codec incompatibility
+  Context: Codec support gap
   Priority: High
   Fix: Multiple source formats (MP3 + WebM)
 ```

@@ -201,7 +201,7 @@ export async function checkRateLimit(
  * Update rate limit counter (no-op for Upstash)
  *
  * Upstash Ratelimit automatically increments on limit() call.
- * This function exists for API compatibility with in-memory version.
+ * This function exists for API parity with the in-memory version.
  */
 export function updateRateLimit(_identifier: string): void {
   // No-op: Upstash handles this automatically

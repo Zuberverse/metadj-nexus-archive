@@ -2,7 +2,7 @@
 
 > **Keyboard accessibility patterns for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-19 17:08 EST
+**Last Modified**: 2025-12-27 15:24 EST
 
 ## Overview
 
@@ -388,7 +388,7 @@ test('page has no accessibility violations', async () => {
 ### Key Points for Users
 
 - Most shortcuts require **Ctrl** (Windows/Linux) or **Cmd** (Mac) modifier
-- This ensures compatibility with screen readers and assistive technology
+- This ensures support for screen readers and assistive technology
 - `?` key opens the shortcuts help modal (no modifier required)
 - Shortcuts are disabled when typing in search, chat, or other inputs
 - Use Tab to navigate through all controls with visible focus indicators
