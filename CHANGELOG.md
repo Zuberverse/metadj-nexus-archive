@@ -1,6 +1,6 @@
 # Changelog
 
-**Last Modified**: 2025-12-29 15:35 EST
+**Last Modified**: 2025-12-29 17:45 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
@@ -35,6 +35,12 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 - Verified security posture: `.env.local` and `.next/` properly gitignored and never committed to history.
 - Analyzed and documented intentional TypeScript suppressions (4 total, all with rationale comments).
 - Reviewed large hook architecture (`use-dream.ts`, 1,273 lines) and determined it's a well-documented state machine that shouldn't be refactored.
+
+**MetaDJai Enhancements**
+- Added Dream context awareness: MetaDJai now knows when Dream is active and adjusts responses accordingly (`dreamActive` flag + `<dream_mode>` prompt block).
+- Added Cinema scene personality: MetaDJai provides scene-specific personality hints when Cinema is active (e.g., "Cosmic vibes — galaxies spiraling" for Cosmos scene).
+- Added session duration awareness: MetaDJai can acknowledge long sessions (30+ min) naturally when contextually appropriate.
+- Added Dream feature to `getPlatformHelp` tool for user guidance on real-time avatar transformation.
 
 ### 2025-12-28
 

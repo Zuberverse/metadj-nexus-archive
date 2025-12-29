@@ -65,7 +65,7 @@
 - secure-code-guardian (security posture)
 - performance-optimizer (Core Web Vitals + runtime perf)
 - dependency-manager (dependency audit)
-- documentation-gap-finder (docs coverage)
+- system-documentation-auditor (docs coverage)
 - test-generator (coverage gaps)
 - timestamp-updater (docs maintenance)
 

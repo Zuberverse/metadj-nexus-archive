@@ -338,6 +338,28 @@ const SURFACE_LABELS: Record<string, string> = {
   queue: 'Queue',
 }
 
+/**
+ * Scene-specific personality hints for MetaDJai
+ * These add character when the user is in Cinema mode with a specific visualizer
+ */
+const SCENE_PERSONALITIES: Record<string, string> = {
+  'cosmos': 'Cosmic vibes — galaxies spiraling, particles dancing. A good space for expansive thinking.',
+  'black-hole': 'Going deep into the void. I\'ll be here when you surface.',
+  'space-travel': 'Warp speed ahead. Let the starfield carry you.',
+  'disco-ball': 'Glittering facets catching light. Pure party energy.',
+  'pixel-paradise': 'Retro-future portal vibes. Neon pixels orbiting the gateway.',
+  'pixel-portal': 'Retro-future portal vibes. Neon pixels orbiting the gateway.',
+  'synthwave-horizon': 'Outrun aesthetic — neon sun on a cosmic horizon.',
+  'eight-bit-adventure': '8-bit quest mode. Pixel heroes and beat-synced sword slashes.',
+  '8-bit-adventure': '8-bit quest mode. Pixel heroes and beat-synced sword slashes.',
+  'metadj-avatar': 'Watching the signature MetaDJ visual.',
+}
+
+function getScenePersonality(sceneName: string): string {
+  const normalized = sceneName.toLowerCase().replace(/\s+/g, '-')
+  return SCENE_PERSONALITIES[normalized] ?? 'Immersed in the visual experience.'
+}
+
 export function buildMetaDjAiSystemInstructions(
   context?: MetaDjAiContext | null,
   personalization?: MetaDjAiPersonalization | null,
@@ -435,7 +457,20 @@ They're browsing the ${safeCollection} collection but haven't loaded a track yet
   }
 
   if (context?.cinemaActive) {
-    sections.push(`<visual_mode>They have Cinema visuals on — the immersive visual experience.</visual_mode>`)
+    const sceneName = context.cinemaScene
+      ? sanitizeContextValue(context.cinemaScene, 40)
+      : undefined
+
+    // Scene-specific personality hints
+    const scenePersonality = sceneName
+      ? getScenePersonality(sceneName)
+      : 'Going deep today. I\'ll be here when you surface.'
+
+    sections.push(`<visual_mode>
+They have Cinema visuals on — the immersive visual experience.${sceneName ? ` Currently in ${sceneName} mode.` : ''}
+${scenePersonality}
+Keep responses lighter when they're in the visual experience — they might be focused on the visuals.
+</visual_mode>`)
   }
 
   if (context?.wisdomActive) {
@@ -450,6 +485,17 @@ Right now it's running in avatar mode with a default visual style — custom pro
 If they ask about customizing the look, be honest that prompt customization is coming but isn't available yet.
 Keep this context light — they might be focused on the visual experience.
 </dream_mode>`)
+  }
+
+  // Session duration awareness (subtle, not for every message)
+  if (context?.sessionStartedAt) {
+    const minutesElapsed = Math.floor((Date.now() - context.sessionStartedAt) / 60000)
+    if (minutesElapsed >= 30) {
+      sections.push(`<session_context>
+This conversation has been going for about ${minutesElapsed} minutes.
+If it feels natural, acknowledge the time we've spent together — something like "we've been vibing for a while" or "thanks for hanging with me" — but only if it fits the moment. Don't force it.
+</session_context>`)
+    }
   }
 
   if (context?.contentContext?.view === "wisdom") {

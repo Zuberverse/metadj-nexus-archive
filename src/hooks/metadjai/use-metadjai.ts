@@ -242,9 +242,22 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     deleteSession,
   } = useMetaDjAiMessages()
   const { rateLimit, canSend, recordSend } = useMetaDjAiRateLimit()
+
+  // Derive session start time from first message
+  const sessionStartedAt = useMemo(() => {
+    const firstMessage = messages.find(
+      (m) => m.kind !== 'mode-switch' && m.kind !== 'model-switch'
+    )
+    return firstMessage?.createdAt ?? undefined
+  }, [messages])
+
   const mergedContext: MetaDjAiContext | null = useMemo(
-    () => (context ? { ...context, mode: 'adaptive' } : { mode: 'adaptive' }),
-    [context]
+    () => ({
+      ...(context ?? {}),
+      mode: 'adaptive' as const,
+      sessionStartedAt,
+    }),
+    [context, sessionStartedAt]
   )
   const personalizationPayload = useMemo(
     () => buildPersonalizationPayload(personalization),

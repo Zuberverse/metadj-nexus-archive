@@ -2,7 +2,7 @@
 
 > **Complete reference for Vercel AI SDK implementation in MetaDJ Nexus**
 
-**Last Modified**: 2025-12-28 13:26 EST
+**Last Modified**: 2025-12-29 17:50 EST
 
 ## Overview
 
@@ -378,7 +378,7 @@ export const searchCatalog = {
 export const getPlatformHelp = {
   description: 'Get contextual help about MetaDJ Nexus platform features...',
   inputSchema: z.object({
-    feature: z.enum(['music', 'cinema', 'wisdom', 'queue', 'search', 'metadjai', 'shortcuts', 'overview']),
+    feature: z.enum(['hub', 'music', 'cinema', 'dream', 'wisdom', 'queue', 'search', 'metadjai', 'shortcuts', 'overview']),
   }),
   execute: async ({ feature }) => {
     // Returns feature-specific documentation including:
@@ -452,7 +452,7 @@ export function getTools(provider: 'openai' | 'anthropic' | 'google' | 'xai', op
 
 **Tool Architecture**:
 - **searchCatalog**: Custom tool accessing local JSON data for precise music answers
-- **getPlatformHelp**: Contextual help for all platform features (Music, Cinema, Wisdom, Queue, Search, MetaDJai)
+- **getPlatformHelp**: Contextual help for all platform features (Hub, Music, Cinema, Dream, Wisdom, Queue, Search, MetaDJai, Shortcuts)
 - **getRecommendations**: Mood-based and similarity-based track recommendations using local catalog data
 - **getZuberantContext**: Knowledge base search for MetaDJ, Zuberant, broader ecosystem vision, philosophy, identity, and workflows content
 - **getWisdomContent**: Pull full Wisdom item text for summaries or context-aware responses

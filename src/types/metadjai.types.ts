@@ -118,9 +118,13 @@ export interface MetaDjAiContext {
     title?: string;
   };
   cinemaActive?: boolean;
+  /** Current Cinema scene ID (e.g., 'cosmos', 'black-hole', 'synthwave-horizon') */
+  cinemaScene?: string;
   wisdomActive?: boolean;
   /** Dream is active when streaming webcam-to-avatar transformation */
   dreamActive?: boolean;
+  /** Unix timestamp (ms) when the current chat session started */
+  sessionStartedAt?: number;
   catalogSummary?: {
     totalCollections: number;
     collectionTitles: string[];

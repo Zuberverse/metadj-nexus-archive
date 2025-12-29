@@ -1,5 +1,7 @@
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
+import { DEFAULT_SCENE_ID } from "@/data/scenes"
+import { STORAGE_KEYS, getString } from "@/lib/storage/persistence"
 import type { usePlayer } from "@/contexts/PlayerContext"
 import type { useQueue } from "@/contexts/QueueContext"
 import type { useUI } from "@/contexts/UIContext"
@@ -39,6 +41,18 @@ export function useMetaDjAiContext({
   tracks,
 }: UseMetaDjAiContextProps) {
   const hasUserSelectedCollection = ui.selectedCollectionSource === "user"
+
+  /**
+   * Cinema scene state - read from localStorage when Cinema is active.
+   * CinemaOverlay persists the selected scene; we sync here for AI context.
+   */
+  const [cinemaScene, setCinemaScene] = useState<string>(DEFAULT_SCENE_ID)
+
+  useEffect(() => {
+    if (!cinemaEnabled) return
+    const stored = getString(STORAGE_KEYS.CINEMA_SCENE, DEFAULT_SCENE_ID)
+    setCinemaScene(stored)
+  }, [cinemaEnabled])
   const shouldMentionCollection = Boolean(player.currentTrack) || hasUserSelectedCollection
 
   /**
@@ -170,6 +184,7 @@ export function useMetaDjAiContext({
       nowPlayingArtist: player.currentTrack?.artist ?? undefined,
       selectedCollectionTitle: shouldMentionCollection ? selectedCollectionTitle : undefined,
       cinemaActive: cinemaEnabled,
+      cinemaScene: cinemaEnabled ? cinemaScene : undefined,
       wisdomActive: ui.modals.isWisdomOpen,
       dreamActive,
       pageContext: metaDjAiPageContext,
@@ -182,6 +197,7 @@ export function useMetaDjAiContext({
       selectedCollectionTitle,
       shouldMentionCollection,
       cinemaEnabled,
+      cinemaScene,
       ui.modals.isWisdomOpen,
       dreamActive,
       metaDjAiPageContext,
