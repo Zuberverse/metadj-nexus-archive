@@ -1,6 +1,6 @@
 # MetaDJ Nexus API Documentation
 
-**Last Modified**: 2025-12-28 13:28 EST
+**Last Modified**: 2025-12-29 16:45 EST
 
 ## Overview
 
@@ -31,6 +31,7 @@ Streams MP3 audio files from Replit App Storage with range support, caching, and
 - `304 Not Modified` — Cache hit (ETag / If-None-Match)
 - `400 Bad Request` — Invalid/unsafe path (blocked by sanitization)
 - `404 Not Found` — File missing (or blocked by content-type guard)
+- `429 Too Many Requests` — Rate limit exceeded (when rate limiting enabled)
 - `503 Service Unavailable` — Storage bucket unavailable
 - `500 Internal Server Error` — Unexpected streaming error
 
@@ -64,6 +65,7 @@ Streams video files from Replit App Storage for Cinema visuals.
 - `304 Not Modified` — Cache hit (ETag / If-None-Match)
 - `400 Bad Request` — Invalid/unsafe path (blocked by sanitization)
 - `404 Not Found` — File missing or unsupported extension
+- `429 Too Many Requests` — Rate limit exceeded (when rate limiting enabled)
 - `503 Service Unavailable` — Storage bucket unavailable
 - `500 Internal Server Error` — Unexpected streaming error
 
@@ -184,6 +186,11 @@ Endpoints proxy Daydream's StreamDiffusion API and WHIP ingest to protect secret
 **Ownership**
 - Mutating endpoints (PATCH parameters, DELETE stream, WHIP POST/PATCH/DELETE) require the active session that created the stream.
 - Requests from other sessions return `403`.
+
+**Rate Limiting**
+- Single active stream per client + 30s cooldown between stream creations.
+- Uses in-memory storage by default; Upstash Redis when configured for distributed enforcement.
+- Optional fail-closed behavior with `RATE_LIMIT_FAIL_CLOSED=true`.
 
 ---
 
@@ -357,6 +364,23 @@ curl -X POST https://localhost:8100/api/daydream/streams \
 
 ---
 
+#### `GET /api/daydream/streams/[streamId]/whip` (also supports `HEAD`)
+
+WHIP endpoint availability check. Returns 204 if stream exists and is ready.
+
+**Query Parameters**:
+- `resource` (required) — URL-encoded WHIP endpoint from `whip_url`
+
+**Status Codes**:
+| Code | Description |
+|------|-------------|
+| `204` | Stream exists and is ready for WHIP connection |
+| `400` | Missing resource URL |
+| `403` | Forbidden WHIP host or stream not owned by active session |
+| `404` | Stream not found |
+
+---
+
 #### `POST /api/daydream/streams/[streamId]/whip`
 
 WHIP proxy endpoint for SDP offer. Initiates WebRTC connection.
@@ -463,6 +487,7 @@ interface DaydreamStreamStatusResponse {
 |------|-------------|
 | `200` | Status returned |
 | `400` | Missing streamId |
+| `403` | Stream not owned by active session |
 | `404` | Stream not found |
 | `504` | Upstream timeout |
 | `500` | Unexpected error |
@@ -641,13 +666,15 @@ Checks if Daydream API is configured. Used to enable/disable Dream controls.
 ```typescript
 interface ConfigResponse {
   configured: boolean
+  enabled: boolean  // Whether Dream feature is enabled (configured + no active errors)
 }
 ```
 
 **Response Example**:
 ```json
 {
-  "configured": true
+  "configured": true,
+  "enabled": true
 }
 ```
 
@@ -736,7 +763,10 @@ Form fields:
 **Error Cases**:
 - `400` — Missing file
 - `413` — File too large
-- `502` — Transcription returned no text
+- `429` — Rate limit exceeded
+- `500` — Internal server error during transcription
+- `502` — Transcription returned no text or AI provider error
+- `504` — Transcription request timed out
 
 ### Health Check
 
@@ -802,6 +832,12 @@ Forwards client-side logs to external logging service.
 - `200 OK` — Log forwarded successfully
 - `400 Bad Request` — Invalid payload
 - `403 Forbidden` — Invalid client key or origin
+- `429 Too Many Requests` — Rate limit exceeded
+
+**Rate Limiting**:
+- 100 log entries per minute per client
+- IP-based identification with fingerprint fallback
+- Returns `Retry-After` header when limited
 
 **Security**:
 - Origin validation
@@ -831,6 +867,8 @@ Returns the Wisdom content payload used by the Wisdom experience (Thoughts, Guid
 - 60 requests per minute per client
 - IP-based identification with fallback to browser fingerprint
 - Returns `Retry-After` header when limited
+- Uses Upstash Redis when configured (distributed); falls back to in-memory for single instance
+- Optional fail-closed behavior with `RATE_LIMIT_FAIL_CLOSED=true`
 
 **Caching**:
 - Revalidated hourly (`export const revalidate = 3600`)
@@ -1308,7 +1346,7 @@ Clears all rate limit records. **Development mode only**.
 **Status Codes**:
 - `200 OK` — Rate limits cleared
 - `401 Unauthorized` — Missing/invalid `X-Dev-Secret`, or missing `X-Dev-Token` when `DEV_API_TOKEN` is set
-- `403 Forbidden` — Production (deny-list) or not in `NODE_ENV=development`
+- `404 Not Found` — Not in development mode (`NODE_ENV !== 'development'`)
 - `503 Service Unavailable` — `DEV_SECRET` not configured (endpoint disabled)
 
 ---

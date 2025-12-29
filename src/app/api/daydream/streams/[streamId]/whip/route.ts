@@ -74,9 +74,9 @@ function buildProxyLocation(origin: string, streamId: string, upstreamLocation: 
   return `${origin}/api/daydream/streams/${encodeURIComponent(streamId)}/whip?resource=${encodeURIComponent(absolute)}`
 }
 
-function assertStreamOwnership(req: NextRequest, streamId: string) {
+async function assertStreamOwnership(req: NextRequest, streamId: string) {
   const { id: clientId } = getClientIdentifier(req)
-  const activeStream = getActiveStream(clientId)
+  const activeStream = await getActiveStream(clientId)
   if (!activeStream || activeStream.streamId !== streamId) {
     if (process.env.NODE_ENV !== "production") {
       logger.warn("[Dream] WHIP session mismatch", {
@@ -102,7 +102,7 @@ async function proxyRequest(
   if (!streamId) {
     throw new Response("Missing streamId", { status: 400 })
   }
-  assertStreamOwnership(req, streamId)
+  await assertStreamOwnership(req, streamId)
   const target = resolveResource(req)
 
   const headers: Record<string, string> = {

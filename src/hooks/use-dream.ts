@@ -3,7 +3,7 @@
 /**
  * Daydream AI Video Integration Hook
  *
- * Manages the full lifecycle of AI-powered video generation via the Daydream API
+ * Manages the full lifecycle of AI-driven video generation via the Daydream API
  * (StreamDiffusion backend). This hook handles:
  *
  * - Stream creation and configuration via `/api/daydream/streams`
@@ -76,7 +76,7 @@ interface UseDreamOptions {
  * React hook for Daydream AI video streaming integration.
  *
  * Provides a complete interface for starting, stopping, and monitoring
- * AI-powered video generation streams via the Daydream API.
+ * AI-driven video generation streams via the Daydream API.
  *
  * @param options - Configuration options for the dream stream
  * @returns Object containing:

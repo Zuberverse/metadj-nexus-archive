@@ -780,8 +780,8 @@ export const Journal: FC = () => {
         <section className="relative space-y-4 max-w-6xl mx-auto px-4 sm:px-6 lg:px-6 pt-4 min-[1100px]:pt-6 pb-24 min-[1100px]:pb-6">
             <header className="flex items-center justify-between gap-4 border-b border-white/10 pb-3">
                 <div>
-                    <h2 className="text-xl min-[1100px]:text-3xl font-heading font-bold text-gradient-hero text-pop">
-                        Journal
+                    <h2 className="text-xl min-[1100px]:text-3xl font-heading font-bold text-pop">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">Journal</span>
                     </h2>
                     <p className="text-white/60 text-xs min-[1100px]:text-sm">
                         Your personal space

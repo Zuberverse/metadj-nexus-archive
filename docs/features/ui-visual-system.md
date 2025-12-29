@@ -2,7 +2,7 @@
 
 > **Source of truth for MetaDJ Nexus's premium glass-neon presentation**
 
-**Last Modified**: 2025-12-28 16:59 EST
+**Last Modified**: 2025-12-29 12:28 EST
 
 ---
 
@@ -407,4 +407,4 @@ MetaDJ Nexus is built with a mobile-first approach, ensuring optimal touch inter
 - **Additional overlays** follow the `glass-card` template: deep blur, 20px white border alpha, heavy purple shadow, and wide-spacing typography.
 - **Icons** come from Lucide with 1.5–2px stroke; maintain white/70 idle, white/100 active states.
 
-MetaDJ AI and future MetaDJ surfaces should import these tokens and patterns directly (colors, gradients, glass surfaces, typography, interaction states) to guarantee consistent brand presence.
+MetaDJai and future MetaDJ surfaces should import these tokens and patterns directly (colors, gradients, glass surfaces, typography, interaction states) to guarantee consistent brand presence.

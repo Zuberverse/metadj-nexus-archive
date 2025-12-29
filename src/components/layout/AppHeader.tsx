@@ -90,7 +90,7 @@ export function AppHeader({
 
   // Navigation pill state - animate between tabs only after view hydration
   // Use a fixed width to avoid hydration wobble when fonts load.
-  const NAV_BUTTON_WIDTH = 140
+  const NAV_BUTTON_WIDTH = 130
   const iconSizes: Record<ActiveView, string> = {
     hub: "h-4 w-4",
     cinema: "h-[19px] w-[19px]",
@@ -98,7 +98,7 @@ export function AppHeader({
     journal: "h-4 w-4",
   }
   const [pillTransitionsEnabled, setPillTransitionsEnabled] = useState(false)
-  const [pillStyle, setPillStyle] = useState({ left: 6, width: NAV_BUTTON_WIDTH }) // Hub button offset + fixed width
+  const [pillStyle, setPillStyle] = useState({ left: 4, width: NAV_BUTTON_WIDTH }) // Hub button offset + fixed width
   const navRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
   const pillStyleId = useCspStyle({
     left: `${pillStyle.left}px`,
@@ -256,7 +256,7 @@ export function AppHeader({
                     className="object-contain object-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.45)]"
                   />
                 </div>
-                <span className="font-heading font-bold text-sm tracking-wide text-heading-solid">
+                <span className="font-heading font-bold text-sm tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">
                   Nexus
                 </span>
               </div>
@@ -273,33 +273,33 @@ export function AppHeader({
                     className="object-contain object-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.45)]"
                   />
                 </div>
-                <span className="font-heading font-bold text-lg tracking-wide text-heading-solid">
+                <span className="font-heading font-bold text-lg tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">
                   Nexus
                 </span>
               </div>
 
               {/* Desktop: Playback pill - Balanced Size (visible at 1100px+) */}
-              <div className="hidden min-[1100px]:flex items-center gap-2 rounded-full border border-white/15 bg-black/25 backdrop-blur-xl px-2.5 py-1.5 shadow-[0_10px_28px_rgba(0,0,0,0.55)] w-auto min-w-[440px] max-w-[480px] shrink-0">
+              <div className="hidden min-[1100px]:flex items-center gap-2 rounded-full border border-white/15 bg-black/25 backdrop-blur-xl px-2 py-1 shadow-[0_10px_28px_rgba(0,0,0,0.55)] w-auto min-w-[400px] max-w-[440px] shrink-0">
                 <button
                   id="tour-toggle-music"
                   type="button"
                   onClick={() => toggleLeftPanelTab("browse")}
                   className={clsx(
-                    "group/music flex items-center gap-2 w-[220px] min-w-[220px] max-w-[220px] overflow-hidden rounded-full px-2 py-1 border transition-all duration-300",
+                    "group/music flex items-center gap-2 w-[200px] min-w-[200px] max-w-[200px] overflow-hidden rounded-full px-2.5 py-1.5 border transition-all duration-300",
                     isLeftPanelOpen && leftPanelTab === "browse"
                       ? "border-purple-500/50 bg-gradient-to-r from-purple-900/50 via-indigo-900/40 to-cyan-900/35 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                       : "border-white/25 bg-gradient-to-r from-purple-900/45 via-indigo-900/35 to-cyan-900/30 hover:border-purple-400/40 hover:from-purple-800/50 hover:via-indigo-800/40 hover:to-cyan-800/35"
                   )}
                   aria-label={currentTrack ? "Open Music Library" : "Open Music Library (Choose a Track)"}
                 >
-                  <BrandGradientIcon icon={Music} className="h-5 w-5 shrink-0 group-hover/music:scale-110 transition-transform duration-300" strokeWidth={2.5} />
+                  <BrandGradientIcon icon={Music} className="h-4 w-4 shrink-0 group-hover/music:scale-110 transition-transform duration-300" strokeWidth={2.5} />
                   <span className="truncate flex-1 text-sm font-heading font-semibold text-white/90 group-hover/music:text-white transition-colors">
                     {currentTrack ? currentTrack.title : "Choose a Track"}
                   </span>
-                  <ChevronDown className={clsx("h-4 w-4 shrink-0 text-white/50 group-hover/music:text-white transition-all duration-300", isLeftPanelOpen && leftPanelTab === "browse" && "rotate-180")} strokeWidth={3} />
+                  <ChevronDown className={clsx("h-3.5 w-3.5 shrink-0 text-white/50 group-hover/music:text-white transition-all duration-300", isLeftPanelOpen && leftPanelTab === "browse" && "rotate-180")} strokeWidth={3} />
                 </button>
 
-                <div className="flex items-center gap-1 shrink-0">
+                <div className="flex items-center gap-0.5 shrink-0">
                   <button
                     type="button"
                     onClick={playbackControls?.onPrevious}
@@ -423,11 +423,11 @@ export function AppHeader({
               </div>
 
               {/* Desktop View Toggles (Integrated into Header) - visible at 1100px+ */}
-              <div className="hidden min-[1100px]:flex items-center bg-black/20 rounded-full p-1.5 border border-(--border-subtle) backdrop-blur-md relative group/nav">
+              <div className="hidden min-[1100px]:flex items-center bg-black/20 rounded-full px-1 py-1 border border-(--border-subtle) backdrop-blur-md relative group/nav">
                 {/* Pill Background - visible immediately with sensible defaults */}
                 <div
                   className={clsx(
-                    "absolute left-1.5 top-1.5 bottom-1.5 w-[140px] rounded-full bg-white/15 border border-(--border-elevated) shadow-[0_0_20px_rgba(124,58,237,0.25)] backdrop-blur-md pointer-events-none",
+                    "absolute left-1 top-1 bottom-1 w-[130px] rounded-full bg-white/15 border border-(--border-elevated) shadow-[0_0_20px_rgba(124,58,237,0.25)] backdrop-blur-md pointer-events-none",
                     pillTransitionsEnabled && "transition-all duration-300 ease-out"
                   )}
                   data-csp-style={pillStyleId}
@@ -448,7 +448,7 @@ export function AppHeader({
                       onClick={() => onViewChange(feature.id)}
                       title={feature.description}
                       className={clsx(
-                        "relative z-10 flex w-[140px] items-center justify-center gap-2 px-5 py-2 rounded-full text-sm font-heading font-bold uppercase tracking-wide",
+                        "relative z-10 flex w-[130px] items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-heading font-bold uppercase tracking-wide",
                         isActive
                           ? "text-white"
                           : "text-white/70 hover:text-white"
@@ -496,7 +496,7 @@ export function AppHeader({
                       type="button"
                       onClick={playbackControls?.onPrevious}
                       disabled={!playbackControls?.onPrevious}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition disabled:opacity-40 disabled:hover:bg-white/5"
+                      className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition disabled:opacity-40 disabled:hover:bg-white/5"
                       aria-label="Previous track"
                     >
                       <SkipBack className="h-4 w-4" />
@@ -506,7 +506,7 @@ export function AppHeader({
                       type="button"
                       onClick={playbackControls?.onPlayPause}
                       disabled={!playbackControls?.onPlayPause || playbackControls?.isLoading}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition disabled:opacity-40 disabled:hover:bg-white/10"
+                      className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition disabled:opacity-40 disabled:hover:bg-white/10"
                       aria-label={playbackControls?.isLoading ? "Loading" : playbackControls?.isPlaying ? "Pause" : "Play"}
                     >
                       {playbackControls?.isLoading ? (
@@ -522,7 +522,7 @@ export function AppHeader({
                       type="button"
                       onClick={playbackControls?.onNext}
                       disabled={!playbackControls?.onNext}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition disabled:opacity-40 disabled:hover:bg-white/5"
+                      className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition disabled:opacity-40 disabled:hover:bg-white/5"
                       aria-label="Next track"
                     >
                       <SkipForward className="h-4 w-4" />
@@ -531,7 +531,7 @@ export function AppHeader({
                     <button
                       type="button"
                       onClick={() => toggleLeftPanelTab("queue")}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition"
+                      className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition"
                       aria-label={isLeftPanelOpen && leftPanelTab === "queue" ? "Close Queue" : "Open Queue"}
                     >
                       <ListMusic className="h-4 w-4" />
@@ -540,7 +540,7 @@ export function AppHeader({
                       type="button"
                       onClick={isSearchOverlayOpen ? closeSearchOverlay : openSearchOverlay}
                       className={clsx(
-                        "inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition",
+                        "inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition",
                         (isSearchOverlayOpen || Boolean(searchQuery.trim())) && "bg-white/10 text-white"
                       )}
                       aria-label="Search music"

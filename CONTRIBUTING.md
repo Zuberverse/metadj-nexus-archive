@@ -1,6 +1,6 @@
 # Contributing to MetaDJ Nexus
 
-**Last Modified**: 2025-12-28 18:30 EST
+**Last Modified**: 2025-12-29 16:45 EST
 
 Thank you for your interest in contributing to MetaDJ Nexus. This guide covers the development workflow, code standards, and submission process.
 
@@ -39,6 +39,9 @@ npm run lint         # Should pass with 0 warnings
 
 # Start development server
 npm run dev
+
+# First-time E2E setup (optional, for running Playwright tests)
+npx playwright install
 ```
 
 ### Environment Setup

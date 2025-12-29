@@ -213,6 +213,7 @@ export function MetaDjAiChat({
   const previousMessageCountRef = useRef(0)
   const pendingModelSwitchScrollRef = useRef(false)
   const prevTrackIdRef = useRef<string | null>(null)
+  const hasMountedForPulseRef = useRef(false)
   const pendingScrollToLatestUserRef = useRef(false)
   const pendingScrollBehaviorRef = useRef<ScrollBehavior>("smooth")
   const previousSessionIdRef = useRef<string | null>(null)
@@ -393,9 +394,16 @@ export function MetaDjAiChat({
       return
     }
 
-    // Trigger pulse when track changes
+    // Trigger pulse when track changes (skip initial mount)
     if (currentTrack && currentTrack.id !== prevTrackIdRef.current) {
+      const isInitialMount = !hasMountedForPulseRef.current
       prevTrackIdRef.current = currentTrack.id
+      hasMountedForPulseRef.current = true
+
+      // Skip pulse on initial mount - only pulse on actual track changes
+      if (isInitialMount) {
+        return undefined
+      }
 
       // Pulse for 6 seconds (3 cycles of 2s)
       setShowPulse(true)
@@ -1245,12 +1253,12 @@ export function MetaDjAiChat({
             </div>
 
             {/* Right: Icons (Fullscreen, History, Reset) - Fullscreen LEFT of History */}
-            <div className="flex items-center gap-1 sm:gap-1.5">
+            <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
               {onToggleFullscreen && !isFullscreenMobile && (
                 <button
                   type="button"
                   onClick={onToggleFullscreen}
-                  className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-muted-accessible transition hover:bg-white/10 hover:text-white focus-ring-glow touch-manipulation"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-accessible transition hover:bg-white/10 hover:text-white focus-ring-glow touch-manipulation"
                   aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                   title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                 >
@@ -1268,7 +1276,7 @@ export function MetaDjAiChat({
                     setPendingDeleteSessionId(null)
                     setIsHistoryOpen((open) => !open)
                   }}
-                  className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-white/60 transition-all duration-300 hover:bg-purple-500/10 hover:text-purple-200 focus-ring-glow touch-manipulation"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-white/60 transition-all duration-300 hover:bg-purple-500/10 hover:text-purple-200 focus-ring-glow touch-manipulation"
                   aria-expanded={isHistoryOpen}
                   aria-haspopup="true"
                   title="Chat history"
@@ -1280,7 +1288,7 @@ export function MetaDjAiChat({
               <button
                 type="button"
                 onClick={() => setConfirmReset((current) => !current)}
-                className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-muted-accessible transition hover:bg-white/10 hover:text-white focus-ring-glow touch-manipulation"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-accessible transition hover:bg-white/10 hover:text-white focus-ring-glow touch-manipulation"
                 aria-expanded={confirmReset}
                 aria-label="Reset chat"
               >

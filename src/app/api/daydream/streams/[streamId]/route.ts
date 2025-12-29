@@ -17,13 +17,13 @@ export async function DELETE(
     }
 
     const { id: clientId } = getClientIdentifier(request)
-    const activeStream = getActiveStream(clientId)
+    const activeStream = await getActiveStream(clientId)
     if (!activeStream || activeStream.streamId !== streamId) {
       return NextResponse.json({ error: "Stream not owned by active session" }, { status: 403 })
     }
 
     // Clear rate limiter so user can create new stream immediately
-    endStream(clientId, streamId)
+    await endStream(clientId, streamId)
 
     // Per official Daydream OpenAPI: DELETE /v1/streams?id={id}
     const upstream = await daydreamFetch(`/v1/streams?id=${encodeURIComponent(streamId)}`, {

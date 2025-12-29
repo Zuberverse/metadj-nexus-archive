@@ -2,7 +2,7 @@
 
 > **Get up and running with MetaDJ Nexus in 5 minutes**
 
-**Last Modified**: 2025-12-28 12:32 EST
+**Last Modified**: 2025-12-29 16:45 EST
 
 ## Prerequisites
 
@@ -225,6 +225,12 @@ Development mode includes detailed error logging.
 
 ```bash
 # Note: -k flag allows self-signed HTTPS certificates
+# Use /api/metadjai/stream for streaming responses (recommended)
+curl -k -X POST https://localhost:8100/api/metadjai/stream \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"Hello"}]}'
+
+# Or use /api/metadjai for non-streaming (complete response)
 curl -k -X POST https://localhost:8100/api/metadjai \
   -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"Hello"}]}'

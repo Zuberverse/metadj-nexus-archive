@@ -467,5 +467,4 @@ Static assets under `/_next/` are cached by Next.js/platform defaults; avoid ove
 
 ---
 
-*Last updated: 2025-12-28*
 *For issues or questions, consult `docs/strategy/REPLIT-PLATFORM-STRATEGY.md` or Replit support.*

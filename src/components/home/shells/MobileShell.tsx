@@ -197,7 +197,7 @@ function MobileShell({
     minSwipeDistance: 60,
     maxCrossAxisDistance: 120,
   })
-  useFocusTrap(leftPanelOverlayRef, { enabled: isLeftPanelOpen })
+  useFocusTrap(leftPanelOverlayRef, { enabled: isLeftPanelOpen, autoFocus: true })
 
   const canMountHub = shouldMountView ? shouldMountView("hub") : true
   const canMountWisdom = shouldMountView ? shouldMountView("wisdom") : true

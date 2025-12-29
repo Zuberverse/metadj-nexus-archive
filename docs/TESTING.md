@@ -1,6 +1,6 @@
 # Testing Guide — MetaDJ Nexus
 
-**Last Modified**: 2025-12-29 10:05 EST
+**Last Modified**: 2025-12-29 12:01 EST
 
 ## Overview
 
@@ -9,8 +9,8 @@ MetaDJ Nexus maintains a comprehensive test suite ensuring code quality, reliabi
 ## Test Suite Summary
 
 **Unit/Integration Tests**: 898 (Vitest)
-**E2E Tests**: 2 (Playwright smoke)
-**Test Files**: 48 unit/integration, 2 e2e
+**E2E Tests**: 4 (Playwright smoke + core flows)
+**Test Files**: 48 unit/integration, 4 e2e
 **Pass Rate**: 100%
 **Test Runner**: Vitest with jsdom environment
 **Coverage Thresholds**: 15% lines, 15% functions, 8% branches, 15% statements (see vitest.config.mjs for milestone plan)
@@ -423,7 +423,7 @@ npm run test -- --reporter=verbose
 
 ## E2E Testing
 
-Playwright smoke tests cover home load + `/api/health`. Expand coverage as features stabilize (playback, search, queue, MetaDJai flows). CI does not run browsers yet.
+Playwright coverage includes home load + `/api/health`, search → queue add, and MetaDJai panel open/close. Deeper flows (playback, cinema, AI interactions) still need coverage. CI does not run browsers yet.
 
 ## Future Testing Plans
 

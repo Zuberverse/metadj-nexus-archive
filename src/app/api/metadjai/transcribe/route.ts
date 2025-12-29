@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
             const errorText = await response.text();
             logger.error("[Transcribe] OpenAI API error", { status: response.status, errorText });
             return NextResponse.json(
-                { error: `OpenAI API Error: ${response.statusText}` },
+                { error: "Transcription failed. Please try again." },
                 { status: response.status }
             );
         }

@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       // No body or invalid JSON is fine - just clear any active stream
     }
 
-    const ended = endStream(clientId, streamId)
+    const ended = await endStream(clientId, streamId)
 
     if (ended) {
       return NextResponse.json({ success: true, message: "Stream ended" })

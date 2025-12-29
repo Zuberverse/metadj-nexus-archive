@@ -26,7 +26,7 @@ export {
   onStorageChange,
 } from "./persistence"
 
-// MetaDJ AI session storage
+// MetaDJai session storage
 export { metadjAiSessionStorage } from "./metadjai-session-storage"
 
 // Storage types (Replit bucket types)

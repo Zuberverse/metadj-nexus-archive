@@ -17,7 +17,7 @@ const DEFAULT_TIMEOUT_MS = 30000
  * Streaming and tool-calling routes get longer timeouts by default
  */
 const ROUTE_TIMEOUT_DEFAULTS: Record<string, number> = {
-  stream: 60000,      // 60s - Streaming can take longer
+  stream: 90000,      // 90s - Streaming with tool calls can take longer
   chat: 30000,        // 30s - Standard chat completions
   transcribe: 45000,  // 45s - Audio transcription varies by length
   tools: 90000,       // 90s - Multi-step tool calling needs more time

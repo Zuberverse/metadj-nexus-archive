@@ -17,7 +17,7 @@ export async function GET(
     }
 
     const { id: clientId } = getClientIdentifier(request)
-    const activeStream = getActiveStream(clientId)
+    const activeStream = await getActiveStream(clientId)
     if (!activeStream || activeStream.streamId !== streamId) {
       return NextResponse.json({ error: "Stream not owned by active session" }, { status: 403 })
     }

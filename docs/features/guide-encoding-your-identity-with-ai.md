@@ -13,7 +13,7 @@ writing_style: "Writing Style 0 Core + Philosophical Depth + Educational Clarity
 seo_keywords: ["encode your identity", "AI identity guide", "brand corpus", "personal operating system", "MetaDJ Nexus", "MetaDJai"]
 ---
 
-**Last Modified**: 2025-12-28 13:00 EST
+**Last Modified**: 2025-12-29 12:28 EST
 
 Encoding your identity with AI is not about turning yourself into a brand. It’s about building a reliable mirror.
 
@@ -39,7 +39,7 @@ Before any system, you need three anchors:
 2. **Creative / professional role** — how you want to show up in the world (for me: MetaDJ as the primary avatar).  
 3. **Desired experience for others** — how people should feel after interacting with your work.
 
-For the Brand Corpus, this became explicit files: purpose/vision, core values, creative philosophy, music philosophy, digital jockey philosophy, MetaDJ biography. MetaDJ Nexus is the living proof that these aren’t just nice documents—they’re the upstream source for how the platform behaves.
+For the Brand Corpus, this became explicit files: purpose/vision, core values, creative philosophy, music philosophy, Digital Jockey philosophy, MetaDJ biography. MetaDJ Nexus is the living proof that these aren’t just nice documents—they’re the upstream source for how the platform behaves.
 
 **Your move**: Write short, specific statements for each of the three anchors. Don’t optimize for aesthetics. Optimize for “could this guide my decisions a year from now?”
 

@@ -1,12 +1,12 @@
 # E2E Test Coverage — Gap Note
 
-**Last Modified**: 2025-12-22 16:51 EST
+**Last Modified**: 2025-12-29 12:01 EST
 
-MetaDJ Nexus now ships Playwright smoke tests (home load + `/api/health`). Full browser-based journeys (navigation + playback + AI + cinema) are still a gap, and browsers are not CI-gated yet.
+MetaDJ Nexus ships Playwright smoke + core flow tests (home load + `/api/health`, search → queue add, MetaDJai panel open/close). Full browser-based journeys (navigation + playback + AI + cinema) are still a gap, and browsers are not CI-gated yet.
 
 When to add E2E:
 - After next major release or before public launch with heavier traffic.
-- To guard regressions across: landing → search → play/queue → cinema → MetaDJai interactions.
+- To guard regressions across: landing → play/queue → cinema → MetaDJai interactions.
 - When adding auth/payments or multi-step flows.
 
 If expanding:

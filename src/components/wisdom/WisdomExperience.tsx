@@ -148,7 +148,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
         {/* Header */}
         <header className="text-center space-y-3">
           <h1 className="font-heading font-black leading-[0.9] text-[clamp(1.5rem,4vw,3.5rem)] tracking-tight max-w-[90vw] mx-auto text-pop">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-violet-300">Explore</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-cyan-300 to-indigo-300">MetaDJ&apos;s Reality</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">Wisdom</span>
           </h1>
           <p className="text-lg sm:text-xl text-indigo-100/90 font-light max-w-2xl mx-auto">
             {data.thoughts.length} Thoughts · {data.guides.length} Guides · {data.reflections.length} Reflections

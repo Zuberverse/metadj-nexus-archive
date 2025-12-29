@@ -4,7 +4,7 @@
 
 **Platform Notice**: This `CLAUDE.md` is optimized for Claude Code sessions. OpenAI Codex (via the Codex CLI) follows the accompanying `AGENTS.md`, and Cursor IDE relies on the `.cursor/rules/` file when available; each platform gets the same standards.
 
-**Last Modified**: 2025-12-28 18:30 EST
+**Last Modified**: 2025-12-29 16:45 EST
 *Parent: /3-projects/5-software/CLAUDE.md*
 
 ## Scope
@@ -18,6 +18,11 @@
 - Keep root minimal: `README.md`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`, configs.
 - Use `src/`, `public/`, `docs/`, `scripts/`, `tests/`, `types/` for organization.
 - No temp files or duplicates ("old", "backup", "copy").
+
+## Stack Snapshot
+- Next.js 16 (Turbopack), React 19, TypeScript, Tailwind.
+- Web Audio API for playback.
+- Vercel AI SDK (OpenAI default; optional Anthropic).
 
 ## Project Context
 - Single-route experience at `/` with state-driven views (Hub/Cinema/Wisdom/Journal).
@@ -68,6 +73,18 @@
 - Lint/test: `npm run lint && npm run type-check && npm run test`
 - E2E (smoke): `npm run test:e2e`
 
+### Quick Reference
+```bash
+npm run dev          # Start HTTPS dev server (port 8100)
+npm run dev:webpack  # Webpack dev (most stable)
+npm run dev:http     # HTTP fallback
+npm run lint         # Check code style (0 warnings)
+npm run type-check   # Validate TypeScript
+npm run test         # Run unit/integration tests
+npm run test:e2e     # Run Playwright smoke tests
+npm run build        # Production build (runs prebuild checks)
+```
+
 ## Automatic Documentation
 - Update `CHANGELOG.md` and relevant `docs/` entries for meaningful changes.
 - Use `docs/reference/code-to-docs-map.md` to keep coverage aligned.
@@ -89,7 +106,18 @@
 - Request size limits and rate limiting applied for new endpoints.
 - Accessibility: skip link target focusable, focus traps, keyboard shortcuts intact.
 
-## Primary agents
+## Coordination Patterns
+- Small UI or copy changes: coder solo, then writer for docs if needed.
+- Feature work: software (architecture) → coder (implementation) → software (review).
+- Cross-cutting audits: product + software + coder inputs synthesized into one report.
+
+## Quality Gates
+- `npm run lint` and `npm run type-check` clean.
+- `npm run test` + `npm run test:e2e` for user-facing changes.
+- `npm run build` before release.
+- Update `CHANGELOG.md` and relevant docs for meaningful changes.
+
+## Primary Agents
 - software (architecture and patterns)
 - coder (implementation and UI)
 - creative (visual QA)

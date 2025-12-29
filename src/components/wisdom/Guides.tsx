@@ -70,8 +70,8 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
         )}
 
         <header className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-heading font-bold text-heading-solid mb-3">
-            Knowledge & How-To
+          <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-3">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">Knowledge & How-To</span>
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
             In-depth guides for you—music production, DJing, AI tools, the Metaverse, and creative

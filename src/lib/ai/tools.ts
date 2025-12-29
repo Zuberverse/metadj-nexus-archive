@@ -131,19 +131,19 @@ function validateToolResultSize<T>(result: T, toolName: string): T & ToolResultM
  */
 const INJECTION_PATTERNS = [
   // System instruction override attempts
-  /\bsystem\s*:\s*/gi,
+  /(?:^|\n)\s*system\s*:\s*/gi,
   /\b(ignore|forget)\s+(all\s+)?(previous\s+)?(instructions?|prompts?|rules?)/gi,
   /\byou\s+(are|must|should)\s+now\b/gi,
-  /\bnew\s+instructions?\s*:/gi,
+  /(?:^|\n)\s*new\s+instructions?\s*:/gi,
   // Role manipulation
   /\b(act|behave|respond)\s+as\s+(if\s+you\s+are|a)\b/gi,
-  /\brole\s*:\s*/gi,
-  /\bassistant\s*:\s*/gi,
+  /(?:^|\n)\s*role\s*:\s*/gi,
+  /(?:^|\n)\s*assistant\s*:\s*/gi,
   // Prompt delimiter injection
   /```+\s*(system|assistant|user)/gi,
   /<\/?(?:system|assistant|user)>/gi,
   // Command injection patterns
-  /\bexecute\s*:/gi,
+  /(?:^|\n)\s*execute\s*:\s*/gi,
   /\brun\s+command\b/gi,
 ];
 
@@ -159,7 +159,12 @@ function sanitizeInjectionPatterns(value: string): string {
   for (const pattern of INJECTION_PATTERNS) {
     sanitized = sanitized.replace(pattern, (match) => {
       // Replace with bracketed version to neutralize without losing context
-      return `[filtered: ${match.replace(/[^\w\s]/g, '')}]`;
+      const prefix = match.startsWith('\n') ? '\n' : '';
+      const cleaned = match
+        .replace(/[^\w\s]/g, '')
+        .trim()
+        .replace(/\s+/g, ' ');
+      return `${prefix}[filtered: ${cleaned}]`;
     });
   }
 
@@ -301,7 +306,8 @@ export const searchCatalog = {
   inputSchema: catalogSearchSchema,
   execute: async ({ query, type }: { query: string; type?: 'track' | 'collection' | 'all' }) => {
     // SECURITY: Sanitize and limit query length
-    const q = query.toLowerCase().slice(0, 200)
+    const normalizeSearchToken = (value: string) => value.toLowerCase()
+    const q = normalizeSearchToken(query).slice(0, 200)
     const searchType = type ?? 'all'
     const results: CatalogSearchResult[] = []
 
@@ -334,7 +340,7 @@ export const searchCatalog = {
       .slice(0, MAX_SEARCH_RESULTS)
 
     // SECURITY: Validate result size before returning
-    return validateToolResultSize(sortedResults, 'searchCatalog')
+    return sanitizeAndValidateToolResult(sortedResults, 'searchCatalog')
   },
 }
 
@@ -433,7 +439,7 @@ export const getPlatformHelp = {
     }
 
     // SECURITY: Validate result size before returning
-    return validateToolResultSize(result, 'getPlatformHelp')
+    return sanitizeAndValidateToolResult(result, 'getPlatformHelp')
   },
 }
 
@@ -571,7 +577,7 @@ export const getRecommendations = {
     }
 
     // SECURITY: Validate result size before returning
-    return validateToolResultSize(result, 'getRecommendations')
+    return sanitizeAndValidateToolResult(result, 'getRecommendations')
   },
 }
 
@@ -744,7 +750,8 @@ export const getZuberantContext = {
   inputSchema: zuberantContextSchema,
   execute: async ({ query, topic }: { query: string; topic?: 'metadj' | 'zuberant' | 'ecosystem' | 'philosophy' | 'identity' | 'workflows' | 'all' }) => {
     // SECURITY: Sanitize and limit query length
-    const q = query.toLowerCase().slice(0, 200)
+    const normalizeSearchToken = (value: string) => value.toLowerCase()
+    const q = normalizeSearchToken(query).slice(0, 200)
     const searchTopic = topic ?? 'all'
 
     // Determine which categories to search
@@ -789,12 +796,13 @@ export const getZuberantContext = {
         // Check keyword matches
         const queryWords = q.split(/\s+/).filter(w => w.length > 2)
         for (const keyword of entry.keywords) {
-          if (q.includes(keyword)) {
+          const normalizedKeyword = normalizeSearchToken(keyword)
+          if (q.includes(normalizedKeyword)) {
             score += 5
           }
           // Partial keyword match
           for (const word of queryWords) {
-            if (keyword.includes(word) || word.includes(keyword)) {
+            if (normalizedKeyword.includes(word) || word.includes(normalizedKeyword)) {
               score += 2
             }
           }
@@ -803,7 +811,8 @@ export const getZuberantContext = {
         // Check synonyms
         if (entry.synonyms) {
           for (const synonym of entry.synonyms) {
-            if (q.includes(synonym)) {
+            const normalizedSynonym = normalizeSearchToken(synonym)
+            if (q.includes(normalizedSynonym)) {
               score += 4
             }
           }
@@ -862,7 +871,7 @@ export const getZuberantContext = {
     }
 
     // SECURITY: Validate result size before returning
-    return validateToolResultSize(result, 'getZuberantContext')
+    return sanitizeAndValidateToolResult(result, 'getZuberantContext')
   },
 }
 
@@ -907,14 +916,14 @@ export const getWisdomContent = {
                 sectionCount: reflection.sections.length,
               }))
 
-      return validateToolResultSize({ section, items: list }, 'getWisdomContent')
+      return sanitizeAndValidateToolResult({ section, items: list }, 'getWisdomContent')
     }
 
     if (section === 'thoughts') {
       const post = wisdomContent.thoughtsPosts.find((p) => p.id === safeId)
-      if (!post) return { found: false }
+      if (!post) return sanitizeAndValidateToolResult({ found: false }, 'getWisdomContent')
       const content = post.content.filter((p) => !WISDOM_SIGNOFF_REGEX.test(p.trim()))
-      return validateToolResultSize(
+      return sanitizeAndValidateToolResult(
         {
           found: true,
           section,
@@ -930,12 +939,12 @@ export const getWisdomContent = {
 
     if (section === 'guides') {
       const guide = wisdomContent.guides.find((g) => g.id === safeId)
-      if (!guide) return { found: false }
+      if (!guide) return sanitizeAndValidateToolResult({ found: false }, 'getWisdomContent')
       const sections = guide.sections.map((s) => ({
         heading: s.heading,
         paragraphs: s.paragraphs.filter((p) => !WISDOM_SIGNOFF_REGEX.test(p.trim())),
       }))
-      return validateToolResultSize(
+      return sanitizeAndValidateToolResult(
         {
           found: true,
           section,
@@ -950,13 +959,13 @@ export const getWisdomContent = {
     }
 
     const reflection = wisdomContent.reflections.find((r) => r.id === safeId)
-    if (!reflection) return { found: false }
+    if (!reflection) return sanitizeAndValidateToolResult({ found: false }, 'getWisdomContent')
     const sections = reflection.sections.map((s) => ({
       heading: s.heading,
       paragraphs: s.paragraphs.filter((p) => !WISDOM_SIGNOFF_REGEX.test(p.trim())),
     }))
 
-    return validateToolResultSize(
+    return sanitizeAndValidateToolResult(
       {
         found: true,
         section,
@@ -1049,7 +1058,7 @@ export const proposePlayback = {
     }
 
     // Return the proposal. The UI will catch this tool result and render the card.
-    return proposal
+    return sanitizeAndValidateToolResult(proposal, 'proposePlayback')
   },
 }
 
@@ -1104,7 +1113,7 @@ export const proposeQueueSet = {
       nextContext = 'No matching tracks found in the catalog.';
     }
 
-    return {
+    const proposal = {
       type: 'queue-set' as const,
       action: 'set' as const,
       trackIds: resolved.trackIds,
@@ -1113,6 +1122,8 @@ export const proposeQueueSet = {
       autoplay,
       context: nextContext,
     };
+
+    return sanitizeAndValidateToolResult(proposal, 'proposeQueueSet')
   },
 }
 
@@ -1170,7 +1181,7 @@ export const proposePlaylist = {
       nextContext = `Create "${safeName}" (no matching tracks found).`;
     }
 
-    return {
+    const proposal = {
       type: 'playlist' as const,
       action: 'create' as const,
       name: safeName,
@@ -1180,6 +1191,8 @@ export const proposePlaylist = {
       autoplay,
       context: nextContext,
     };
+
+    return sanitizeAndValidateToolResult(proposal, 'proposePlaylist')
   },
 }
 
@@ -1202,12 +1215,14 @@ export const proposeSurface = {
   description: 'Propose a UI navigation action like opening Wisdom, opening Queue, focusing Search, or opening the Music panel. The user will see a confirmation card before it happens.',
   inputSchema: surfaceSchema,
   execute: async ({ action, tab, context }: { action: 'openWisdom' | 'openQueue' | 'focusSearch' | 'openMusicPanel'; tab?: 'browse' | 'queue' | 'playlists'; context?: string }) => {
-    return {
+    const proposal = {
       type: 'ui' as const,
       action,
       tab,
       context,
     }
+
+    return sanitizeAndValidateToolResult(proposal, 'proposeSurface')
   },
 }
 

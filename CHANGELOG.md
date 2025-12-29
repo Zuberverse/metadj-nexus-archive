@@ -1,6 +1,6 @@
 # Changelog
 
-**Last Modified**: 2025-12-29 17:45 EST
+**Last Modified**: 2025-12-29 17:15 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
@@ -26,6 +26,11 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 
 **UI Consistency**
 - Fixed Library/Browse tab label mismatch (now consistently shows "Browse").
+- Aligned header element sizing: Music controls pill and feature tabs (Hub/Cinema/Wisdom/Journal) now share consistent vertical scale. Reduced music pill width (`440px` → `400px`), tightened button gaps, and removed oversized touch targets (`min-h-[44px]`) from desktop playback buttons. Feature tabs narrowed (`140px` → `130px`) with reduced padding for visual parity.
+- Fixed MetaDJai toolbar button overflow in panel view by removing oversized touch targets (`min-w-[44px]`) from icon buttons and tightening gaps.
+- Simplified Wisdom page header from "Explore MetaDJ's Reality" to "Wisdom" for cleaner navigation alignment.
+- Fixed Journal header gradient to match Wisdom's vibrant indigo-violet-cyan gradient (replaced muted `text-gradient-hero`).
+- Standardized brand gradient (`from-indigo-500 via-violet-400 to-cyan-300`) across all major headers: Wisdom section headers (Thoughts, Guides, Reflections), "Nexus" logo text in main header, and MetaDJai welcome headline.
 
 **Testing**
 - Added 41 tests for playlist repository covering CRUD operations, validation, and limit warnings.
@@ -41,6 +46,13 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 - Added Cinema scene personality: MetaDJai provides scene-specific personality hints when Cinema is active (e.g., "Cosmic vibes — galaxies spiraling" for Cosmos scene).
 - Added session duration awareness: MetaDJai can acknowledge long sessions (30+ min) naturally when contextually appropriate.
 - Added Dream feature to `getPlatformHelp` tool for user guidance on real-time avatar transformation.
+
+**Knowledge Search**
+- Normalized knowledge keywords to "Digital Jockey" and made keyword/synonym matching case-insensitive in `getZuberantContext`.
+
+**Fixes**
+- Fixed MetaDJai Actions button constantly pulsing on mount—now only pulses when track actually changes during session.
+- Increased AI stream timeout from 60s to 90s to reduce timeout errors on complex tool-calling responses.
 
 ### 2025-12-28
 

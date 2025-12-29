@@ -2,7 +2,7 @@
 
 > Unified persistence layer for MetaDJ Nexus client-side state management.
 
-**Last Modified**: 2025-12-27 15:24 EST
+**Last Modified**: 2025-12-29 12:28 EST
 ## Overview
 
 The storage layer provides type-safe localStorage management with:
@@ -635,7 +635,7 @@ export {
   onStorageChange,
 } from "./persistence";
 
-// MetaDJ AI session storage
+// MetaDJai session storage
 export { metadjAiSessionStorage } from "./metadjai-session-storage";
 
 // Storage types (Replit bucket types)

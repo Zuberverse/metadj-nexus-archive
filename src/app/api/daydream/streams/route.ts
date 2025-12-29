@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     const { id: clientId, isFingerprint } = getClientIdentifier(request)
 
     // Check if user can create a stream (single-stream + rate limit)
-    const check = checkStreamCreation(clientId)
+    const check = await checkStreamCreation(clientId)
     if (!check.allowed) {
       const errorBody = buildStreamLimitResponse(check.error!, check.retryAfterMs || 0, check.activeStreamId)
       const response = NextResponse.json(errorBody, { status: 429 })
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     // Register the stream for single-stream enforcement
     const streamId = body.id || body.streamId || body.stream_id
     if (streamId) {
-      registerStream(clientId, streamId)
+      await registerStream(clientId, streamId)
     }
 
     // Build success response

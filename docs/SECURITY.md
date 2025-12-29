@@ -1,6 +1,6 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2025-12-28 16:57 EST
+**Last Modified**: 2025-12-29 12:01 EST
 > Pragmatic security approach for a music showcasing MVP
 
 *Last Reviewed: 2025-10-13*
@@ -28,6 +28,8 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | **Referrer Policy** | strict-origin-when-cross-origin | Controls referrer information |
 | **Client Error Telemetry** | `/api/log` proxy + `LOGGING_WEBHOOK_URL` + `LOGGING_SHARED_SECRET` + `LOGGING_CLIENT_KEY` | Captures browser errors without exposing webhook URLs; contexts are sanitized/redacted server‑side before forwarding; client key is embedded in the UI, shared secret stays server‑side |
 | **AI Rate Limiting** | In‑app session/fingerprint limiter for `/api/metadjai*` (20 / 5m, 500ms min interval) + Replit platform throttling. Optional: **Upstash Redis** for distributed rate limiting + burst enforcement across instances (`src/lib/ai/rate-limiter.ts`) | Prevents abuse and cost spikes for MetaDJai (chat + transcription) |
+| **Daydream Stream Limits** | Single active stream + cooldown with optional Upstash Redis backing (`src/lib/daydream/stream-limiter.ts`) | Prevents stream abuse and resource spikes |
+| **Wisdom Rate Limiting** | 60 req/min per client with optional Upstash Redis backing (`src/lib/rate-limiting/wisdom-rate-limiter.ts`) | Mitigates scraping/abuse of static content |
 | **Scoped Media Access** | `/api/audio` is MP3-only + path traversal protection; `/api/video` is MP4/WebM/MOV-only + path traversal protection | Prevents accidental exposure of non-media objects |
 | **Cookie Path Isolation** | Session cookies scoped to `/api/metadjai` | Prevents cookie leakage to unrelated routes |
 | **Body Size Limits** | 1MB limit on server actions | Prevents DoS via large payloads |
@@ -48,7 +50,7 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 - Session cookie is scoped to `/api/metadjai` to prevent leakage to unrelated routes.
 
 **Tool safety**
-- All tool results are size‑capped (~8k chars) to avoid token/cost blowups (`src/lib/ai/tools.ts`).
+- All tool results are sanitized for injection patterns and size‑capped (~8k chars) (`src/lib/ai/tools.ts`).
 - **Active Control** tools (`proposePlayback`, `proposeQueueSet`, `proposePlaylist`, `proposeSurface`) only return proposals; the UI requires explicit user confirmation before executing any playback or navigation action.
 - Tool outputs (including web search) are treated as information; any instruction‑like or suspicious content is ignored to prevent prompt‑injection attacks.
 

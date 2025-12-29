@@ -1,6 +1,6 @@
 # Error Tracking Setup Guide
 
-**Last Modified**: 2025-12-27 15:24 EST
+**Last Modified**: 2025-12-29 12:28 EST
 
 > **Capture and triage client-side errors automatically with Sentry**
 
@@ -36,19 +36,19 @@ This guide walks through setting up error tracking for MetaDJ Nexus using Sentry
 
 **Goal**: Automatic error capture, intelligent grouping, and proactive alerting for client and server errors.
 
-## Post-MVP Implementation Plan (Mirrors MetaDJ AI)
+## Post-MVP Implementation Plan (Mirrors MetaDJai)
 
-MetaDJ Nexus will follow the hardened error-monitoring rollout already proven inside **MetaDJ AI**. The archived playbook is not yet ported into this repo, so pull it into `docs/operations/` before execution. The steps stay queued until after the MVP ships but the playbook is locked in:
+MetaDJ Nexus will follow the hardened error-monitoring rollout already proven inside **MetaDJai**. The archived playbook is not yet ported into this repo, so pull it into `docs/operations/` before execution. The steps stay queued until after the MVP ships but the playbook is locked in:
 
-1. **Create Sentry project + access tokens** — reuse the exact variable set MetaDJ AI documents (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`). Credentials live solely in Replit Secrets, not in git or `.env` committed files.
-2. **Run the `@sentry/wizard` scaffolding** locally, check in the generated `sentry.*.config.ts` files, and wrap `next.config.js` with the Sentry plugin the same way MetaDJ AI does. No runtime flagging until we flip the DSN in Replit.
-3. **Harden security + privacy defaults** — copy the scrubbers/beforeSend hooks from MetaDJ AI so logs never include request bodies, queue payloads, or fan data. Update `.claude/commands/SECURITY.md` with a short “Sentry enabled” note when this step goes live.
+1. **Create Sentry project + access tokens** — reuse the exact variable set MetaDJai documents (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`). Credentials live solely in Replit Secrets, not in git or `.env` committed files.
+2. **Run the `@sentry/wizard` scaffolding** locally, check in the generated `sentry.*.config.ts` files, and wrap `next.config.js` with the Sentry plugin the same way MetaDJai does. No runtime flagging until we flip the DSN in Replit.
+3. **Harden security + privacy defaults** — copy the scrubbers/beforeSend hooks from MetaDJai so logs never include request bodies, queue payloads, or fan data. Update `.claude/commands/SECURITY.md` with a short “Sentry enabled” note when this step goes live.
 4. **Replit deployment wiring** — inject the Sentry env vars through the Replit Secrets UI alongside the existing Plausible/LOGGING secrets. That keeps bucket IDs and other infra untouched per the current Replit policy.
-5. **Verification checklist** — same smoke tests as MetaDJ AI: trigger a deliberate `Sentry.captureException` call, confirm source maps upload during `npm run build`, and set Slack/email alerts in Sentry before promoting to production.
+5. **Verification checklist** — same smoke tests as MetaDJai: trigger a deliberate `Sentry.captureException` call, confirm source maps upload during `npm run build`, and set Slack/email alerts in Sentry before promoting to production.
 
 Tracking the work:
 - Add a `tracking issue / docs entry` referencing this plan once the MVP launches.
-- Re-use the status template from MetaDJ AI’s `monitoring-and-logging.md` so the two apps follow identical audit trails.
+- Re-use the status template from MetaDJai system documentation in `3-projects/archive/software/2025-11-25-metadj-ai/docs/system/` so the two apps follow identical audit trails.
 
 ## Why Error Tracking Matters
 

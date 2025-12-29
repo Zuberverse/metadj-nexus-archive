@@ -955,9 +955,11 @@ export function CinemaOverlay({
 
   // touch-action: manipulation prevents pinch zoom while allowing pan/scroll
   // Cinema always covers full viewport - only controls are inset from panels
+  // Cinema uses fixed positioning to always cover full viewport
+  // Non-fullscreen mode uses z-30 to stay below modals/panels; fullscreen uses z-40
   const containerClass = isFullscreen
     ? "fixed inset-0 z-40 overflow-hidden bg-black touch-manipulation h-[100dvh] w-[100dvw]"
-    : `absolute inset-0 overflow-hidden bg-black touch-manipulation ${!shouldUseSidePanels ? 'pb-[72px]' : ''}`
+    : `fixed inset-0 z-30 overflow-hidden bg-black touch-manipulation h-[100dvh] w-[100dvw] ${!shouldUseSidePanels ? 'pb-[72px]' : ''}`
 
   const containerRole = isFullscreen ? "dialog" : "region"
   const containerAriaModal = isFullscreen ? true : undefined
