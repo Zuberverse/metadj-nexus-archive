@@ -45,6 +45,31 @@ interface CacheMessage {
 /** In-memory cache storage */
 const memoryCache = new Map<string, CacheEntry>()
 
+/**
+ * Aggregate cache metrics for monitoring hit rate
+ * These counters persist for the lifetime of the process.
+ */
+interface CacheMetrics {
+  /** Total cache hits (memory + upstash) */
+  hits: number
+  /** Total cache misses */
+  misses: number
+  /** Total cache writes */
+  writes: number
+  /** Total evictions performed */
+  evictions: number
+  /** Timestamp when metrics were last reset */
+  resetAt: number
+}
+
+const cacheMetrics: CacheMetrics = {
+  hits: 0,
+  misses: 0,
+  writes: 0,
+  evictions: 0,
+  resetAt: Date.now(),
+}
+
 let upstashRedis: Redis | null = null
 let didLogUpstashError = false
 
@@ -184,10 +209,12 @@ export async function getCachedResponse(key: string): Promise<string | null> {
     const now = Date.now()
     if (now < entry.timestamp + entry.ttl) {
       entry.hits++
+      cacheMetrics.hits++
       logger.info('Cache hit', {
         key: key.slice(0, 50),
         hits: entry.hits,
         age: Math.round((now - entry.timestamp) / 1000),
+        hitRate: getCacheHitRate().toFixed(2),
       })
       return entry.response
     }
@@ -201,7 +228,11 @@ export async function getCachedResponse(key: string): Promise<string | null> {
     try {
       const cached = await upstash.get<string>(key)
       if (typeof cached === 'string' && cached.length > 0) {
-        logger.info('Cache hit (upstash)', { key: key.slice(0, 50) })
+        cacheMetrics.hits++
+        logger.info('Cache hit (upstash)', {
+          key: key.slice(0, 50),
+          hitRate: getCacheHitRate().toFixed(2),
+        })
         return cached
       }
     } catch (error) {
@@ -209,6 +240,8 @@ export async function getCachedResponse(key: string): Promise<string | null> {
     }
   }
 
+  // Cache miss
+  cacheMetrics.misses++
   return null
 }
 
@@ -250,12 +283,14 @@ export async function setCachedResponse(
   }
 
   memoryCache.set(key, entry)
+  cacheMetrics.writes++
 
   logger.info('Response cached', {
     key: key.slice(0, 50),
     responseLength: response.length,
     ttlMinutes: Math.round(effectiveTtl / 60000),
     model,
+    totalWrites: cacheMetrics.writes,
   })
 
   const upstash = getUpstashRedis()
@@ -284,8 +319,13 @@ function evictOldest(): void {
     const [key] = entries[i]
     memoryCache.delete(key)
   }
+  cacheMetrics.evictions += toRemove
 
-  logger.info('Cache eviction', { removed: toRemove, remaining: memoryCache.size })
+  logger.info('Cache eviction', {
+    removed: toRemove,
+    remaining: memoryCache.size,
+    totalEvictions: cacheMetrics.evictions,
+  })
 }
 
 /**
@@ -327,6 +367,45 @@ function hashString(str: string): string {
 }
 
 /**
+ * Calculate the current cache hit rate
+ *
+ * Hit rate = hits / (hits + misses)
+ * Returns 0 if no requests have been made.
+ *
+ * @returns Hit rate as a decimal (0.0 to 1.0)
+ */
+export function getCacheHitRate(): number {
+  const total = cacheMetrics.hits + cacheMetrics.misses
+  if (total === 0) return 0
+  return cacheMetrics.hits / total
+}
+
+/**
+ * Get detailed cache metrics for monitoring dashboards
+ *
+ * @returns Object with all cache metrics
+ */
+export function getCacheMetrics(): CacheMetrics & { hitRate: number; uptimeMs: number } {
+  return {
+    ...cacheMetrics,
+    hitRate: getCacheHitRate(),
+    uptimeMs: Date.now() - cacheMetrics.resetAt,
+  }
+}
+
+/**
+ * Reset cache metrics (useful for testing or periodic resets)
+ */
+export function resetCacheMetrics(): void {
+  cacheMetrics.hits = 0
+  cacheMetrics.misses = 0
+  cacheMetrics.writes = 0
+  cacheMetrics.evictions = 0
+  cacheMetrics.resetAt = Date.now()
+  logger.info('Cache metrics reset')
+}
+
+/**
  * Get cache statistics for monitoring
  *
  * @returns Object with cache statistics
@@ -336,6 +415,14 @@ export function getCacheStats(): {
   size: number
   maxSize: number
   ttlMs: number
+  hitRate: number
+  metrics: {
+    hits: number
+    misses: number
+    writes: number
+    evictions: number
+    uptimeMs: number
+  }
   entries: Array<{
     key: string
     age: number
@@ -350,6 +437,14 @@ export function getCacheStats(): {
     size: memoryCache.size,
     maxSize: getMaxCacheSize(),
     ttlMs: getCacheTtl(),
+    hitRate: getCacheHitRate(),
+    metrics: {
+      hits: cacheMetrics.hits,
+      misses: cacheMetrics.misses,
+      writes: cacheMetrics.writes,
+      evictions: cacheMetrics.evictions,
+      uptimeMs: now - cacheMetrics.resetAt,
+    },
     entries: [...memoryCache.entries()]
       .map(([key, entry]) => ({
         key: key.slice(0, 30) + '...',

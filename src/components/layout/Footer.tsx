@@ -19,20 +19,20 @@ export function Footer({ onInfoOpen }: FooterProps) {
             MetaDJ Nexus. Original works & AI-driven content. Reproduction prohibited.
           </p>
 
-          {/* Links Row */}
-          <div className="flex items-center justify-center gap-x-4 gap-y-2 text-[10px] lg:text-[11px] font-bold text-muted-accessible sm:justify-end shrink-0">
+          {/* Links Row - WCAG 2.5.5 compliant touch targets (44x44px) */}
+          <div className="flex items-center justify-center gap-x-1 gap-y-2 text-[10px] lg:text-[11px] font-bold text-muted-accessible sm:justify-end shrink-0">
             {onInfoOpen ? (
               <button
                 type="button"
                 onClick={onInfoOpen}
-                className="text-muted-accessible hover:text-white transition-colors cursor-pointer"
+                className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center text-muted-accessible hover:text-white transition-colors cursor-pointer touch-manipulation"
               >
                 User Guide
               </button>
             ) : null}
             <Link
               href="/terms"
-              className="text-muted-accessible hover:text-white transition-colors cursor-pointer"
+              className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center text-muted-accessible hover:text-white transition-colors cursor-pointer touch-manipulation"
             >
               Terms
             </Link>
@@ -43,8 +43,8 @@ export function Footer({ onInfoOpen }: FooterProps) {
           </div>
         </div>
 
-        {/* Mobile-only Legal Notice - Refined */}
-        <p className="md:hidden mt-3 text-[9px] uppercase tracking-widest text-muted-accessible text-center">
+        {/* Mobile-only Legal Notice - Refined (min 10px for readability) */}
+        <p className="md:hidden mt-3 text-[10px] uppercase tracking-widest text-muted-accessible text-center">
           Original works & AI-driven content &bull; Zuberant
         </p>
       </div>

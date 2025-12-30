@@ -66,6 +66,7 @@ import { getTools } from '@/lib/ai/tools'
 import { validateMetaDjAiRequest } from '@/lib/ai/validation'
 import { getEnv } from '@/lib/env'
 import { logger } from '@/lib/logger'
+import { getRequestId, getRequestIdHeaders } from '@/lib/request-id'
 import { getMaxRequestSize, readJsonBodyWithLimit } from '@/lib/validation/request-size'
 import type { MetaDjAiApiRequestBody } from '@/types/metadjai.types'
 
@@ -73,6 +74,7 @@ import type { MetaDjAiApiRequestBody } from '@/types/metadjai.types'
  * Log AI usage metrics for monitoring and cost tracking
  */
 function logAIUsage(metrics: {
+  requestId: string
   provider: string
   model: string
   inputTokens?: number
@@ -92,6 +94,7 @@ function logAIUsage(metrics: {
 
   // Log usage info for development visibility and production monitoring
   logger.info('MetaDJai usage', {
+    requestId: metrics.requestId,
     provider: metrics.provider,
     model: metrics.model,
     tokens: {
@@ -136,12 +139,15 @@ export const runtime = 'nodejs'
  * @throws {504} AI request timed out after 30 seconds
  */
 export async function POST(request: NextRequest) {
+  // Extract or generate request ID for tracing
+  const requestId = getRequestId(request)
+
   let env
   try {
     env = getEnv()
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    logger.error('Environment configuration error', { error: message })
+    logger.error('Environment configuration error', { requestId, error: message })
     return NextResponse.json(
       { error: 'Service configuration error. Please try again later.' },
       { status: 500 }
@@ -163,10 +169,11 @@ export async function POST(request: NextRequest) {
 
   // Check if at least one provider is configured
   if (!hasOpenAI && !hasAnthropic && !hasGoogle && !hasXai) {
-    logger.warn('[MetaDJai] Missing API keys - MetaDJai is not configured.')
+    logger.warn('[MetaDJai] Missing API keys - MetaDJai is not configured.', { requestId })
     return NextResponse.json({ error: 'MetaDJai is not configured.' }, { status: 503 })
   } else {
     logger.info('[MetaDJai] Request received with configured keys', {
+      requestId,
       hasOpenAI,
       hasAnthropic,
       hasGoogle,
@@ -233,19 +240,19 @@ export async function POST(request: NextRequest) {
       : defaultProvider
 
   if (preferredProvider === 'openai' && !hasOpenAI) {
-    logger.warn('[MetaDJai] OpenAI provider selected but key missing')
+    logger.warn('[MetaDJai] OpenAI provider selected but key missing', { requestId })
     return NextResponse.json({ error: 'OpenAI provider is not configured for MetaDJai.' }, { status: 503 })
   }
   if (preferredProvider === 'anthropic' && !hasAnthropic) {
-    logger.warn('[MetaDJai] Anthropic provider selected but key missing')
+    logger.warn('[MetaDJai] Anthropic provider selected but key missing', { requestId })
     return NextResponse.json({ error: 'Anthropic provider is not configured for MetaDJai.' }, { status: 503 })
   }
   if (preferredProvider === 'google' && !hasGoogle) {
-    logger.warn('[MetaDJai] Google provider selected but key missing')
+    logger.warn('[MetaDJai] Google provider selected but key missing', { requestId })
     return NextResponse.json({ error: 'Google provider is not configured for MetaDJai.' }, { status: 503 })
   }
   if (preferredProvider === 'xai' && !hasXai) {
-    logger.warn('[MetaDJai] xAI provider selected but key missing')
+    logger.warn('[MetaDJai] xAI provider selected but key missing', { requestId })
     return NextResponse.json({ error: 'xAI provider is not configured for MetaDJai.' }, { status: 503 })
   }
 
@@ -396,6 +403,7 @@ export async function POST(request: NextRequest) {
         }
 
         logAIUsage({
+          requestId,
           provider: providerInfo.provider,
           model: providerInfo.model,
           inputTokens: usage?.inputTokens,
@@ -414,6 +422,7 @@ export async function POST(request: NextRequest) {
   // If primary circuit is open and failover is available, skip to fallback
   if (primaryCircuitOpen && failoverEnabled) {
     logger.info('Primary provider circuit open, using fallback directly', {
+      requestId,
       primaryProvider: modelInfo.provider,
     })
 
@@ -433,7 +442,7 @@ export async function POST(request: NextRequest) {
           recordFailure(fallbackModelInfo.provider, fallbackMessage)
         }
 
-        logger.error('Fallback provider also failed', { error: fallbackMessage })
+        logger.error('Fallback provider also failed', { requestId, error: fallbackMessage })
         return NextResponse.json({ error: 'AI service temporarily unavailable. Please try again.' }, { status: 502 })
       }
     }
@@ -459,7 +468,7 @@ export async function POST(request: NextRequest) {
     // If it's a timeout, return timeout error (don't failover for timeouts)
     if (isPrimaryTimeout) {
       clearTimeout(timeout)
-      logger.error('MetaDJai streaming timed out', { error: primaryMessage })
+      logger.error('MetaDJai streaming timed out', { requestId, error: primaryMessage })
       return NextResponse.json({ error: 'AI request timed out. Please try again.' }, { status: 504 })
     }
 
@@ -467,6 +476,7 @@ export async function POST(request: NextRequest) {
     if (failoverEnabled && isPrimaryProviderError) {
       clearTimeout(timeout)
       logger.info('Primary provider failed, attempting failover', {
+        requestId,
         primaryProvider: modelInfo.provider,
         error: primaryMessage,
       })
@@ -506,6 +516,7 @@ export async function POST(request: NextRequest) {
               recordSuccess(fallbackModelInfo.provider)
 
               logAIUsage({
+                requestId,
                 provider: fallbackModelInfo.provider,
                 model: fallbackModelInfo.model,
                 inputTokens: usage?.inputTokens,
@@ -530,6 +541,7 @@ export async function POST(request: NextRequest) {
           }
 
           logger.error('Fallback provider also failed', {
+            requestId,
             primaryError: primaryMessage,
             fallbackError: fallbackMessage,
           })
@@ -538,7 +550,7 @@ export async function POST(request: NextRequest) {
     }
 
     clearTimeout(timeout)
-    logger.error('MetaDJai streaming failed', { error: primaryMessage })
+    logger.error('MetaDJai streaming failed', { requestId, error: primaryMessage })
     return NextResponse.json({ error: 'AI service temporarily unavailable. Please try again.' }, { status: 502 })
   }
 }

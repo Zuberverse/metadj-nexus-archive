@@ -35,7 +35,7 @@ describe('getAIRequestTimeout', () => {
 
   it('returns route-specific default for stream', () => {
     const timeout = getAIRequestTimeout('stream')
-    expect(timeout).toBe(60000)
+    expect(timeout).toBe(90000) // 90s - Streaming with tool calls can take longer
   })
 
   it('returns route-specific default for chat', () => {

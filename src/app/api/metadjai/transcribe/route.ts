@@ -16,16 +16,67 @@ import { logger } from "@/lib/logger";
 export const runtime = "nodejs"; // Helper for FormData support in App Router usually implies Node.js runtime for now or edge but file handling is tricky on edge sometimes
 
 const MAX_AUDIO_BYTES = 10 * 1024 * 1024; // 10MB
-const ALLOWED_AUDIO_TYPES = new Set([
+
+/**
+ * Known good audio MIME types across all browsers.
+ * This is an allowlist for explicit validation, not a blocklist.
+ */
+const KNOWN_AUDIO_TYPES = new Set([
+    // Standard types
     "audio/webm",
     "audio/wav",
+    "audio/wave",
+    "audio/x-wav",
     "audio/mpeg",
+    "audio/mp3",
     "audio/mp4",
     "audio/x-m4a",
+    "audio/m4a",
+    "audio/aac",
+    "audio/x-aac",
     "audio/ogg",
+    "audio/opus",
     "audio/amr",
     "audio/flac",
+    "audio/x-flac",
+    // Safari/iOS specific
+    "audio/x-caf",
+    "audio/caf",
+    "audio/aiff",
+    "audio/x-aiff",
+    "audio/basic",
+    // Edge cases
+    "audio/3gpp",
+    "audio/3gpp2",
+    "audio/vnd.wave",
 ]);
+
+/**
+ * Validate audio file type with permissive approach.
+ * - Known types: accepted immediately
+ * - Any audio/* type: accepted (browser variations)
+ * - Empty/missing type: warn and accept (some browsers don't set)
+ * - Non-audio types: rejected (security)
+ */
+function validateAudioType(type: string | undefined): { valid: boolean; warning?: string } {
+    // Empty type - some browsers don't set MIME, accept with warning
+    if (!type || type === "") {
+        return { valid: true, warning: "No MIME type provided, accepting file anyway" };
+    }
+
+    // Known good type - accept immediately
+    if (KNOWN_AUDIO_TYPES.has(type.toLowerCase())) {
+        return { valid: true };
+    }
+
+    // Any audio/* type - accept (handles browser variations)
+    if (type.toLowerCase().startsWith("audio/")) {
+        return { valid: true, warning: `Unknown audio subtype: ${type}` };
+    }
+
+    // Non-audio type - reject
+    return { valid: false };
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -81,10 +132,19 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Loose check - if it starts with audio/, allow it, but best effort mapping below
-        // STRICT check logic removed - we want to be permissive for Safari/etc.
-        // if (file.type && !ALLOWED_AUDIO_TYPES.has(file.type)) { ... } 
-        // We will just try to process it.
+        // Validate audio type with permissive approach
+        // Accepts all audio/* types but rejects non-audio to prevent abuse
+        const typeValidation = validateAudioType(file.type);
+        if (!typeValidation.valid) {
+            logger.warn("[Transcribe] Rejected non-audio file type", { type: file.type });
+            return NextResponse.json(
+                { error: "Invalid file type. Please upload an audio recording." },
+                { status: 415 }
+            );
+        }
+        if (typeValidation.warning) {
+            logger.info("[Transcribe] Audio type warning", { type: file.type, warning: typeValidation.warning });
+        }
 
         const getExtensionFromType = (type: string) => {
             if (type.includes('mp4') || type.includes('m4a')) return 'm4a';
