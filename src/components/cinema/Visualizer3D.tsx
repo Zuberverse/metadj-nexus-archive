@@ -49,15 +49,11 @@ export function Visualizer3D({
   const bloomThreshold = isLite ? Math.max(0.05, bloomSettings.threshold - 0.15) : bloomSettings.threshold
   const bloomRadius = isLite ? bloomSettings.radius * 0.9 : bloomSettings.radius
 
-  // Reactive enhancements: scale intensity with bass and threshold with highs
-  const reactiveIntensity = bloomIntensity * (1.0 + bassLevel * 0.5)
-  const reactiveThreshold = Math.max(0.01, bloomThreshold - highLevel * 0.1)
-
-  const reactiveChromaticOffset = useMemo(() => {
-    // Physical impact: bass causes a global shudder, highs cause spectral spikes
-    const impact = bassLevel * 0.005 + highLevel * 0.008
-    return new THREE.Vector2(0.001 + impact, 0.001 + impact)
-  }, [bassLevel, highLevel])
+  // STATIC bloom - particles already have audio reactivity built in
+  // Reactive bloom on top of reactive particles creates double-pulsing artifact
+  const chromaticOffset = useMemo(() => {
+    return new THREE.Vector2(0.002, 0.002)
+  }, [])
 
   return (
     <>
@@ -78,22 +74,22 @@ export function Visualizer3D({
         (isLite ? (
           <EffectComposer enableNormalPass={false}>
             <Bloom
-              luminanceThreshold={reactiveThreshold}
+              luminanceThreshold={bloomThreshold}
               mipmapBlur={false}
-              intensity={reactiveIntensity}
+              intensity={bloomIntensity}
               radius={bloomRadius}
             />
           </EffectComposer>
         ) : (
           <EffectComposer enableNormalPass={false}>
             <Bloom
-              luminanceThreshold={reactiveThreshold}
+              luminanceThreshold={bloomThreshold}
               mipmapBlur
-              intensity={reactiveIntensity}
+              intensity={bloomIntensity}
               radius={bloomRadius}
             />
             <ChromaticAberration
-              offset={reactiveChromaticOffset}
+              offset={chromaticOffset}
               radialModulation={false}
               modulationOffset={0}
             />
