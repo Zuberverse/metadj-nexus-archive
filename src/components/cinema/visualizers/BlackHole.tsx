@@ -199,45 +199,59 @@ const DiskShader = {
       gl_PointSize = baseSize * (380.0 / -mvPosition.z) * uPixelRatio;
       gl_PointSize = clamp(gl_PointSize, 2.5, 45.0);  // Higher minimum
       
-      // Temperature gradient: hot inner -> cool outer (base colors)
-      vec3 innerColor = vec3(0.9, 0.95, 1.0);
-      vec3 midColor = vec3(0.5, 0.15, 0.9);
-      vec3 outerColor = vec3(0.15, 0.02, 0.35);
-      
-      // MetaDJ brand color palette
-      // Shift 1: Cyan #06b6d4
-      vec3 shiftColor1 = vec3(${METADJ_VISUALIZER_SRGB.cyan});
-      // Shift 2: Purple #8b5cf6
-      vec3 shiftColor2 = vec3(${METADJ_VISUALIZER_SRGB.purple});
-      // Shift 3: Magenta #d946ef
-      vec3 shiftColor3 = vec3(${METADJ_VISUALIZER_SRGB.magenta});
-      
-      // Create smooth cycling between color shifts - much more visible
-      float colorCycle = uColorPhase;
-      float shift1 = pow(sin(colorCycle) * 0.5 + 0.5, 0.6);
-      float shift2 = pow(sin(colorCycle + 2.094) * 0.5 + 0.5, 0.6);
-      float shift3 = pow(sin(colorCycle + 4.189) * 0.5 + 0.5, 0.6);
-      
-      // Audio-reactive color intensity - stronger response
-      float audioColorBoost = uBass * 0.8 + uMid * 0.5 + uHigh * 0.4;
-      
-      // Blend shift colors - much more saturated and visible
-      vec3 shiftBlend = shiftColor1 * shift1 + shiftColor2 * shift2 + shiftColor3 * shift3;
-      shiftBlend = shiftBlend * 0.55; // Stronger blend effect
-      
+      // ═══════════════════════════════════════════════════════════════════════
+      // PURPLE/BLUE/CYAN DOMINANT PALETTE (matching Cosmos)
+      // Purple is PRIMARY, no white, magenta as accent only
+      // ═══════════════════════════════════════════════════════════════════════
+
+      // Core colors (purple/violet dominant - NO WHITE)
+      vec3 purple = vec3(${METADJ_VISUALIZER_SRGB.purple});      // #8B5CF6 - PRIMARY
+      vec3 indigo = vec3(${METADJ_VISUALIZER_SRGB.indigo});      // #A855F7
+      vec3 cyan = vec3(${METADJ_VISUALIZER_SRGB.cyan});          // #06B6D4
+      vec3 magenta = vec3(${METADJ_VISUALIZER_SRGB.magenta});    // #D946EF - accent only
+      vec3 deepBlue = vec3(0.15, 0.25, 0.85);                    // Deep cosmic blue
+      vec3 electricBlue = vec3(0.2, 0.4, 1.0);                   // Electric blue
+      vec3 violetCore = vec3(0.7, 0.5, 1.0);                     // Bright violet for inner disk
+
+      // Radial gradient: violet core → purple mid → deep blue outer
       float t = smoothstep(3.0, 10.0, r);
+      vec3 innerColor = violetCore;                              // Violet core (not white)
+      vec3 midColor = mix(purple, indigo, 0.4);                  // Purple/indigo blend
+      vec3 outerColor = mix(deepBlue, purple * 0.5, 0.3);        // Deep blue with purple tint
+
       vec3 baseColor = mix(innerColor, midColor, t);
       baseColor = mix(baseColor, outerColor, smoothstep(0.5, 1.0, t));
-      
-      // Add hot core glow
-      if (r < 4.0) baseColor += vec3(0.4, 0.4, 0.7);
-      
-      // Apply color shift across entire disk, much stronger effect
-      float shiftStrength = 0.6 + smoothstep(3.0, 7.0, r) * 0.5;
-      shiftStrength *= (0.6 + audioColorBoost * 1.0);
-      
-      // Removed per-particle color variation to reduce grain - use smooth radius-based color only
-      vec3 finalColor = baseColor + shiftBlend * shiftStrength * 0.8;
+
+      // Add violet core glow (not white-blue)
+      if (r < 4.0) baseColor += violetCore * 0.4;
+
+      // Create smooth cycling with PURPLE PRIMARY (weighted higher)
+      float colorCycle = uColorPhase;
+      float purpleWeight = pow(sin(colorCycle) * 0.5 + 0.5, 0.5) * 1.4;        // PRIMARY 1.4x
+      float cyanWeight = pow(sin(colorCycle + 2.094) * 0.5 + 0.5, 0.6);
+      float blueWeight = pow(sin(colorCycle + 3.5) * 0.5 + 0.5, 0.7);
+      float magentaAccent = pow(sin(colorCycle + 4.5) * 0.5 + 0.5, 1.2) * uHigh * 0.4; // Accent on highs only
+
+      // Audio-reactive color pumping
+      float audioColorBoost = uBass * 0.8 + uMid * 0.5 + uHigh * 0.4;
+
+      // Blend colors with purple dominant
+      vec3 shiftBlend = purple * purpleWeight + cyan * cyanWeight + electricBlue * blueWeight + magenta * magentaAccent;
+      float totalWeight = purpleWeight + cyanWeight + blueWeight + magentaAccent + 0.001;
+      shiftBlend = shiftBlend / totalWeight;
+
+      // Bass pumps purple/indigo, mid pumps electric blue
+      vec3 audioPump = indigo * uBass * 0.5 + electricBlue * uMid * 0.3;
+
+      // Apply color shift across entire disk
+      float shiftStrength = 0.65 + smoothstep(3.0, 7.0, r) * 0.45;
+      shiftStrength *= (0.6 + audioColorBoost * 0.8);
+
+      vec3 finalColor = baseColor * 0.5 + shiftBlend * shiftStrength + audioPump;
+
+      // SATURATION BOOST (1.35x like Cosmos)
+      float luma = dot(finalColor, vec3(0.299, 0.587, 0.114));
+      finalColor = mix(vec3(luma), finalColor, 1.35);
 
       vColor = finalColor;
       
