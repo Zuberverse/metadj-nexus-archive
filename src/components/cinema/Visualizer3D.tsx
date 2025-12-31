@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { EffectComposer, Bloom, ChromaticAberration, Vignette, Noise } from "@react-three/postprocessing"
+import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing"
 import { BlendFunction } from "postprocessing"
 import * as THREE from "three"
 import { BlackHole } from "./visualizers/BlackHole"
@@ -82,12 +82,6 @@ export function Visualizer3D({
               intensity={reactiveIntensity}
               radius={bloomRadius}
             />
-            {/* Vignette for cinematic framing */}
-            <Vignette
-              offset={0.35}
-              darkness={0.5}
-              blendFunction={BlendFunction.NORMAL}
-            />
           </EffectComposer>
         ) : (
           <EffectComposer enableNormalPass={false}>
@@ -102,16 +96,11 @@ export function Visualizer3D({
               radialModulation={false}
               modulationOffset={0}
             />
-            {/* Vignette for cinematic framing - stronger in full mode */}
+            {/* Subtle vignette for cinematic framing */}
             <Vignette
-              offset={0.3}
-              darkness={0.6}
+              offset={0.4}
+              darkness={0.35}
               blendFunction={BlendFunction.NORMAL}
-            />
-            {/* Subtle film grain for texture */}
-            <Noise
-              opacity={0.035}
-              blendFunction={BlendFunction.OVERLAY}
             />
           </EffectComposer>
         ))}
