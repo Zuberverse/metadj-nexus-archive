@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-27 15:24 EST
+**Last Modified**: 2025-12-31 12:15 EST
 
 ## Overview
 
@@ -106,12 +106,12 @@ All visualizers use `@react-three/postprocessing` Bloom:
 
 **Implementation Note**: `three` is intentionally pinned to the 0.181.x line to satisfy `postprocessing` peer dependency requirements. If upgrading Three.js, upgrade postprocessing in lockstep and re‑verify visualizer stability.
 
-| Visualizer | Threshold | Intensity | Radius |
-|------------|-----------|-----------|--------|
-| Cosmos | 0.5 | 0.45 | 0.25 |
-| Black Hole | 0.1 | 1.0 | 0.3 |
-| Space Travel | 0.55 | 0.35 | 0.2 |
-| Disco Ball | 0.25 (reactive) | 0.9 (reactive) | 0.35 |
+| Visualizer | Threshold | Intensity | Radius | Notes |
+|------------|-----------|-----------|--------|-------|
+| Cosmos | 0.3 | 0.85 | 0.18 | Tighter radius for high-fidelity glow |
+| Black Hole | 0.25 | 0.75 | 0.15 | Crisp particles, minimal blur |
+| Space Travel | 0.55 | 0.35 | 0.15 | Subtle ambient glow |
+| Disco Ball | 0.25 (reactive) | 0.9 (reactive) | 0.2 | Sparkle emphasis |
 
 #### Audio-Reactive Post-Processing
 
@@ -125,47 +125,65 @@ All visualizers use `@react-three/postprocessing` Bloom:
 
 **File**: `src/components/cinema/visualizers/Cosmos.tsx`
 
-A mesmerizing particle cloud that morphs between geometric formations while cycling through brand colors.
+A majestic spiral galaxy with Keplerian rotation, flowing nebula colors, and high-fidelity circular particles.
 
 #### Visual Characteristics
 
-- **20,000 particles** in spherical cloud formation
-- **Sharp particle rendering**: Tight core (0.04), inner glow (0.15), outer glow (0.4) with power curves for crisp, defined particles
-- **8 shape formations**: sphere, torus, jellyfish, spiral galaxy, starburst, double helix, cube, wave
-- **Dynamic Morphing**: Shapes transition every 8-15 seconds with audio-reactive blend speed
-- **Scatter effect**: Particles briefly expand outward during shape transitions for dramatic morphing
-- **Orbital/spiral motion** with wave breathing effect
-- **Bass-reactive expansion** with simplex noise turbulence
-- **Counter-clockwise rotation** with speed varying by audio energy
-- **Gentle group rotation** on X/Y axes for depth perception
+- **18,000 particles** distributed across core, 4 spiral arms, and outer halo
+- **High-fidelity circular particles**: 3-layer rendering (tight core 0.08, inner glow 0.2, outer edge 0.45) with sharper power curves for crisp, defined particles
+- **Spiral galaxy structure**: 4 spiral arms with Keplerian rotation (inner particles orbit faster)
+- **Particle distribution**: 20% core, 65% spiral arms, 15% outer halo for full space coverage
+- **Purple/blue/cyan dominant palette** with magenta as accent only
+- **Enhanced audio-reactive breathing**: Dual pulse waves propagating outward
+- **Vertical wave motion** responding to mid frequencies
+- **Simplex noise turbulence** for organic movement
+- **Gentle group tilt** on X/Z axes for 3D depth perception
 
 #### Color Implementation
 
 ```glsl
-// 8-color palette cycling through brand colors
-uColor1: #8b5cf6  // Purple
-uColor2: #06b6d4  // Cyan
-uColor3: #d946ef  // Magenta
-uColor4: #a855f7  // Indigo
-uColor5: #22d3ee  // Light cyan
-uColor6: #c084fc  // Light purple
-uColor7: #e879f9  // Light magenta
-uColor8: #67e8f9  // Pale cyan
+// Purple/Blue/Cyan dominant palette (purple is PRIMARY)
+purple: #8b5cf6   // Primary - strongest weight (1.4x)
+indigo: #a855f7   // Support for purple regions
+cyan: #06b6d4     // Secondary
+deepBlue: vec3(0.15, 0.25, 0.85)     // Cosmic depth
+electricBlue: vec3(0.2, 0.4, 1.0)    // Mid-frequency accent
+violetCore: vec3(0.6, 0.4, 1.0)      // Bright core center
+magenta: #d946ef  // Accent only (on high frequencies)
+
+// Core: violet/cyan center (no white)
+// Nebula regions weighted: purple > cyan > blue > magenta (subtle)
+// Outer regions blend toward deep blue for cosmic depth
 ```
 
 #### Audio Response
 
 | Frequency | Effect |
 |-----------|--------|
-| Bass | Particle displacement, rotation speed, accent intensity |
-| Mid | Subtle displacement, color phase acceleration |
-| High | Twinkle intensity, accent brightness |
+| Bass | Rotation acceleration (+80%), breathing pulse (+75%), particle size (+50%), purple/indigo color pump |
+| Mid | Electric blue waves, vertical motion, turbulence, rotation boost (+35%) |
+| High | Cyan shimmer, subtle magenta sparkle, particle size (+60%), glow intensity |
+
+#### High-Fidelity Rendering
+
+| Parameter | Value | Purpose |
+|-----------|-------|---------|
+| Particle base size | 0.6 | Larger for definition |
+| Size multiplier | 350.0 | Prominent particles |
+| Min/max size | 2.0-50.0 px | No tiny noise particles |
+| Core smoothstep | 0.0-0.08 | Tight bright center |
+| Inner smoothstep | 0.0-0.2 | Controlled glow |
+| Outer smoothstep | 0.0-0.45 | Sharp edge cutoff |
+| Alpha discard | 0.15 | Removes fuzzy particles |
 
 #### Unique Features
 
-- Shape morphing driven by timer (not audio) for visual variety
-- Gentle group rotation on X/Y axes for depth perception
-- Per-particle color index for varied color distribution
+- Keplerian rotation creates natural orbital motion
+- 4 spiral arms with twist factor for galaxy structure
+- Outer halo layer fills space without noise
+- Deep blue outer regions for cosmic depth
+- No white in palette—purple/violet core instead
+- Saturation boost (1.4x) for rich colors
 
 ---
 
@@ -173,15 +191,15 @@ uColor8: #67e8f9  // Pale cyan
 
 **File**: `src/components/cinema/visualizers/BlackHole.tsx`
 
-A gravitational accretion disk with Keplerian orbital mechanics and a flowing gradient event horizon.
+A gravitational accretion disk with Keplerian orbital mechanics, high-fidelity circular particles, and a flowing gradient event horizon.
 
 #### Visual Characteristics
 
-- **12,000 particles** forming an accretion disk (reduced from 20k for smoother appearance)
-- **Smooth particle rendering**: Quadratic falloff (required to prevent flickering with additive blending during orbital motion)
-- **Uniform particle sizes**: Minimum 0.5 size factor to eliminate tiny flickering particles
-- **Keplerian orbital mechanics**: Inner particles orbit faster than outer
-- **Dynamic audio-reactive ripple waves** propagating outward from center
+- **12,000 particles** forming an accretion disk (optimized for smooth rendering)
+- **High-fidelity circular particles**: 3-layer rendering (tight core 0.06, inner glow 0.18, outer edge 0.42) with sharp power curves
+- **Larger particles for definition**: 0.45 base size with 380.0 multiplier
+- **Keplerian orbital mechanics**: Inner particles orbit faster than outer (inverse square root)
+- **Dynamic audio-reactive ripple waves** propagating outward from center (3 wave layers)
 - **Temperature gradient**: Hot white-blue inner ring to cool violet-purple outer edge
 - **Radius-based color blending**: Smooth color transitions without per-particle variation
 - **Flowing 4-color gradient event horizon**: Cyan → purple → magenta → indigo with continuous rotation and audio-reactive wave patterns
@@ -237,16 +255,21 @@ BlackHole requires careful parameter tuning to prevent visual grain and flickeri
 |-----------|----------|-----------|--------|
 | Particle count | 20,000 | 12,000 | Fewer particles = less stacking grain |
 | Particle size range | 0.0-1.0 | 0.5-1.0 | Eliminates tiny flickering particles |
-| Base particle size | 0.18 | 0.30 | Larger particles blend more smoothly |
+| Base particle size | 0.18 | 0.45 | Larger particles for high-fidelity definition |
+| Size multiplier | 320.0 | 380.0 | More prominent particles |
+| Min particle size | 1.0 | 2.5 px | No sub-pixel noise |
 | Turbulence amplitude | 0.05 + bass×0.3 | 0.03 + bass×0.15 | Reduces depth jitter |
 | Ripple strength | 0.1 + bass×0.18 | 0.06 + bass×0.12 | Balanced wave visibility vs stability |
 | Wobble amplitude | bass×0.15 | bass×0.1 | Reduces radial size fluctuation |
-| Discard threshold | 0.04 | 0.18 | Culls dim flickering particles |
+| Discard threshold | 0.04 | 0.22 | Higher threshold removes fuzzy particles |
+| Core smoothstep | 0.0-0.1 | 0.0-0.06 | Tighter bright core |
+| Inner smoothstep | 0.0-0.3 | 0.0-0.18 | Controlled glow layer |
+| Outer smoothstep | 0.0-0.5 | 0.0-0.42 | Sharp edge cutoff |
 | Alpha floor | max(fade, 0.08) | No floor | Lets particles fade naturally |
 | Twinkle effect | Enabled | Disabled | Eliminates per-particle brightness oscillation |
 | Per-particle color | Enabled | Disabled | Uses smooth radius-based color only |
 
-**Key Principle**: BlackHole must prioritize smooth, stable rendering over maximum visual complexity. The tilted disk perspective combined with additive blending makes it uniquely susceptible to grain artifacts that don't affect Cosmos or SpaceTravel.
+**Key Principle**: BlackHole must prioritize smooth, stable rendering over maximum visual complexity. The tilted disk perspective combined with additive blending makes it uniquely susceptible to grain artifacts that don't affect Cosmos or SpaceTravel. High-fidelity rendering uses larger particles with sharper edges rather than more particles with soft falloff.
 
 ---
 
@@ -542,8 +565,8 @@ Generated graphics that respond to audio frequency data in real-time. Visualizer
 
 | Scene ID | Name | Description | Style | Renderer |
 |----------|------|-------------|-------|----------|
-| `cosmos` | Cosmos | Morphing particle cloud with 8 shape formations | particles, brand-colors, intense | 3D (R3F) |
-| `black-hole` | Black Hole | Accretion disk with Keplerian orbits and event horizon | gravitational, brand-colors, intense | 3D (R3F) |
+| `cosmos` | Cosmos | Spiral galaxy with Keplerian rotation and purple/blue/cyan palette | particles, brand-colors, intense | 3D (R3F) |
+| `black-hole` | Black Hole | Accretion disk with Keplerian orbits and flowing gradient event horizon | gravitational, brand-colors, intense | 3D (R3F) |
 | `space-travel` | Space Travel | Forward‑flying starfield with nebula clouds | cosmic, brand-colors, subtle | 3D (R3F) |
 | `disco-ball` | Disco Ball | Cosmic mirror-tile sphere with glittering facets and orbiting stardust | glitter, brand-colors, intense | 3D (R3F) |
 

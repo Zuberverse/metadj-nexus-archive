@@ -193,9 +193,11 @@ const DiskShader = {
       vec4 mvPosition = modelViewMatrix * vec4(rotatedPos, 1.0);
       gl_Position = projectionMatrix * mvPosition;
 
-      // Larger particles with moderate audio reactivity for smooth yet dynamic appearance
-      float baseSize = 0.30 * aSize * (1.0 + uHigh * 0.35 + uMid * 0.15);
-      gl_PointSize = baseSize * (320.0 / -mvPosition.z);
+      // HIGH FIDELITY: Larger particles for definition
+      float sizeBoost = 1.0 + uHigh * 0.4 + uBass * 0.3 + uMid * 0.15;
+      float baseSize = 0.45 * aSize * sizeBoost;  // Larger base size
+      gl_PointSize = baseSize * (380.0 / -mvPosition.z) * uPixelRatio;
+      gl_PointSize = clamp(gl_PointSize, 2.5, 45.0);  // Higher minimum
       
       // Temperature gradient: hot inner -> cool outer (base colors)
       vec3 innerColor = vec3(0.9, 0.95, 1.0);
@@ -249,25 +251,37 @@ const DiskShader = {
     varying float vAlpha;
     varying vec3 vColor;
     varying float vTwinkle;
-    
+
     void main() {
       vec2 uv = gl_PointCoord.xy - 0.5;
       float d = length(uv);
-      if (d > 0.5) discard;
 
-      // Smooth quadratic falloff - stable under motion
-      float strength = 1.0 - d * 2.0;
-      strength = pow(strength, 2.0);
+      // Sharp circular cutoff
+      if (d > 0.42) discard;
 
-      vec3 color = vColor * 1.3;
+      // HIGH FIDELITY: Sharp core with controlled glow
+      float core = 1.0 - smoothstep(0.0, 0.06, d);   // Very tight core
+      float inner = 1.0 - smoothstep(0.0, 0.18, d);  // Inner glow
+      float outer = 1.0 - smoothstep(0.0, 0.42, d);  // Outer edge
+
+      // Sharper falloff for defined particles
+      inner = pow(inner, 1.8);
+      outer = pow(outer, 2.5);
+
+      float strength = core * 1.6 + inner * 0.6 + outer * 0.25;
+
+      vec3 color = vColor * 1.35;
       color = mix(color, color * 1.15, vTwinkle);
-      
-      // Clamp color to prevent hot spots that can cause flickering
-      color = clamp(color, vec3(0.0), vec3(1.3));
-      
+
+      // Core brightening
+      color *= 1.0 + core * 0.3;
+
+      // Clamp color to prevent hot spots
+      color = clamp(color, vec3(0.0), vec3(1.5));
+
       float finalAlpha = vAlpha * strength;
-      // Discard dim particles - high threshold eliminates flickering grain
-      if (finalAlpha < 0.18) discard;
+      // HIGH threshold for crisp particles
+      if (finalAlpha < 0.22) discard;
 
       gl_FragColor = vec4(color, finalAlpha);
     }

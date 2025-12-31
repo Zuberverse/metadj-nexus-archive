@@ -21,11 +21,12 @@ interface Visualizer3DProps {
   postProcessing?: "off" | "lite" | "full"
 }
 
+// HIGH FIDELITY: Tighter bloom radius for sharper glow
 const BLOOM_SETTINGS = {
-  "explosion": { threshold: 0.35, intensity: 0.75, radius: 0.28 },
-  "black-hole": { threshold: 0.1, intensity: 1.0, radius: 0.3 },
-  "space-travel": { threshold: 0.55, intensity: 0.35, radius: 0.2 },
-  "disco-ball": { threshold: 0.25, intensity: 0.9, radius: 0.35 }
+  "explosion": { threshold: 0.3, intensity: 0.85, radius: 0.18 },
+  "black-hole": { threshold: 0.25, intensity: 0.75, radius: 0.15 },
+  "space-travel": { threshold: 0.55, intensity: 0.35, radius: 0.15 },
+  "disco-ball": { threshold: 0.25, intensity: 0.9, radius: 0.2 }
 } as const
 
 const CHROMATIC_OFFSET = new THREE.Vector2(0.002, 0.002)
@@ -98,8 +99,8 @@ export function Visualizer3D({
             />
             {/* Subtle vignette for cinematic framing */}
             <Vignette
-              offset={0.4}
-              darkness={0.35}
+              offset={0.5}
+              darkness={0.2}
               blendFunction={BlendFunction.NORMAL}
             />
           </EffectComposer>

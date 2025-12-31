@@ -21,8 +21,8 @@ function seededRandom(seed: number): () => number {
   }
 }
 
-const HIGH_PARTICLE_COUNT = 14000
-const LOW_PARTICLE_COUNT = 8000
+const HIGH_PARTICLE_COUNT = 18000
+const LOW_PARTICLE_COUNT = 10000
 
 function generateCosmosData(particleCount: number) {
   const positions = new Float32Array(particleCount * 3)
@@ -31,33 +31,37 @@ function generateCosmosData(particleCount: number) {
   const armIndex = new Float32Array(particleCount) // Which spiral arm
   const random = seededRandom(42)
 
-  const NUM_ARMS = 3 // Spiral arms
+  const NUM_ARMS = 4 // More spiral arms for fuller coverage
 
   for (let i = 0; i < particleCount; i++) {
-    // Assign to spiral arm with some in core
-    const isCore = random() < 0.25
-    const arm = isCore ? -1 : Math.floor(random() * NUM_ARMS)
+    // Distribution: core, spiral arms, and outer halo
+    const roll = random()
+    const isCore = roll < 0.2
+    const isHalo = roll > 0.85 // Outer diffuse particles
+    const arm = isCore || isHalo ? -1 : Math.floor(random() * NUM_ARMS)
 
-    // Radius distribution - concentrated center with spiral arms extending out
     const t = random()
     let radius: number
     let angle: number
 
     if (isCore) {
-      // Core particles - dense center
-      radius = t * t * 3.0 + 0.3
+      // Core particles - dense bright center
+      radius = t * t * 3.5 + 0.2
+      angle = random() * Math.PI * 2
+    } else if (isHalo) {
+      // Halo particles - diffuse outer glow
+      radius = 9.0 + t * 6.0 // 9 to 15
       angle = random() * Math.PI * 2
     } else {
-      // Spiral arm particles
-      radius = 1.5 + t * t * 9.0 // 1.5 to 10.5
-      // Base angle from arm position + spiral twist based on radius
+      // Spiral arm particles - extended reach
+      radius = 1.2 + t * t * 11.0 // 1.2 to 12.2
       const armAngle = (arm / NUM_ARMS) * Math.PI * 2
-      const spiralTwist = radius * 0.4 // How tight the spiral is
-      angle = armAngle + spiralTwist + (random() - 0.5) * 0.8 // Spread within arm
+      const spiralTwist = radius * 0.35
+      angle = armAngle + spiralTwist + (random() - 0.5) * 0.7
     }
 
-    // Flattened disk with slight thickness
-    const heightSpread = isCore ? 0.4 : 0.15 * (1 + radius * 0.05)
+    // Flattened disk with thickness variation
+    const heightSpread = isCore ? 0.5 : isHalo ? 0.8 : 0.2 * (1 + radius * 0.04)
     const y = (random() - 0.5) * heightSpread
 
     const x = Math.cos(angle) * radius
@@ -67,11 +71,17 @@ function generateCosmosData(particleCount: number) {
     positions[i * 3 + 1] = y
     positions[i * 3 + 2] = z
 
-    // Size variation - core particles slightly larger
-    sizes[i] = isCore ? 0.5 + random() * 0.5 : 0.35 + random() * 0.45
+    // Size variation - core brighter, halo softer
+    if (isCore) {
+      sizes[i] = 0.5 + random() * 0.6
+    } else if (isHalo) {
+      sizes[i] = 0.4 + random() * 0.5
+    } else {
+      sizes[i] = 0.4 + random() * 0.5
+    }
 
-    // Store arm index for color mapping (normalized 0-1, -1 becomes 0.33 for core)
-    armIndex[i] = isCore ? 0.33 : (arm + random() * 0.3) / NUM_ARMS
+    // Store arm index for color mapping
+    armIndex[i] = isCore ? 0.33 : isHalo ? random() : (arm + random() * 0.3) / NUM_ARMS
 
     randoms[i * 3] = random()
     randoms[i * 3 + 1] = random()
@@ -179,98 +189,117 @@ const CosmosShader = {
         pos.x * s + pos.z * c
       );
 
-      // Breathing pulse - waves propagate outward
+      // ENHANCED Breathing pulse - stronger bass response
       float pulse = sin(uPulsePhase - r * 0.5) * 0.5 + 0.5;
-      float breathe = 1.0 + pulse * uBass * 0.2;
+      float pulse2 = sin(uPulsePhase * 1.5 - r * 0.3) * 0.5 + 0.5; // Second wave
+      float breathe = 1.0 + pulse * uBass * 0.35 + pulse2 * uMid * 0.15;
       breathe += sin(uTime * 0.2 + r * 0.2) * 0.04;
       rotatedPos.xz *= breathe;
 
-      // Vertical wave motion
-      float vertWave = sin(uPulsePhase * 0.7 - r * 0.3 + aRandom.x * 3.0) * 0.15;
-      rotatedPos.y += vertWave * uMid;
+      // ENHANCED Vertical wave motion - more dramatic
+      float vertWave = sin(uPulsePhase * 0.7 - r * 0.3 + aRandom.x * 3.0) * 0.2;
+      float vertWave2 = sin(uPulsePhase * 1.2 - r * 0.5 + aRandom.y * 2.0) * 0.1;
+      rotatedPos.y += vertWave * uMid + vertWave2 * uBass * 0.5;
 
-      // Smooth turbulence
+      // ENHANCED Turbulence - more responsive to audio
       float noise = snoise(pos * 0.15 + vec3(uTime * 0.06));
-      rotatedPos += normalize(vec3(pos.x, 0.0, pos.z)) * noise * (0.1 + uMid * 0.2);
+      float audioTurb = 0.1 + uMid * 0.3 + uBass * 0.15;
+      rotatedPos += normalize(vec3(pos.x, 0.0, pos.z)) * noise * audioTurb;
 
       vec4 mvPosition = modelViewMatrix * vec4(rotatedPos, 1.0);
       gl_Position = projectionMatrix * mvPosition;
 
-      // Size with audio reactivity
-      float baseSize = 0.4 * aSize * (1.0 + uHigh * 0.5 + uBass * 0.3);
-      gl_PointSize = baseSize * (300.0 / -mvPosition.z) * uPixelRatio;
-      gl_PointSize = clamp(gl_PointSize, 1.0, 40.0);
+      // HIGH FIDELITY: Larger particles for definition
+      float sizeBoost = 1.0 + uHigh * 0.5 + uBass * 0.4 + uMid * 0.2;
+      float baseSize = 0.6 * aSize * sizeBoost;  // Larger base size
+      gl_PointSize = baseSize * (350.0 / -mvPosition.z) * uPixelRatio;
+      gl_PointSize = clamp(gl_PointSize, 2.0, 50.0);  // Higher minimum
 
-      // === VIBRANT COLOR SYSTEM ===
-      // MetaDJ palette
-      vec3 cyan = vec3(${METADJ_VISUALIZER_SRGB.cyan});
-      vec3 purple = vec3(${METADJ_VISUALIZER_SRGB.purple});
-      vec3 magenta = vec3(${METADJ_VISUALIZER_SRGB.magenta});
-      vec3 indigo = vec3(${METADJ_VISUALIZER_SRGB.indigo});
-      vec3 cyanTint = vec3(0.133, 0.827, 0.933); // #22D3EE
-      vec3 white = vec3(0.95, 0.97, 1.0);
+      // === PURPLE/BLUE/CYAN DOMINANT COLOR SYSTEM ===
+      // MetaDJ palette - purple dominant
+      vec3 purple = vec3(${METADJ_VISUALIZER_SRGB.purple});      // #8B5CF6 - PRIMARY
+      vec3 indigo = vec3(${METADJ_VISUALIZER_SRGB.indigo});      // #A855F7
+      vec3 cyan = vec3(${METADJ_VISUALIZER_SRGB.cyan});          // #06B6D4
+      vec3 magenta = vec3(${METADJ_VISUALIZER_SRGB.magenta});    // #D946EF - accent only
+      vec3 deepBlue = vec3(0.15, 0.25, 0.85);                    // Deep cosmic blue
+      vec3 electricBlue = vec3(0.2, 0.4, 1.0);                   // Electric blue
+      vec3 violetCore = vec3(0.6, 0.4, 1.0);                     // Bright violet for core
 
-      // Core glow - hot white/cyan center
-      vec3 coreColor = mix(white, cyan, 0.3);
+      // Core glow - purple/cyan center (no white!)
+      vec3 coreColor = mix(violetCore, cyan, 0.35);
 
       // Nebula regions based on angle and arm
       float theta = atan(pos.z, pos.x);
       float nebulaPhase = theta + uColorPhase * 0.3 + aArmIndex * 6.28;
 
-      // Create flowing color regions
-      float region1 = pow(sin(nebulaPhase) * 0.5 + 0.5, 1.5);
-      float region2 = pow(sin(nebulaPhase + 2.094) * 0.5 + 0.5, 1.5);
-      float region3 = pow(sin(nebulaPhase + 4.189) * 0.5 + 0.5, 1.5);
+      // Create flowing color regions - PURPLE DOMINANT
+      float region1 = pow(sin(nebulaPhase) * 0.5 + 0.5, 1.2);        // Purple region
+      float region2 = pow(sin(nebulaPhase + 2.094) * 0.5 + 0.5, 1.5); // Cyan region
+      float region3 = pow(sin(nebulaPhase + 4.189) * 0.5 + 0.5, 2.0); // Blue region
+      float region4 = pow(sin(nebulaPhase + 1.0) * 0.5 + 0.5, 2.5);   // Magenta (subtle)
 
-      // Blend nebula colors
-      vec3 nebulaColor = cyan * region1 + magenta * region2 + purple * region3;
-      nebulaColor = normalize(nebulaColor + 0.001) * length(nebulaColor) * 0.8;
+      // Blend nebula colors - purple/indigo dominant, then cyan/blue, magenta accent
+      vec3 nebulaColor = purple * region1 * 1.4        // Purple strongest
+                       + indigo * region1 * 0.6        // Indigo support
+                       + cyan * region2 * 0.9          // Cyan secondary
+                       + deepBlue * region3 * 0.7      // Deep blue for depth
+                       + magenta * region4 * 0.3;      // Magenta subtle accent
+      nebulaColor = normalize(nebulaColor + 0.001) * length(nebulaColor) * 0.85;
 
-      // Add golden/warm accents in some regions (cosmic dust feel)
-      float warmRegion = pow(sin(nebulaPhase * 0.5 + 1.0) * 0.5 + 0.5, 3.0);
-      vec3 warmAccent = vec3(1.0, 0.7, 0.3) * warmRegion * 0.25;
-
-      // Radial color temperature gradient
-      float radialT = smoothstep(0.0, 8.0, r);
+      // Radial color gradient - purple core to blue/cyan edges
+      float radialT = smoothstep(0.0, 10.0, r);
       vec3 baseColor = mix(coreColor, nebulaColor, radialT);
-      baseColor += warmAccent * (1.0 - radialT * 0.5);
 
-      // Core brightness boost
-      if (r < 2.5) {
-        float coreGlow = 1.0 - r / 2.5;
-        baseColor += white * coreGlow * 0.5;
-        baseColor += cyan * coreGlow * 0.3;
+      // Add deep blue in outer regions for cosmic depth
+      float outerRegion = smoothstep(6.0, 12.0, r);
+      baseColor = mix(baseColor, mix(baseColor, deepBlue, 0.3), outerRegion);
+
+      // Core brightness boost - purple/cyan, no white
+      if (r < 3.0) {
+        float coreGlow = 1.0 - r / 3.0;
+        baseColor += violetCore * coreGlow * 0.4;
+        baseColor += cyan * coreGlow * 0.25;
+        baseColor += purple * coreGlow * 0.3;
       }
 
-      // Audio-reactive color shifts
-      float audioEnergy = uBass * 0.5 + uMid * 0.3 + uHigh * 0.2;
+      // Audio-reactive color shifts - ENHANCED
+      float audioEnergy = uBass * 0.6 + uMid * 0.35 + uHigh * 0.25;
 
-      // Bass pumps magenta/warm
-      baseColor += magenta * uBass * 0.3;
-      // Highs add cyan shimmer
-      baseColor += cyan * uHigh * 0.25;
-      // Mids enhance purple depth
-      baseColor += indigo * uMid * 0.2;
+      // Bass pumps PURPLE/INDIGO (not magenta!)
+      baseColor += purple * uBass * 0.45;
+      baseColor += indigo * uBass * 0.25;
+      // Mids enhance deep blue waves
+      baseColor += electricBlue * uMid * 0.35;
+      baseColor += purple * uMid * 0.2;
+      // Highs add cyan shimmer + subtle magenta sparkle
+      baseColor += cyan * uHigh * 0.4;
+      baseColor += magenta * uHigh * 0.15; // Magenta only on highs
 
-      // Cycling color overlay
+      // Cycling color overlay - purple/cyan dominant
       float cycle = uColorPhase + r * 0.1 + aArmIndex * 3.0;
-      float cyc1 = pow(sin(cycle) * 0.5 + 0.5, 0.8);
-      float cyc2 = pow(sin(cycle + 2.094) * 0.5 + 0.5, 0.8);
-      float cyc3 = pow(sin(cycle + 4.189) * 0.5 + 0.5, 0.8);
-      vec3 cycleColor = cyanTint * cyc1 + purple * cyc2 + magenta * cyc3;
-      baseColor += cycleColor * (0.15 + audioEnergy * 0.2);
+      float cyc1 = pow(sin(cycle) * 0.5 + 0.5, 0.7);         // Purple
+      float cyc2 = pow(sin(cycle + 2.094) * 0.5 + 0.5, 0.9); // Cyan
+      float cyc3 = pow(sin(cycle + 4.189) * 0.5 + 0.5, 1.5); // Indigo
+      float cyc4 = pow(sin(cycle + 3.14) * 0.5 + 0.5, 2.0);  // Magenta (subtle)
+      vec3 cycleColor = purple * cyc1 * 0.5 + cyan * cyc2 * 0.35 + indigo * cyc3 * 0.25 + magenta * cyc4 * 0.1;
+      baseColor += cycleColor * (0.2 + audioEnergy * 0.3);
 
-      // Brightness boost
-      baseColor *= 1.15 + audioEnergy * 0.3;
+      // Brightness boost - more vibrant with audio
+      baseColor *= 1.2 + audioEnergy * 0.5;
+
+      // Saturation push - keep colors rich
+      float luminance = dot(baseColor, vec3(0.299, 0.587, 0.114));
+      baseColor = mix(vec3(luminance), baseColor, 1.4);
 
       vColor = baseColor;
 
-      // Glow factor for bloom interaction
-      vGlow = 0.8 + pulse * 0.2 + uBass * 0.3;
+      // ENHANCED Glow factor for bloom interaction - stronger audio response
+      float audioGlow = uBass * 0.5 + uMid * 0.25 + uHigh * 0.2;
+      vGlow = 0.9 + pulse * 0.3 + audioGlow;
 
-      // Alpha falloff
-      float edgeFade = 1.0 - smoothstep(8.5, 11.0, r);
-      float centerFade = smoothstep(0.2, 1.0, r);
+      // Alpha falloff - extended range to fill more space
+      float edgeFade = 1.0 - smoothstep(12.0, 15.5, r);
+      float centerFade = smoothstep(0.15, 0.8, r);
       vAlpha = edgeFade * centerFade;
     }
   `,
@@ -283,28 +312,37 @@ const CosmosShader = {
     void main() {
       vec2 uv = gl_PointCoord.xy - 0.5;
       float d = length(uv);
-      if (d > 0.5) discard;
 
-      // Soft glow falloff
-      float core = 1.0 - smoothstep(0.0, 0.12, d);
-      float glow = 1.0 - smoothstep(0.0, 0.5, d);
-      glow = pow(glow, 1.8);
+      // Sharp circular cutoff
+      if (d > 0.45) discard;
 
-      float strength = core * 1.5 + glow * 0.6;
+      // HIGH FIDELITY: Sharp core with controlled glow
+      float core = 1.0 - smoothstep(0.0, 0.08, d);  // Tight bright core
+      float inner = 1.0 - smoothstep(0.0, 0.2, d);  // Inner glow
+      float outer = 1.0 - smoothstep(0.0, 0.45, d); // Outer edge
+
+      // Sharper falloff curve for defined particles
+      inner = pow(inner, 1.5);
+      outer = pow(outer, 2.0);
+
+      float strength = core * 1.8 + inner * 0.7 + outer * 0.3;
       strength *= vGlow;
 
       vec3 color = vColor;
 
-      // Soft color boost at edges for nebula feel
-      color *= 1.0 + (1.0 - glow) * 0.1;
+      // Core brightening for definition
+      color *= 1.0 + core * 0.4;
+
+      // Boost vibrancy
+      color *= 1.15;
 
       // Clamp to prevent harsh spots
-      color = clamp(color, vec3(0.0), vec3(1.4));
+      color = clamp(color, vec3(0.0), vec3(1.6));
 
       float finalAlpha = vAlpha * strength;
 
-      // Discard dim particles
-      if (finalAlpha < 0.12) discard;
+      // HIGHER threshold for crisp particles (removes fuzzy ones)
+      if (finalAlpha < 0.15) discard;
 
       gl_FragColor = vec4(color, finalAlpha);
     }
@@ -356,18 +394,19 @@ export function Cosmos({ bassLevel, midLevel, highLevel, performanceMode = false
     s.smoothedMid = THREE.MathUtils.lerp(s.smoothedMid, midLevel, 0.04)
     s.smoothedHigh = THREE.MathUtils.lerp(s.smoothedHigh, Math.pow(highLevel, 1.2), 0.045)
 
-    // Rotation with audio acceleration
-    const idleSpeed = 0.1
-    const bassBurst = Math.pow(s.smoothedBass, 1.5) * 0.6
-    const midBoost = s.smoothedMid * 0.25
-    const highAccent = s.smoothedHigh * 0.15
-    const varietyWave = (Math.sin(time * 0.035) * 0.5 + 0.5) * 0.08
+    // ENHANCED Rotation with stronger audio acceleration
+    const idleSpeed = 0.12
+    const bassBurst = Math.pow(s.smoothedBass, 1.4) * 0.8  // Stronger bass response
+    const midBoost = s.smoothedMid * 0.35                   // Stronger mid response
+    const highAccent = s.smoothedHigh * 0.2
+    const varietyWave = (Math.sin(time * 0.035) * 0.5 + 0.5) * 0.1
 
     const targetRotationSpeed = idleSpeed + bassBurst + midBoost + highAccent + varietyWave
 
-    const accelRate = targetRotationSpeed > s.smoothedRotationSpeed ? 0.05 : 0.006
+    // Faster acceleration on hits, slower decel for drama
+    const accelRate = targetRotationSpeed > s.smoothedRotationSpeed ? 0.08 : 0.005
     s.smoothedRotationSpeed = THREE.MathUtils.lerp(s.smoothedRotationSpeed, targetRotationSpeed, accelRate)
-    s.smoothedRotationSpeed = Math.max(s.smoothedRotationSpeed, 0.07)
+    s.smoothedRotationSpeed = Math.max(s.smoothedRotationSpeed, 0.08)
 
     s.accumulatedRotation += s.smoothedRotationSpeed * clampedDelta
 
