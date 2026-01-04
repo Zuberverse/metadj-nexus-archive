@@ -1,6 +1,6 @@
 # MetaDJ Nexus System Overview
 
-**Last Modified**: 2025-12-28 13:48 EST
+**Last Modified**: 2026-01-04 15:03 EST
 
 Visual system overview showing all major subsystems and their relationships.
 
@@ -167,7 +167,7 @@ Visual system overview showing all major subsystems and their relationships.
 │                                                                  │
 │  Layer 1: Content Security Policy                               │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │ CSP Headers (src/proxy.ts)                               │   │
+│  │ CSP Headers (src/proxy.ts via src/middleware.ts)         │   │
 │  │ - Nonce-based script execution                           │   │
 │  │ - Restricted media sources                               │   │
 │  │ - Frame ancestors protection                             │   │

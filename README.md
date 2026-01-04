@@ -127,6 +127,20 @@ metadj-nexus/
 - Node.js 20.19+ (or 22.12+)
 - npm (comes with Node.js)
 
+### Browser Compatibility
+| Browser | Version | Status |
+|---------|---------|--------|
+| Chrome  | 90+     | ✅ Fully supported |
+| Firefox | 88+     | ✅ Fully supported |
+| Safari  | 15+     | ✅ Fully supported |
+| Edge    | 90+     | ✅ Fully supported |
+
+**Features requiring modern browsers:**
+- Web Audio API (music playback)
+- WebGL (Cinema visuals, requires hardware acceleration)
+- MediaRecorder API (voice input for MetaDJai)
+- getUserMedia (Dream webcam feature)
+
 ```bash
 # Verify your environment
 node -v    # Should output v20.19.0 or higher
@@ -217,7 +231,7 @@ npm run test:e2e     # Playwright smoke tests
 
 _First-time E2E setup_: `npx playwright install`
 
-**Unit/Integration Tests**: 898 tests (Vitest, 100% passing ✅)
+**Unit/Integration Tests**: 990 tests (Vitest, 100% passing ✅)
 - Accessibility tests (WCAG 2.1 AA compliance)
 - Component functionality tests
 - Music repository operations

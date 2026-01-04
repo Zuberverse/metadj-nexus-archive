@@ -1,6 +1,6 @@
 # Security Documentation
 
-**Last Modified**: 2025-12-28 13:00 EST
+**Last Modified**: 2026-01-04 01:08 EST
 
 This directory contains security implementation plans and starter code for MetaDJ Nexus security enhancements.
 
@@ -22,7 +22,7 @@ The `starter-code/` directory contains ready-to-use implementation templates:
 | `nonce-utils.ts.example` | Utility functions for accessing nonce in Server Components |
 | `redis-rate-limiter.ts.example` | Upstash Redis-based rate limiter implementation |
 
-> **Note**: CSP is now implemented directly in `src/proxy.ts` (Next.js 16 proxy convention). No separate middleware example needed.
+> **Note**: CSP is implemented in `src/proxy.ts` and wired via `src/middleware.ts` (Next.js middleware entrypoint). No separate middleware example needed.
 
 ## Implementation Priority
 

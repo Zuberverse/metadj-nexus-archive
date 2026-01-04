@@ -1,11 +1,70 @@
 # Changelog
 
-**Last Modified**: 2025-12-29 17:15 EST
+**Last Modified**: 2026-01-04 15:55 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-04
+
+**AI Integration**
+- Added AI spending alerts with hourly/daily thresholds (`src/lib/ai/spending-alerts.ts`).
+- Added system prompt token budget tracking with automatic warnings at 80%/100% thresholds.
+- Added knowledge staleness detection for outdated knowledge base files (90-day threshold).
+- Wrapped `web_search` tool with error handling to prevent silent failures.
+- Pinned AI model versions with documentation and environment variable overrides.
+- Added `/api/health/ai` endpoint for AI spending, rate limiting, and token budget monitoring.
+
+**Code Quality**
+- Extracted scroll management hook from MetaDjAiChat (`src/hooks/use-chat-scroll.ts`).
+- Formalized Daydream state machine types (`src/lib/daydream/state-machine.ts`).
+- Documented gradient design tokens in `globals.css`.
+
+**CI/CD**
+- Added E2E test job to CI pipeline with Playwright and artifact upload on failure.
+- Documented CI workflow design decision (npm cache vs reusable workflow).
+
+**Documentation**
+- Updated README test count (898 → 990 tests).
+- Added browser compatibility table to README.
+- Updated code-to-docs-map with new health endpoint.
+
+**Cinema**
+- Added multi-source cinema video configuration (mobile WebM + VP9 WebM + legacy MP4 fallback).
+- Standardized scene video paths to the canonical `metadj-avatar` directory.
+
+**Security**
+- Wired CSP + security headers through Next.js middleware and made proxy fingerprinting edge-safe.
+
+**Testing**
+- Scoped unit coverage exclusions for heavy integration components and 3D visualizers to align with E2E coverage strategy.
+
+**Documentation**
+- Updated App Storage + Replit deployment guides with canonical cinema video paths and mobile WebM guidance.
+- Refreshed testing counts and clarified coverage scope in test docs.
+
+### 2026-01-03
+
+**Security**
+- Hardened API rate limit identifiers with provider headers and header fingerprint fallback.
+- Improved media rate limiter IP detection with provider headers and fingerprint fallback.
+- Aligned MetaDJai session cookie TTL for rate-limited responses.
+
+**Testing**
+- Added Playwright cinema view toggle coverage.
+- Expanded Playwright matrix to Firefox/WebKit + mobile.
+- Raised Vitest coverage thresholds to v0.10 targets.
+- Added rate-limiting identifier tests for IP and fingerprint fallback behavior.
+
+**Dependencies**
+- Upgraded AI SDK + AI runtime packages and core libraries (`marked`, `zod`, `three`, `@react-three/fiber`, `@upstash/redis`).
+- Updated dev tooling (`@types/node`, `@typescript-eslint/*`, `jsdom`, `vite-tsconfig-paths`).
+
+**Documentation**
+- Updated testing docs for multi-browser E2E coverage and new thresholds.
+- Corrected accessibility test path reference.
 
 ### 2025-12-29
 

@@ -12,6 +12,7 @@
  * @module lib/rate-limiting/media-rate-limiter
  */
 
+import { createHash } from 'crypto'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { logger } from '@/lib/logger'
@@ -153,7 +154,24 @@ function getUpstashMediaRatelimit(): Ratelimit | null {
  *
  * Prioritizes x-forwarded-for (behind proxy/CDN), falls back to x-real-ip
  */
+function buildHeaderFingerprint(request: NextRequest): string {
+  const ua = request.headers.get('user-agent') ?? 'unknown'
+  const lang = request.headers.get('accept-language') ?? 'unknown'
+  const encoding = request.headers.get('accept-encoding') ?? 'unknown'
+  const hash = createHash('sha256')
+    .update(`${ua}|${lang}|${encoding}`)
+    .digest('hex')
+    .slice(0, 16)
+  return `anon-${hash}`
+}
+
 export function getClientIp(request: NextRequest): string {
+  const vercelIp = request.headers.get('x-vercel-ip')
+  if (vercelIp) return vercelIp
+
+  const cfIp = request.headers.get('cf-connecting-ip')
+  if (cfIp) return cfIp
+
   const forwarded = request.headers.get('x-forwarded-for')
   if (forwarded) {
     // x-forwarded-for may contain multiple IPs - take the first (original client)
@@ -165,7 +183,7 @@ export function getClientIp(request: NextRequest): string {
   if (realIp) return realIp
 
   // Fallback for development/testing
-  return 'unknown'
+  return buildHeaderFingerprint(request)
 }
 
 /**

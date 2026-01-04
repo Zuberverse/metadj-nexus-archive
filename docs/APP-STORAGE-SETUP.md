@@ -1,6 +1,6 @@
 # App Storage Setup Guide — Audio & Visuals Streaming
 
-**Last Modified**: 2025-12-27 15:24 EST
+**Last Modified**: 2026-01-04 00:44 EST
 
 ## Overview
 
@@ -41,7 +41,7 @@ MetaDJ Nexus uses **two separate App Storage buckets** for optimal organization:
    - **Bucket Name**: `visuals` (as seen in Replit UI)
    - **Environment Variable**: `VISUALS_BUCKET_ID`
    - **Purpose**: Hosts cinema visual assets (H.264 MP4 + VP9 WebM format)
-   - **Organization**: Root folder with MetaDJ Performance Loop files
+   - **Organization**: `metadj-avatar/` folder with MetaDJ Performance Loop files
    - **API Route**: `/api/video/[...path]`
 
 > **Configuration Note**: Set `MUSIC_BUCKET_ID` (or alternate `AUDIO_BUCKET_ID`) and `VISUALS_BUCKET_ID` in your environment
@@ -76,9 +76,13 @@ music/
 **`visuals` Bucket** (as seen in Replit UI):
 ```
 visuals/
-└── MetaDJ Performance Loop (v1).mp4    # Cinema performance loop (H.264)
-    └── MetaDJ Performance Loop (v1).webm # Optional VP9 WebM version
+└── metadj-avatar/
+    ├── MetaDJ Performance Loop - MetaDJ Nexus.mp4         # Cinema performance loop (H.264)
+    ├── MetaDJ Performance Loop - MetaDJ Nexus.webm        # Optional VP9 WebM (desktop)
+    └── MetaDJ Performance Loop - MetaDJ Nexus - Mobile.webm # Optional mobile-optimized WebM
 ```
+
+**Legacy fallback**: The app will still try `/api/video/MetaDJ v7.0 Performance Loop 2 (v0)_prob4.mp4` if the new canonical file is missing. Migrate by uploading the renamed file under `metadj-avatar/` when ready.
 
 ### API Routes
 
@@ -109,7 +113,7 @@ visuals/
 1. **Client Request**: Browser requests media file
    ```
    /api/audio/Majestic Ascent/01 - Majestic Ascent (v0) - Mastered.mp3
-   /api/video/MetaDJ Performance Loop (v1).mp4
+   /api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4
    ```
 
 2. **API Route**: Next.js API route receives request
@@ -189,7 +193,13 @@ Update video sources in components to use API routes:
 ```tsx
 // src/components/cinema/CinemaOverlay.tsx
 <video ref={videoRef} loop muted playsInline>
-<source src="/api/video/MetaDJ Performance Loop (v1).mp4" type="video/mp4" />
+<source
+  src="/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus - Mobile.webm"
+  type="video/webm"
+  media="(max-width: 767px)"
+/>
+<source src="/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.webm" type="video/webm" />
+<source src="/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4" type="video/mp4" />
 </video>
 ```
 
@@ -209,7 +219,7 @@ Update video sources in components to use API routes:
    - **Visuals Bucket** (`b107c12b`) for cinema visual files
 3. Navigate to the appropriate folder:
    - For audio: `Majestic Ascent/`, `Bridging Reality/`, or create new collection folder
-   - For visuals: Root folder (no subfolders currently)
+- For visuals: `metadj-avatar/` folder
 4. Click **Upload** and select your media files
 5. Wait for upload to complete
 
@@ -238,7 +248,13 @@ Add/update entries in `src/data/tracks.json`:
 Update visual source URLs in component files:
 
 ```tsx
-<source src="/api/video/MetaDJ Performance Loop (v1).mp4" type="video/mp4" />
+<source
+  src="/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus - Mobile.webm"
+  type="video/webm"
+  media="(max-width: 767px)"
+/>
+<source src="/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.webm" type="video/webm" />
+<source src="/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4" type="video/mp4" />
 ```
 
 ### Step 3: Test Playback

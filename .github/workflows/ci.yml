@@ -2,6 +2,15 @@
 #
 # Runs quality checks, tests, and build verification on all branches.
 # Uses caching for faster subsequent runs.
+#
+# Jobs:
+# - quality: Lint, type-check, unit tests, build
+# - e2e: Playwright E2E smoke tests (runs after quality)
+#
+# Note: We don't use .github/workflows/setup.yml reusable workflow here because
+# GitHub Actions jobs run in isolation. Each job needs its own checkout and
+# npm install, and the reusable workflow doesn't share node_modules between jobs.
+# The current approach with npm cache is more efficient for this use case.
 
 name: CI
 
@@ -47,3 +56,44 @@ jobs:
         run: npm run build:ci
         env:
           NODE_ENV: production
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: quality
+    env:
+      HUSKY: 0
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build application
+        run: npm run build:ci
+        env:
+          NODE_ENV: production
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          CI: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

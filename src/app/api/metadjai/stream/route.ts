@@ -62,6 +62,7 @@ import {
   SESSION_COOKIE_MAX_AGE,
   SESSION_COOKIE_PATH,
 } from '@/lib/ai/rate-limiter'
+import { recordSpending } from '@/lib/ai/spending-alerts'
 import { getTools } from '@/lib/ai/tools'
 import { validateMetaDjAiRequest } from '@/lib/ai/validation'
 import { getEnv } from '@/lib/env'
@@ -72,8 +73,9 @@ import type { MetaDjAiApiRequestBody } from '@/types/metadjai.types'
 
 /**
  * Log AI usage metrics for monitoring and cost tracking
+ * Also records spending for threshold alerts
  */
-function logAIUsage(metrics: {
+async function logAIUsage(metrics: {
   requestId: string
   provider: string
   model: string
@@ -112,6 +114,23 @@ function logAIUsage(metrics: {
     ...(metrics.usedFallback && { usedFallback: true }),
     ...(metrics.error && { error: metrics.error }),
   })
+
+  // Record spending for threshold tracking and alerts
+  // Only record if we have a valid cost estimate and the request was successful
+  if (metrics.success && estimatedCostUsd !== undefined && estimatedCostUsd > 0) {
+    try {
+      await recordSpending({
+        costUsd: estimatedCostUsd,
+        provider: metrics.provider,
+        model: metrics.model,
+      })
+    } catch (error) {
+      // Don't fail the request if spending recording fails
+      logger.warn('[AI Spending] Failed to record spending', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
 }
 
 export const runtime = 'nodejs'

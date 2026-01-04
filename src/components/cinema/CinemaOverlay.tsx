@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useCallback, useEffect } from "react"
+import { useState, useRef, useCallback, useEffect, useMemo } from "react"
 import { Maximize2, Minimize2, Send, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { usePlayer } from "@/contexts/PlayerContext"
@@ -33,6 +33,38 @@ import {
 import { VisualizerCinema } from "./VisualizerCinema"
 import type { Track } from "@/types"
 import type { DaydreamPresentation, DaydreamStatus } from "@/types/daydream.types"
+
+type VideoSource = {
+  src: string
+  type?: string
+  media?: string
+}
+
+function getVideoContentType(path?: string): string | undefined {
+  if (!path) return undefined
+  if (path.endsWith(".webm")) return "video/webm"
+  if (path.endsWith(".mp4")) return "video/mp4"
+  if (path.endsWith(".mov")) return "video/quicktime"
+  return undefined
+}
+
+function buildVideoSources(scene: Scene): VideoSource[] {
+  const sources: VideoSource[] = []
+  const seen = new Set<string>()
+
+  const addSource = (src?: string, options?: Omit<VideoSource, "src">) => {
+    if (!src || seen.has(src)) return
+    sources.push({ src, type: getVideoContentType(src), ...options })
+    seen.add(src)
+  }
+
+  addSource(scene.videoMobilePath, { media: "(max-width: 767px)" })
+  addSource(scene.videoWebmPath)
+  addSource(scene.videoPath)
+  addSource(scene.videoFallbackPath)
+
+  return sources
+}
 
 interface CinemaOverlayProps {
   // Cinema state
@@ -361,6 +393,8 @@ export function CinemaOverlay({
   // Get current scene object
   const currentScene = SCENES.find(s => s.id === selectedScene) || SCENES[0]
   const isVisualizerScene = isVisualizer(currentScene)
+  const videoSources = useMemo(() => buildVideoSources(currentScene), [currentScene])
+  const hasVideoSource = videoSources.length > 0
 
   // Audio analyzer for visualizers (only active when visualizer is selected)
   const analyzerData = useAudioAnalyzer({
@@ -806,7 +840,14 @@ export function CinemaOverlay({
     }
 
     // Only handle video loading for video scenes
-    if (!video || !scene?.videoPath || isVisualizer(scene)) return
+    const sceneHasVideo = Boolean(
+      scene?.videoPath ||
+      scene?.videoWebmPath ||
+      scene?.videoMobilePath ||
+      scene?.videoFallbackPath
+    )
+
+    if (!video || !scene || !sceneHasVideo || isVisualizer(scene)) return
 
     // Handler to resume playback once video is loaded
     const handleLoadedData = () => {
@@ -820,8 +861,11 @@ export function CinemaOverlay({
     }
 
     // Wait for video to load before attempting playback.
-    // React controls the src attribute; we only listen for readiness here to avoid double-loads.
+    // Sources are managed via <source> tags; call load() when the scene changes.
     video.addEventListener('loadeddata', handleLoadedData)
+    if (!posterOnly) {
+      video.load()
+    }
 
     // Cleanup listener if component unmounts during load
     return () => {
@@ -945,7 +989,7 @@ export function CinemaOverlay({
     onFullscreenToggle(false)
   }, [isFullscreen, onFullscreenToggle])
 
-  const isPlaceholderScene = !isVisualizerScene && !currentScene.videoPath
+  const isPlaceholderScene = !isVisualizerScene && !hasVideoSource
   const effectiveReady = isVisualizerScene ? true : (posterOnly ? true : videoReady)
   const effectiveError = isVisualizerScene ? false : (posterOnly ? false : videoError)
 
@@ -975,7 +1019,13 @@ export function CinemaOverlay({
     setSelectedScene(scene.id)
     setIsSceneMenuOpen(false)
     // Reset video state when switching to a video scene for a fresh attempt
-    if (!isVisualizer(scene) && scene.videoPath && !posterOnly) {
+    const sceneHasVideo = Boolean(
+      scene.videoPath ||
+      scene.videoWebmPath ||
+      scene.videoMobilePath ||
+      scene.videoFallbackPath
+    )
+    if (!isVisualizer(scene) && sceneHasVideo && !posterOnly) {
       retryVideo()
     }
     try {
@@ -1044,10 +1094,9 @@ export function CinemaOverlay({
       }}
     >
       {/* Video element (only for video scenes) */}
-      {!isVisualizerScene && !posterOnly && currentScene.videoPath && (
+      {!isVisualizerScene && !posterOnly && hasVideoSource && (
         <video
           ref={videoRef as React.RefObject<HTMLVideoElement>}
-          src={currentScene.videoPath}
           playsInline
           loop
           muted
@@ -1056,7 +1105,16 @@ export function CinemaOverlay({
           onLoadedData={onVideoLoadedData}
           className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${effectiveReady && !effectiveError ? "opacity-100" : "opacity-0"
             }`}
-        />
+        >
+          {videoSources.map((source) => (
+            <source
+              key={source.src}
+              src={source.src}
+              type={source.type}
+              media={source.media}
+            />
+          ))}
+        </video>
       )}
 
       {/* Audio Visualizer (only for visualizer scenes) */}

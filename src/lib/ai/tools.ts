@@ -766,6 +766,76 @@ const KNOWLEDGE_BASE: KnowledgeCategory[] = [
   workflowsKnowledge as KnowledgeCategory,
 ]
 
+/**
+ * Knowledge Staleness Threshold
+ *
+ * Number of days before knowledge is considered stale.
+ * When knowledge files exceed this age, a warning is logged
+ * to prompt content refresh from the Brand Corpus.
+ */
+const KNOWLEDGE_STALENESS_DAYS = 90
+
+/**
+ * Knowledge files with their metadata for staleness checking
+ */
+interface KnowledgeFileWithMeta {
+  name: string
+  _meta?: {
+    lastUpdated?: string
+    version?: string
+    source?: string
+  }
+}
+
+const KNOWLEDGE_FILES_WITH_META: KnowledgeFileWithMeta[] = [
+  { name: 'metadj', ...(metadjKnowledge as unknown as { _meta?: KnowledgeFileWithMeta['_meta'] }) },
+  { name: 'zuberant', ...(zuberantKnowledge as unknown as { _meta?: KnowledgeFileWithMeta['_meta'] }) },
+  { name: 'ecosystem', ...(ecosystemKnowledge as unknown as { _meta?: KnowledgeFileWithMeta['_meta'] }) },
+  { name: 'philosophy', ...(philosophyKnowledge as unknown as { _meta?: KnowledgeFileWithMeta['_meta'] }) },
+  { name: 'identity', ...(identityKnowledge as unknown as { _meta?: KnowledgeFileWithMeta['_meta'] }) },
+  { name: 'workflows', ...(workflowsKnowledge as unknown as { _meta?: KnowledgeFileWithMeta['_meta'] }) },
+]
+
+/**
+ * Check knowledge files for staleness and log warnings
+ * Runs once at module initialization
+ */
+function checkKnowledgeStaleness(): void {
+  const now = new Date()
+  const staleFiles: string[] = []
+  const missingMetaFiles: string[] = []
+
+  for (const file of KNOWLEDGE_FILES_WITH_META) {
+    if (!file._meta?.lastUpdated) {
+      missingMetaFiles.push(file.name)
+      continue
+    }
+
+    const lastUpdated = new Date(file._meta.lastUpdated)
+    const daysSinceUpdate = Math.floor((now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24))
+
+    if (daysSinceUpdate > KNOWLEDGE_STALENESS_DAYS) {
+      staleFiles.push(`${file.name} (${daysSinceUpdate} days old)`)
+    }
+  }
+
+  if (missingMetaFiles.length > 0) {
+    logger.warn('[Knowledge] Files missing _meta.lastUpdated', {
+      files: missingMetaFiles,
+    })
+  }
+
+  if (staleFiles.length > 0) {
+    logger.warn(`[Knowledge] Stale content detected (>${KNOWLEDGE_STALENESS_DAYS} days old)`, {
+      staleFiles,
+      action: 'Sync from Brand Corpus recommended',
+    })
+  }
+}
+
+// Run staleness check at module initialization
+checkKnowledgeStaleness()
+
 type FlatKnowledgeEntry = { entry: KnowledgeEntry; category: string }
 type EmbeddedKnowledgeEntry = FlatKnowledgeEntry & { embedding: number[] }
 
@@ -1394,13 +1464,22 @@ export function getTools(
 
   // OpenAI has native web search capability when enabled
   if (webSearchAvailable) {
+    // Wrap the SDK-provided web_search tool with our error handler for graceful degradation
+    const webSearchTool = openai.tools.webSearch()
+    const wrappedWebSearch = {
+      ...webSearchTool,
+      execute: webSearchTool.execute
+        ? safeToolExecute('web_search', webSearchTool.execute as (input: unknown) => Promise<unknown>)
+        : webSearchTool.execute,
+    }
+
     return {
       ...baseTools,
       // OpenAI native web search tool - enables real-time web search for current information
       // The AI will use this tool when users ask about current events, recent news,
       // or information that may not be in its training data
-      // Note: web_search is an SDK-provided tool, not wrapped with our error handler
-      web_search: openai.tools.webSearch(),
+      // Wrapped with our error handler for graceful degradation
+      web_search: wrappedWebSearch,
     }
   }
 

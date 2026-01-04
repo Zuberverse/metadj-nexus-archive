@@ -878,7 +878,50 @@
     --metadj-red: oklch(0.57 0.24 27);
     /* Alert/energy */
 
-    /* Gradient tokens */
+    /*
+     * ═══════════════════════════════════════════════════════════════════
+     * GRADIENT DESIGN TOKENS
+     * ═══════════════════════════════════════════════════════════════════
+     *
+     * Consolidated gradient system for consistent visual identity.
+     * ALWAYS prefer these tokens over hardcoded gradient values.
+     *
+     * USAGE GUIDE:
+     * ─────────────────────────────────────────────────────────────────────
+     * --gradient-brand       : Primary brand gradient (buttons, highlights)
+     * --gradient-1           : Main app background (deep space theme)
+     * --gradient-1-overlay   : Subtle overlay for depth
+     * --gradient-2           : Accent gradient (vibrant purple-pink)
+     * --gradient-2-border    : Border/outline version of gradient-2
+     * --gradient-2-soft      : Muted version for backgrounds
+     * --gradient-2-tint      : Very subtle tint for hover states
+     * --gradient-3           : Alternative background with purple blooms
+     * --gradient-4           : Cool purple-to-blue gradient
+     * --gradient-4-soft      : Muted version of gradient-4
+     * --gradient-toolbar-accent : High-contrast for toolbar elements
+     * --gradient-media       : Dark gradient for media overlays
+     * --gradient-media-bloom : Bloom effects for media backgrounds
+     *
+     * CSS CLASSES (defined in @layer base):
+     * ─────────────────────────────────────────────────────────────────────
+     * .app-gradient          : Main app background
+     * .gradient-1-overlay    : Subtle overlay
+     * .gradient-2            : Accent gradient
+     * .gradient-2-border     : Border version
+     * .gradient-2-soft       : Muted background
+     * .gradient-2-tint       : Subtle hover tint
+     * .gradient-3            : Alternative background
+     * .gradient-4            : Cool gradient
+     * .gradient-4-soft       : Muted cool gradient
+     * .brand-gradient        : Animated brand gradient
+     * .gradient-media        : Media overlay
+     * .gradient-media-bloom  : Media bloom effects
+     * .toolbar-accent        : Toolbar accent
+     * .hover-gradient        : Hover state with gradient
+     * .hover-gradient-2:hover: Gradient on hover
+     *
+     * ═══════════════════════════════════════════════════════════════════
+     */
     --gradient-brand: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 50%, #D946EF 100%);
     --gradient-1:
       radial-gradient(circle at 16% 18%, rgba(123, 99, 255, 0.3), transparent 45%),

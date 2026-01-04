@@ -49,8 +49,14 @@ export {
   type RateLimitResult,
 } from "./rate-limiter"
 
-// System instructions
-export { buildMetaDjAiSystemInstructions } from "./meta-dj-ai-prompt"
+// System instructions & token budget
+export {
+  buildMetaDjAiSystemInstructions,
+  estimateTokenCount,
+  checkTokenBudget,
+  SYSTEM_PROMPT_TOKEN_BUDGET,
+  type TokenBudgetStatus,
+} from "./meta-dj-ai-prompt"
 
 // Tools
 export { getTools } from "./tools"

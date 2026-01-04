@@ -1,6 +1,6 @@
 # Code → Docs Map (MetaDJ Nexus)
 
-**Last Modified**: 2025-12-31 16:45 EST
+**Last Modified**: 2026-01-04 15:55 EST
 
 This is a code-first index: start from a file/folder in `src/`, then jump to the doc(s) that explain it.
 
@@ -12,6 +12,10 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 - `src/app/terms/page.tsx` → `../security/README.md`
 - `src/app/error.tsx`, `src/app/global-error.tsx`, `src/app/not-found.tsx` → `../operations/ERROR-TRACKING.md`, `../security/README.md`
 - `src/app/robots.ts`, `src/app/sitemap.ts` → `../architecture/routing.md`
+
+## Middleware & Security
+
+- `src/middleware.ts`, `src/proxy.ts` (CSP, security headers, rate limiting) → `../SECURITY.md`, `../security/README.md`, `../operations/BUILD-DEPLOYMENT-GUIDE.md`
 
 ## API Routes (`src/app/api/`)
 
@@ -26,6 +30,7 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 | `/api/metadjai/transcribe` | `src/app/api/metadjai/transcribe/route.ts` | `../API.md`, `../features/vercel-ai-sdk-integration.md` |
 | `/api/wisdom` | `src/app/api/wisdom/route.ts` | `../API.md`, `../features/wisdom-system.md` |
 | `/api/health` | `src/app/api/health/route.ts` | `../API.md`, `../operations/UPTIME-MONITORING.md` |
+| `/api/health/ai` | `src/app/api/health/ai/route.ts` | `../API.md`, `../operations/UPTIME-MONITORING.md`, `../features/vercel-ai-sdk-integration.md` |
 | `/api/log` | `src/app/api/log/route.ts` | `../API.md`, `../operations/ERROR-TRACKING.md` |
 | `/api/dev/clear-rate-limits` | `src/app/api/dev/clear-rate-limits/route.ts` | `../API.md`, `../features/vercel-ai-sdk-integration.md` |
 | `/api/daydream/config` | `src/app/api/daydream/config/route.ts` | `../API.md`, `../daydream/README.md` |
@@ -59,7 +64,9 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 - Playlist repository (`src/lib/playlists/*`) → `../features/playlist-system.md`, `./barrel-export-patterns.md`
 - Tour config (`src/lib/tour/*`) → `../features/user-guide-system.md`
 - MetaDJai tools/rate limiting (`src/lib/ai/*`, `src/lib/metadjai/*`) → `../features/vercel-ai-sdk-integration.md`, `../API.md`
+- AI spending alerts (`src/lib/ai/spending-alerts.ts`) → `../features/vercel-ai-sdk-integration.md`, `../operations/UPTIME-MONITORING.md`
 - Daydream utilities (`src/lib/daydream/*`) → `../daydream/README.md`, `./barrel-export-patterns.md`
+- Daydream state machine (`src/lib/daydream/state-machine.ts`) → `../daydream/README.md`
 
 ## Barrel Exports
 

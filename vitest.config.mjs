@@ -29,13 +29,18 @@ export default defineConfig({
         'src/**/*.stories.{ts,tsx}',
         'src/types/**',
         'src/**/*.d.ts',
+        'src/components/cinema/visualizers/**',
+        'src/components/visuals/**',
+        'src/components/cinema/CinemaOverlay.tsx',
+        'src/components/home/HomePageClient.tsx',
+        'src/components/metadjai/MetaDjAiChat.tsx',
       ],
       // ========================================================================
       // Coverage Threshold Milestone Plan
       // ========================================================================
       //
       // Current Phase: Public Preview (v0.9.x)
-      // These thresholds establish a baseline while allowing rapid iteration.
+      // Enforcing v0.10.x thresholds early to harden critical paths.
       // CI gates on these thresholds to prevent coverage regression.
       //
       // MILESTONE ROADMAP:
@@ -55,10 +60,10 @@ export default defineConfig({
       // To check current coverage: npm run test:coverage
       // ========================================================================
       thresholds: {
-        lines: 15,
-        functions: 15,
-        branches: 8,
-        statements: 15,
+        lines: 30,
+        functions: 25,
+        branches: 15,
+        statements: 30,
       },
     },
   },

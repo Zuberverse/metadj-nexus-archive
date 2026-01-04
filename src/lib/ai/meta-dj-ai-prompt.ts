@@ -1,4 +1,95 @@
+import { logger } from '@/lib/logger';
 import type { MetaDjAiContext, MetaDjAiPersonalization } from '@/types/metadjai.types';
+
+/**
+ * System Prompt Token Budget Configuration
+ *
+ * Token budget tracking helps prevent context window exhaustion and cost creep.
+ * These limits are conservative to leave room for user messages and responses.
+ *
+ * Approximate token limits by model:
+ * - GPT-4o: 128K context window
+ * - Claude: 200K context window
+ * - Gemini: 1M context window
+ *
+ * We target ~4K tokens for system prompt to leave ample room for conversation.
+ */
+export const SYSTEM_PROMPT_TOKEN_BUDGET = {
+  /** Target maximum tokens for system prompt */
+  TARGET_MAX_TOKENS: 4000,
+  /** Warning threshold (percentage of TARGET_MAX_TOKENS) */
+  WARNING_THRESHOLD: 0.8,
+  /** Critical threshold - prompt may be truncated or cause issues */
+  CRITICAL_THRESHOLD: 1.0,
+  /** Approximate characters per token (conservative for English) */
+  CHARS_PER_TOKEN: 4,
+} as const;
+
+/**
+ * Estimate token count for a string
+ *
+ * Uses a simple character-based approximation (~4 chars per token for English).
+ * This is intentionally conservative - actual token count may be lower.
+ *
+ * For precise counting, use a tokenizer library (tiktoken for OpenAI),
+ * but this approximation is sufficient for budget tracking.
+ *
+ * @param text - The text to estimate tokens for
+ * @returns Estimated token count
+ */
+export function estimateTokenCount(text: string): number {
+  if (!text) return 0;
+  // Rough approximation: ~4 characters per token for English
+  // This is conservative - actual count is often lower
+  return Math.ceil(text.length / SYSTEM_PROMPT_TOKEN_BUDGET.CHARS_PER_TOKEN);
+}
+
+/**
+ * Token budget status for system prompt
+ */
+export interface TokenBudgetStatus {
+  /** Estimated token count */
+  estimatedTokens: number;
+  /** Target maximum tokens */
+  budgetLimit: number;
+  /** Percentage of budget used (0-1+) */
+  percentageUsed: number;
+  /** Status level */
+  status: 'ok' | 'warning' | 'critical';
+  /** Human-readable message */
+  message: string;
+}
+
+/**
+ * Check token budget status for a system prompt
+ *
+ * @param systemPrompt - The full system prompt text
+ * @returns Token budget status
+ */
+export function checkTokenBudget(systemPrompt: string): TokenBudgetStatus {
+  const estimatedTokens = estimateTokenCount(systemPrompt);
+  const budgetLimit = SYSTEM_PROMPT_TOKEN_BUDGET.TARGET_MAX_TOKENS;
+  const percentageUsed = estimatedTokens / budgetLimit;
+
+  let status: TokenBudgetStatus['status'] = 'ok';
+  let message = `System prompt: ~${estimatedTokens} tokens (${Math.round(percentageUsed * 100)}% of ${budgetLimit} budget)`;
+
+  if (percentageUsed >= SYSTEM_PROMPT_TOKEN_BUDGET.CRITICAL_THRESHOLD) {
+    status = 'critical';
+    message = `CRITICAL: System prompt exceeds budget (~${estimatedTokens} tokens, ${Math.round(percentageUsed * 100)}% of ${budgetLimit} limit)`;
+  } else if (percentageUsed >= SYSTEM_PROMPT_TOKEN_BUDGET.WARNING_THRESHOLD) {
+    status = 'warning';
+    message = `WARNING: System prompt approaching budget (~${estimatedTokens} tokens, ${Math.round(percentageUsed * 100)}% of ${budgetLimit} limit)`;
+  }
+
+  return {
+    estimatedTokens,
+    budgetLimit,
+    percentageUsed,
+    status,
+    message,
+  };
+}
 
 /**
  * AI Prompt Security Layer
@@ -634,5 +725,25 @@ Reference these naturally when music comes up in conversation.
 
   const contextBlock = sections.length > 0 ? `\n\n${sections.join('\n\n')}` : '';
 
-  return `${baseInstructions}${contextBlock}`;
+  const systemPrompt = `${baseInstructions}${contextBlock}`;
+
+  // Token budget tracking - log warnings for oversized prompts
+  const budgetStatus = checkTokenBudget(systemPrompt);
+  if (budgetStatus.status === 'critical') {
+    logger.error('[AI System Prompt] ' + budgetStatus.message, {
+      estimatedTokens: budgetStatus.estimatedTokens,
+      budgetLimit: budgetStatus.budgetLimit,
+      percentageUsed: budgetStatus.percentageUsed,
+      sectionsCount: sections.length,
+    });
+  } else if (budgetStatus.status === 'warning') {
+    logger.warn('[AI System Prompt] ' + budgetStatus.message, {
+      estimatedTokens: budgetStatus.estimatedTokens,
+      budgetLimit: budgetStatus.budgetLimit,
+      percentageUsed: budgetStatus.percentageUsed,
+      sectionsCount: sections.length,
+    });
+  }
+
+  return systemPrompt;
 }

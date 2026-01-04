@@ -2,7 +2,7 @@
 
 > **Source of truth for MetaDJ Nexus's premium glass-neon presentation**
 
-**Last Modified**: 2025-12-30 17:42 EST
+**Last Modified**: 2026-01-04 00:44 EST
 
 ---
 
@@ -249,7 +249,7 @@ Empty states maintain the premium glass-neon aesthetic even when content is abse
 ## Visual Console (Fullscreen Cinema)
 
 - Activated via cinema toggle (`MonitorPlay` icon). When open:
-  - Fullscreen video background streamed from `/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4` (H.264). An optional VP9 WebM variant can live alongside it for Chrome/Firefox if uploaded to App Storage.
+- Fullscreen video background streamed from `/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4` (H.264). Optional VP9 WebM + mobile WebM variants can live alongside it; list WebM sources before MP4 so Chromium/Firefox prefer VP9 while Safari stays on H.264.
   - **2D Visualizers**:
     - **Eight Bit Adventure**: A retro pixel-art runner with parallax backgrounds, collectible power-ups, and audio-reactive enemies.
     - **Pixel Portal**: A digital void with a central portal, bass shockwaves, and spark dust that rides the highs.

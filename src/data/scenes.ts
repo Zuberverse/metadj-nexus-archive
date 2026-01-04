@@ -36,6 +36,10 @@ export interface Scene {
   description?: string
   // Video scenes have a video path
   videoPath?: string
+  // Optional alternative encodes for video scenes
+  videoWebmPath?: string
+  videoMobilePath?: string
+  videoFallbackPath?: string
   // Visualizers have a style configuration
   visualizerStyle?: VisualizerStyle
   // Optional: recommended for specific collections
@@ -145,7 +149,11 @@ export const VIDEO_SCENES: Scene[] = [
     name: "MetaDJ Avatar",
     category: "video",
     description: "The signature MetaDJ visual identity",
-    videoPath: "/api/video/MetaDJ%20v7.0%20Performance%20Loop%202%20(v0)_prob4.mp4",
+    videoPath: "/api/video/metadj-avatar/MetaDJ%20Performance%20Loop%20-%20MetaDJ%20Nexus.mp4",
+    videoWebmPath: "/api/video/metadj-avatar/MetaDJ%20Performance%20Loop%20-%20MetaDJ%20Nexus.webm",
+    videoMobilePath:
+      "/api/video/metadj-avatar/MetaDJ%20Performance%20Loop%20-%20MetaDJ%20Nexus%20-%20Mobile.webm",
+    videoFallbackPath: "/api/video/MetaDJ%20v7.0%20Performance%20Loop%202%20(v0)_prob4.mp4",
     recommendedFor: ["majestic-ascent", "transformer", "bridging-reality"]
   }
 ]

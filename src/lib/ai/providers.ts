@@ -65,10 +65,28 @@ export type ModelSettings = {
 
 const DEFAULT_MAX_OUTPUT_TOKENS = 2048
 const DEFAULT_TEMPERATURE = 0.7
-const DEFAULT_PRIMARY_MODEL = 'gpt-5.2-chat-latest'
-const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5'
-const DEFAULT_GOOGLE_MODEL = 'gemini-3-flash-preview'
-const DEFAULT_XAI_MODEL = 'grok-4-1-fast-non-reasoning'
+
+/**
+ * Default AI Model Versions
+ *
+ * Model Version Pinning Strategy:
+ * - OpenAI: Uses "latest" suffix to track current production model
+ * - Anthropic: Uses short form (claude-haiku-4-5) that resolves to current version
+ * - Google: Uses preview for latest features, stable for production
+ * - xAI: Uses specific version identifiers
+ *
+ * Override via environment variables for specific versions:
+ * - OPENAI_AI_MODEL (e.g., 'gpt-4o-2024-08-06')
+ * - ANTHROPIC_AI_MODEL (e.g., 'claude-4-5-haiku-20251001')
+ * - GOOGLE_AI_MODEL (e.g., 'gemini-2.0-flash')
+ * - XAI_AI_MODEL (e.g., 'grok-3')
+ *
+ * Last reviewed: January 2026
+ */
+const DEFAULT_PRIMARY_MODEL = 'gpt-5.2-chat-latest' // OpenAI production default
+const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5' // Anthropic fast/cheap tier
+const DEFAULT_GOOGLE_MODEL = 'gemini-3-flash-preview' // Google latest preview
+const DEFAULT_XAI_MODEL = 'grok-4-1-fast-non-reasoning' // xAI fast tier
 const PROVIDER_PRIORITY: AIProvider[] = ['openai', 'google', 'anthropic', 'xai']
 
 /**

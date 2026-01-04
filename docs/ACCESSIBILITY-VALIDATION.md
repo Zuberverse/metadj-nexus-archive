@@ -1,6 +1,6 @@
 # Accessibility Validation with axe-core
 
-**Last Modified**: 2025-12-29 12:01 EST
+**Last Modified**: 2026-01-03 23:23 EST
 
 ## Overview
 
@@ -94,7 +94,7 @@ The integration validates:
 ### Automated Testing
 
 MetaDJ Nexus also has:
-- **25 dedicated accessibility tests** (`tests/accessibility.test.tsx`)
+- **25 dedicated accessibility tests** (`tests/accessibility/accessibility.test.tsx`)
 - **Form label validation**
 - **ARIA attribute verification**
 - **Keyboard navigation tests**

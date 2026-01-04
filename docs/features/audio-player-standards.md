@@ -2,7 +2,7 @@
 
 > **Comprehensive playback behavior and UX patterns for MetaDJ Nexus's audio player**
 
-**Last Modified**: 2025-12-27 15:24 EST
+**Last Modified**: 2026-01-04 00:44 EST
 
 ---
 
@@ -309,7 +309,7 @@ The player features an advanced audio-reactive waveform displaying real-time fre
 
 ### Visual Console Integration
 - **Trigger**: Toggled via the cinema button in the Action Bar controls. The console opens fullscreen immediately; there is no inline/embedded video state.
-- **Sync Logic**: Starting playback auto-plays the App Storage loop (`/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4`). If you also upload a WebM variant to the same folder, list it before the MP4 in the `<source>` stack so Chrome/Firefox/Edge prefer the VP9 encode while Safari stays on H.264. Pausing freezes the frame. Track changes no longer reset the loop; closing and reopening the console restarts playback from 0:00.
+- **Sync Logic**: Starting playback auto-plays the App Storage loop (`/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4`). If you also upload VP9 WebM (and/or a mobile WebM) to the same folder, list them before the MP4 in the `<source>` stack so Chromium browsers prefer the VP9 encode while Safari stays on H.264. Pausing freezes the frame. Track changes no longer reset the loop; closing and reopening the console restarts playback from 0:00.
 - **Overlay Controls**: The fullscreen overlay renders the same `AudioPlayer` component used at page level (shuffle, queue, artwork, etc.). Movement (mouse, touch, keyboard) reveals the controls, which auto-hide after ~5s of inactivity.
 - **Base Player Handling**: While visuals are active the anchored footer player is hidden/disabled to avoid duplicate controls; closing the console restores it instantly.
 - **Accessibility**: Body scroll locks while the console is open, `aria-label` announces "MetaDJ visual console", and all buttons maintain the same labels/shortcuts as the base player (`Esc` to exit, `Space` to toggle playback).

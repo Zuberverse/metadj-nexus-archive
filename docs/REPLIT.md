@@ -1,6 +1,6 @@
 # Replit Deployment Guide — MetaDJ Nexus
 
-**Last Modified**: 2025-12-28 12:32 EST
+**Last Modified**: 2026-01-04 15:03 EST
 
 ## Overview
 
@@ -58,9 +58,12 @@ MetaDJ Nexus requires **two App Storage buckets**:
 - **Structure**:
   ```
   visuals/
-  ├── MetaDJ Performance Loop (v1).mp4
-  └── MetaDJ Performance Loop (v1).webm (optional)
+  └── metadj-avatar/
+      ├── MetaDJ Performance Loop - MetaDJ Nexus.mp4
+      ├── MetaDJ Performance Loop - MetaDJ Nexus.webm (optional)
+      └── MetaDJ Performance Loop - MetaDJ Nexus - Mobile.webm (optional)
   ```
+  - **Legacy fallback**: `/api/video/MetaDJ v7.0 Performance Loop 2 (v0)_prob4.mp4` remains supported until the canonical file is uploaded.
 
 ### Bucket Setup Verification
 
@@ -543,7 +546,7 @@ netstat -tulpn | grep 8100
 ### API Security
 
 **Current Implementation:**
-- Rate limiting in `src/proxy.ts`:
+- Rate limiting in `src/proxy.ts` (wired via `src/middleware.ts`):
   - Media routes: 100 req/min per IP
   - Logging routes: 10 req/min per IP
   - General API: 200 req/min per IP

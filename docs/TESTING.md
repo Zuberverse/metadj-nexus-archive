@@ -1,6 +1,6 @@
 # Testing Guide — MetaDJ Nexus
 
-**Last Modified**: 2025-12-29 12:01 EST
+**Last Modified**: 2026-01-04 00:44 EST
 
 ## Overview
 
@@ -8,12 +8,13 @@ MetaDJ Nexus maintains a comprehensive test suite ensuring code quality, reliabi
 
 ## Test Suite Summary
 
-**Unit/Integration Tests**: 898 (Vitest)
-**E2E Tests**: 4 (Playwright smoke + core flows)
-**Test Files**: 48 unit/integration, 4 e2e
+**Unit/Integration Tests**: 965 (Vitest)
+**E2E Tests**: 5 (Playwright smoke + core flows, multi-browser)
+**Test Files**: 60 unit/integration, 5 e2e
 **Pass Rate**: 100%
 **Test Runner**: Vitest with jsdom environment
-**Coverage Thresholds**: 15% lines, 15% functions, 8% branches, 15% statements (see vitest.config.mjs for milestone plan)
+**Coverage Thresholds**: 30% lines, 25% functions, 15% branches, 30% statements (see vitest.config.mjs for milestone plan)
+**Coverage Exclusions**: 3D visualizers + integration-heavy root components (`CinemaOverlay`, `HomePageClient`, `MetaDjAiChat`) are excluded from unit coverage until decomposed; E2E + manual QA guard those flows.
 
 ## Running Tests
 
@@ -45,7 +46,7 @@ npm run test:e2e
 npm run lint          # ESLint with --max-warnings=0
 npm run type-check    # TypeScript strict mode
 npm run test          # Full test suite
-npm run test:e2e      # Playwright smoke tests (local until CI includes browsers)
+npm run test:e2e      # Playwright multi-browser smoke tests (local; CI not gated)
 npm run build         # Production build
 ```
 
@@ -423,7 +424,7 @@ npm run test -- --reporter=verbose
 
 ## E2E Testing
 
-Playwright coverage includes home load + `/api/health`, search → queue add, and MetaDJai panel open/close. Deeper flows (playback, cinema, AI interactions) still need coverage. CI does not run browsers yet.
+Playwright coverage includes home load + `/api/health`, search → queue add, MetaDJai panel open/close, and cinema view toggle across Chromium/Firefox/WebKit + mobile. Deeper flows (playback, AI responses) still need coverage. CI does not run browsers yet.
 
 ## Future Testing Plans
 

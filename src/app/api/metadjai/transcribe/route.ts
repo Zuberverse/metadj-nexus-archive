@@ -10,12 +10,29 @@ import {
     SESSION_COOKIE_PATH,
     TRANSCRIBE_RATE_LIMIT_WINDOW_MS,
 } from "@/lib/ai/rate-limiter";
+import { recordSpending } from "@/lib/ai/spending-alerts";
 import { getServerEnv } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
 export const runtime = "nodejs"; // Helper for FormData support in App Router usually implies Node.js runtime for now or edge but file handling is tricky on edge sometimes
 
 const MAX_AUDIO_BYTES = 10 * 1024 * 1024; // 10MB
+
+/**
+ * Whisper API cost per minute of audio (December 2025 pricing)
+ * gpt-4o-mini-transcribe: ~$0.003/min (estimated based on standard Whisper pricing)
+ */
+const TRANSCRIBE_COST_PER_MINUTE = 0.003;
+
+/**
+ * Estimate transcription cost based on file size
+ * Rough estimation: 1MB of audio ≈ 1 minute at typical quality
+ * This is approximate - actual duration would require audio parsing
+ */
+function estimateTranscriptionCost(fileBytes: number): number {
+    const estimatedMinutes = fileBytes / (1024 * 1024); // ~1 min per MB
+    return estimatedMinutes * TRANSCRIBE_COST_PER_MINUTE;
+}
 
 /**
  * Known good audio MIME types across all browsers.
@@ -230,6 +247,20 @@ export async function POST(req: NextRequest) {
                 { error: "Transcription returned no text" },
                 { status: 502 }
             );
+        }
+
+        // Record spending for threshold tracking
+        const costUsd = estimateTranscriptionCost(file.size);
+        try {
+            await recordSpending({
+                costUsd,
+                provider: 'openai',
+                model: model,
+            });
+        } catch (spendingError) {
+            logger.warn("[Transcribe] Failed to record spending", {
+                error: spendingError instanceof Error ? spendingError.message : String(spendingError),
+            });
         }
 
         const res = NextResponse.json({ text });

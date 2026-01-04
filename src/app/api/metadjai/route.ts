@@ -15,6 +15,7 @@ import {
   getFallbackModelSettings,
   isFailoverAvailable,
 } from '@/lib/ai/providers';
+import { estimateCost } from '@/lib/ai/providers';
 import {
   sanitizeMessages,
   getClientIdentifier,
@@ -26,6 +27,7 @@ import {
   SESSION_COOKIE_PATH,
   RATE_LIMIT_WINDOW_MS,
 } from '@/lib/ai/rate-limiter';
+import { recordSpending } from '@/lib/ai/spending-alerts';
 import { getTools } from '@/lib/ai/tools';
 import { validateMetaDjAiRequest } from '@/lib/ai/validation';
 import { getEnv } from '@/lib/env';
@@ -112,7 +114,7 @@ export async function POST(request: NextRequest) {
         httpOnly: true,
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: RATE_LIMIT_WINDOW_MS / 1000,
+        maxAge: SESSION_COOKIE_MAX_AGE,
         path: SESSION_COOKIE_PATH,
       });
     }
@@ -231,15 +233,16 @@ export async function POST(request: NextRequest) {
     return extracted.length > 0 ? extracted : undefined;
   };
 
-  // Helper to build success response
-  const buildSuccessResponse = (
+  // Helper to build success response and record spending
+  const buildSuccessResponse = async (
     result: {
       text: string;
       toolCalls?: Array<{ toolCallId: string; toolName: string }>;
       toolResults?: unknown;
       usage?: { inputTokens?: number; outputTokens?: number };
     },
-    modelName: string
+    modelName: string,
+    providerName: string
   ) => {
     const toolUsage = result.toolCalls?.map((call) => ({
       id: call.toolCallId,
@@ -259,6 +262,20 @@ export async function POST(request: NextRequest) {
       toolUsage,
       toolResults,
     };
+
+    // Record spending for threshold tracking and alerts
+    if (result.usage?.inputTokens !== undefined && result.usage?.outputTokens !== undefined) {
+      const costUsd = estimateCost(modelName, result.usage.inputTokens, result.usage.outputTokens);
+      if (costUsd > 0) {
+        try {
+          await recordSpending({ costUsd, provider: providerName, model: modelName });
+        } catch (error) {
+          logger.warn('[AI Spending] Failed to record spending', {
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+      }
+    }
 
     const res = NextResponse.json(body, { status: 200 });
     if (responseCookies.length > 0) {
@@ -309,7 +326,7 @@ export async function POST(request: NextRequest) {
 
         clearTimeout(timeout);
         recordSuccess(fallbackModelInfo.provider);
-        return buildSuccessResponse(result, fallbackSettings.name);
+        return await buildSuccessResponse(result, fallbackSettings.name, fallbackModelInfo.provider);
       } catch (fallbackError) {
         const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
         clearTimeout(timeout);
@@ -349,7 +366,7 @@ export async function POST(request: NextRequest) {
 
     clearTimeout(timeout);
     recordSuccess(modelInfo.provider);
-    return buildSuccessResponse(result, modelSettings.name);
+    return await buildSuccessResponse(result, modelSettings.name, modelInfo.provider);
   } catch (primaryError) {
     const primaryMessage = primaryError instanceof Error ? primaryError.message : String(primaryError);
     const isPrimaryTimeout = isTimeoutError(primaryError);
@@ -405,7 +422,7 @@ export async function POST(request: NextRequest) {
           clearTimeout(timeout);
           clearTimeout(fallbackTimeout);
           recordSuccess(fallbackModelInfo.provider);
-          return buildSuccessResponse(result, fallbackSettings.name);
+          return await buildSuccessResponse(result, fallbackSettings.name, fallbackModelInfo.provider);
         } catch (fallbackError) {
           clearTimeout(fallbackTimeout);
           const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);

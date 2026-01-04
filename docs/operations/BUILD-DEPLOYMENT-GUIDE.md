@@ -1,6 +1,6 @@
 # MetaDJ Nexus - Build & Deployment Guide
 
-**Last Modified**: 2025-12-29 10:05 EST
+**Last Modified**: 2026-01-04 07:33 EST
 
 ---
 
@@ -252,7 +252,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 - [ ] Secrets stored securely (not in code)
 - [ ] LOGGING_CLIENT_KEY is 32+ characters
 - [ ] LOGGING_SHARED_SECRET is different from CLIENT_KEY
-- [ ] CSP + security headers configured (`src/proxy.ts`, plus static asset headers in `next.config.js`)
+- [ ] CSP + security headers configured (`src/proxy.ts` via `src/middleware.ts`, plus static asset headers in `next.config.js`)
 - [ ] CORS settings verified for Object Storage
 
 ### Testing

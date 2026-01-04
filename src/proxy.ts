@@ -120,6 +120,22 @@ function getPlausibleOrigin(): string | null {
   }
 }
 
+async function hashSha256Hex(value: string): Promise<string> {
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function buildHeaderFingerprint(request: NextRequest): Promise<string> {
+  const ua = request.headers.get("user-agent") || "unknown";
+  const lang = request.headers.get("accept-language") || "unknown";
+  const encoding = request.headers.get("accept-encoding") || "unknown";
+  const hash = await hashSha256Hex(`${ua}|${lang}|${encoding}`);
+  return `anon-${hash.slice(0, 16)}`;
+}
+
 // ============================================================================
 // Middleware Handler
 // ============================================================================
@@ -155,9 +171,11 @@ export default async function proxy(request: NextRequest) {
     // B. Rate Limiting
     const forwardedFor = request.headers.get("x-forwarded-for");
     const ip =
+      request.headers.get("x-vercel-ip") ||
+      request.headers.get("cf-connecting-ip") ||
       forwardedFor?.split(",")[0]?.trim() ||
       request.headers.get("x-real-ip") ||
-      "unknown";
+      (await buildHeaderFingerprint(request));
 
     let limitKey: keyof typeof RATE_LIMITS = "api";
     if (path.startsWith("/api/audio") || path.startsWith("/api/video")) {
