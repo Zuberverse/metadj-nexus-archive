@@ -97,7 +97,7 @@ export function CollectionDetailsModal({ collection, tracks, onClose }: Collecti
                 key={track.id}
                 className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/5 px-3 py-2"
               >
-                <div className="relative h-10 w-10 overflow-hidden rounded-lg border border-white/10">
+                <div className="relative h-10 w-10 overflow-hidden rounded-md border border-white/10">
                   <Image
                     src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
                     alt={track.title}

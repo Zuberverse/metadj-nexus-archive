@@ -291,8 +291,8 @@ export function ControlPanelOverlay({
                           )}
                         </div>
                       )}
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
-                        <div className="flex items-center gap-3 sm:gap-4 min-w-0 md:max-w-[40%]">
+                      <div className="flex flex-col min-[1100px]:flex-row min-[1100px]:items-center min-[1100px]:justify-between gap-3 sm:gap-4">
+                        <div className="flex items-center gap-3 sm:gap-4 min-w-0 min-[1100px]:max-w-[40%]">
                           <CollectionArtwork
                             src={track.artworkUrl}
                             alt={track.title}
@@ -348,7 +348,7 @@ export function ControlPanelOverlay({
                       />
 
                       {typeof volume === "number" && typeof isMuted === "boolean" && onVolumeChange && onMuteToggle && (
-                        <div className="mt-2 flex justify-center md:justify-end">
+                        <div className="mt-2 flex justify-center min-[1100px]:justify-end">
                           <VolumeControl
                             volume={volume}
                             isMuted={isMuted}

@@ -620,6 +620,26 @@ Context files use PascalCase to match React conventions:
 
 ---
 
+## Media Storage Naming
+
+Media files in Cloudflare R2 storage follow a **hybrid convention** distinct from code naming:
+
+| Element | Convention | Example |
+|---------|------------|---------|
+| **Directories** | Lowercase kebab-case | `music/majestic-ascent/` |
+| **Audio files** | Title Case with spaces | `01 - Majestic Ascent (v0) - Mastered.mp3` |
+| **Video files** | Title Case with spaces | `MetaDJ Performance Loop - MetaDJ Nexus.mp4` |
+
+**Rationale:**
+- **Directories** use kebab-case for URL-safe API paths without encoding
+- **Filenames** use Title Case with spaces for human readability in storage browsers
+
+Spaces in filenames are automatically URL-encoded by browsers (`%20`). No manual encoding needed in `tracks.json`.
+
+> **Full specification:** See [`docs/MEDIA-STORAGE.md`](MEDIA-STORAGE.md) for complete naming rules, examples, and CLI usage.
+
+---
+
 ## Summary Checklist
 
 **Before committing code, verify:**

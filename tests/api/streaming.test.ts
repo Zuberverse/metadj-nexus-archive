@@ -11,9 +11,10 @@ const loggerMock = vi.hoisted(() => ({
   error: vi.fn(),
 }));
 
-vi.mock('@/lib/replit-storage', () => ({
+vi.mock('@/lib/media-storage', () => ({
   getVideoBucket: getVideoBucketMock,
   getAudioBucket: getAudioBucketMock,
+  storageDiagnostics: { provider: 'test', active: {} },
 }));
 
 vi.mock('@/lib/logger', () => ({

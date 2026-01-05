@@ -81,7 +81,7 @@ export function SkeletonTrackCard({
   return (
     <div className={clsx("flex items-center gap-3 p-3", className)}>
       {/* Artwork */}
-      <Skeleton className="h-12 w-12 rounded-lg shrink-0" animate={animate} />
+      <Skeleton className="h-12 w-12 rounded-md shrink-0" animate={animate} />
       {/* Text content */}
       <div className="flex-1 min-w-0 space-y-2">
         <Skeleton className="h-4 w-3/4" animate={animate} />
@@ -194,7 +194,7 @@ export function SkeletonPlayerBar({
   return (
     <div className={clsx("flex items-center gap-4 p-4", className)}>
       {/* Artwork */}
-      <Skeleton className="h-14 w-14 rounded-lg shrink-0" animate={animate} />
+      <Skeleton className="h-14 w-14 rounded-md shrink-0" animate={animate} />
       {/* Track info */}
       <div className="flex-1 min-w-0 space-y-2">
         <Skeleton className="h-4 w-1/3" animate={animate} />

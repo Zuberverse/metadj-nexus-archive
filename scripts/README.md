@@ -11,7 +11,7 @@ Automation utilities for audio encoding, video conversion, and data validation.
 **`encode-audio.sh`**
 - Helper that converts any high-resolution source files (e.g., WAV) to 320 kbps MP3 for streaming. The current pipeline exports directly to MP3 music.
 - Usage: `./scripts/encode-audio.sh input.wav output.mp3`
-- See: `3-projects/5-software/metadj-nexus/docs/APP-STORAGE-SETUP.md` for full workflow
+- See: `docs/MEDIA-STORAGE.md` for full workflow
 
 ### Video Encoding
 
@@ -56,4 +56,4 @@ Automation utilities for audio encoding, video conversion, and data validation.
 - Primary: VP9 WebM @ 960×540, 30fps, CRF 36
 - Fallback: H.264 MP4 @ 1280×720, 60fps, CRF 18
 
-See `3-projects/5-software/metadj-nexus/docs/APP-STORAGE-SETUP.md` for complete specifications.
+See `docs/MEDIA-STORAGE.md` for complete specifications.

@@ -2,7 +2,7 @@
 
 > **Comprehensive playback behavior and UX patterns for MetaDJ Nexus's audio player**
 
-**Last Modified**: 2026-01-04 00:44 EST
+**Last Modified**: 2026-01-05 17:50 EST
 
 ---
 
@@ -98,6 +98,50 @@ The Action Bar is a centered shell that hugs the bottom edge with feature button
 - **Spacing**: Balanced gaps keep shuffle/previous/play/next/repeat perfectly mirrored
 - **Progress slider**: Desktop max-width 64rem with padded gutters for breathing room; mobile keeps the full-width bar below the controls
 - **Responsive**: Adapts to screen size while maintaining functionality
+
+### Left Panel NowPlayingSection
+
+The `NowPlayingSection` component (`src/components/panels/left-panel/NowPlayingSection.tsx`) renders within the Left Panel and supports two layout modes:
+
+**Desktop Layout** (`compact={false}`):
+- Track info row: artwork + title/collection + share/info buttons
+- Transport controls: shuffle | prev | play/pause | next | repeat
+- Progress scrubber with time display
+
+**Mobile Compact Layout** (`compact={true}`):
+```
+┌──────────────────────────────────────────────────┐
+│ [Art] Title        ◀︎   ▶︎ PLAY   ▶︎              │
+│       Collection                                 │
+├──────────────────────────────────────────────────┤
+│ 0:00 ═══════════════════════════════════ 3:00    │
+├──────────────────────────────────────────────────┤
+│           🔀    🔁    📤    ℹ️                    │
+└──────────────────────────────────────────────────┘
+```
+
+**Layout:**
+- Single row: track info (left, `max-w-[40%]`) + transport controls (centered via absolute positioning)
+- Progress bar shows current time and total duration (no dash prefix on duration)
+- Secondary controls (shuffle, repeat, share, info) centered below
+
+**Styling Standards:**
+| Element | Class | Description |
+|---------|-------|-------------|
+| Track title | `text-sm font-heading font-bold text-heading-solid` | Cyan → purple → fuchsia gradient, matches all music panel headers |
+| Collection | `text-[10px] text-white/60` | Grayish white subtext |
+| Artwork | `h-10 w-10 rounded-md` | 6px border radius, matches all track/collection artwork |
+| Play button | `w-11 h-11 rounded-full` | White gradient capsule |
+| Skip buttons | `h-9 w-9 min-h-[44px] min-w-[44px]` | 44px touch targets |
+
+**Desktop Styling Standards:**
+| Element | Class | Description |
+|---------|-------|-------------|
+| Track title | `text-base font-heading font-bold text-heading-solid` | Larger size, same gradient |
+| Collection | `text-xs text-(--text-muted)` | CSS variable for consistent muted text |
+| Artwork | `h-14 w-14 rounded-md` | Larger artwork, same border radius |
+
+**See also**: [Panel System](panel-system.md) for complete mobile panel documentation.
 
 ### Track Title Display
 - **Character Limit**: 40 characters maximum

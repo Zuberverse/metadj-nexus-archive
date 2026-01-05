@@ -219,7 +219,7 @@ export function AppHeader({
     <>
       <header
         ref={headerRef as React.RefObject<HTMLElement>}
-        className="fixed top-0 left-0 right-0 z-100 backdrop-blur-3xl overflow-hidden transition-all duration-300"
+        className="hidden min-[1100px]:block fixed top-0 left-0 right-0 z-100 backdrop-blur-3xl overflow-hidden transition-all duration-300"
       >
         {/* Skip Link for Keyboard Navigation - Accessibility */}
         <a
@@ -667,7 +667,7 @@ export function AppHeader({
                               }}
                               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors text-left"
                             >
-                              <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
+                              <div className="relative w-10 h-10 rounded-md overflow-hidden shrink-0">
                                 <Image
                                   src={`/images/${collection.id}-collection.svg`}
                                   alt={collection.title}

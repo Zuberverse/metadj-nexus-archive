@@ -2,7 +2,7 @@
 
 > **Comprehensive collection tracking and metadata management for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-30 17:42 EST
+**Last Modified**: 2026-01-05 17:00 EST
 ## Overview
 
 The Collections system is the official organizational structure for MetaDJ Nexus music collections, grouping tracks into cohesive units that can represent either full-length collections or curated singles collections. "Music collections" is the formal term; "collections" is the shorthand used in the app. This document serves as the canonical reference for all collection metadata, tracking standards, and update procedures.
@@ -63,10 +63,7 @@ interface Track {
   bpm?: number;           // Beats per minute (optional)
   key?: string;           // Musical key (e.g., "C major", "A minor")
 }
-
-> **Internal Release Structure**
->
-> Collections can be issued in numbered parts (e.g., "Majestic Ascent" Part 1, "Bridging Reality" Part 1). The public radio only references the base collection name while internal docs and filename templates retain part indicators.
+```
 
 ### UI Presentation
 
@@ -85,9 +82,6 @@ interface Track {
   - Interactive elements (cards, list items) now use a centralized `getCollectionHoverStyles` utility.
   - Hover states trigger a collection-specific colored glow (border + background tint + shadow) matching the collection's identity:
     - **Majestic Ascent**: Purple/Magenta glow (`shadow-purple-500/25`)
-    - **Bridging Reality**: Deep Blue/Indigo glow (`shadow-blue-600/25`)
-    - **Metaverse Revelation**: Cyan/Electric Blue glow (`shadow-cyan-500/25`)
-    - **Transformer**: Emerald/Teal glow (`shadow-emerald-500/25`)
     - **Featured**: Indigo/Blue glow (`shadow-indigo-500/25`)
   - This applies to the Hub, Left Panel browsing, and Wisdom sections (mapped to collection themes).
 
@@ -123,17 +117,19 @@ The expandable "About this collection" section was improved:
 - The Left Panel uses these narratives to power **About Collection** (non‑Featured collections) and for consistent catalog context across the app.
 
 ### Asset Strategy
-- Streaming assets live in Replit App Storage at `audio-files/<collection>/NN - Track Title - Mastered v0.mp3` (or `Track Title - Mastered v0.mp3` for Metaverse Revelation), accessed in-app via `/api/audio/<collection>/...`; the same MP3 music files stay archived offline.
-- Collection artwork syncs with each release's palette: Majestic Ascent leans portal magenta/purple gradients, while Bridging Reality highlights cyan/blue circuitry to mirror tab styling.
-```
+
+- Streaming assets live in **Cloudflare R2** at `music/<collection>/NN - Track Title (v0) - Mastered.mp3`, accessed in-app via `/api/audio/<collection>/...`.
+- Master MP3 files stay archived offline for backup.
+- Collection artwork syncs with each release's palette: Majestic Ascent leans portal magenta/purple gradients.
+
+> **Storage Reference**: See `docs/MEDIA-STORAGE.md` for complete R2 configuration, directory structure, and upload procedures.
 
 > **Implementation Note**
 >
 > The canonical data lives in `src/data/collections.json` and `src/data/tracks.json`.
 > These JSON snapshots are loaded through the domain helpers in `src/lib/music/`,
 > which exposes repository functions (`getTracksByCollection`, `getMusicService`, etc.)
-> used throughout the app. Swap the repository implementation when Neon comes online
-> without touching consuming components.
+> used throughout the app.
 
 ### Genre Tags Standard
 
@@ -153,16 +149,16 @@ Current tag vocabulary (examples):
 
 ## Current Collections
 
-### Majestic Ascent (Collection — Part 1)
+### Majestic Ascent (Collection)
 
 **Collection Metadata:**
 - **ID**: `majestic-ascent`
 - **Title**: Majestic Ascent
 - **Artist**: MetaDJ
-- **Type**: Collection (public) / Part 1 (internal)
+- **Type**: Collection
 - **Release Date**: 2025-10-04
-- **Track Count**: 39
-- **Description**: Epic debut collection featuring orchestral, cinematic, and electronic fusion.
+- **Track Count**: 10
+- **Description**: Portal narration + orchestral/electronic fusion powered by AI-driven creation. Epic debut collection featuring orchestral, cinematic, and electronic elements.
 - **Artwork**: `/images/majestic-ascent-collection.svg` (cosmic mountain motif with vertical light beams)
 
 **Track Listing:**
@@ -173,122 +169,18 @@ Current tag vocabulary (examples):
 | 2 | metadj-002 | Convergence | 7:16 (436s) | — | — | Retro Future, Techno |
 | 3 | metadj-003 | Future's Grace | 3:04 (184s) | — | — | Retro Future, Techno |
 | 4 | metadj-004 | Synthetic Emergence | 4:02 (242s) | — | — | Retro Future, Techno |
-| 5 | metadj-022 | Infinite Spark | 5:24 (324s) | — | — | Retro Future, Techno |
-| 6 | metadj-023 | Boss Battle | 5:56 (356s) | 140 | D minor | Retro Future, Techno |
-| 7 | metadj-024 | Adrenaline | 4:06 (246s) | — | — | Retro Future, Techno |
-| 8 | metadj-025 | Artificial Turbulence | 3:25 (205s) | — | — | Retro Future, Techno |
-| 9 | metadj-026 | Quantum Cathedral | 5:23 (323s) | — | — | Retro Future, Techno |
-| 10 | metadj-027 | Cybernetic Evolution | 5:38 (338s) | — | — | Retro Future, Techno |
-| 11 | metadj-028 | Vortex | 4:15 (255s) | — | — | Retro Future, Techno |
-| 12 | metadj-029 | Side Scroller | 3:32 (212s) | — | — | Retro Future, Techno |
-| 13 | metadj-030 | Sonic Storm | 3:00 (180s) | — | — | Retro Future, Techno |
-| 14 | metadj-031 | Level Up | 3:51 (231s) | — | — | Retro Future, Techno |
-| 15 | metadj-032 | Digital Phantom | 3:07 (187s) | — | — | Retro Future, Techno |
-| 16 | metadj-033 | Euphoric Vision | 3:00 (180s) | — | — | Retro Future, Techno |
-| 17 | metadj-034 | Electric Horizon | 3:24 (204s) | — | — | Retro Future, Techno |
-| 18 | metadj-035 | Portal to Infinity | 4:16 (256s) | — | — | Retro Future, Techno |
-| 19 | metadj-036 | Virtual Awakening | 4:54 (294s) | — | — | Retro Future, Techno |
-| 20 | metadj-037 | Day Dreaming | 3:02 (182s) | — | — | Retro Future, Techno |
-| 21 | metadj-038 | Strollin Through Paradise | 5:10 (310s) | — | — | Retro Future, Techno |
-| 22 | metadj-039 | The Minotaur's Dance | 2:11 (131s) | — | — | Retro Future, Techno |
-| 23 | metadj-005 | Transformer | 3:00 (180s) | — | — | Retro Future, Techno |
-| 24 | metadj-006 | Metamorphosis | 3:00 (180s) | — | — | Retro Future, Techno |
-| 25 | metadj-007 | Adventurous Exciting Spooky Futuristic Tuba Synth Techno | 3:00 (180s) | — | — | Retro Future, Techno |
-| 26 | metadj-008 | Heartbeat | 3:00 (180s) | — | — | Retro Future, Techno |
-| 27 | metadj-009 | After Hours | 3:00 (180s) | — | — | Retro Future, Techno |
-| 28 | metadj-010 | Electric Night Fever | 3:00 (180s) | — | — | Retro Future, Techno |
-| 29 | metadj-011 | Burnout | 3:00 (180s) | — | — | Retro Future, Techno |
-| 30 | metadj-012 | Insanity | 3:00 (180s) | — | — | Retro Future, Techno |
-| 31 | metadj-013 | System Crash | 3:00 (180s) | — | — | Retro Future, Techno |
-| 32 | metadj-014 | Lucid | 3:00 (180s) | — | — | Retro Future, Techno |
-| 33 | metadj-015 | Glitched | 3:00 (180s) | — | — | Retro Future, Techno |
-| 34 | metadj-016 | Ripple | 3:00 (180s) | — | — | Retro Future, Techno |
-| 35 | metadj-017 | Techtonic | 3:00 (180s) | — | — | Retro Future, Techno |
-| 36 | metadj-018 | Epic Harpsichord Electro Insanity | 3:00 (180s) | — | — | Retro Future, Techno |
-| 37 | metadj-019 | Insane | 3:00 (180s) | — | — | Retro Future, Techno |
-| 38 | metadj-020 | Electric Blue | 3:00 (180s) | — | — | Retro Future, Techno |
-| 39 | metadj-021 | Epic Violin Electro Insanity | 3:00 (180s) | — | — | Retro Future, Techno |
+| 5 | metadj-005 | Electric Horizon | 3:24 (204s) | — | — | Retro Future, Techno |
+| 6 | metadj-006 | Portal to Infinity | 4:16 (256s) | — | — | Retro Future, Techno |
+| 7 | metadj-007 | Virtual Awakening | 4:54 (294s) | — | — | Retro Future, Techno |
+| 8 | metadj-008 | Day Dreaming | 3:02 (182s) | — | — | Retro Future, Techno |
+| 9 | metadj-009 | Strollin Through Paradise | 5:10 (310s) | — | — | Retro Future, Techno |
+| 10 | metadj-010 | The Minotaur's Dance | 2:11 (131s) | — | — | Retro Future, Techno |
 
-> **Note**: Track order updated 2025-12-08. Infinite Spark through Digital Phantom moved forward (positions 5-15), followed by Euphoric Vision through The Minotaur's Dance (positions 16-22), with Transformer through Epic Violin moved to end (positions 23-39).
+**Total Duration**: ~42 minutes
 
 **Notes:**
-- Mastered MP3s stay in the offline archive; streaming copies live in App Storage at `audio-files/majestic-ascent/NN - Track Title - Mastered v0.mp3`.
-- Public UI omits "Part 1"; part indicators remain internal for file naming and cataloging.
+- Mastered MP3s are archived offline; streaming copies live in Cloudflare R2 at `music/majestic-ascent/NN - Track Title (v0) - Mastered.mp3`.
 - BPM and key data being gradually added as analysis is completed.
-
-### Bridging Reality (Collection — Part 1)
-
-**Collection Metadata:**
-- **ID**: `bridging-reality`
-- **Title**: Bridging Reality
-- **Artist**: MetaDJ
-- **Type**: Collection (public) / Part 1 (internal)
-- **Release Date**: 2025-10-04
-- **Track Count**: 20
-- **Description**: High-energy Metaverse anthems that bridge physical club energy with future-forward storytelling.
-- **Artwork**: `/images/bridging-reality-collection.svg` (digital bridge connecting dual worlds)
-
-**Track Listing:**
-
-| # | ID | Title | Duration |
-|---|----|-------|----------|
-| 1 | br-001 | The Evolution of AI | 3:22 |
-| 2 | br-002 | Rise of the New Dawn | 3:14 |
-| 3 | br-003 | Protocol of Joy | 3:37 |
-| 4 | br-004 | I Am Artificial | 3:35 |
-| 5 | br-005 | Metaversal Odyssey | 4:27 |
-| 6 | br-006 | Metaverse Movement | 3:30 |
-| 7 | br-007 | Rave in the Matrix | 2:54 |
-| 8 | br-008 | Metaverse Is Here | 2:33 |
-| 9 | br-009 | Be Who You Want To Be | 2:29 |
-| 10 | br-010 | In the Metaverse | 2:44 |
-| 11 | br-011 | New Universe | 2:25 |
-| 12 | br-012 | Pinch to Zoom | 2:33 |
-| 13 | br-013 | Future Superstars | 2:00 |
-| 14 | br-014 | Are You Ready | 3:49 |
-| 15 | br-015 | Amplify | 3:03 |
-| 16 | br-016 | Unlock Your Inner Creator | 3:24 |
-| 17 | br-017 | Magic of the Metaverse | 4:46 |
-| 18 | br-018 | We Unite the Nation with the Metaverse | 3:25 |
-| 19 | br-019 | Metaverse Nation | 2:12 |
-| 20 | br-020 | Next Frontier | 2:58 |
-
-**Notes:**
-- MP3 files live in `~/MusicArchive/Bridging Reality Pt1/`; streaming copies live in App Storage at `audio-files/bridging-reality/NN - Track Title - Mastered v0.mp3`.
-- Public metadata omits "Part 1"; keep the catalog consistent when future parts release (`br-021+`).
-- Genres in `src/data/tracks.json` use the 2-tag convention: primary vibe first, "Techno" second.
-
-### Metaverse Revelation (Collection)
-
-**Collection Metadata:**
-- **ID**: `metaverse-revelation`
-- **Title**: Metaverse Revelation
-- **Artist**: MetaDJ
-- **Type**: Collection
-- **Release Date**: 2025-12-09
-- **Track Count**: 9
-- **Description**: Invigorating EDM built for the dancefloor and the Metaverse, capturing raw transformation at full volume.
-- **Artwork**: `/images/metaverse-revelation-collection.svg` (cyan/electric blue Metaverse portal motif)
-
-**Track Listing:**
-
-| # | ID | Title | Duration | Genres |
-|---|---|---|---|---|
-| 1 | mr-001 | I Want to Believe | 5:04 (304s) | EDM, Anthem |
-| 2 | mr-002 | Embrace the Moment | 3:40 (220s) | Trance, Techno |
-| 3 | mr-003 | Pioneers | 4:51 (291s) | EDM, Anthem |
-| 4 | mr-004 | Cosmic Journey | 6:18 (378s) | EDM, Trance |
-| 5 | mr-005 | Metaverse Revelation | 4:07 (247s) | EDM, Anthem |
-| 6 | mr-006 | MetaDJ Revolution | 3:14 (194s) | EDM, Anthem |
-| 7 | mr-007 | Cosmic Rendezvous | 3:04 (184s) | Nu Disco, Electronic |
-| 8 | mr-008 | Dreaming of a World | 2:34 (154s) | Nu Disco, Pop |
-| 9 | mr-009 | Welcome to the Zuberverse | 4:17 (257s) | EDM, Anthem |
-
-**Notes:**
-- Released December 2025 as the third official collection.
-- MP3 files use simplified naming: `Track Title (v0) - Mastered.mp3` in App Storage at `audio-files/Metaverse Revelation/`.
-- Features diverse EDM palette including Trance, Nu Disco, and Anthem styles.
-- Themed around creative empowerment and Metaverse transformation.
 
 ## Update Procedures
 
@@ -317,19 +209,19 @@ Current tag vocabulary (examples):
 
 ### Adding Tracks to Collection
 
-1. **Upload Audio Files** to App Storage
+1. **Upload Audio Files** to R2 Storage
    ```bash
-   # Using Replit CLI helper or SDK script
-  replit storage upload audio-files/<collection>/track-name.mp3 ./music-library/<collection>/track-name.mp3
+   # Using rclone
+   rclone copy ./local-track.mp3 r2:metadj-nexus-media/music/collection-name/
    ```
 
 2. **Extract Metadata**:
    ```bash
-  # Get duration (run against the local MP3)
-  ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ./music-library/<collection>/track-name.mp3
+   # Get duration (run against the local MP3)
+   ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ./track-name.mp3
 
    # Get BPM (if tagged)
-  ffprobe -v error -show_entries format_tags=BPM -of default=noprint_wrappers=1:nokey=1 ./music-library/<collection>/track-name.mp3
+   ffprobe -v error -show_entries format_tags=BPM -of default=noprint_wrappers=1:nokey=1 ./track-name.mp3
    ```
 
 3. **Add Track Entry** to `src/data/tracks.json`:
@@ -342,8 +234,8 @@ Current tag vocabulary (examples):
      "duration": 180,
      "releaseDate": "YYYY-MM-DD",
      "audioUrl": "/api/audio/<collection>/track-name.mp3",
-    "artworkUrl": "/images/placeholder-artwork.svg",
-    "genres": ["Primary Tag", "Techno"],
+     "artworkUrl": "/images/placeholder-artwork.svg",
+     "genres": ["Primary Tag", "Techno"],
      "bpm": 120,
      "key": "C major"
    }
@@ -369,7 +261,7 @@ Current tag vocabulary (examples):
 1. **Remove from `src/data/tracks.json`**
 2. **Update Collection** `trackCount`
 3. **Update Documentation** (remove from table, adjust numbering)
-4. **Archive Audio File** (remove from App Storage bucket, keep the local music file archived)
+4. **Delete from R2 Storage** (keep the local music file archived)
 5. **Commit**: `refactor: Remove [Track Name] from [Collection Name]`
 
 ## Validation Checklist
@@ -379,7 +271,7 @@ Before finalizing collection updates:
 - [ ] All track IDs are unique
 - [ ] All track durations are accurate (in seconds)
 - [ ] Genre tags use 2-tag convention (Primary, Techno)
-- [ ] Audio files exist at specified paths
+- [ ] Audio files exist in R2 at specified paths
 - [ ] Collection `trackCount` matches actual track count
 - [ ] Track order matches intended sequence
 - [ ] Documentation updated with all changes
@@ -391,10 +283,13 @@ Before finalizing collection updates:
 `src/data/*.json` - Canonical track and collection metadata snapshots
 
 ### Documentation
-`3-projects/5-software/metadj-nexus/docs/features/collections-system.md` - This file, comprehensive tracking
+`docs/features/collections-system.md` - This file, comprehensive tracking
 
 ### Audio Files
-`App Storage (audio-files bucket)` - MP3 files for all tracks
+`Cloudflare R2 (metadj-nexus-media bucket)` - MP3 files for all tracks
+
+### Storage Reference
+`docs/MEDIA-STORAGE.md` - R2 configuration and directory structure
 
 ### Artwork
 `public/images/` - Collection and track artwork

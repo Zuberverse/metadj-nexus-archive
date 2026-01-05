@@ -2,7 +2,7 @@
 
 > **Source of truth for MetaDJ Nexus's premium glass-neon presentation**
 
-**Last Modified**: 2026-01-04 00:44 EST
+**Last Modified**: 2026-01-05 17:45 EST
 
 ---
 
@@ -27,6 +27,7 @@
 - [Mobile-First Responsive Design](#mobile-first-responsive-design)
 - [Interaction, Motion & Accessibility](#interaction-motion--accessibility)
 - [Asset & Media Guidance](#asset--media-guidance)
+- [Music Panel Component Standards](#music-panel-component-standards)
 - [Extending the System](#extending-the-system)
 
 ---
@@ -152,8 +153,25 @@ This pattern keeps the brand consistent while making it clear which experience t
 - **Left (desktop):** Music toggle + MetaDJ wordmark image + "verse" gradient label.
 - **Center (desktop):** View toggles + Playback pill (track title + prev/play/next + one-tap Library/Queue + Search dropdown).
 - **View toggle icons:** Optically balanced sizes (Cinema slightly larger, Wisdom matched to Hub) with non-shrinking icons so every tab shows a consistent glyph.
-- **Mobile header:** Fully-featured music pill only (track title + playback controls + queue + search). Logo and view toggles hidden on mobile.
-- **Right (desktop):** MetaDJai toggle. On mobile, all navigation lives in the 6-button bottom nav (Hub, Cinema, Wisdom, Journal, Music, MetaDJai).
+- **Mobile header:** Header is completely hidden on mobile (`hidden min-[1100px]:block`). All navigation handled via MobileBottomNav.
+- **Right (desktop):** MetaDJai toggle.
+
+### Mobile Navigation (`MobileBottomNav.tsx`)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Hub   Cinema  Wisdom  Journal  Music   MetaDJai           │
+│  [🏠]   [🎬]    [✨]    [📓]    [🎵]     [💬]              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Fixed bottom navigation bar (6 buttons) replaces header on mobile
+- **Button sizing**: `min-w-12 min-h-11 px-2.5 py-1.5 rounded-xl` for comfortable touch targets
+- **Active state**: Brand gradient background (`brand-gradient opacity-20`), no pulsing animation
+- **Icons**: Standard Lucide icons; Music/MetaDJai use `BrandGradientIcon` when active
+- **Labels**: 10px uppercase tracking, font-heading font-semibold
+- **Overlay behavior**: Music and MetaDJai open fullscreen overlay panels; only one can be open at a time
+- **No floating dock**: `MobileNowPlayingDock` removed — users tap "Music" to access playback controls
 
 ### Collections Section (Left Panel)
 
@@ -393,6 +411,155 @@ MetaDJ Nexus is built with a mobile-first approach, ensuring optimal touch inter
 - Visual console poster fallback `/images/og-image.png` matches brand gradient palette.
 - Track artwork fallback uses `/images/placeholder-artwork.svg` (glass disc on gradient) instead of a generic image.
 - Audio derivatives stream as 320 kbps MP3s from App Storage (`audio-files/<collection>/...`) with matching metadata in `src/data/tracks.json`.
+
+## Music Panel Component Standards
+
+This section defines the canonical styling for all music-related components to ensure visual consistency across the Left Panel, search results, queue, and playback UI.
+
+### Universal Artwork Styling
+
+All track and collection artwork uses consistent styling:
+
+| Property | Value | Notes |
+|----------|-------|-------|
+| Border radius | `rounded-md` | 6px - applies to all track/collection artwork |
+| Border | `border-white/10` or `border-white/20` | Subtle glass border |
+| Shadow | `shadow-xs` to `shadow-lg` | Context-dependent depth |
+
+**Exception**: Icon containers (playlist icons, mood channel icons) use `rounded-lg` as they are gradient icon boxes, not artwork images.
+
+### Track/Collection Typography
+
+| Element | Class | Appearance |
+|---------|-------|------------|
+| Track title | `text-heading-solid` | Cyan → purple → fuchsia gradient |
+| Collection/subtitle | `text-white/60` to `text-white/70` | Muted grayish white |
+| Section headers | `text-heading-solid` | Gradient + uppercase tracking |
+| Duration/metadata | `text-(--text-muted)` | CSS variable for muted text |
+
+### NowPlayingSection Layout
+
+**Desktop Layout**:
+```
+┌──────────────────────────────────────────────────────────────┐
+│ ┌──────┐  Track Title (text-heading-solid)                   │
+│ │ Art  │  Collection (text-(--text-muted))        [Share][i] │
+│ └──────┘                                                     │
+│        ◀ │ ══════════ Progress ═══════════ │ ▶               │
+│   [🔀]   ◀◀   [▶ PLAY]   ▶▶   [🔁]                          │
+│  0:00 ═══════════════════════════════════════════════ 3:45   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**Mobile Compact Layout**:
+```
+┌──────────────────────────────────────────────────────────────┐
+│ ┌────┐ Title        ◀◀   [▶ PLAY]   ▶▶                      │
+│ │Art │ Collection                                            │
+│ └────┘                                                       │
+├──────────────────────────────────────────────────────────────┤
+│ 0:00 ════════════════════════════════════════════════ 3:45   │
+├──────────────────────────────────────────────────────────────┤
+│              🔀    🔁    📤    ℹ️                             │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**Styling Table**:
+| Element | Mobile Compact | Desktop |
+|---------|---------------|---------|
+| Artwork | `h-10 w-10 rounded-md` | `h-14 w-14 rounded-md` |
+| Title | `text-sm text-heading-solid` | `text-base text-heading-solid` |
+| Subtitle | `text-[10px] text-white/60` | `text-xs text-(--text-muted)` |
+| Controls centered | Absolute positioning | Flexbox |
+
+### TrackListItem Component
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ ┌────┐  Track Title (text-heading-solid)           [⋮ Menu] │
+│ │Art │  Collection (text-white/70)                           │
+│ └────┘                                                       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**Size Variants**:
+| Size | Artwork | Title | Subtitle |
+|------|---------|-------|----------|
+| `sm` | `h-8 w-8 rounded-md` | `text-xs` | `text-[10px]` |
+| `md` | `h-10 w-10 rounded-md` | `text-sm` | `text-xs` |
+
+### BrowseView Collections List
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                      Collections                              │
+│  (text-sm font-bold text-heading-solid uppercase)            │
+├──────────────────────────────────────────────────────────────┤
+│ ┌────┐  Collection Title (text-heading-solid)              > │
+│ │Art │  Subtitle (text-white/70)                             │
+│ └────┘                                                       │
+├──────────────────────────────────────────────────────────────┤
+│ ┌────┐  Collection Title                                   > │
+│ │Art │  Subtitle                                             │
+│ └────┘                                                       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### QueueSection Layout
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ [🔍 Search Queue...                    ]     12 tracks       │
+├──────────────────────────────────────────────────────────────┤
+│  1  ≡  ┌────┐  Track Title                            [✕]   │
+│        │Art │  Collection                                    │
+│        └────┘                                                │
+├──────────────────────────────────────────────────────────────┤
+│  2  ≡  ┌────┐  Track Title                            [✕]   │
+│        │Art │  Collection                                    │
+│        └────┘                                                │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### SearchBar Results
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                      Collections                              │
+├──────────────────────────────────────────────────────────────┤
+│ ┌────┐  Collection Title                                     │
+│ │Art │  8 tracks                                             │
+│ └────┘                                                       │
+├──────────────────────────────────────────────────────────────┤
+│                        Tracks                                 │
+├──────────────────────────────────────────────────────────────┤
+│ ┌────┐  Track Title                          [Add] [Play]   │
+│ │Art │  Collection                                           │
+│ └────┘                                                       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Skeleton Loading States
+
+Skeletons match the exact dimensions and radii of the components they replace:
+
+| Component | Skeleton Artwork |
+|-----------|------------------|
+| TrackListItem | `h-12 w-12 rounded-md` |
+| NowPlayingSection | `h-14 w-14 rounded-md` |
+
+### Component File Reference
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| `NowPlayingSection.tsx` | `src/components/panels/left-panel/` | Playback controls |
+| `TrackListItem.tsx` | `src/components/ui/` | Reusable track row |
+| `BrowseView.tsx` | `src/components/panels/left-panel/` | Collection browser |
+| `QueueSection.tsx` | `src/components/panels/left-panel/` | Queue management |
+| `SearchBar.tsx` | `src/components/search/` | Search with results |
+| `SearchResultItem.tsx` | `src/components/search/` | Individual search result |
+| `TrackCard.tsx` | `src/components/playlist/` | Playlist track card |
+| `Skeleton.tsx` | `src/components/ui/` | Loading skeletons |
 
 ## Extending the System
 

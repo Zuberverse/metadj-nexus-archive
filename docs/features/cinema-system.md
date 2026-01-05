@@ -861,7 +861,7 @@ On mobile devices (< 1024px):
 
 - [Audio Player Standards](audio-player-standards.md) — Playback integration
 - [UI Visual System](ui-visual-system.md) — Design tokens and styling
-- [APP-STORAGE-SETUP](../APP-STORAGE-SETUP.md) — Video asset hosting
+- [MEDIA-STORAGE](../MEDIA-STORAGE.md) — Video asset hosting (Cloudflare R2)
 
 ## Future Enhancements
 

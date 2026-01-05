@@ -1,25 +1,25 @@
-# Audio Assets — Replit App Storage
+# Audio Assets — Cloudflare R2 Storage
 
-**Last Modified**: 2025-12-22 14:03 EST
+**Last Modified**: 2026-01-05 17:00 EST
 
-This directory is **intentionally empty** by design. All audio files for MetaDJ Nexus are hosted on **Replit App Storage** and served through Next.js API routes.
+This directory is **intentionally empty** by design. All audio files for MetaDJ Nexus are hosted on **Cloudflare R2** and served through Next.js API routes.
 
 ## Architecture
 
-### Production (Replit)
-- Audio files stored in Replit App Storage bucket: `audio-files/`
-- Structure: `audio-files/<collection>/<track-slug>.mp3`
+### Production (Cloudflare R2)
+- Audio files stored in R2 bucket: `metadj-nexus-media`
+- Structure: `music/<collection>/<NN - Track Title (vX) - Mastered.mp3>`
 - Served via: `/api/audio/[...path]/route.ts`
 - Format: 320 kbps MP3
 
 **Example**:
-- Storage path: `audio-files/majestic-ascent/01-majestic-ascent-mastered-v0.mp3`
-- Public URL: `/api/audio/majestic-ascent/01-majestic-ascent-mastered-v0.mp3`
-- Browser streams from App Storage through API proxy
+- Storage path: `music/majestic-ascent/01 - Majestic Ascent (v0) - Mastered.mp3`
+- Public URL: `/api/audio/majestic-ascent/01 - Majestic Ascent (v0) - Mastered.mp3`
+- Browser streams from R2 through API proxy
 
 ### Local Development
 
-For local development outside Replit:
+For local development:
 1. Place temporary MP3 files in this directory
 2. Files are gitignored (see `.gitignore`)
 3. Update `audioUrl` in `src/data/tracks.json` to point to local paths if needed
@@ -27,11 +27,9 @@ For local development outside Replit:
 **Example local setup**:
 ```
 public/audio/
-├── majestic-ascent/
-│   ├── 01-track.mp3
-│   └── 02-track.mp3
-└── bridging-reality/
-    └── 01-track.mp3
+└── majestic-ascent/
+    ├── 01-track.mp3
+    └── 02-track.mp3
 ```
 
 ## Why This Approach?
@@ -39,20 +37,17 @@ public/audio/
 **Benefits**:
 - ✅ Repository stays lightweight (<10MB vs 500MB+)
 - ✅ Large media files never committed to Git
+- ✅ Zero egress fees with Cloudflare R2
 - ✅ Streaming performance optimized via range requests
 - ✅ Scalable for future catalog expansion
-- ✅ Simpler deployment (no Git LFS complexity)
-
-Pre-v1.53 used Git LFS for audio files. Migrated to App Storage on 2025-10-05.
 
 ## Complete Documentation
 
-See **[docs/APP-STORAGE-SETUP.md](../../docs/APP-STORAGE-SETUP.md)** for:
-- Full upload workflow
+See **[docs/MEDIA-STORAGE.md](../../docs/MEDIA-STORAGE.md)** for:
+- Full upload workflow (rclone commands)
 - Encoding specifications (320 kbps MP3)
-- FFmpeg commands
+- Naming conventions (kebab-case directories, Title Case filenames)
 - Troubleshooting guide
-- Migration notes from Git LFS
 
 ## Data References
 
@@ -63,9 +58,9 @@ Track metadata lives in:
 ## Scripts
 
 Encoding utilities available in:
-- `scripts/encode-audio.sh` — Helper that converts high-resolution source files to 320 kbps MP3 (all production music is already MP3)
+- `scripts/encode-audio.sh` — Helper that converts high-resolution source files to 320 kbps MP3
 - `scripts/validate-tracks.js` — Validate track metadata
 
 ---
 
-**Questions?** Check `3-projects/5-software/metadj-nexus/docs/APP-STORAGE-SETUP.md` or `CLAUDE.md`.
+**Questions?** Check `docs/MEDIA-STORAGE.md` or `CLAUDE.md`.

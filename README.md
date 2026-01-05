@@ -5,7 +5,7 @@
 > The primary creative hub for MetaDJ — where human vision meets AI-driven execution to uplift and inspire as you pioneer the Metaverse
 
 *Version: 0.9.46*
-**Last Modified**: 2025-12-30 10:31 EST
+**Last Modified**: 2026-01-05 17:00 EST
 **Platform:** MetaDJ Nexus at **metadjnexus.ai**
 **Social:** **@metadjai**
 
@@ -60,7 +60,7 @@ Why force ongoing creative exploration into fixed product releases when music co
 - TypeScript 5.9
 - Tailwind CSS with OKLCH tokens
 - Framer Motion for physics-based animations
-- Replit App Storage for production media hosting
+- Cloudflare R2 for production media hosting (zero egress fees)
 
 **AI Integration**
 - Vercel AI SDK with multi-provider architecture (OpenAI, Google, Anthropic, xAI)
@@ -191,8 +191,11 @@ See [docs/operations/BUILD-DEPLOYMENT-GUIDE.md](docs/operations/BUILD-DEPLOYMENT
 
 | Variable | Purpose |
 | --- | --- |
-| `MUSIC_BUCKET_ID` | Replit App Storage bucket for audio files |
-| `VISUALS_BUCKET_ID` | Replit App Storage bucket for video files |
+| `STORAGE_PROVIDER` | Storage backend: `r2` (primary) or `replit` (fallback) |
+| `R2_ACCOUNT_ID` | Cloudflare R2 account ID |
+| `R2_ACCESS_KEY_ID` | R2 API token access key |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret |
+| `R2_BUCKET` | R2 bucket name (default: `metadj-nexus-media`) |
 | `AI_PROVIDER` | Optional default provider (`openai`, `google`, `anthropic`, `xai`) |
 | `OPENAI_API_KEY` | Required if OpenAI is selected, used as fallback, or for web search |
 | `PRIMARY_AI_MODEL` | Optional OpenAI model override (defaults to `gpt-5.2-chat-latest`) |
@@ -269,7 +272,7 @@ _First-time E2E setup_: `npx playwright install`
 - [docs/TESTING.md](docs/TESTING.md) – Testing guide (Vitest + Playwright E2E smoke)
 
 ### Architecture & Development
-- [docs/APP-STORAGE-SETUP.md](docs/APP-STORAGE-SETUP.md) – Media hosting architecture
+- [docs/MEDIA-STORAGE.md](docs/MEDIA-STORAGE.md) – Media storage (Cloudflare R2) reference
 - [docs/operations/BUILD-DEPLOYMENT-GUIDE.md](docs/operations/BUILD-DEPLOYMENT-GUIDE.md) – Deployment guide
 - [docs/PERFORMANCE.md](docs/PERFORMANCE.md) – Performance benchmarks and optimization
 - [docs/INCIDENT-RESPONSE.md](docs/INCIDENT-RESPONSE.md) – Incident response runbook

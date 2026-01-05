@@ -80,7 +80,7 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
     const sizeStyles = {
       sm: {
         container: 'px-2 py-1.5 gap-2',
-        artwork: 'h-8 w-8 rounded',
+        artwork: 'h-8 w-8 rounded-md',
         title: 'text-xs',
         artist: 'text-[10px]',
         duration: 'text-[10px]',
@@ -88,7 +88,7 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
       },
       md: {
         container: 'px-2 py-2 gap-3',
-        artwork: 'h-10 w-10 rounded-lg',
+        artwork: 'h-10 w-10 rounded-md',
         title: 'text-sm',
         artist: 'text-xs',
         duration: 'text-xs',
@@ -152,10 +152,7 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
           artworkUrl={track.artworkUrl}
           title={track.title}
           sizes="(max-width: 640px) 32px, 40px"
-          className={cn(
-            "rounded-md",
-            styles.artwork
-          )}
+          className={styles.artwork}
           playButtonClassName="p-1.5"
           playIconClassName="h-3 w-3"
           showPlayingIndicator={showPlayingIndicator}

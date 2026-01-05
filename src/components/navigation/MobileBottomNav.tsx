@@ -114,8 +114,8 @@ export function MobileBottomNav({
               onClick={() => handleNavClick(item.id)}
               className={`
                 relative flex flex-col items-center justify-center
-                min-w-11 min-h-11 px-1 py-1.5
-                rounded-lg transition-all duration-200
+                min-w-12 min-h-11 px-2.5 py-1.5
+                rounded-xl transition-all duration-200
                 focus-ring-glow
                 touch-manipulation
                 ${active
@@ -130,9 +130,9 @@ export function MobileBottomNav({
               aria-label={item.label}
               aria-current={active ? "page" : undefined}
             >
-              {/* Active indicator glow - uses brand gradient with pulse animation */}
+              {/* Active indicator glow - uses brand gradient */}
               {active && (
-                <div className={`absolute inset-0 rounded-lg brand-gradient opacity-20 pointer-events-none animate-glow-pulse-mobile ${isDimmedViewActive ? "opacity-10" : ""}`} />
+                <div className={`absolute inset-0 rounded-xl brand-gradient opacity-20 pointer-events-none ${isDimmedViewActive ? "opacity-10" : ""}`} />
               )}
 
               {/* Icon with active state - Special items (Music/AI) use BrandGradientIcon when active */}

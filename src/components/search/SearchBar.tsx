@@ -462,7 +462,7 @@ export function SearchBar({
                             onMouseLeave={() => setHoveredIndex(null)}
                             className={`w-full text-left flex items-center gap-3 p-2 rounded-xl transition-colors ${hoveredIndex === index ? 'bg-white/10' : 'hover:bg-white/5'}`}
                           >
-                            <div className="h-10 w-10 rounded-lg bg-white/10 overflow-hidden relative shrink-0">
+                            <div className="h-10 w-10 rounded-md bg-white/10 overflow-hidden relative shrink-0">
                               {collection.artworkUrl ? (
                                 <Image
                                   src={collection.artworkUrl}

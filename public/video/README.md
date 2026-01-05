@@ -1,14 +1,14 @@
-# Video Assets — Replit App Storage
+# Video Assets — Cloudflare R2 Storage
 
-**Last Modified**: 2025-12-19 20:50 EST
+**Last Modified**: 2026-01-05 17:00 EST
 
-This directory is **intentionally empty** by design. All video files for MetaDJ Nexus's Cinema are hosted on **Replit App Storage** and served through Next.js API routes.
+This directory is **intentionally empty** by design. All video files for MetaDJ Nexus's Cinema are hosted on **Cloudflare R2** and served through Next.js API routes.
 
 ## Architecture
 
-### Production (Replit)
-- Video files stored in Replit App Storage at root level
-- Files: `MetaDJ Performance Loop - MetaDJ Nexus.webm` (optional VP9 primary) + `MetaDJ Performance Loop - MetaDJ Nexus.mp4` (H.264 fallback currently served)
+### Production (Cloudflare R2)
+- Video files stored in R2 bucket: `metadj-nexus-media`
+- Structure: `visuals/<Descriptive Title - Context.ext>`
 - Served via: `/api/video/[...path]/route.ts`
 
 **Browser Selection**:
@@ -18,16 +18,16 @@ This directory is **intentionally empty** by design. All video files for MetaDJ 
 **Example**:
 ```html
 <video>
-  <source src="/api/video/metadj-avatar/MetaDJ Performance Loop - MetaDJ Nexus.mp4" type="video/mp4" />
+  <source src="/api/video/MetaDJ Performance Loop - MetaDJ Nexus.mp4" type="video/mp4" />
 </video>
 ```
 
 ### Local Development
 
-For local development outside Replit:
+For local development:
 1. Place temporary video files in this directory
 2. Files are gitignored (see `.gitignore`)
-3. Component will fallback to local paths if App Storage unavailable
+3. Component will fallback to local paths if R2 unavailable
 
 **Example local setup**:
 ```
@@ -87,23 +87,13 @@ ffmpeg -i source.mp4 \
   "MetaDJ Performance Loop - MetaDJ Nexus.mp4"
 ```
 
-## Cinema Implementation
-
-The fullscreen Cinema overlay loads videos dynamically:
-- Auto-hide controls after 2.5s
-- Sync video playback with audio
-- Graceful fallback to black screen when video unavailable
-
-See: `src/app/page.tsx` (cinema section, lines 1361-1472)
-
 ## Complete Documentation
 
-See **[docs/APP-STORAGE-SETUP.md](../../docs/APP-STORAGE-SETUP.md)** for:
-- Upload workflow
-- Encoding specifications
+See **[docs/MEDIA-STORAGE.md](../../docs/MEDIA-STORAGE.md)** for:
+- Upload workflow (rclone commands)
+- Naming conventions
 - Troubleshooting
-- Migration notes
 
 ---
 
-**Questions?** Check `3-projects/5-software/metadj-nexus/docs/APP-STORAGE-SETUP.md` or `CLAUDE.md`.
+**Questions?** Check `docs/MEDIA-STORAGE.md` or `CLAUDE.md`.

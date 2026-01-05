@@ -10,7 +10,6 @@ import { ModalOrchestrator } from "@/components/modals/ModalOrchestrator"
 import { MobileBottomNav } from "@/components/navigation/MobileBottomNav"
 import { LeftPanel } from "@/components/panels/left-panel/LeftPanel"
 import { NowPlayingSection } from "@/components/panels/left-panel/NowPlayingSection"
-import { MobileNowPlayingDock } from "@/components/player/MobileNowPlayingDock"
 import { SessionBootstrap } from "@/components/session/SessionBootstrap"
 import { ErrorBoundary } from "@/components/ui"
 import { DynamicBackground } from "@/components/visuals"
@@ -355,18 +354,6 @@ function MobileShell({
           {canMountJournal ? <Journal /> : null}
         </section>
       </main>
-
-      {currentTrack && !isLeftPanelOpen && !modals.isMetaDjAiOpen && (
-        <MobileNowPlayingDock
-          track={currentTrack}
-          isPlaying={shouldPlay}
-          isLoading={nowPlayingProps.isLoading}
-          onPlayPause={nowPlayingProps.onPlayPause || (() => { })}
-          onOpenMusic={onToggleLeftPanel}
-          onNext={nowPlayingProps.onNext}
-          onPrevious={nowPlayingProps.onPrevious}
-        />
-      )}
 
       <MobileBottomNav
         activeView={activeView}

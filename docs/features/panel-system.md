@@ -2,7 +2,7 @@
 
 > **Desktop side panel architecture for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-30 10:31 EST
+**Last Modified**: 2026-01-05 16:50 EST
 ## Overview
 
 The Panel System provides a two-panel desktop layout with responsive behavior. The **Left Panel** hosts navigation, queue, and playback controls, while the **Right Panel** hosts the MetaDJai chat experience.
@@ -244,14 +244,62 @@ When Cinema view is active:
 - Naming intentionally avoids “Now Playing” so the Left Panel’s sticky **Now Playing** section remains the canonical playback surface.
 
 ### Mobile (<1100px)
-- Panels act as overlays/drawers
-- Full-screen behavior with `pb-[72px]` bottom padding to prevent content from being hidden behind bottom navigation bar
-- Bottom navigation replaces side panels (fixed 6-button bar: Hub, Cinema, Wisdom, Journal, Music, MetaDJai)
-- Swipe-right-to-close gesture on left panel overlay
+
+**Header**: Hidden on mobile (`hidden min-[1100px]:block`). All navigation and controls handled via MobileBottomNav.
+
+**Bottom Navigation** (`MobileBottomNav.tsx`):
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Hub   Cinema  Wisdom  Journal  Music   MetaDJai           │
+│  [🏠]   [🎬]    [✨]    [📓]    [🎵]     [💬]              │
+└─────────────────────────────────────────────────────────────┘
+```
+- Fixed 6-button bar at bottom of viewport
+- Active button shows brand gradient background (no pulsing animation)
+- Button sizing: `min-w-12 min-h-11 px-2.5 py-1.5 rounded-xl`
+- Music and MetaDJai open overlay panels; views are mutually exclusive
+
+**Music Panel Overlay** (Left Panel as fullscreen overlay):
+- Opens when "Music" is tapped in bottom nav
+- Swipe-right-to-close gesture supported
+- Contains: Browse/Playlists/Queue tabs + NowPlayingSection
+
+**NowPlayingSection Compact Layout** (`compact={true}`):
+```
+┌──────────────────────────────────────────────────┐
+│ [Art] Title        ◀︎   ▶︎ PLAY   ▶︎              │
+│       Collection                                 │
+├──────────────────────────────────────────────────┤
+│ 0:00 ═══════════════════════════════════ 3:00    │
+├──────────────────────────────────────────────────┤
+│           🔀    🔁    📤    ℹ️                    │
+└──────────────────────────────────────────────────┘
+```
+- Single row for track info (left) + transport controls (centered via absolute positioning)
+- Track info constrained to `max-w-[40%]` to prevent overlap with controls
+- Progress bar shows current time and total duration (no dash prefix on duration)
+- Secondary controls (shuffle, repeat, share, info) centered below
+
+**Styling Standards:**
+| Element | Class | Notes |
+|---------|-------|-------|
+| Track title | `text-cyan-200` | Solid blueish cyan |
+| Collection | `text-white/60` | Grayish white subtext |
+| Artwork | `rounded-md` | Matches collections list |
+| Section headers | `text-heading-solid` | Cyan → purple → fuchsia gradient |
+
+**No Floating Now Playing Dock**:
+- `MobileNowPlayingDock` removed from mobile experience
+- Users must tap "Music" in bottom nav to access playback controls
+- Cleaner mobile UX without persistent floating elements
+
+**Panel Behavior**:
+- Panels act as fullscreen overlays/drawers (not side panels)
+- Full-screen behavior with safe area padding for notch/home indicator
+- Focus trap enabled when panel is open
 - Compressed spacing via responsive Tailwind classes:
   - LeftPanel: `px-3` on mobile vs `px-4` on desktop
   - HubExperience: `p-5` vs `p-8`, `space-y-6` vs `space-y-8`
-  - AppHeader logo: `h-6` on mobile vs `h-8` on desktop
 - See `use-responsive-panels.ts` hook
 
 ### Breakpoint Configuration

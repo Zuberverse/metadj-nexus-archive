@@ -27,12 +27,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
 import { sanitizePathSegments, streamBucketFile } from "@/lib/media/streaming";
+import { getVideoBucket } from "@/lib/media-storage";
 import {
   checkMediaRateLimit,
   buildRateLimitHeaders,
   buildMediaRateLimitResponse,
 } from "@/lib/rate-limiting/media-rate-limiter";
-import { getVideoBucket } from "@/lib/replit-storage";
 
 export const runtime = "nodejs";
 
@@ -49,7 +49,7 @@ function resolveContentType(filePath: string): string | null {
 async function resolveVideoBucket() {
   const bucket = await getVideoBucket();
   if (!bucket) {
-    logger.error("Failed to access Replit video storage bucket (VISUALS_BUCKET_ID not configured)");
+    logger.error("Failed to access video storage bucket (check STORAGE_PROVIDER and credentials)");
   }
   return bucket;
 }

@@ -27,12 +27,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
 import { sanitizePathSegments, streamBucketFile } from "@/lib/media/streaming";
+import { getAudioBucket } from "@/lib/media-storage";
 import {
   checkMediaRateLimit,
   buildRateLimitHeaders,
   buildMediaRateLimitResponse,
 } from "@/lib/rate-limiting/media-rate-limiter";
-import { getAudioBucket } from "@/lib/replit-storage";
 
 export const runtime = "nodejs";
 
@@ -42,7 +42,7 @@ const AUDIO_CONTENT_TYPE = /audio\/(mpeg|mp3)/i;
 async function resolveAudioBucket() {
   const bucket = await getAudioBucket();
   if (!bucket) {
-    logger.error("Failed to access Replit audio storage bucket (MUSIC_BUCKET_ID not configured)");
+    logger.error("Failed to access audio storage bucket (check STORAGE_PROVIDER and credentials)");
   }
   return bucket;
 }

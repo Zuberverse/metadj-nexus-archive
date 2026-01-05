@@ -167,7 +167,7 @@ When tracks are live:
 ## Related Documentation
 
 - **Collection System**: `3-projects/5-software/metadj-nexus/docs/features/collections-system.md`
-- **Upload Guide**: `3-projects/5-software/metadj-nexus/docs/APP-STORAGE-SETUP.md`
+- **Upload Guide**: `docs/MEDIA-STORAGE.md`
 - **Tab System**: `3-projects/5-software/metadj-nexus/docs/features/tab-content-reference.md`
 - **Data Architecture**: `3-projects/5-software/metadj-nexus/docs/architecture/data-architecture.md`
 

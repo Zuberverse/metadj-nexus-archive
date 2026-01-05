@@ -23,8 +23,8 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 
 | Route | Code | Primary docs |
 | --- | --- | --- |
-| `/api/audio/[...path]` | `src/app/api/audio/[...path]/route.ts` | `../API.md`, `../APP-STORAGE-SETUP.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md` |
-| `/api/video/[...path]` | `src/app/api/video/[...path]/route.ts` | `../API.md`, `../APP-STORAGE-SETUP.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md` |
+| `/api/audio/[...path]` | `src/app/api/audio/[...path]/route.ts` | `../API.md`, `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md` |
+| `/api/video/[...path]` | `src/app/api/video/[...path]/route.ts` | `../API.md`, `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md` |
 | `/api/metadjai` | `src/app/api/metadjai/route.ts` | `../API.md`, `../features/vercel-ai-sdk-integration.md`, `../features/metadjai-knowledge-base.md` |
 | `/api/metadjai/stream` | `src/app/api/metadjai/stream/route.ts` | `../API.md`, `../features/vercel-ai-sdk-integration.md` |
 | `/api/metadjai/transcribe` | `src/app/api/metadjai/transcribe/route.ts` | `../API.md`, `../features/vercel-ai-sdk-integration.md` |
@@ -57,8 +57,8 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 ## Domain Libraries (`src/lib/`)
 
 - Music repository + filters (`src/lib/music/*`) → `../architecture/data-architecture.md`, `../features/collections-system.md`
-- Media streaming primitives (`src/lib/media/streaming.ts`) → `../APP-STORAGE-SETUP.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
-- Replit storage access (`src/lib/replit-storage.ts`) → `../APP-STORAGE-SETUP.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
+- Media streaming primitives (`src/lib/media/streaming.ts`) → `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
+- Storage provider abstraction (`src/lib/media-storage.ts`) → `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
 - Analytics helpers (`src/lib/analytics.ts`) → `../features/analytics-implementation.md`
 - Validation schemas (`src/lib/validation/*`) + `scripts/validate-tracks.js` → `../architecture/data-architecture.md`, `./barrel-export-patterns.md`
 - Playlist repository (`src/lib/playlists/*`) → `../features/playlist-system.md`, `./barrel-export-patterns.md`
@@ -84,7 +84,7 @@ Centralized module exports for clean imports. See `./barrel-export-patterns.md` 
 
 ## Data & Content (`src/data/`)
 
-- Tracks + collections (`src/data/tracks.json`, `src/data/collections.json`) → `../architecture/data-architecture.md`, `../APP-STORAGE-SETUP.md`
+- Tracks + collections (`src/data/tracks.json`, `src/data/collections.json`) → `../architecture/data-architecture.md`, `../MEDIA-STORAGE.md`
 - Collection narratives (`src/data/collection-narratives.ts`) → `../architecture/data-architecture.md`, `../features/collections-system.md`
 - Wisdom content (`src/data/wisdom-content.json`, `src/data/wisdom-content.ts`) → `../features/wisdom-system.md`
 - Cinema scenes (`src/data/scenes.ts`) → `../features/cinema-system.md`

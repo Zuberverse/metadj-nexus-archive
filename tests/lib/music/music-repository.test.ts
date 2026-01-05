@@ -17,10 +17,10 @@ describe('Music Repository', () => {
     });
 
     it('retrieves track by valid ID', () => {
-      const track = getTrackById('br-005'); // Metaverse Is Here
+      const track = getTrackById('metadj-005'); // Electric Horizon
       expect(track).toBeDefined();
-      expect(track?.id).toBe('br-005');
-      expect(track?.title).toBe('Metaverse Is Here');
+      expect(track?.id).toBe('metadj-005');
+      expect(track?.title).toBe('Electric Horizon');
     });
 
     it('returns undefined for non-existent track ID', () => {
@@ -77,11 +77,11 @@ describe('Music Repository', () => {
     });
 
     it('retrieves tracks for specific collection', () => {
-      const bridgingRealityTracks = getTracksByCollection('bridging-reality');
-      expect(bridgingRealityTracks.length).toBeGreaterThan(0);
-      bridgingRealityTracks.forEach((track) => {
+      const majesticAscentTracks = getTracksByCollection('majestic-ascent');
+      expect(majesticAscentTracks.length).toBeGreaterThan(0);
+      majesticAscentTracks.forEach((track) => {
         // Collection field uses Title Case
-        expect(track.collection).toBe('Bridging Reality');
+        expect(track.collection).toBe('Majestic Ascent');
       });
     });
 

@@ -6,30 +6,8 @@
     "type": "collection",
     "releaseDate": "2025-10-04",
     "artworkUrl": "/images/majestic-ascent-collection.svg",
-    "trackCount": 39,
-    "description": "Majestic Ascent Part 1 — portal narration + orchestral/electronic fusion powered by AI-driven creation",
-    "enabled": true
-  },
-  {
-    "id": "bridging-reality",
-    "title": "Bridging Reality",
-    "artist": "MetaDJ",
-    "type": "collection",
-    "releaseDate": "2025-10-04",
-    "artworkUrl": "/images/bridging-reality-collection.svg",
-    "trackCount": 20,
-    "description": "Bridging Reality Part 1 — high-energy anthems bridging physical and digital worlds through AI-driven creation",
-    "enabled": true
-  },
-  {
-    "id": "metaverse-revelation",
-    "title": "Metaverse Revelation",
-    "artist": "MetaDJ",
-    "type": "collection",
-    "releaseDate": "2025-12-09",
-    "artworkUrl": "/images/metaverse-revelation-collection.svg",
-    "trackCount": 9,
-    "description": "Metaverse Revelation — Invigorating EDM built for the dancefloor and the Metaverse, capturing raw transformation at full volume",
+    "trackCount": 10,
+    "description": "Majestic Ascent — portal narration + orchestral/electronic fusion powered by AI-driven creation",
     "enabled": true
   }
 ]

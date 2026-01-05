@@ -97,16 +97,16 @@ export const TrackCard = React.memo(function TrackCard({
         <button
           type="button"
           onClick={handleArtworkClick}
-          className="relative h-12 w-12 shrink-0 rounded-lg border border-(--border-elevated) bg-(--glass-light) transition-all duration-75 group-hover:border-(--border-active) cursor-pointer focus-ring-glow"
+          className="relative h-12 w-12 shrink-0 rounded-md border border-(--border-elevated) bg-(--glass-light) transition-all duration-75 group-hover:border-(--border-active) cursor-pointer focus-ring-glow"
           aria-label={`Play ${track.title}`}
         >
           <TrackArtwork
             artworkUrl={track.artworkUrl}
             title={track.title}
             sizes="48px"
-            className="h-full w-full rounded-lg"
+            className="h-full w-full rounded-md"
             showPlayOverlay={!isPlaying}
-            overlayClassName="rounded-lg bg-black/0 group-hover:bg-black/35"
+            overlayClassName="rounded-md bg-black/0 group-hover:bg-black/35"
             playButtonClassName="w-8 h-8 sm:w-9 sm:h-9"
             playIconClassName="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5"
             hoverScale={false}

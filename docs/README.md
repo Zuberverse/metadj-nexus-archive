@@ -10,7 +10,7 @@
 **New to MetaDJ Nexus?** Start here:
 1. [QUICKSTART.md](QUICKSTART.md) - **Developer quickstart guide** (5-minute setup)
 2. [README.md](../README.md) - Project overview and features
-3. [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md) - Media hosting and streaming architecture
+3. [MEDIA-STORAGE.md](MEDIA-STORAGE.md) - Cloudflare R2 media storage and streaming
 4. [NAMING-CONVENTIONS.md](NAMING-CONVENTIONS.md) - Code naming standards
 5. [../CLAUDE.md](../CLAUDE.md) - Development standards and guidelines
 
@@ -50,7 +50,7 @@
 
 | Document | Purpose | Key Topics |
 |----------|---------|-----------|
-| [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md) | Complete media hosting guide | Replit App Storage, API routes, encoding formats |
+| [MEDIA-STORAGE.md](MEDIA-STORAGE.md) | Media storage configuration | Cloudflare R2, API routes, streaming |
 | [architecture/README.md](architecture/README.md) | Architecture documentation index | Component, data, routing architecture |
 | [architecture/data-architecture.md](architecture/data-architecture.md) | Data structure and organization | Track metadata, collections system |
 | [features/vercel-ai-sdk-integration.md](features/vercel-ai-sdk-integration.md) | AI integration architecture | Vercel AI SDK, multi-provider setup, native web search |
@@ -84,10 +84,9 @@ See [features/README.md](features/README.md) for the complete feature documentat
 
 | Document | Collection | Tracks |
 |----------|-----------|--------|
-| [features/majestic-ascent.md](features/majestic-ascent.md) | Majestic Ascent | 39 tracks |
-| [features/bridging-reality.md](features/bridging-reality.md) | Bridging Reality | 20 tracks |
-| [features/metaverse-revelation.md](features/metaverse-revelation.md) | Metaverse Revelation | 9 tracks |
-| [features/transformer.md](features/transformer.md) | Transformer | In progress |
+| [features/collections-system.md](features/collections-system.md) | Majestic Ascent | 10 tracks |
+
+> **Note**: See [features/collections-system.md](features/collections-system.md) for complete collection metadata and update procedures.
 
 ## Documentation Structure
 
@@ -107,7 +106,7 @@ metadj-nexus/
 │   ├── TESTING.md                   # Testing guide (Vitest + Playwright E2E multi-browser)
 │   ├── PERFORMANCE.md               # Performance benchmarks
 │   ├── INCIDENT-RESPONSE.md         # Incident response runbook
-│   ├── APP-STORAGE-SETUP.md         # Media hosting guide
+│   ├── MEDIA-STORAGE.md             # Cloudflare R2 media storage
 │   ├── operations/                  # Operations & deployment docs
 │   │   ├── BUILD-DEPLOYMENT-GUIDE.md
 │   │   ├── ANALYTICS-SETUP.md
@@ -148,9 +147,8 @@ metadj-nexus/
 - **Important**: "Features" replaces "Modules" - see naming conventions for details
 
 ### Media & Streaming
-- **App Storage Setup**: [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md)
-- **Audio Format Standards**: [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md)
-- **Video Format Standards**: [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md)
+- **Media Storage**: [MEDIA-STORAGE.md](MEDIA-STORAGE.md)
+- **Naming Conventions**: [MEDIA-STORAGE.md](MEDIA-STORAGE.md#naming-conventions)
 - **API Routes**: [API.md](API.md)
 
 ### Features
@@ -195,7 +193,7 @@ metadj-nexus/
 > [NAMING-CONVENTIONS.md](NAMING-CONVENTIONS.md)
 
 **Add new music tracks**
-> [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md)
+> [MEDIA-STORAGE.md](MEDIA-STORAGE.md) and [features/collections-system.md](features/collections-system.md)
 
 **Update Cinema visuals**
 > [features/cinema-system.md](features/cinema-system.md)
@@ -222,7 +220,7 @@ metadj-nexus/
 > [features/collections-system.md](features/collections-system.md)
 
 **Debug streaming issues**
-> [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md)
+> [MEDIA-STORAGE.md](MEDIA-STORAGE.md)
 
 **Set up analytics**
 > [operations/ANALYTICS-SETUP.md](operations/ANALYTICS-SETUP.md)
@@ -249,14 +247,14 @@ When making changes to the codebase:
 - Provide code examples where applicable
 - Keep technical accuracy as top priority
 - Follow terminology in [NAMING-CONVENTIONS.md](NAMING-CONVENTIONS.md)
-- Use SCREAMING-KEBAB-CASE for root doc filenames (e.g., `APP-STORAGE-SETUP.md`)
+- Use SCREAMING-KEBAB-CASE for root doc filenames (e.g., `MEDIA-STORAGE.md`)
 
 ## Support
 
 For questions or issues:
 - Check relevant documentation section first
 - Review [../CHANGELOG.md](../CHANGELOG.md) for recent changes
-- Consult [APP-STORAGE-SETUP.md](APP-STORAGE-SETUP.md)
+- Consult [MEDIA-STORAGE.md](MEDIA-STORAGE.md) for storage issues
 - See project [../README.md](../README.md) for contact info
 
 ---

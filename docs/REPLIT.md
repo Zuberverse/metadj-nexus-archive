@@ -144,7 +144,7 @@ NEXT_PUBLIC_APP_VERSION=0.90
    ```
 
 3. **Upload Media Files**
-   - See `3-projects/5-software/metadj-nexus/docs/APP-STORAGE-SETUP.md` for detailed upload instructions
+   - See `docs/MEDIA-STORAGE.md` for detailed upload instructions
    - Upload audio to `music/<collection>/` folders
    - Upload cinema videos to `visuals/` folder
 
@@ -664,7 +664,7 @@ TTL: 3600
 
 **MetaDJ Nexus Documentation:**
 - `README.md` — Project overview
-- `3-projects/5-software/metadj-nexus/docs/APP-STORAGE-SETUP.md` — Media storage guide
+- `docs/MEDIA-STORAGE.md` — Media storage guide (Cloudflare R2)
 - `3-projects/5-software/resources/workflows/DEPLOYMENT-WORKFLOW.md` — Deployment checklist
 - `3-projects/5-software/metadj-nexus/docs/operations/UPTIME-MONITORING.md` — Monitoring setup
 - `3-projects/5-software/metadj-nexus/docs/operations/ERROR-TRACKING.md` — Error tracking setup

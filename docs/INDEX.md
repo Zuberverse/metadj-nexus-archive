@@ -66,7 +66,7 @@
 | Document | Description |
 |----------|-------------|
 | [REPLIT](./REPLIT.md) | Replit deployment guide |
-| [APP-STORAGE-SETUP](./APP-STORAGE-SETUP.md) | Storage configuration |
+| [MEDIA-STORAGE](./MEDIA-STORAGE.md) | Cloudflare R2 storage configuration |
 | [INCIDENT-RESPONSE](./INCIDENT-RESPONSE.md) | Incident handling procedures |
 
 ### Operations

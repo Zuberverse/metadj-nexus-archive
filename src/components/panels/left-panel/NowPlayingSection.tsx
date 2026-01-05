@@ -108,7 +108,7 @@ function NowPlayingSectionComponent({
   const displayTimeRemaining = useMemo(() => {
     const time = isScrubbing ? scrubPosition : currentTime
     const remaining = Math.max(0, safeDuration - time)
-    return `-${formatDuration(Math.floor(remaining))}`
+    return formatDuration(Math.floor(remaining))
   }, [currentTime, scrubPosition, isScrubbing, safeDuration])
 
   const progressPercent = Math.max(0, Math.min(100, displayProgress))
@@ -258,34 +258,34 @@ function NowPlayingSectionComponent({
 
           {track ? (
             <div className="relative z-10">
-              {/* Single row: Artwork + Info + Transport controls */}
-              <div className="flex items-center gap-2">
-                {/* Smaller artwork */}
+              {/* Single row: Track info left, controls centered */}
+              <div className="relative flex items-center min-h-[56px]">
+                {/* Track info - left aligned */}
                 <button
                   type="button"
                   onClick={onOpenCollection}
                   disabled={!onOpenCollection}
-                  className="relative h-11 w-11 rounded-lg overflow-hidden shadow-md shrink-0 bg-white/5 hover:ring-2 hover:ring-cyan-400/50 transition focus-ring-glow touch-manipulation"
+                  className="flex items-center gap-2 min-w-0 max-w-[40%] hover:bg-white/5 rounded-lg p-1 -ml-1 transition focus-ring-glow touch-manipulation"
                   aria-label={onOpenCollection ? `Open ${track.collection} collection` : undefined}
                 >
-                  <Image
-                    src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
-                    alt={track.title}
-                    fill
-                    sizes="44px"
-                    className="object-cover"
-                    priority
-                  />
+                  <div className="relative h-10 w-10 rounded-md overflow-hidden shadow-md shrink-0 bg-white/5">
+                    <Image
+                      src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
+                      alt={track.title}
+                      fill
+                      sizes="40px"
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-heading font-bold text-heading-solid truncate leading-tight">{track.title}</h3>
+                    <p className="text-[10px] text-white/60 truncate leading-tight">{track.collection}</p>
+                  </div>
                 </button>
 
-                {/* Track info - compact */}
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-heading font-bold text-heading-solid truncate leading-tight">{track.title}</h3>
-                  <p className="text-[11px] text-white/60 truncate leading-tight">{track.collection}</p>
-                </div>
-
-                {/* Transport controls - inline */}
-                <div className="flex items-center gap-1 shrink-0">
+                {/* Transport controls - absolutely centered */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
                   <button
                     type="button"
                     onClick={handlePrevious}
@@ -297,7 +297,7 @@ function NowPlayingSectionComponent({
                   <button
                     type="button"
                     onClick={handlePlayPause}
-                    className="w-10 h-10 min-h-[44px] min-w-[44px] rounded-full bg-linear-to-br from-white to-gray-300 flex items-center justify-center text-black shadow-[0_0_12px_rgba(255,255,255,0.25)] hover:scale-105 transition-all focus-ring-glow touch-manipulation"
+                    className="w-11 h-11 rounded-full bg-linear-to-br from-white to-gray-300 flex items-center justify-center text-black shadow-[0_0_12px_rgba(255,255,255,0.25)] hover:scale-105 transition-all focus-ring-glow touch-manipulation"
                     aria-label={isPlaying ? "Pause" : "Play"}
                     aria-pressed={isPlaying}
                   >
@@ -425,7 +425,7 @@ function NowPlayingSectionComponent({
         {track ? (
           <>
             <div className="relative z-10 mb-2 sm:mb-2.5 md:mb-3 flex items-start gap-2.5 sm:gap-3">
-              <div className="relative h-14 w-14 rounded-lg overflow-hidden shadow-lg shrink-0 bg-white/5">
+              <div className="relative h-14 w-14 rounded-md overflow-hidden shadow-lg shrink-0 bg-white/5">
                 <Image
                   src={track.artworkUrl || DEFAULT_ARTWORK_SRC}
                   alt={track.title}
