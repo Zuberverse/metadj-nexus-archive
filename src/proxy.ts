@@ -293,7 +293,7 @@ export default async function proxy(request: NextRequest) {
     "default-src 'self'",
     `script-src ${scriptSrc.join(" ")}`,
     `style-src 'self' 'nonce-${nonce}'`,
-    "style-src-attr 'none'",
+    "style-src-attr 'unsafe-inline'",
     `style-src-elem 'self' 'nonce-${nonce}'`,
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
