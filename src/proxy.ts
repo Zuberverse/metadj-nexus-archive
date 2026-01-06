@@ -102,6 +102,9 @@ function startCleanupInterval() {
       }
     }
   }, 5 * 60 * 1000);
+  if (typeof cleanupIntervalId === "object" && "unref" in cleanupIntervalId) {
+    cleanupIntervalId.unref();
+  }
 }
 // Always start cleanup just in case fallback is used
 startCleanupInterval();

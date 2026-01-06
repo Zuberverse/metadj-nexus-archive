@@ -1,23 +1,23 @@
 # CSP Nonce Implementation Plan
 
-**Last Modified**: 2025-12-28 13:02 EST
-**Status**: Implemented
+**Last Modified**: 2026-01-05 22:08 EST
+**Status**: Partially implemented (nonce CSP live; inline style hardening deferred)
 **Priority**: Medium
-**Estimated Effort**: Completed
+**Estimated Effort**: In progress
 
 **Implementation Summary**:
 - Active — CSP nonce generation lives in `src/proxy.ts` (Next.js 16 proxy convention).
 - `script-src` now uses per-request nonces + `'strict-dynamic'`; dev-only `unsafe-eval` remains.
-- `style-src` is nonce-based with `style-src-attr 'none'`; runtime styles use `useCspStyle` + `data-csp-style`.
+- `style-src` is nonce-based with `style-src-attr 'unsafe-inline'` retained for motion-driven inline transforms; runtime layout styles use `useCspStyle` + `data-csp-style`.
 - `src/app/layout.tsx` applies the nonce to JSON-LD and Plausible scripts via the `x-nonce` header.
 
-Sections below include historical notes; the "Current CSP Configuration" block reflects the implemented policy.
+Sections below include historical notes; the "Current CSP Configuration" block reflects the live policy, while the hardening steps keep `style-src-attr 'none'` as a future target.
 
 ---
 
 ## Executive Summary
 
-This document outlines the plan (now implemented) to migrate MetaDJ Nexus away from `unsafe-inline` CSP directives to a nonce-based Content Security Policy. This change removes inline script/style allowances while maintaining full functionality.
+This document outlines the plan to migrate MetaDJ Nexus away from `unsafe-inline` CSP directives to a nonce-based Content Security Policy. The nonce policy is live; inline style attribute hardening remains deferred due to motion-based transforms.
 
 ---
 
@@ -32,7 +32,7 @@ const csp = [
   "default-src 'self'",
   `script-src ${Array.from(scriptSrc).join(' ')}`,
   `style-src 'self' 'nonce-${nonce}'`,
-  "style-src-attr 'none'",
+  "style-src-attr 'unsafe-inline'",
   `style-src-elem 'self' 'nonce-${nonce}'`,
   "font-src 'self' data:",
   "img-src 'self' data: blob: https:",
@@ -66,7 +66,7 @@ const csp = [
 
 3. **Inline Style Attributes**: Runtime style attributes and JS-driven mutations required inline allowances.
 
-**Status**: Resolved — runtime styles now use `useCspStyle` + `data-csp-style`, and `style-src-attr 'none'` blocks inline `style` usage.
+**Status**: Partially resolved — runtime layout styles use `useCspStyle`, but `style-src-attr` remains `unsafe-inline` to support motion transforms.
 
 ### Current Risk Assessment
 
@@ -74,7 +74,7 @@ const csp = [
 - **Attack Vector**: XSS mitigated by per-request nonces; residual risk is compromised allowed origins
 - **Mitigations In Place**:
   - Strict `default-src 'self'`
-  - Nonce-based `script-src` + `style-src` with `style-src-attr 'none'`
+  - Nonce-based `script-src` + `style-src` with `style-src-attr 'unsafe-inline'` (motion transforms)
   - `object-src 'none'` (blocks plugins)
   - `frame-src 'self' https://lvpr.tv` (Livepeer-only iframe)
   - `frame-ancestors 'none'` (prevents clickjacking)

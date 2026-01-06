@@ -1,6 +1,6 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2026-01-05 18:06 EST
+**Last Modified**: 2026-01-05 22:08 EST
 > Pragmatic security approach for a music showcasing MVP
 
 *Last Reviewed: 2025-10-13*
@@ -35,6 +35,7 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | **Cookie Path Isolation** | Session cookies scoped to `/api/metadjai` | Prevents cookie leakage to unrelated routes |
 | **Body Size Limits** | 1MB limit on server actions | Prevents DoS via large payloads |
 | **Generic Error Messages** | Internal details logged server-side only | Prevents information disclosure |
+| **Internal Monitoring** | `/api/health/ai` + `/api/health/providers` require `x-internal-request` header in production (`INTERNAL_API_SECRET`) | Prevents public access to operational telemetry |
 
 **Implementation**: `src/proxy.ts` (security headers + rate limiting, wired via `src/middleware.ts`) + `next.config.js` (static headers for assets)
 
@@ -89,7 +90,7 @@ Strict-Transport-Security: max-age=31536000
 **Notes**:
 - `script-src` uses per-request nonces; inline scripts must include the nonce.
 - Dev mode still allows `unsafe-eval` for HMR/overlays.
-- `style-src` uses per-request nonces with `style-src-attr 'none'`; runtime styling must use `useCspStyle` + `data-csp-style` (no inline `style` attributes).
+- `style-src` uses per-request nonces; `style-src-attr 'unsafe-inline'` remains enabled for motion-driven inline transforms. Prefer `useCspStyle` + `data-csp-style` for layout-critical inline styles.
 
 **Removed** (unnecessary complexity):
 - Cross-Origin-Resource-Policy (breaks CDN caching)

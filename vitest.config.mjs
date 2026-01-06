@@ -41,7 +41,8 @@ export default defineConfig({
       //
       // Current Phase: Public Preview (v0.9.x)
       // Enforcing v0.10.x thresholds early to harden critical paths.
-      // CI gates on these thresholds to prevent coverage regression.
+      // Thresholds are enforced when running `npm run test:coverage`.
+      // CI currently runs `npm test` (no coverage) during Public Preview.
       //
       // MILESTONE ROADMAP:
       // ------------------

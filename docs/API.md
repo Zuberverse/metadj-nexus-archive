@@ -1,6 +1,6 @@
 # MetaDJ Nexus API Documentation
 
-**Last Modified**: 2026-01-05 18:06 EST
+**Last Modified**: 2026-01-05 22:43 EST
 
 ## Overview
 
@@ -802,6 +802,54 @@ Returns minimal system health status for external monitoring. Detailed diagnosti
 **Headers**:
 - `Cache-Control`: `no-store, no-cache, must-revalidate`
 - `Content-Type`: `application/json`
+
+---
+
+#### `GET /api/health/ai`
+
+Internal monitoring endpoint for AI spending, rate limiting mode, and token budget thresholds. **Not a public endpoint** — protected in production.
+
+**Authorization**:
+- Header: `x-internal-request` must match `INTERNAL_API_SECRET` environment variable
+- In development mode (`NODE_ENV !== 'production'`), all requests are allowed
+
+**Response** (TypeScript Interface):
+```typescript
+interface AIHealthResponse {
+  timestamp: string
+  status: 'healthy' | 'warning' | 'critical'
+  spending: {
+    hourly: {
+      spent: number
+      limit: number
+      percentage: number
+      status: 'ok' | 'warning' | 'exceeded'
+      resetsAt: string
+    }
+    daily: {
+      spent: number
+      limit: number
+      percentage: number
+      status: 'ok' | 'warning' | 'exceeded'
+      resetsAt: string
+    }
+    isBlocked: boolean
+  }
+  rateLimiter: {
+    mode: 'distributed' | 'in-memory'
+  }
+  tokenBudget: {
+    targetMaxTokens: number
+    warningThreshold: number
+    criticalThreshold: number
+    charsPerToken: number
+  }
+}
+```
+
+**Status Codes**:
+- `200 OK` — Health payload returned
+- `401 Unauthorized` — Missing/invalid internal header
 
 ---
 

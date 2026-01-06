@@ -1,11 +1,29 @@
 # Changelog
 
-**Last Modified**: 2026-01-04 15:55 EST
+**Last Modified**: 2026-01-05 22:43 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-05
+
+**Security**
+- Added `src/middleware.ts` entrypoint to activate CSP/nonce headers and proxy-level rate limiting.
+- Documented CSP `style-src-attr 'unsafe-inline'` allowance for motion-driven inline transforms.
+- Documented internal health endpoint protection via `INTERNAL_API_SECRET`.
+
+**Testing**
+- Added middleware header test coverage for CSP nonce and security headers.
+- Clarified coverage enforcement behavior in `vitest.config.mjs`.
+- Updated health E2E assertion to match the minimal `/api/health` payload.
+
+**Documentation**
+- Aligned testing counts/thresholds in README and `docs/TESTING.md`.
+- Updated uptime monitoring docs to match `/api/health` minimal response.
+- Documented `/api/health/ai` in `docs/API.md`.
+- Documented AI spending + rate-limit fail-closed env toggles in `.env.example`.
 
 ### 2026-01-04
 

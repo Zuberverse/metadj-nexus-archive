@@ -2,7 +2,7 @@
 
 > **Get alerted when MetaDJ Nexus goes down before users notice**
 
-**Last Modified**: 2025-12-28 12:32 EST
+**Last Modified**: 2026-01-05 22:08 EST
 **Version**: 0.8.0
 **Status**: Ready to implement (Set up after launch when domain is finalized)
 
@@ -191,23 +191,18 @@ MetaDJ Nexus includes a built-in health check endpoint at `/api/health`.
 
 **URL**: `https://your-repl-url.replit.app/api/health`
 
-**Response Format**:
+**Response Format** (Public):
 
 ```json
 {
   "status": "healthy",
-  "version": "0.90",
-  "timestamp": "2025-11-10T12:00:00Z",
-  "checks": {
-    "server": "ok",
-    "storage": "ok"
-  }
+  "timestamp": "2025-11-10T12:00:00Z"
 }
 ```
 
 **Status Codes**:
-- `200 OK` → System healthy
-- `503 Service Unavailable` → System degraded
+- `200 OK` → System healthy or degraded
+- `503 Service Unavailable` → System unhealthy (critical checks failed)
 
 ### Implementation
 
@@ -221,21 +216,13 @@ export async function GET() {
     // Basic health check
     const health = {
       status: 'healthy',
-      version: process.env.NEXT_PUBLIC_APP_VERSION || '0.90',
       timestamp: new Date().toISOString(),
-      checks: {
-        server: 'ok',
-        storage: 'ok', // Can add actual storage ping if needed
-      },
     };
 
     return NextResponse.json(health, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      {
-        status: 'unhealthy',
-        error: 'Health check failed',
-      },
+      { status: 'unhealthy' },
       { status: 503 }
     );
   }
@@ -243,6 +230,15 @@ export async function GET() {
 ```
 
 **Endpoint already exists** ✅ (implemented in v0.90)
+
+### Internal Health Endpoints (Protected)
+
+MetaDJ Nexus also ships internal-only health endpoints:
+
+- `/api/health/ai` — AI spending + rate limiting status
+- `/api/health/providers` — provider health + cache metrics
+
+**Production auth**: send `x-internal-request: <INTERNAL_API_SECRET>`. In development, these endpoints allow all requests.
 
 ---
 

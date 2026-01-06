@@ -5,7 +5,7 @@
 > The primary creative hub for MetaDJ — where human vision meets AI-driven execution to uplift and inspire as you pioneer the Metaverse
 
 *Version: 0.9.46*
-**Last Modified**: 2026-01-05 18:06 EST
+**Last Modified**: 2026-01-05 22:08 EST
 **Platform:** MetaDJ Nexus at **metadjnexus.ai**
 **Social:** **@metadjai**
 
@@ -234,7 +234,7 @@ npm run test:e2e     # Playwright smoke tests
 
 _First-time E2E setup_: `npx playwright install`
 
-**Unit/Integration Tests**: 990 tests (Vitest, 100% passing ✅)
+**Unit/Integration Tests**: Run `npm run test` to see current counts (counts change as coverage grows)
 - Accessibility tests (WCAG 2.1 AA compliance)
 - Component functionality tests
 - Music repository operations
@@ -243,9 +243,9 @@ _First-time E2E setup_: `npx playwright install`
 - Search and filter functionality
 - API route validation
 
-**E2E Tests**: 4 smoke tests (Playwright)
+**E2E Tests**: Playwright smoke suite in `tests/e2e`
 
-**Coverage Thresholds**: 15% lines, 15% functions, 8% branches, 15% statements
+**Coverage Thresholds**: 30% lines, 25% functions, 15% branches, 30% statements (enforced by `npm run test:coverage`)
 
 ### CI/CD Pipeline
 
@@ -253,7 +253,7 @@ _First-time E2E setup_: `npx playwright install`
 - Install dependencies (with node_modules caching)
 - Run ESLint (--max-warnings=0)
 - Run TypeScript type-check (strict mode)
-- Run test suite with coverage thresholds
+- Run test suite (no coverage in CI during Public Preview)
 - Run production build validation
 - Security scanning via Snyk (when enabled)
 
@@ -261,7 +261,7 @@ _First-time E2E setup_: `npx playwright install`
 - 0 TypeScript errors (strict mode)
 - 0 ESLint warnings
 - 100% test passing rate
-- Coverage thresholds met
+- Coverage thresholds met when `npm run test:coverage` is run
 - Production build success
 
 ## Documentation
