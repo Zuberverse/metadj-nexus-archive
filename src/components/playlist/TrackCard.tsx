@@ -118,7 +118,7 @@ export const TrackCard = React.memo(function TrackCard({
           <div className="flex items-center gap-1.5 mb-0.5">
             {/* HIGH Issue 1 Fix: Reduced font size on mobile for clean single-line titles */}
             {/* Mobile: text-xs, Small screens: text-sm, Desktop: text-base */}
-            <h3 className="text-xs sm:text-sm md:text-base font-semibold text-white truncate drop-shadow-[0_3px_10px_rgba(16,12,42,0.35)]">
+            <h3 className="text-xs sm:text-sm md:text-base font-heading font-semibold text-heading-solid truncate drop-shadow-[0_3px_10px_rgba(16,12,42,0.35)]">
               {track.title}
             </h3>
             <span

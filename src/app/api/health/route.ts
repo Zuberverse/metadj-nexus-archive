@@ -61,29 +61,36 @@ function checkEnvironment(): CheckResult {
 
 /**
  * Check storage bucket connectivity
- * Tests actual connectivity to Replit App Storage buckets
+ * Tests actual connectivity to the active media storage provider
  */
 async function checkStorage(): Promise<CheckResult> {
   try {
     const {
       getAudioBucket,
-      getVisualsBucket,
+      getVideoBucket,
       storageDiagnostics,
-    } = await import('@/lib/replit-storage');
+    } = await import('@/lib/media-storage');
 
-    const configuredMusic = storageDiagnostics.music.configured;
-    const configuredVisuals = storageDiagnostics.visuals.configured;
+    const isR2 = storageDiagnostics.provider === 'r2';
+    const configuredMusic = isR2
+      ? storageDiagnostics.r2.configured
+      : storageDiagnostics.replit.music.configured;
+    const configuredVisuals = isR2
+      ? storageDiagnostics.r2.configured
+      : storageDiagnostics.replit.visuals.configured;
 
     if (!configuredMusic && !configuredVisuals) {
       return {
         status: 'warn',
-        message: 'Storage buckets not configured (set MUSIC_BUCKET_ID and VISUALS_BUCKET_ID)',
+        message: isR2
+          ? 'R2 not configured (set STORAGE_PROVIDER=r2 and R2_* env vars)'
+          : 'Storage buckets not configured (set MUSIC_BUCKET_ID and VISUALS_BUCKET_ID)',
       };
     }
 
     const [audioBucket, visualsBucket] = await Promise.all([
       configuredMusic ? getAudioBucket() : Promise.resolve(null),
-      configuredVisuals ? getVisualsBucket() : Promise.resolve(null),
+      configuredVisuals ? getVideoBucket() : Promise.resolve(null),
     ]);
 
     const musicUnavailable = configuredMusic && !audioBucket;
@@ -99,14 +106,18 @@ async function checkStorage(): Promise<CheckResult> {
     if (musicUnavailable) {
       return {
         status: 'warn',
-        message: 'Music bucket unreachable (check MUSIC_BUCKET_ID/AUDIO_BUCKET_ID)',
+        message: isR2
+          ? 'Music bucket unreachable (check R2_* credentials)'
+          : 'Music bucket unreachable (check MUSIC_BUCKET_ID/AUDIO_BUCKET_ID)',
       };
     }
 
     if (visualsUnavailable) {
       return {
         status: 'warn',
-        message: 'Visuals bucket unreachable (check VISUALS_BUCKET_ID)',
+        message: isR2
+          ? 'Visuals bucket unreachable (check R2_* credentials)'
+          : 'Visuals bucket unreachable (check VISUALS_BUCKET_ID)',
       };
     }
 

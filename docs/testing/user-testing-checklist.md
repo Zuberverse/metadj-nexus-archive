@@ -142,14 +142,14 @@ This document provides a complete testing framework for MetaDJ Nexus covering al
 
 **Steps**:
 1. Close welcome overlay
-2. Click "Start Listening" in the Hub hero (or play a Featured track from the Music panel)
+2. Click "Enter Cinema" in the Hub hero (or play a Featured track from the Music panel)
 3. Verify the player shows an active track and playback controls
 4. Verify audio starts playing
 5. Observe playback controls update
 
 **Expected Behavior**:
 - No track is auto-loaded on first paint (listener chooses when to start)
-- "Start Listening" launches the hero track and begins playback
+- "Enter Cinema" launches the hero track and opens Cinema view
 - Play/pause button visible and accessible once a track is selected
 - Audio begins within 1-2 seconds
 - Play button changes to pause icon
@@ -1629,7 +1629,7 @@ This document provides a complete testing framework for MetaDJ Nexus covering al
 1. Open site as first-time visitor
 2. Read welcome overlay
 3. Close overlay ("Start Exploring" button)
-4. Start listening ("Start Listening" or play a track)
+4. Start listening ("Enter Cinema" or play a track)
 5. Measure time to first audio playback
 
 **Expected Behavior**:
@@ -1684,13 +1684,13 @@ This document provides a complete testing framework for MetaDJ Nexus covering al
 
 **Steps**:
 1. Open site (new or returning user)
-2. Click "Start Listening" (or play a track from Featured)
+2. Click "Enter Cinema" (or play a track from Featured)
 3. Measure total time from page load to audio start
 
 **Target Time**: < 10 seconds for new users, < 3 seconds for returning
 
 **Expected Behavior**:
-- No track auto-loaded; "Start Listening" provides the fastest path to audio
+- No track auto-loaded; "Enter Cinema" provides the fastest path to audio + visuals
 - Play button becomes available immediately after selecting a track
 - Audio starts quickly after click
 - No barriers or distractions

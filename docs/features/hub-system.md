@@ -2,7 +2,7 @@
 
 > **Platform‑level home surface for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-30 10:31 EST
+**Last Modified**: 2026-01-05 20:30 EST
 **Status**: Active (Hero + Wisdom Spotlight + Platform Pulse).
 
 ## Overview
@@ -25,8 +25,8 @@ Order matters; it matches the intended "discover → engage → deepen" rhythm.
    - Glass‑neon hero matching Welcome Overlay aesthetic.
    - Headline: **"Explore MetaDJ's Imagination"** — emphasizes the human creative origin behind the platform, aligning with Zuberant's philosophy that "humans conduct meaning."
    - Subheadline: "Where human vision meets AI-driven creation"
-   - Primary CTA: **Start Cinematic Experience** (launches "Cinematic Listening": starts the hero track and opens Cinema).
-   - Secondary CTA: **Chat with MetaDJai**.
+   - Primary CTA: **Enter Cinema** (launches "Cinematic Listening": starts the hero track and opens Cinema).
+   - Secondary CTA: **Chat with MetaDJai** (opens MetaDJai chat panel).
 
 2. **Wisdom Spotlight** (Conditional)
    - Teaser cards for Thoughts, Guides, Reflections with icon + title inline design.
@@ -43,8 +43,8 @@ Order matters; it matches the intended "discover → engage → deepen" rhythm.
 The hero journey uses a single anchor track:
 
 - `HUB_HERO_TRACK_ID` in `src/lib/app.constants.ts`
-  - currently pinned to **Metaversal Odyssey** (a Featured track).
-  - chosen because it's a current MetaDJ hit and its narrative pairs with the "start listening / start exploring" intent.
+  - currently pinned to **Majestic Ascent** (`metadj-001`), the title track from the Majestic Ascent collection.
+  - chosen because it's an uplifting opener that pairs well with the "enter cinema / start exploring" intent.
   - can be rotated seasonally without editing Hub components.
 
 ## Wisdom Spotlight

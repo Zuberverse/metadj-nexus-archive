@@ -2,7 +2,7 @@
 
 > **Desktop side panel architecture for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-05 16:50 EST
+**Last Modified**: 2026-01-05 21:37 EST
 ## Overview
 
 The Panel System provides a two-panel desktop layout with responsive behavior. The **Left Panel** hosts navigation, queue, and playback controls, while the **Right Panel** hosts the MetaDJai chat experience.
@@ -283,7 +283,7 @@ When Cinema view is active:
 **Styling Standards:**
 | Element | Class | Notes |
 |---------|-------|-------|
-| Track title | `text-cyan-200` | Solid blueish cyan |
+| Track title | `text-heading-solid` | Cyan → purple → fuchsia gradient |
 | Collection | `text-white/60` | Grayish white subtext |
 | Artwork | `rounded-md` | Matches collections list |
 | Section headers | `text-heading-solid` | Cyan → purple → fuchsia gradient |

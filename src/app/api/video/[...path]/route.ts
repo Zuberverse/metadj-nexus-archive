@@ -1,7 +1,7 @@
 /**
  * Video Streaming API Route
  *
- * Serves video files from Replit Object Storage with:
+ * Serves video files from Cloudflare R2 (primary; Replit fallback) with:
  * - Path traversal protection
  * - Content-type validation (video/mp4, video/webm, video/quicktime)
  * - Range request support for seeking
@@ -13,7 +13,7 @@
  * @route HEAD /api/video/[...path]
  *
  * @example
- * GET /api/video/scenes/synth-haven.webm
+ * GET /api/video/metadj-avatar/MetaDJ%20Performance%20Loop%20-%20MetaDJ%20Nexus.mp4
  *
  * Response codes:
  * - 200: Success (full file or partial content)
@@ -66,7 +66,7 @@ function sanitizeVideoPath(pathSegments: string[], request: NextRequest): string
 }
 
 /**
- * Streams a video file from Replit Object Storage.
+ * Streams a video file from Cloudflare R2 (primary; Replit fallback).
  *
  * Supports range requests for seeking, content validation, and proper caching headers.
  * Serves video/mp4, video/webm, and video/quicktime files with path traversal protection.

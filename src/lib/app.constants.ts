@@ -222,7 +222,7 @@ export const FEATURED_TRACK_IDS = [
   "metadj-010", // The Minotaur's Dance
 ] as const;
 
-/** Hub hero track ID for "Start Listening" and Odyssey journey */
+/** Hub hero track ID for "Enter Cinema" button and Odyssey journey */
 export const HUB_HERO_TRACK_ID = FEATURED_TRACK_IDS[0];
 
 /** Default collection ID */

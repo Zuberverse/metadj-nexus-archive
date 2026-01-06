@@ -54,10 +54,10 @@ This script provides a streamlined testing sequence to verify core functionality
 - [ ] Click "Start Exploring" button
 - [ ] Overlay closes smoothly
 - [ ] Focus moves to main content
-- [ ] Hub hero shows "Start Listening" + "Chat with MetaDJai"
+- [ ] Hub hero shows "Enter Cinema" + "Chat with MetaDJai"
 - [ ] Player controls visible at bottom
 
-**Quick Check**: Can you see the player + the "Start Listening" CTA?
+**Quick Check**: Can you see the player + the "Enter Cinema" CTA?
 
 ---
 
@@ -65,7 +65,7 @@ This script provides a streamlined testing sequence to verify core functionality
 
 **Goal**: Verify core audio functionality
 
-- [ ] Click "Start Listening" in the Hub hero
+- [ ] Click "Enter Cinema" in the Hub hero
 - [ ] Audio starts within 1 second
 - [ ] Play button changes to Pause icon
 - [ ] Progress bar begins advancing

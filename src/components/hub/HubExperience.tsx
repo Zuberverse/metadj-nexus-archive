@@ -190,7 +190,7 @@ export function HubExperience({
             className="group w-full xs:w-auto min-w-52 h-14 py-3 text-lg bg-gradient-to-r from-indigo-900/50 via-purple-900/40 to-fuchsia-900/35 hover:from-indigo-800/60 hover:via-purple-800/50 hover:to-fuchsia-800/45 border-purple-400/40 hover:border-fuchsia-400/60 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(139,92,246,0.15),0_0_30px_rgba(217,70,239,0.08)] hover:shadow-[0_0_20px_rgba(217,70,239,0.18),0_0_40px_rgba(139,92,246,0.1)]"
             leftIcon={<MessageSquare className="h-5 w-5 shrink-0 text-fuchsia-300 group-hover:text-fuchsia-100 transition-colors" />}
           >
-            <span className="text-heading-solid font-semibold">Explore with MetaDJai</span>
+            <span className="text-heading-solid font-semibold">Chat with MetaDJai</span>
           </Button>
         </div>
       </section>

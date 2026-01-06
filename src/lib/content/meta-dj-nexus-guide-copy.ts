@@ -94,7 +94,7 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
     description: "Mission control for MetaDJ Nexus—launch cinematic listening, jump into MetaDJai, and catch the latest platform pulse.",
     features: [
       "Enter Cinema: plays the hero track and opens the visual layer",
-      "Explore with MetaDJai: quick access to your creative companion",
+      "Chat with MetaDJai: quick access to your creative companion",
       "Wisdom Spotlight: latest Thought, Guide, and Reflection cards",
       "Platform Pulse: preview status and recent updates",
       "News + Events: coming soon",
