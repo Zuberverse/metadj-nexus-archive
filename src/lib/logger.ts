@@ -6,13 +6,25 @@
  */
 
 type LogContext = Record<string, unknown>;
-type LogLevel = 'warn' | 'error';
+type LogLevel = 'info' | 'warn' | 'error';
 interface LogEntry {
   level: LogLevel;
   message: string;
   context: LogContext;
   timestamp: string;
 }
+
+/**
+ * Critical info messages that should be logged even in production.
+ * Used for important operational events that need visibility.
+ */
+const PRODUCTION_INFO_PREFIXES = [
+  '[Rate Limiting]',
+  '[Circuit Breaker]',
+  '[AI Spending]',
+  '[Startup]',
+  '[Health]',
+];
 
 class Logger {
   private isDevelopment = process.env.NODE_ENV === 'development';
@@ -35,15 +47,24 @@ class Logger {
 
   /**
    * Info-level logging (general information)
-   * Only shown in development mode
+   * In development: all info messages shown
+   * In production: only critical operational messages (matching PRODUCTION_INFO_PREFIXES) are logged
    */
   info(message: string, context?: LogContext): void {
-    if (!this.isDevelopment) return;
+    // Check if this is a critical operational message that should be logged in production
+    const isCriticalInfo = PRODUCTION_INFO_PREFIXES.some(prefix => message.startsWith(prefix));
+
+    if (!this.isDevelopment && !isCriticalInfo) return;
 
     if (context) {
       console.info(`[INFO] ${message}`, context);
     } else {
       console.info(`[INFO] ${message}`);
+    }
+
+    // Report critical info messages in production for observability
+    if (isCriticalInfo && !this.isDevelopment && !this.isTest) {
+      this.report('info', message, context);
     }
   }
 

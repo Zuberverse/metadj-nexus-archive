@@ -14,6 +14,8 @@ const config: Config = {
       sm: "640px",
       md: "768px",
       lg: "1024px",
+      // Panel breakpoint for desktop layout activation
+      panel: "1100px",
       xl: "1280px",
       "2xl": "1536px",
     },

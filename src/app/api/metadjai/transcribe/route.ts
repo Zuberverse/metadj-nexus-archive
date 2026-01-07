@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { getAIRequestTimeout, isTimeoutError } from "@/lib/ai/config";
 import {
     getClientIdentifier,
@@ -13,6 +14,53 @@ import {
 import { recordSpending } from "@/lib/ai/spending-alerts";
 import { getServerEnv } from "@/lib/env";
 import { logger } from "@/lib/logger";
+
+/**
+ * Zod schema for OpenAI transcription API response.
+ * The API typically returns { text: string } but we handle variations for resilience.
+ */
+const TranscriptionResponseSchema = z.object({
+    text: z.string().optional(),
+    transcript: z.string().optional(),
+    output_text: z.string().optional(),
+    // Nested data object (some API versions)
+    data: z.object({
+        text: z.string().optional(),
+        transcript: z.string().optional(),
+        output_text: z.string().optional(),
+    }).optional(),
+}).refine(
+    (data) => {
+        // At least one text field must be present
+        return (
+            data.text !== undefined ||
+            data.transcript !== undefined ||
+            data.output_text !== undefined ||
+            data.data?.text !== undefined ||
+            data.data?.transcript !== undefined ||
+            data.data?.output_text !== undefined
+        );
+    },
+    { message: "Response must contain at least one text field" }
+);
+
+type TranscriptionResponse = z.infer<typeof TranscriptionResponseSchema>;
+
+/**
+ * Extract text from validated transcription response.
+ * Prioritizes known field locations in order of likelihood.
+ */
+function extractTranscriptionText(data: TranscriptionResponse): string {
+    return (
+        data.text ||
+        data.transcript ||
+        data.output_text ||
+        data.data?.text ||
+        data.data?.transcript ||
+        data.data?.output_text ||
+        ""
+    ).trim();
+}
 
 export const runtime = "nodejs"; // Helper for FormData support in App Router usually implies Node.js runtime for now or edge but file handling is tricky on edge sometimes
 
@@ -222,26 +270,26 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const data = await response.json();
-        const rawText =
-            typeof data?.text === "string"
-                ? data.text
-                : typeof data?.transcript === "string"
-                    ? data.transcript
-                    : typeof data?.output_text === "string"
-                        ? data.output_text
-                        : typeof data?.data?.text === "string"
-                            ? data.data.text
-                            : typeof data?.data?.transcript === "string"
-                                ? data.data.transcript
-                                : typeof data?.data?.output_text === "string"
-                                    ? data.data.output_text
-                                    : "";
-        const text = rawText.trim();
+        const rawData = await response.json();
+
+        // Validate response against expected schema
+        const parseResult = TranscriptionResponseSchema.safeParse(rawData);
+        if (!parseResult.success) {
+            logger.error("[Transcribe] Invalid response structure from OpenAI", {
+                responseKeys: rawData && typeof rawData === "object" ? Object.keys(rawData) : typeof rawData,
+                validationError: parseResult.error.message,
+            });
+            return NextResponse.json(
+                { error: "Transcription returned unexpected format" },
+                { status: 502 }
+            );
+        }
+
+        const text = extractTranscriptionText(parseResult.data);
 
         if (!text) {
             logger.error("[Transcribe] Empty transcription response", {
-                responseKeys: data && typeof data === "object" ? Object.keys(data) : typeof data,
+                responseKeys: rawData && typeof rawData === "object" ? Object.keys(rawData) : typeof rawData,
             });
             return NextResponse.json(
                 { error: "Transcription returned no text" },

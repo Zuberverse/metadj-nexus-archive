@@ -32,6 +32,7 @@ import { getTools } from '@/lib/ai/tools';
 import { validateMetaDjAiRequest } from '@/lib/ai/validation';
 import { getEnv } from '@/lib/env';
 import { logger } from '@/lib/logger';
+import { getRequestId } from '@/lib/request-id';
 import { getMaxRequestSize, readJsonBodyWithLimit } from '@/lib/validation/request-size';
 import type {
   MetaDjAiApiRequestBody,
@@ -70,11 +71,14 @@ export const runtime = 'nodejs';
  * @throws {504} AI request timed out
  */
 export async function POST(request: NextRequest) {
+  const requestId = getRequestId(request);
+
   let env;
   try {
     env = getEnv();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    logger.error('Environment configuration error', { requestId, error: message });
     return NextResponse.json(
       { error: `Environment configuration error: ${message}` },
       { status: 500 },
@@ -335,7 +339,7 @@ export async function POST(request: NextRequest) {
           recordFailure(fallbackModelInfo.provider, fallbackMessage);
         }
 
-        logger.error('Fallback provider also failed', { error: fallbackMessage });
+        logger.error('Fallback provider also failed', { requestId, error: fallbackMessage });
         return NextResponse.json(
           { error: 'AI service temporarily unavailable. Please try again.' },
           { status: 502 },
@@ -380,7 +384,7 @@ export async function POST(request: NextRequest) {
     // If it's a timeout, return timeout error (don't failover for timeouts)
     if (isPrimaryTimeout) {
       clearTimeout(timeout);
-      logger.error('MetaDJai request timed out', { error: primaryMessage });
+      logger.error('MetaDJai request timed out', { requestId, error: primaryMessage });
       return NextResponse.json(
         { error: 'AI request timed out. Please try again.' },
         { status: 504 },
@@ -432,6 +436,7 @@ export async function POST(request: NextRequest) {
           }
 
           logger.error('Fallback provider also failed', {
+            requestId,
             primaryError: primaryMessage,
             fallbackError: fallbackMessage,
           });
@@ -440,7 +445,7 @@ export async function POST(request: NextRequest) {
     }
 
     clearTimeout(timeout);
-    logger.error('MetaDJai request failed', { error: primaryMessage });
+    logger.error('MetaDJai request failed', { requestId, error: primaryMessage });
     return NextResponse.json(
       { error: 'AI service temporarily unavailable. Please try again.' },
       { status: 502 },

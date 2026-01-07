@@ -1,6 +1,21 @@
+import { timingSafeEqual } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { clearAllRateLimits, getRateLimitMode } from '@/lib/ai/rate-limiter'
 import { logger } from '@/lib/logger'
+
+/**
+ * Timing-safe string comparison to prevent timing attacks.
+ * Returns false for mismatched lengths without leaking timing information.
+ */
+function safeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    // Prevent length-based timing attacks by performing a dummy comparison
+    const dummy = Buffer.alloc(a.length)
+    timingSafeEqual(Buffer.from(a), dummy)
+    return false
+  }
+  return timingSafeEqual(Buffer.from(a), Buffer.from(b))
+}
 
 export const runtime = 'nodejs'
 
@@ -56,7 +71,7 @@ export async function POST(request: NextRequest) {
   }
 
   const providedSecret = request.headers.get('X-Dev-Secret')
-  if (!providedSecret || providedSecret !== devSecret) {
+  if (!providedSecret || !safeCompare(providedSecret, devSecret)) {
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }
@@ -68,7 +83,7 @@ export async function POST(request: NextRequest) {
   const devToken = process.env.DEV_API_TOKEN
   if (devToken) {
     const providedToken = request.headers.get('X-Dev-Token')
-    if (providedToken !== devToken) {
+    if (!providedToken || !safeCompare(providedToken, devToken)) {
       return NextResponse.json(
         { error: 'Invalid or missing dev token' },
         { status: 401 }

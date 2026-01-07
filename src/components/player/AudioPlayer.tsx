@@ -273,11 +273,14 @@ function AudioPlayer({
 
       {/* Audio element source comes from useAudioPlayback hook output */}
       {/* aria-hidden: Custom accessible controls are provided via ControlPanelOverlay */}
+      {/* controls: Progressive enhancement fallback if JS fails or custom controls don't load */}
       <audio
         ref={audioRef}
         preload="metadata"
         src={audioSrc || undefined}
         aria-hidden="true"
+        controls
+        className="hidden"
       />
 
       <PlaybackUnlockOverlay
