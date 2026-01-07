@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
-import { METADJ_VISUALIZER_SRGB } from "@/lib/color/metadj-visualizer-palette"
+import { VISUALIZER_SRGB } from "@/lib/color/visualizer-palette"
 
 interface BlackHoleProps {
   bassLevel: number
@@ -205,10 +205,10 @@ const DiskShader = {
       // ═══════════════════════════════════════════════════════════════════════
 
       // Core colors (purple/violet dominant - NO WHITE)
-      vec3 purple = vec3(${METADJ_VISUALIZER_SRGB.purple});      // #8B5CF6 - PRIMARY
-      vec3 indigo = vec3(${METADJ_VISUALIZER_SRGB.indigo});      // #A855F7
-      vec3 cyan = vec3(${METADJ_VISUALIZER_SRGB.cyan});          // #06B6D4
-      vec3 magenta = vec3(${METADJ_VISUALIZER_SRGB.magenta});    // #D946EF - accent only
+      vec3 purple = vec3(${VISUALIZER_SRGB.purple});      // #8B5CF6 - PRIMARY
+      vec3 indigo = vec3(${VISUALIZER_SRGB.indigo});      // #A855F7
+      vec3 cyan = vec3(${VISUALIZER_SRGB.cyan});          // #06B6D4
+      vec3 magenta = vec3(${VISUALIZER_SRGB.magenta});    // #D946EF - accent only
       vec3 deepBlue = vec3(0.15, 0.25, 0.85);                    // Deep cosmic blue
       vec3 electricBlue = vec3(0.2, 0.4, 1.0);                   // Electric blue
       vec3 violetCore = vec3(0.7, 0.5, 1.0);                     // Bright violet for inner disk
@@ -344,10 +344,10 @@ const EventHorizonShader = {
       glow *= edgeCull;
 
       // MetaDJ brand color palette (canonical sRGB)
-      vec3 cyan = vec3(${METADJ_VISUALIZER_SRGB.cyan});       // #06B6D4
-      vec3 purple = vec3(${METADJ_VISUALIZER_SRGB.purple});   // #8B5CF6
-      vec3 magenta = vec3(${METADJ_VISUALIZER_SRGB.magenta}); // #D946EF
-      vec3 indigo = vec3(${METADJ_VISUALIZER_SRGB.indigo});   // #A855F7
+      vec3 cyan = vec3(${VISUALIZER_SRGB.cyan});       // #06B6D4
+      vec3 purple = vec3(${VISUALIZER_SRGB.purple});   // #8B5CF6
+      vec3 magenta = vec3(${VISUALIZER_SRGB.magenta}); // #D946EF
+      vec3 indigo = vec3(${VISUALIZER_SRGB.indigo});   // #A855F7
       
       // Flowing angular gradient - rotates around the ring continuously
       float flowAngle = angle + uFlowPhase;

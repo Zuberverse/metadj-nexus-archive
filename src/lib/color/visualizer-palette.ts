@@ -1,5 +1,5 @@
 /**
- * MetaDJ Visualizer Palette
+ * Visualizer Palette
  *
  * Centralized, canonical color constants for 3D visualizers/shaders.
  * Keeps WebGL palettes aligned with the MetaDJ OKLCH visual system.
@@ -8,7 +8,7 @@
  * Purple → Cyan → Magenta, with approved tints for depth.
  */
 
-export const METADJ_VISUALIZER_COLORS = {
+export const VISUALIZER_COLORS = {
   // Canonical brand tier
   purple: "#8B5CF6",
   cyan: "#06B6D4",
@@ -26,10 +26,9 @@ export const METADJ_VISUALIZER_COLORS = {
 } as const;
 
 // sRGB triples (0–1) for embedding into GLSL where linear-uniforms aren't used.
-export const METADJ_VISUALIZER_SRGB = {
+export const VISUALIZER_SRGB = {
   purple: "0.545, 0.361, 0.965",  // #8B5CF6
   cyan: "0.024, 0.714, 0.831",    // #06B6D4
   magenta: "0.851, 0.275, 0.937", // #D946EF
   indigo: "0.659, 0.333, 0.969",  // #A855F7
 } as const;
-

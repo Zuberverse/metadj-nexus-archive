@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { METADJ_VISUALIZER_COLORS } from "@/lib/color/metadj-visualizer-palette"
+import { VISUALIZER_COLORS } from "@/lib/color/visualizer-palette"
 
 interface SynthwaveHorizonProps {
   active?: boolean
@@ -67,10 +67,10 @@ function hexToRgb(hex: string): [number, number, number] {
 }
 
 const PALETTE_RGB = [
-  hexToRgb(METADJ_VISUALIZER_COLORS.purple),
-  hexToRgb(METADJ_VISUALIZER_COLORS.cyan),
-  hexToRgb(METADJ_VISUALIZER_COLORS.magenta),
-  hexToRgb(METADJ_VISUALIZER_COLORS.indigo),
+  hexToRgb(VISUALIZER_COLORS.purple),
+  hexToRgb(VISUALIZER_COLORS.cyan),
+  hexToRgb(VISUALIZER_COLORS.magenta),
+  hexToRgb(VISUALIZER_COLORS.indigo),
 ]
 
 function lerp(a: number, b: number, t: number) {

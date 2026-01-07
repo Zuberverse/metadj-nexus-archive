@@ -3,7 +3,7 @@
 import { useMemo, useRef, useEffect } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
-import { METADJ_VISUALIZER_COLORS, METADJ_VISUALIZER_SRGB } from "@/lib/color/metadj-visualizer-palette"
+import { VISUALIZER_COLORS, VISUALIZER_SRGB } from "@/lib/color/visualizer-palette"
 
 interface SpaceTravelProps {
   bassLevel: number
@@ -91,10 +91,10 @@ const StarShader = {
     uHigh: { value: 0 },
     uRotation: { value: 0 },
     uColorPhase: { value: 0 },
-    uColor1: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.starBase) },
-    uColor2: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.cyan) },
-    uColor3: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.purple) },
-    uColor4: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.magenta) },
+    uColor1: { value: new THREE.Color(VISUALIZER_COLORS.starBase) },
+    uColor2: { value: new THREE.Color(VISUALIZER_COLORS.cyan) },
+    uColor3: { value: new THREE.Color(VISUALIZER_COLORS.purple) },
+    uColor4: { value: new THREE.Color(VISUALIZER_COLORS.magenta) },
   },
   vertexShader: `
     uniform float uTime;
@@ -190,10 +190,10 @@ const StarShader = {
       float speedDim = 1.0 - smoothstep(15.0, 28.0, uSpeed) * 0.25;
       float intensity = (core * 1.0 + innerGlow * 0.3 + outerGlow * 0.12) * speedDim;
 
-      vec3 shiftColor1 = vec3(${METADJ_VISUALIZER_SRGB.cyan});
-      vec3 shiftColor2 = vec3(${METADJ_VISUALIZER_SRGB.purple});
-      vec3 shiftColor3 = vec3(${METADJ_VISUALIZER_SRGB.magenta});
-      vec3 shiftColor4 = vec3(${METADJ_VISUALIZER_SRGB.indigo});
+      vec3 shiftColor1 = vec3(${VISUALIZER_SRGB.cyan});
+      vec3 shiftColor2 = vec3(${VISUALIZER_SRGB.purple});
+      vec3 shiftColor3 = vec3(${VISUALIZER_SRGB.magenta});
+      vec3 shiftColor4 = vec3(${VISUALIZER_SRGB.indigo});
       
       float phase = uColorPhase + vColorIdx * 2.0;
       float s1 = pow(sin(phase) * 0.5 + 0.5, 0.8);
@@ -241,10 +241,10 @@ const NebulaShader = {
     uRotation: { value: 0 },
     uColorPhase: { value: 0 },
     uBurstIntensity: { value: 0 },
-    uColor1: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.purple) },
-    uColor2: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.cyan) },
-    uColor3: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.magenta) },
-    uColor4: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.indigo) },
+    uColor1: { value: new THREE.Color(VISUALIZER_COLORS.purple) },
+    uColor2: { value: new THREE.Color(VISUALIZER_COLORS.cyan) },
+    uColor3: { value: new THREE.Color(VISUALIZER_COLORS.magenta) },
+    uColor4: { value: new THREE.Color(VISUALIZER_COLORS.indigo) },
   },
   vertexShader: `
     uniform float uTime;
@@ -329,9 +329,9 @@ const NebulaShader = {
         nebulaColor = mix(uColor4, uColor1, (colorBlend - 0.75) * 4.0);
       }
       
-      vec3 accentCyan = vec3(${METADJ_VISUALIZER_SRGB.cyan});
-      vec3 accentPurple = vec3(${METADJ_VISUALIZER_SRGB.purple});
-      vec3 accentMagenta = vec3(${METADJ_VISUALIZER_SRGB.magenta});
+      vec3 accentCyan = vec3(${VISUALIZER_SRGB.cyan});
+      vec3 accentPurple = vec3(${VISUALIZER_SRGB.purple});
+      vec3 accentMagenta = vec3(${VISUALIZER_SRGB.magenta});
       float accentMix1 = sin(phase * 0.5) * 0.5 + 0.5;
       float accentMix2 = sin(phase * 0.5 + 2.1) * 0.5 + 0.5;
       vec3 accent = accentCyan * accentMix1 + accentPurple * (1.0 - accentMix1) * 0.7 + accentMagenta * accentMix2 * 0.5;

@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
-import { METADJ_VISUALIZER_COLORS } from "@/lib/color/metadj-visualizer-palette"
+import { VISUALIZER_COLORS } from "@/lib/color/visualizer-palette"
 
 interface DiscoBallProps {
   bassLevel: number
@@ -111,11 +111,11 @@ const DiscoCoreShader = {
     uMid: { value: 0 },
     uHigh: { value: 0 },
     uColorPhase: { value: 0 },
-    uColor1: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.purple) },
-    uColor2: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.cyan) },
-    uColor3: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.magenta) },
-    uColor4: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.indigo) },
-    uStarBase: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.starBase) },
+    uColor1: { value: new THREE.Color(VISUALIZER_COLORS.purple) },
+    uColor2: { value: new THREE.Color(VISUALIZER_COLORS.cyan) },
+    uColor3: { value: new THREE.Color(VISUALIZER_COLORS.magenta) },
+    uColor4: { value: new THREE.Color(VISUALIZER_COLORS.indigo) },
+    uStarBase: { value: new THREE.Color(VISUALIZER_COLORS.starBase) },
   },
   vertexShader: `
     uniform float uTime;
@@ -322,11 +322,11 @@ const DiscoFacetShader = {
     uHigh: { value: 0 },
     uColorPhase: { value: 0 },
     uPixelRatio: { value: 1.0 },
-    uColor1: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.purple) },
-    uColor2: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.cyan) },
-    uColor3: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.magenta) },
-    uColor4: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.indigo) },
-    uStarBase: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.starBase) },
+    uColor1: { value: new THREE.Color(VISUALIZER_COLORS.purple) },
+    uColor2: { value: new THREE.Color(VISUALIZER_COLORS.cyan) },
+    uColor3: { value: new THREE.Color(VISUALIZER_COLORS.magenta) },
+    uColor4: { value: new THREE.Color(VISUALIZER_COLORS.indigo) },
+    uStarBase: { value: new THREE.Color(VISUALIZER_COLORS.starBase) },
   },
   vertexShader: `
     uniform float uTime;
@@ -473,8 +473,8 @@ const DiscoShockwaveShader = {
   uniforms: {
     uTime: { value: 0 },
     uBass: { value: 0 },
-    uColor1: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.purple) },
-    uColor2: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.cyan) },
+    uColor1: { value: new THREE.Color(VISUALIZER_COLORS.purple) },
+    uColor2: { value: new THREE.Color(VISUALIZER_COLORS.cyan) },
     uRadius: { value: 0 },
     uAlpha: { value: 0 },
   },
@@ -526,9 +526,9 @@ const HaloShader = {
     uHigh: { value: 0 },
     uColorPhase: { value: 0 },
     uPixelRatio: { value: 1.0 },
-    uColor1: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.purple) },
-    uColor2: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.cyan) },
-    uColor3: { value: new THREE.Color(METADJ_VISUALIZER_COLORS.magenta) },
+    uColor1: { value: new THREE.Color(VISUALIZER_COLORS.purple) },
+    uColor2: { value: new THREE.Color(VISUALIZER_COLORS.cyan) },
+    uColor3: { value: new THREE.Color(VISUALIZER_COLORS.magenta) },
   },
   vertexShader: `
     uniform float uTime;
