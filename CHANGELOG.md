@@ -1,11 +1,48 @@
 # Changelog
 
-**Last Modified**: 2026-01-08 15:58 EST
+**Last Modified**: 2026-01-09 12:35 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-09
+
+**Code Architecture**
+- Decomposed `MetaDjAiChat.tsx` from 2051 to 1250 lines (39% reduction).
+  - Extracted `MetaDjAiActionsPopover.tsx`, `MetaDjAiHistoryPopover.tsx`, `MetaDjAiPersonalizePopover.tsx`.
+  - Extracted `curated-actions.ts` and `use-dynamic-actions.ts` hook.
+- Extracted dream hooks from main `use-dream.ts`:
+  - `use-dream-countdown.ts` - warmup countdown timer management.
+  - `use-dream-status-poll.ts` - stream status polling with retry logic.
+  - `use-dream-prompt-sync.ts` - runtime prompt PATCH synchronization.
+  - Created `hooks/dream/index.ts` for organized exports.
+- Split `tools.ts` from 1488 to 1170 lines (21% reduction).
+  - Created `src/lib/ai/tools/utils.ts` with injection protection, size validation, and string utilities.
+- Split `globals.css` from 1847 to 591 lines (68% reduction).
+  - Created modular CSS in `src/styles/`: tokens, gradients, animations, components, accessibility.
+
+**Performance**
+- Added 3D Cinema performance monitoring (`use-cinema-performance.ts`).
+  - Tracks FPS, frame time, and performance score via R3F useFrame hook.
+  - Auto-recommends performance mode when FPS drops below threshold.
+  - Integrated into `Visualizer3D.tsx` and `VisualizerCinema.tsx`.
+- Optimized `DynamicBackground` crossfade timing (15000ms cycle).
+
+**Accessibility**
+- Added mobile skip link to `MobileShell.tsx` for keyboard navigation.
+- Refactored `WelcomeOverlay` focus trap to use ref-based callback pattern.
+
+**AI Integration**
+- Added cache hit/miss rate tracking to AI health endpoint (`/api/health/ai`).
+- Added user-friendly retry suggestions to AI error messages.
+- Reduced personalization character limit from 400 to 200 characters.
+
+**Documentation**
+- Fixed `docs/TESTING.md` reference from `test.yml` to `ci.yml`.
+- Updated `component-architecture.md` version from 0.8.0 to 0.9.46.
+- Synced `AGENTS.md` and `CLAUDE.md` parity.
 
 ### 2026-01-08
 

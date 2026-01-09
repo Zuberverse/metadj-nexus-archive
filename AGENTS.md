@@ -109,7 +109,7 @@ npm run build        # Production build (runs prebuild checks)
 ## Coordination Patterns
 - Small UI or copy changes: coder solo, then writer for docs if needed.
 - Feature work: software (architecture) → coder (implementation) → software (review).
-- Cross-cutting audits: product + software + coder inputs synthesized into one report (Codex sequential).
+- Cross-cutting audits: product + software + coder inputs synthesized into one report.
 
 ## Quality Gates
 - `npm run lint` and `npm run type-check` clean.

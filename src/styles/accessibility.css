@@ -1,0 +1,140 @@
+/**
+ * MetaDJ Accessibility Utilities
+ *
+ * WCAG 2.1 AA compliant utilities for accessible interactions.
+ * Focus management, touch targets, screen reader support, high contrast.
+ *
+ * @module styles/accessibility
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCREEN READER UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Screen reader only - hides content visually but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOUCH TARGET UTILITIES
+
+   WCAG 2.1 AA (2.5.5 Target Size) - 44px minimum for touch areas
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Apply to interactive elements that need guaranteed touch areas */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Touch target variant for smaller visual elements with larger hit area */
+.touch-target-padded {
+  position: relative;
+}
+
+.touch-target-padded::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INTERACTIVE CONTROL
+
+   Combined touch target + focus ring for interactive controls
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.interactive-control {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition:
+    background-color var(--transition-standard),
+    box-shadow var(--transition-standard),
+    transform var(--transition-quick);
+}
+
+.interactive-control:focus-visible {
+  outline: 2px solid oklch(0.7 0.2 264);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px oklch(0.7 0.2 264 / 0.2);
+}
+
+.interactive-control:active {
+  transform: scale(0.97);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SKIP LINK
+
+   Keyboard navigation - appears on focus for skipping to main content
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: oklch(0.2 0.05 265);
+  color: white;
+  border: 2px solid oklch(0.7 0.2 264);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  z-index: 9999;
+  transition: top var(--transition-standard);
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACCESSIBLE MUTED TEXT
+
+   WCAG 2.1 AA compliant (4.5:1 minimum contrast ratio)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.text-muted-accessible {
+  color: var(--text-muted-accessible);
+}
+
+.text-muted-accessible-light {
+  color: var(--text-muted-accessible-light);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HIGH CONTRAST MODE
+
+   Adjustments for users who prefer high contrast
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-contrast: high) {
+  .focus-ring:focus-visible,
+  .focus-ring-glow:focus-visible,
+  .interactive-control:focus-visible {
+    outline-width: 3px;
+    outline-color: white;
+  }
+
+  .skip-link {
+    border-width: 3px;
+  }
+}

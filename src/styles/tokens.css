@@ -1,0 +1,205 @@
+/**
+ * MetaDJ Design Tokens
+ *
+ * CSS custom properties for colors, spacing, shadows, and transitions.
+ * These tokens power the MetaDJ visual system.
+ *
+ * @module styles/tokens
+ */
+
+:root {
+  /* ═══════════════════════════════════════════════════════════════════════════
+     GLASSMORPHIC BACKGROUND TOKENS
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --glass-subtle: rgba(255, 255, 255, 0.03);
+  --glass-light: rgba(255, 255, 255, 0.05);
+  --glass-medium: rgba(255, 255, 255, 0.08);
+  --glass-strong: rgba(255, 255, 255, 0.12);
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SURFACE BACKGROUND TOKENS
+     Used for panels, modals, overlays
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --bg-surface-base: oklch(0.12 0.02 280);
+  --bg-surface-elevated: oklch(0.08 0.025 260);
+  --bg-modal: oklch(0.10 0.03 270 / 0.95);
+  --bg-overlay: oklch(0.06 0.02 270);
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BORDER COLORS
+     Solid OKLCH with brand tint to avoid opacity blending issues
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --border-subtle: oklch(0.24 0.04 265 / 1);
+  --border-standard: oklch(0.32 0.05 265 / 1);
+  --border-elevated: oklch(0.42 0.06 265 / 1);
+  --border-active: oklch(0.54 0.08 265 / 1);
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TEXT OPACITY LEVELS
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --text-primary: rgba(255, 255, 255, 1);
+  --text-secondary: rgba(255, 255, 255, 0.85);
+  --text-muted: oklch(85% 0.01 280); /* 4.7:1 contrast */
+  --text-subtle: rgba(255, 255, 255, 0.65);
+
+  /* Accessible Muted Text - WCAG 2.1 AA compliant (4.5:1 minimum contrast) */
+  --text-muted-accessible: oklch(0.72 0.01 280); /* ~5.2:1 contrast ratio */
+  --text-muted-accessible-light: oklch(0.78 0.01 280); /* ~6.8:1 contrast ratio */
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BACKDROP BLUR VALUES
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --blur-subtle: 8px;
+  --blur-standard: 24px;
+  --blur-heavy: 64px;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SHADOW SCALE
+     Extended scale for consistent elevation across UI
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --shadow-sm: 0 4px 12px oklch(0.05 0.02 270 / 0.25);
+  --shadow-md: 0 12px 36px oklch(0.10 0.03 280 / 0.45);
+  --shadow-lg: 0 25px 60px oklch(0.15 0.04 290 / 0.55);
+  --shadow-xl: 0 35px 80px oklch(0.03 0.01 270 / 0.75);
+
+  /* Glow Shadows for Brand Elements - subtle intensity */
+  --shadow-glow-purple: 0 0 16px oklch(0.65 0.22 290 / 0.15), 0 0 32px oklch(0.65 0.22 290 / 0.08);
+  --shadow-glow-cyan: 0 0 16px oklch(0.75 0.15 200 / 0.15), 0 0 32px oklch(0.75 0.15 200 / 0.08);
+  --shadow-glow-emerald: 0 0 16px oklch(0.72 0.17 155 / 0.15), 0 0 32px oklch(0.72 0.17 155 / 0.08);
+  --shadow-glow-brand: 0 0 20px oklch(0.65 0.22 290 / 0.2), 0 0 40px oklch(0.75 0.15 200 / 0.1);
+
+  /* Interactive Shadows */
+  --shadow-button: 0 18px 38px oklch(0.08 0.015 280 / 0.48);
+  --shadow-button-hover: 0 0 32px oklch(0.55 0.18 260 / 0.55);
+
+  /* Semantic Shadows - Component-specific
+     - shadow-panel: Media panels, overlays, queues
+     - shadow-card: Cards, list items, track rows
+     - shadow-menu: Dropdowns, popovers, context menus
+     - shadow-modal: Dialogs, modals, welcome overlays
+     - shadow-toast: Toast notifications
+     - shadow-focus: Focus ring glow (accessible) */
+  --shadow-panel: 0 14px 32px oklch(0.03 0.01 270 / 0.55);
+  --shadow-card: 0 12px 26px oklch(0.03 0.01 270 / 0.4);
+  --shadow-menu: 0 20px 42px oklch(0.06 0.02 280 / 0.65);
+  --shadow-modal: 0 35px 80px oklch(0.03 0.01 270 / 0.75);
+  --shadow-toast: 0 12px 36px oklch(0.10 0.03 280 / 0.45);
+  --shadow-focus: 0 0 0 2px oklch(0.65 0.22 290 / 0.5);
+
+  /* Status Glow Shadows */
+  --shadow-glow-error: 0 0 20px oklch(0.60 0.25 25 / 0.25), 0 0 40px oklch(0.60 0.25 25 / 0.12);
+  --shadow-glow-warning: 0 0 20px oklch(0.78 0.17 85 / 0.25), 0 0 40px oklch(0.78 0.17 85 / 0.12);
+  --shadow-glow-active: 0 0 25px oklch(0.70 0.20 280 / 0.25);
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SPACING SYSTEM - Base 4px Scale
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Core Spacing Scale */
+  --space-0: 0;
+  --space-1: 0.25rem; /* 4px - micro gaps, list items */
+  --space-2: 0.5rem; /* 8px - tight spacing */
+  --space-3: 0.75rem; /* 12px - compact/standard */
+  --space-4: 1rem; /* 16px - comfortable */
+  --space-5: 1.25rem; /* 20px - spacious */
+  --space-6: 1.5rem; /* 24px - section gaps */
+  --space-8: 2rem; /* 32px - major sections */
+  --space-10: 2.5rem; /* 40px - hero spacing */
+  --space-12: 3rem; /* 48px - page sections */
+
+  /* Semantic Spacing - Panels */
+  --spacing-panel-x: var(--space-4); /* 16px */
+  --spacing-panel-y: var(--space-4); /* 16px */
+  --spacing-panel-compact: var(--space-3); /* 12px */
+
+  /* Semantic Spacing - Cards */
+  --spacing-card: var(--space-3); /* 12px - mobile */
+  --spacing-card-md: var(--space-4); /* 16px - desktop */
+
+  /* Semantic Spacing - Content */
+  --spacing-section: var(--space-6); /* 24px */
+  --spacing-content: var(--space-4); /* 16px */
+  --spacing-list-item: var(--space-2); /* 8px */
+  --spacing-list-tight: var(--space-1); /* 4px */
+
+  /* Semantic Spacing - Interactive */
+  --spacing-button-x: var(--space-4); /* 16px */
+  --spacing-button-y: var(--space-3); /* 12px */
+  --spacing-button-compact-y: var(--space-2); /* 8px */
+  --spacing-icon-gap: var(--space-2); /* 8px */
+
+  /* Semantic Spacing - Page Layout */
+  --spacing-page-x: var(--space-6); /* 24px */
+  --spacing-page-x-lg: var(--space-8); /* 32px */
+  --spacing-page-y: var(--space-6); /* 24px */
+  --spacing-header-y: var(--space-3); /* 12px */
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TRANSITION TIMING
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --transition-quick: 75ms;
+  --transition-standard: 150ms;
+  --transition-smooth: 300ms;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     HSL COLOR VARIABLES
+     Vibrant colors - using direct color values since Tailwind uses hsl() wrapper
+     ═══════════════════════════════════════════════════════════════════════════ */
+  --background: 240 10% 12%;
+  --foreground: 0 0% 98%;
+  --card: 240 8% 18%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 8% 18%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 264 82% 65%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 250 80% 63%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 5% 45%;
+  --muted-foreground: 0 0% 75%;
+  --accent: 190 70% 58%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 8% 28%;
+  --input: 240 8% 28%;
+  --ring: 264 82% 65%;
+  --radius: 0.625rem;
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     BRAND COLOR NARRATIVE
+
+     The MetaDJ color system tells a story of human-AI collaboration:
+
+     PURPLE (--metadj-purple): Human wisdom, creativity, and intention.
+       - Use for elements representing human choice, artistic vision, brand identity
+       - Foundation color that grounds the experience in human agency
+
+     CYAN (--metadj-cyan): AI amplification and capability.
+       - Use for AI-related features, MetaDJai responses, technology indicators
+       - Represents the expansion of possibility through AI assistance
+
+     MAGENTA (--metadj-magenta): Transformation and synthesis.
+       - Use at moments where human + AI converge to create something new
+       - Highlight meaningful outcomes, confirmations, successful synthesis
+
+     GRADIENT DIRECTION: Purple → Cyan → Magenta represents the journey from
+     human intention through AI amplification to transformative outcome.
+     Use left-to-right or top-to-bottom gradients to maintain this narrative.
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Primary Tier - Core brand story */
+  --metadj-purple: oklch(0.646 0.222 264.376); /* Human wisdom, brand foundation */
+  --metadj-cyan: oklch(0.6 0.118 184.704); /* AI amplification */
+  --metadj-magenta: oklch(0.702 0.295 328.3); /* Transformation/synthesis */
+
+  /* Secondary Tier */
+  --metadj-indigo: oklch(0.627 0.265 303.9); /* Technical depth */
+  --metadj-blue: oklch(0.59 0.21 255); /* True blue */
+  --metadj-emerald: oklch(0.72 0.17 155); /* Growth/positive accent */
+  --metadj-amber: oklch(0.78 0.17 85); /* Warning/caution */
+  --metadj-red: oklch(0.57 0.24 27); /* Alert/energy */
+
+  /* Mobile bottom nav height */
+  --mobile-nav-height: 56px;
+}

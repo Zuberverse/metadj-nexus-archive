@@ -13,6 +13,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { getCacheStats } from '@/lib/ai/cache'
 import { SYSTEM_PROMPT_TOKEN_BUDGET } from '@/lib/ai/meta-dj-ai-prompt'
 import { getRateLimitMode } from '@/lib/ai/rate-limiter'
 import { getSpendingStatus } from '@/lib/ai/spending-alerts'
@@ -66,6 +67,19 @@ interface AIHealthResponse {
     criticalThreshold: number
     charsPerToken: number
   }
+  cache: {
+    enabled: boolean
+    size: number
+    maxSize: number
+    hitRate: number
+    metrics: {
+      hits: number
+      misses: number
+      writes: number
+      evictions: number
+      uptimeMs: number
+    }
+  }
 }
 
 export async function GET(request: NextRequest) {
@@ -87,6 +101,9 @@ export async function GET(request: NextRequest) {
 
   // Get rate limiter mode
   const rateLimitMode = getRateLimitMode()
+
+  // Get cache statistics
+  const cacheStats = getCacheStats()
 
   // Determine overall health status
   let overallStatus: AIHealthResponse['status'] = 'healthy'
@@ -133,6 +150,13 @@ export async function GET(request: NextRequest) {
       criticalThreshold: SYSTEM_PROMPT_TOKEN_BUDGET.CRITICAL_THRESHOLD,
       charsPerToken: SYSTEM_PROMPT_TOKEN_BUDGET.CHARS_PER_TOKEN,
     },
+    cache: {
+      enabled: cacheStats.enabled,
+      size: cacheStats.size,
+      maxSize: cacheStats.maxSize,
+      hitRate: cacheStats.hitRate,
+      metrics: cacheStats.metrics,
+    },
   }
 
   // Log access with key metrics
@@ -141,6 +165,8 @@ export async function GET(request: NextRequest) {
     hourlySpend: `$${spendingStatus.hourly.spent.toFixed(4)}`,
     dailySpend: `$${spendingStatus.daily.spent.toFixed(4)}`,
     rateLimitMode,
+    cacheHitRate: `${(cacheStats.hitRate * 100).toFixed(1)}%`,
+    cacheSize: cacheStats.size,
   })
 
   return NextResponse.json(response, {

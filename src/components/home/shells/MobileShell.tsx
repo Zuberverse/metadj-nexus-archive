@@ -241,6 +241,13 @@ function MobileShell({
 
   return (
     <div className={`flex flex-col min-h-screen overflow-x-hidden w-full max-w-full transition-opacity duration-150 ${viewHydrated ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Skip Link for Keyboard Navigation - Mobile Accessibility (WCAG 2.4.1) */}
+      <a
+        href="#main-content-mobile"
+        className="skip-link sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[110] focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded-lg focus:font-medium focus-ring-light"
+      >
+        Skip to main content
+      </a>
       <DynamicBackground
         artworkUrl={currentTrack?.artworkUrl}
         enabled

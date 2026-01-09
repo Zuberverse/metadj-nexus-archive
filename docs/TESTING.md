@@ -270,7 +270,7 @@ Provides centralized test helpers:
 
 ### GitHub Actions Workflow
 
-**File**: `.github/workflows/test.yml`
+**File**: `.github/workflows/ci.yml`
 
 Automated testing on every pull request:
 

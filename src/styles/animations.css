@@ -1,0 +1,197 @@
+/**
+ * MetaDJ Animations
+ *
+ * Keyframes and animation utilities for smooth, purposeful motion.
+ *
+ * @module styles/animations
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slow-wave {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(160px, -120px, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(-140px, 130px, 0) scale(0.95);
+  }
+  75% {
+    transform: translate3d(-150px, -110px, 0) scale(1.02);
+  }
+}
+
+@keyframes pulse-gentle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.4;
+    box-shadow: 0 0 12px oklch(0.7 0.15 200 / 0.3);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 20px oklch(0.7 0.15 200 / 0.5);
+  }
+}
+
+@keyframes stream-fade-in {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STREAMING TEXT STYLES
+
+   Smooth rendering for AI chat output
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.streaming-text {
+  /* Prevent layout shifts during streaming */
+  contain: layout style;
+  /* Smooth text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Prevent jitter from rapid updates */
+  transform: translateZ(0);
+  will-change: contents;
+}
+
+.streaming-text p,
+.streaming-text li,
+.streaming-text code {
+  /* Smooth appearance of new content */
+  animation: stream-fade-in 0.15s ease-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT
+
+   Disable animations for accessibility (vestibular disorders, etc.)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable smooth scrolling for vestibular disorder accessibility */
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Disable specific animations */
+  .animate-pulse-gentle,
+  .animate-shimmer,
+  .animate-wave,
+  .animate-float,
+  .animate-fade-in,
+  .animate-typing,
+  .animate-breathe {
+    animation: none !important;
+  }
+
+  /* Keep functional transitions but make them instant */
+  .transition-smooth,
+  .interactive-scale,
+  .neon-glow {
+    transition: none !important;
+  }
+
+  /* Disable transform animations */
+  .interactive-scale:hover,
+  .interactive-scale:active {
+    transform: none !important;
+  }
+}
+
+/* Reduced transparency / heavy-effect support (especially helpful on mobile) */
+@media (prefers-reduced-transparency: reduce),
+(prefers-reduced-motion: reduce) {
+  .backdrop-blur-xs,
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl {
+    backdrop-filter: blur(8px) !important;
+  }
+
+  /* Soften bloom intensity to reduce GPU load */
+  .gradient-media-bloom {
+    opacity: 0.45 !important;
+  }
+}

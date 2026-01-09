@@ -4,6 +4,7 @@ import { useMemo } from "react"
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing"
 import { BlendFunction } from "postprocessing"
 import * as THREE from "three"
+import { CinemaPerformanceMonitor } from "@/hooks/cinema"
 import { BlackHole } from "./visualizers/BlackHole"
 import { Cosmos } from "./visualizers/Cosmos"
 import { DiscoBall } from "./visualizers/DiscoBall"
@@ -19,6 +20,10 @@ interface Visualizer3DProps {
   performanceMode?: boolean
   /** Postprocessing preset (independent of particle quality). */
   postProcessing?: "off" | "lite" | "full"
+  /** Enable performance monitoring and logging */
+  enablePerformanceMonitoring?: boolean
+  /** Callback when performance mode is recommended due to low FPS */
+  onPerformanceModeRecommended?: () => void
 }
 
 // HIGH FIDELITY: Tighter bloom radius for sharper glow
@@ -38,6 +43,8 @@ export function Visualizer3D({
   style,
   performanceMode = false,
   postProcessing,
+  enablePerformanceMonitoring = false,
+  onPerformanceModeRecommended,
 }: Visualizer3DProps) {
   const bloomSettings = BLOOM_SETTINGS[style.type as keyof typeof BLOOM_SETTINGS] || BLOOM_SETTINGS["explosion"]
   const postProcessingMode = performanceMode ? "off" : "full"
@@ -57,6 +64,14 @@ export function Visualizer3D({
 
   return (
     <>
+      {/* Performance monitoring - runs inside R3F context */}
+      {enablePerformanceMonitoring && (
+        <CinemaPerformanceMonitor
+          enableLogging
+          onPerformanceModeRecommended={onPerformanceModeRecommended}
+        />
+      )}
+
       {style.type === "explosion" && (
         <Cosmos bassLevel={bassLevel} midLevel={midLevel} highLevel={highLevel} performanceMode={performanceMode} />
       )}

@@ -17,65 +17,65 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
   // Network errors
   {
     pattern: /failed to fetch|network error|fetch failed/i,
-    userMessage: "Can't reach MetaDJai right now. Check your connection and try again.",
+    userMessage: "Can't reach MetaDJai right now. Check your connection and try again—your message is still here.",
   },
   {
     pattern: /timeout|timed out/i,
-    userMessage: "Request took too long. Let's try that again.",
+    userMessage: "Request took too long. Hit send again to retry—your message wasn't lost.",
   },
 
   // Rate limiting
   {
     pattern: /rate limit|too many requests|429/i,
-    userMessage: "Taking a quick break. Try again in a moment.",
+    userMessage: "Taking a quick break. Wait a moment, then try again.",
   },
 
   // Provider errors
   {
     pattern: /openai|gpt|api error/i,
-    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a few seconds—usually resolves quickly.",
   },
   {
     pattern: /anthropic|claude/i,
-    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a few seconds—usually resolves quickly.",
   },
   {
     pattern: /google|gemini/i,
-    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a few seconds—usually resolves quickly.",
   },
   {
     pattern: /grok|xai/i,
-    userMessage: "MetaDJai hit a provider issue. Try again in a moment.",
+    userMessage: "MetaDJai hit a provider issue. Try again in a few seconds—usually resolves quickly.",
   },
 
   // Streaming errors
   {
     pattern: /stream|interrupted|connection/i,
-    userMessage: "Connection interrupted. Your message wasn't lost—just hit send again.",
+    userMessage: "Connection interrupted. Your message wasn't lost—just hit send again to retry.",
   },
 
   // Authentication/Authorization
   {
     pattern: /unauthorized|forbidden|401|403/i,
-    userMessage: "Session expired. Refresh the page to continue.",
+    userMessage: "Session expired. Refresh the page to continue chatting.",
   },
 
   // Server errors
   {
     pattern: /500|502|503|504|server error|internal error/i,
-    userMessage: "Server issue. Give it another try in a moment.",
+    userMessage: "Server hiccup. Give it another try—these usually clear up quickly.",
   },
 
   // Validation errors
   {
     pattern: /invalid|validation|bad request|400/i,
-    userMessage: "That didn't quite work. Mind trying again?",
+    userMessage: "That didn't quite work. Try rephrasing or shortening your message.",
   },
 
   // Generic fallback (must be last)
   {
     pattern: /.*/,
-    userMessage: "Something unexpected happened. Mind trying that again?",
+    userMessage: "Something unexpected happened. Try again—if it persists, refresh the page.",
   },
 ];
 

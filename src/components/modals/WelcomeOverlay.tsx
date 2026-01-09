@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Music, MonitorPlay, Sparkles } from "lucide-react"
 import { useTour } from "@/contexts/TourContext"
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock"
+import { useFocusTrap } from "@/hooks/use-focus-trap"
 import { trackEvent } from "@/lib/analytics"
 import {
   METADJNEXUS_WELCOME_TAGLINE,
@@ -22,7 +23,9 @@ export function WelcomeOverlay({ onClose }: WelcomeOverlayProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null)
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
-  const focusableElementsRef = useRef<HTMLElement[]>([])
+
+  // Use centralized focus trap hook for accessibility
+  useFocusTrap(dialogRef, { enabled: true, autoFocus: false })
 
   const handleClose = useCallback((e?: MouseEvent | KeyboardEvent) => {
     e?.stopPropagation()
@@ -66,48 +69,6 @@ export function WelcomeOverlay({ onClose }: WelcomeOverlayProps) {
       closeButtonRef.current?.focus({ preventScroll: true })
     }, 50)
     return () => clearTimeout(timer)
-  }, [])
-
-  // Focus trap implementation
-  useEffect(() => {
-    const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
-    if (focusable) {
-      focusableElementsRef.current = Array.from(focusable)
-    }
-  }, [])
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return
-
-      const elements = focusableElementsRef.current
-      if (elements.length === 0) return
-
-      const firstElement = elements[0]
-      const lastElement = elements[elements.length - 1]
-      const currentIndex = elements.indexOf(document.activeElement as HTMLElement)
-
-      e.preventDefault()
-
-      if (e.shiftKey) {
-        if (currentIndex === 0 || currentIndex === -1) {
-          lastElement.focus()
-        } else {
-          elements[currentIndex - 1]?.focus()
-        }
-      } else {
-        if (currentIndex === elements.length - 1 || currentIndex === -1) {
-          firstElement.focus()
-        } else {
-          elements[currentIndex + 1]?.focus()
-        }
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown, true)
-    return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [])
 
   // Handle ESC to close overlay

@@ -28,6 +28,10 @@ interface VisualizerCinemaProps {
   postProcessing?: "off" | "lite" | "full"
   /** Optional callback for capturing the underlying <canvas> element (2D or 3D). */
   onCanvasReady?: (canvas: HTMLCanvasElement | null) => void
+  /** Enable performance monitoring and logging for 3D scenes */
+  enablePerformanceMonitoring?: boolean
+  /** Callback when performance mode is recommended due to low FPS */
+  onPerformanceModeRecommended?: () => void
 }
 
 // No memo - audio levels must flow through on every frame for reactive visualizers
@@ -41,6 +45,8 @@ export function VisualizerCinema({
   performanceMode = false,
   postProcessing,
   onCanvasReady,
+  enablePerformanceMonitoring = false,
+  onPerformanceModeRecommended,
 }: VisualizerCinemaProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [opacity, setOpacity] = useState(1)
@@ -155,6 +161,8 @@ export function VisualizerCinema({
             style={currentStyle}
             performanceMode={effectivePerformanceMode}
             postProcessing={resolvedPostProcessing}
+            enablePerformanceMonitoring={enablePerformanceMonitoring}
+            onPerformanceModeRecommended={onPerformanceModeRecommended}
           />
         </Canvas>
       ) : (

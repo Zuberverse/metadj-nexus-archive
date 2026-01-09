@@ -31,7 +31,7 @@ export function DynamicBackground({
   enabled = true,
   opacity = 0.3,
   className = '',
-  transitionDuration = 1500
+  transitionDuration = 800
 }: DynamicBackgroundProps) {
   const prefersReducedMotion = useReducedMotion();
   const [currentGradient, setCurrentGradient] = useState<string>('');

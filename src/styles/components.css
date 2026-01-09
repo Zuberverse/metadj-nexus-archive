@@ -1,0 +1,289 @@
+/**
+ * MetaDJ Component Styles
+ *
+ * Specific component styling that doesn't fit into utilities.
+ * Includes panels, sliders, third-party integrations.
+ *
+ * @module styles/components
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RADIANT PANEL
+
+   Premium glass panel with bloom effects
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.radiant-panel {
+  position: relative;
+  isolation: isolate;
+  background: rgb(10, 14, 28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: inherit;
+  box-shadow: 0 28px 60px rgba(3, 3, 8, 0.6), 0 0 40px rgba(139, 92, 246, 0.08);
+  overflow: hidden;
+  backdrop-filter: blur(28px);
+  will-change: transform; /* Performance hint for browser compositor */
+}
+
+.radiant-panel::before {
+  content: "";
+  position: absolute;
+  inset: -40% -20% auto -30%;
+  height: 180%;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(139, 92, 246, 0.38), transparent 55%),
+    radial-gradient(circle at 50% 100%, rgba(6, 182, 212, 0.32), transparent 50%),
+    radial-gradient(circle at 82% 0%, rgba(217, 70, 239, 0.32), transparent 60%);
+  border-radius: inherit;
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.radiant-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 50%);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Suppress shadow and pseudo-elements for queue panel to prevent visual artifacts */
+.radiant-panel.shadow-none::before,
+.radiant-panel.shadow-none::after {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEARCH RESULTS PANEL
+
+   Solid background matching MetaDJai chat/journal bars
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.search-results-panel {
+  background: rgba(6, 8, 28, 0.92);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 25px 65px rgba(5, 4, 18, 0.65);
+  backdrop-filter: blur(28px);
+  isolation: isolate;
+  will-change: transform; /* Performance hint */
+}
+
+.search-results-panel::before {
+  opacity: 1;
+}
+
+.search-results-panel::after {
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.18),
+      transparent 50%);
+}
+
+/* Hide SearchBar's built-in dropdown in ControlPanelOverlay (uses custom results UI) */
+.control-panel-search #metadj-search-results {
+  display: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VOLUME SLIDER
+
+   Custom invisible-thumb slider for audio controls
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 0;
+  height: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.volume-slider::-ms-thumb {
+  width: 0;
+  height: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.volume-slider::-webkit-slider-runnable-track,
+.volume-slider::-moz-range-track,
+.volume-slider::-ms-track {
+  background: transparent;
+  border: none;
+  color: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DRIVER.JS TOUR STYLING
+
+   Themed onboarding tour popover styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.driver-popover {
+  background-color: oklch(0.12 0.02 280 / 0.95);
+  color: white;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.25), 0 0 100px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
+  padding: 16px;
+  max-width: 320px;
+}
+
+.driver-popover-title {
+  font-family: var(--font-heading, system-ui, sans-serif);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(to right, #e9d5ff, #a5f3fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.driver-popover-description {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0;
+}
+
+.driver-popover-footer {
+  margin-top: 16px;
+}
+
+.driver-popover-progress-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+}
+
+.driver-popover-next-btn,
+.driver-popover-prev-btn {
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-shadow: none;
+  border: 1px solid transparent;
+}
+
+.driver-popover-next-btn {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #e9d5ff;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.driver-popover-next-btn:hover {
+  background-color: rgba(139, 92, 246, 0.4) !important;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.driver-popover-prev-btn {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.driver-popover-prev-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.driver-popover-close-btn {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s;
+}
+
+.driver-popover-close-btn:hover {
+  color: white;
+}
+
+.driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: rgba(255, 255, 255, 0.15);
+}
+
+.driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: rgba(255, 255, 255, 0.15);
+}
+
+.driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
+
+.driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MISCELLANEOUS COMPONENT UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Clipboard utility for programmatic copy */
+.clipboard-hidden-textarea {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Video controls suppression */
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BACKDROP-FILTER FALLBACK
+
+   Provides solid backgrounds when backdrop-filter is not supported
+   or performs poorly on budget mobile devices.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@supports not (backdrop-filter: blur(10px)) {
+  .glass {
+    background: rgba(10, 14, 28, 0.92);
+  }
+
+  .glass-card {
+    background: rgba(20, 24, 52, 0.95);
+  }
+
+  .radiant-panel {
+    background: rgba(10, 14, 28, 0.98);
+  }
+
+  .search-results-panel {
+    background: rgba(6, 8, 28, 0.98);
+  }
+}

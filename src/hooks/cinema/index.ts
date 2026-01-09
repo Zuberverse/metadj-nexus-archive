@@ -8,3 +8,9 @@ export { useCinema } from "./use-cinema"
 export { useCinemaVideo } from "./use-cinema-video"
 export { useCinemaControls } from "./use-cinema-controls"
 export { useCinemaAnalytics } from "./use-cinema-analytics"
+export {
+  useCinemaPerformance,
+  CinemaPerformanceMonitor,
+  PERFORMANCE_THRESHOLDS,
+  type CinemaPerformanceMetrics,
+} from "./use-cinema-performance"

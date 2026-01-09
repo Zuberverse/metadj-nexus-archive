@@ -506,7 +506,7 @@ describe('Error Mapping', () => {
 
     it('maps server errors (5xx)', () => {
       const message = mapErrorToUserMessage('500 Internal Server Error');
-      expect(message).toContain('Server issue');
+      expect(message).toContain('Server hiccup');
     });
 
     it('maps validation/bad request errors', () => {
