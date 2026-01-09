@@ -8,16 +8,17 @@ import { useUI } from "@/contexts/UIContext"
 import {
   SCENES,
   VISUALIZER_SCENES,
-  DEFAULT_SCENE_ID,
   isVisualizer,
-  getRecommendedScene,
-  type SceneId,
   type Scene
 } from "@/data/scenes"
 import { useAudioAnalyzer } from "@/hooks/audio/use-audio-analyzer"
+import { useCinemaFullscreen } from "@/hooks/cinema/use-cinema-fullscreen"
+import { useCinemaScene } from "@/hooks/cinema/use-cinema-scene"
+import { useWebcamCapture } from "@/hooks/cinema/use-webcam-capture"
 import { useCspStyle } from "@/hooks/use-csp-style"
 import { useResponsivePanels } from "@/hooks/use-responsive-panels"
 import { trackSceneChanged } from "@/lib/analytics"
+import { buildVideoSources } from "@/lib/cinema/video-utils"
 import { DREAM_PROMPT_DEFAULT, DREAM_PROMPT_BASE } from "@/lib/daydream/config"
 import { logger } from "@/lib/logger"
 import { combineSeeds } from "@/lib/visualizers/seed"
@@ -33,38 +34,6 @@ import {
 import { VisualizerCinema } from "./VisualizerCinema"
 import type { Track } from "@/types"
 import type { DaydreamPresentation, DaydreamStatus } from "@/types/daydream.types"
-
-type VideoSource = {
-  src: string
-  type?: string
-  media?: string
-}
-
-function getVideoContentType(path?: string): string | undefined {
-  if (!path) return undefined
-  if (path.endsWith(".webm")) return "video/webm"
-  if (path.endsWith(".mp4")) return "video/mp4"
-  if (path.endsWith(".mov")) return "video/quicktime"
-  return undefined
-}
-
-function buildVideoSources(scene: Scene): VideoSource[] {
-  const sources: VideoSource[] = []
-  const seen = new Set<string>()
-
-  const addSource = (src?: string, options?: Omit<VideoSource, "src">) => {
-    if (!src || seen.has(src)) return
-    sources.push({ src, type: getVideoContentType(src), ...options })
-    seen.add(src)
-  }
-
-  addSource(scene.videoMobilePath, { media: "(max-width: 767px)" })
-  addSource(scene.videoWebmPath)
-  addSource(scene.videoPath)
-  addSource(scene.videoFallbackPath)
-
-  return sources
-}
 
 interface CinemaOverlayProps {
   // Cinema state
@@ -166,99 +135,48 @@ export function CinemaOverlay({
 }: CinemaOverlayProps) {
   const { shouldUseSidePanels } = useResponsivePanels()
   const allow3DVisualizers = shouldUseSidePanels
-  const sceneStorageKey = allow3DVisualizers ? "metadj_cinema_scene" : "metadj_cinema_scene_mobile"
 
-  // Mobile default is pixel-paradise (Pixel Portal)
-  const default2DVisualizerSceneId: SceneId = "pixel-paradise"
-
-  const isSceneAllowedOnDevice = useCallback(
-    (scene: Scene) => {
-      if (!allow3DVisualizers && isVisualizer(scene)) {
-        const renderer = scene.visualizerStyle?.renderer ?? "2d"
-        return renderer !== "3d"
-      }
-      return true
-    },
-    [allow3DVisualizers],
-  )
   // Get audio element from PlayerContext for visualizer
   const { audioRef, play } = usePlayer()
   const [playerAudioElement, setPlayerAudioElement] = useState<HTMLAudioElement | null>(null)
 
-  const hadPersistedSceneRef = useRef(false)
-  const userSelectedSceneRef = useRef(false)
+  // Detect when modals are active to disable Cinema pointer events
+  const { modals, setActiveView, openLeftPanel, selectedCollection } = useUI()
+  const modalActive = modals.isQueueOpen || modals.isMetaDjAiOpen
 
-  // Session reset flag - tracks if we've already reset for this session
-  const sessionResetDone = useRef(false)
-
-  const [selectedScene, setSelectedScene] = useState<SceneId>(() => {
-    const fallback = allow3DVisualizers ? DEFAULT_SCENE_ID : default2DVisualizerSceneId
-    if (typeof window === "undefined") return fallback
-
-    try {
-      const stored = window.localStorage.getItem(sceneStorageKey) as SceneId | null
-      if (stored) {
-        const storedScene = SCENES.find((scene) => scene.id === stored)
-        if (storedScene && isSceneAllowedOnDevice(storedScene)) {
-          hadPersistedSceneRef.current = true
-          return stored
-        }
-      }
-    } catch {
-      // ignore
-    }
-    return fallback
+  // Scene management (selection, persistence, device filtering)
+  const {
+    selectedScene,
+    setSelectedScene,
+    handleSceneSelect: baseHandleSceneSelect,
+    currentScene,
+    isSceneMenuOpen,
+    setIsSceneMenuOpen,
+    isSceneAllowedOnDevice,
+    currentSceneRef,
+  } = useCinemaScene({
+    allow3DVisualizers,
+    enabled,
+    selectedCollectionId: selectedCollection,
   })
 
-  // Session-based reset: Clear persisted cinema/dream settings on new app instance
-  useEffect(() => {
-    if (sessionResetDone.current) return
-    sessionResetDone.current = true
-
-    const SESSION_MARKER = "metadj_session_active"
-    const isNewSession = !window.sessionStorage.getItem(SESSION_MARKER)
-
-    if (isNewSession) {
-      // Mark session as active
-      window.sessionStorage.setItem(SESSION_MARKER, "1")
-      // Clear persisted settings to reset to defaults
-      try {
-        window.localStorage.removeItem("metadj_cinema_scene")
-        window.localStorage.removeItem("metadj_cinema_scene_mobile")
-        window.localStorage.removeItem("metadj_dream_presentation")
-        window.localStorage.removeItem("metadj_dream_prompt_base")
-      } catch {
-        // ignore
-      }
-      // Reset scene to default
-      const fallback = allow3DVisualizers ? DEFAULT_SCENE_ID : default2DVisualizerSceneId
-      setSelectedScene(fallback)
-    }
-  }, [allow3DVisualizers, default2DVisualizerSceneId])
+  // Fullscreen management (browser API, focus, keyboard)
+  const { handleFullscreenToggle } = useCinemaFullscreen({
+    isFullscreen,
+    onFullscreenToggle,
+    enabled,
+    shouldUseSidePanels,
+    dialogRef,
+  })
   const [frameSize, setFrameSize] = useState<"default" | "small">("default")
   const [framePosition, setFramePosition] = useState<"center" | "bottom-center" | "bottom-left" | "bottom-right" | "top" | "bottom">("center")
   const [isOverlayHidden, setIsOverlayHidden] = useState(false)
-  const [isSceneMenuOpen, setIsSceneMenuOpen] = useState(false)
   const overlayRef = useRef<HTMLDivElement | null>(null)
   const graceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const currentSceneRef = useRef<SceneId>(selectedScene)
   const r3fCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const [visualizerCanvasEl, setVisualizerCanvasEl] = useState<HTMLCanvasElement | null>(null)
 
   const isPerformanceMode = true
-
-  // Webcam State
-  const webcamVideoRef = useRef<HTMLVideoElement | null>(null)
-  const webcamStreamRef = useRef<MediaStream | null>(null)
-  const [webcamError, setWebcamError] = useState<string | null>(null)
-  const [webcamReady, setWebcamReady] = useState(false)
-  const drawLogStateRef = useRef<{
-    hasSource: boolean
-    webcamReady: boolean
-    webcamError: string | null
-    readyState: number | null
-    captureReady: boolean
-  } | null>(null)
 
   // Dream state from props
   const {
@@ -279,6 +197,18 @@ export function CinemaOverlay({
   } = dream
 
   const isDreamActive = dreamStatus.status === "connecting" || dreamStatus.status === "streaming"
+
+  // Webcam capture (extracted hook manages acquisition and draw loop)
+  const {
+    webcamVideoRef,
+    webcamReady,
+    webcamError,
+    retryWebcam,
+  } = useWebcamCapture({
+    isDreamActive,
+    intermediateCanvasRef,
+    captureReadyRef,
+  })
 
   // Local state for editing the dream prompt
   const [editingPrompt, setEditingPrompt] = useState(dreamPromptBase)
@@ -390,8 +320,7 @@ export function CinemaOverlay({
     }
   }, [enabled])
 
-  // Get current scene object
-  const currentScene = SCENES.find(s => s.id === selectedScene) || SCENES[0]
+  // currentScene is provided by useCinemaScene hook
   const isVisualizerScene = isVisualizer(currentScene)
   const videoSources = useMemo(() => buildVideoSources(currentScene), [currentScene])
   const hasVideoSource = videoSources.length > 0
@@ -403,305 +332,6 @@ export function CinemaOverlay({
     fftSize: 256,
     smoothingTimeConstant: 0.8,
   })
-
-  // Webcam Management
-  const stopWebcam = useCallback(() => {
-    if (webcamStreamRef.current) {
-      webcamStreamRef.current.getTracks().forEach(track => track.stop())
-      webcamStreamRef.current = null
-    }
-    if (webcamVideoRef.current) {
-      webcamVideoRef.current.pause()
-      webcamVideoRef.current.srcObject = null
-    }
-    setWebcamReady(false)
-    setWebcamError(null)
-  }, [])
-
-  useEffect(() => {
-    // Always release the webcam when Dream is OFF to avoid leaving the camera running.
-    // This keeps the hardware/permission indicator honest and prevents battery drain.
-    if (!isDreamActive) {
-      if (webcamStreamRef.current) stopWebcam()
-      return
-    }
-
-    // Already have stream?
-    if (webcamStreamRef.current) return
-
-    // Use AbortController to handle race conditions during webcam acquisition
-    const controller = new AbortController()
-
-    const acquireWebcam = async () => {
-      logger.debug('[Dream] Acquiring webcam...')
-      setWebcamError(null)
-
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: { ideal: 640 },
-            height: { ideal: 480 },
-            frameRate: { ideal: 30, max: 30 },
-            facingMode: 'user',
-          },
-          audio: false,
-        })
-
-        // Check if aborted during async acquisition - clean up immediately
-        if (controller.signal.aborted) {
-          stream.getTracks().forEach(t => t.stop())
-          return
-        }
-
-        logger.debug('[Dream] Webcam acquired')
-        webcamStreamRef.current = stream
-
-        if (webcamVideoRef.current) {
-          webcamVideoRef.current.srcObject = stream
-          setWebcamReady(true)
-          logger.debug("[Dream] webcamReady set to true (stream attached)")
-          // Use play() promise to catch restrictions
-          try {
-            await webcamVideoRef.current.play()
-
-            // Check abort again after play() completes
-            if (controller.signal.aborted) {
-              stream.getTracks().forEach(t => t.stop())
-              return
-            }
-
-            const videoSettings = stream.getVideoTracks()[0]?.getSettings()
-            logger.debug('[Dream] Webcam video playing', {
-              readyState: webcamVideoRef.current.readyState,
-              videoWidth: webcamVideoRef.current.videoWidth,
-              videoHeight: webcamVideoRef.current.videoHeight,
-              trackSettings: videoSettings,
-            })
-          } catch (e) {
-            const errorName = e instanceof Error ? e.name : String(e)
-            if (controller.signal.aborted || errorName === "AbortError") {
-              logger.debug("[Dream] Video play aborted")
-            } else {
-              logger.warn("[Dream] Video play error", { error: e })
-              setWebcamError("Camera preview failed")
-            }
-          }
-        }
-      } catch (err: unknown) {
-        if (controller.signal.aborted) return
-        // Extract error details since Error objects don't serialize
-        const errorName = err instanceof Error ? err.name : String(err)
-        const errorMessage = err instanceof Error ? err.message : String(err)
-        logger.error('[Dream] Webcam failed', { name: errorName, message: errorMessage })
-        if (errorName === 'NotAllowedError' || errorName === 'PermissionDeniedError') {
-          setWebcamError('Camera access denied')
-        } else if (errorName === 'NotFoundError' || errorName === 'DevicesNotFoundError') {
-          setWebcamError('No camera found')
-        } else if (errorName === 'NotReadableError' || errorName === 'TrackStartError') {
-          setWebcamError('Camera in use')
-        } else {
-          setWebcamError('Camera error')
-        }
-      }
-    }
-
-    void acquireWebcam()
-
-    return () => {
-      controller.abort()
-      stopWebcam()
-    }
-  }, [isDreamActive, stopWebcam])
-
-  // Draw loop: Copy active source to intermediate canvas when Dream is active
-  // CRITICAL: Always draw something to keep the stream alive - fallback to solid color
-  useEffect(() => {
-    // Stop draw loop when idle or in error state to free resources
-    if (!isDreamActive) {
-      if (captureReadyRef.current) captureReadyRef.current = false
-      // Clear the intermediate canvas to free memory when Dream stops
-      const canvas = intermediateCanvasRef.current
-      if (canvas) {
-        const ctx = canvas.getContext("2d", { alpha: false })
-        if (ctx) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height)
-        }
-      }
-      return
-    }
-
-    let animationFrameId: number
-    const ctx = intermediateCanvasRef.current?.getContext("2d", { alpha: false, desynchronized: true })
-    if (!ctx) return
-
-    const canvasWidth = intermediateCanvasRef.current?.width || 512
-    const canvasHeight = intermediateCanvasRef.current?.height || 512 // 1:1 aspect ratio
-
-    // Track consecutive draw failures to log only when it starts/stops
-    let consecutiveFailures = 0
-
-    const MIN_FRAME_INTERVAL_MS = 1000 / 30
-    let lastDrawAt = 0
-
-    const loop = () => {
-      const now = performance.now()
-      if (now - lastDrawAt < MIN_FRAME_INTERVAL_MS) {
-        animationFrameId = requestAnimationFrame(loop)
-        return
-      }
-      lastDrawAt = now
-
-      // Dream input is WEBCAM ONLY - no fallbacks to visualizer or video
-      let source: HTMLVideoElement | null = null
-      let drawn = false
-
-      // Webcam is the ONLY Dream input source
-      if (webcamReady && webcamVideoRef.current && !webcamError) {
-        // Verify ready state (HAVE_CURRENT_DATA or higher)
-        if (webcamVideoRef.current.readyState >= 2) {
-          source = webcamVideoRef.current
-        }
-      }
-
-      const nextLogState = {
-        hasSource: Boolean(source),
-        webcamReady,
-        webcamError: webcamError || null,
-        readyState: webcamVideoRef.current?.readyState ?? null,
-        captureReady: captureReadyRef.current,
-      }
-      const prevLogState = drawLogStateRef.current
-      if (
-        !prevLogState ||
-        prevLogState.hasSource !== nextLogState.hasSource ||
-        prevLogState.webcamReady !== nextLogState.webcamReady ||
-        prevLogState.webcamError !== nextLogState.webcamError ||
-        prevLogState.readyState !== nextLogState.readyState ||
-        prevLogState.captureReady !== nextLogState.captureReady
-      ) {
-        logger.debug('[Dream] Draw loop state', {
-          webcamReady: nextLogState.webcamReady,
-          webcamError: nextLogState.webcamError,
-          webcamReadyState: nextLogState.readyState,
-          hasSource: nextLogState.hasSource,
-          captureReady: nextLogState.captureReady,
-        })
-        drawLogStateRef.current = nextLogState
-      }
-
-      if (source) {
-        try {
-          // Clear to black before drawing to avoid stale pixels when letterboxing
-          ctx.fillStyle = "black"
-          ctx.fillRect(0, 0, canvasWidth, canvasHeight)
-
-          const sourceWidth = source.videoWidth || canvasWidth
-          const sourceHeight = source.videoHeight || canvasHeight
-
-          // Cover mode (like object-fit: cover) - fills canvas, crops excess, no black bars
-          const scale = Math.max(canvasWidth / sourceWidth, canvasHeight / sourceHeight)
-          const targetWidth = sourceWidth * scale
-          const targetHeight = sourceHeight * scale
-          const dx = (canvasWidth - targetWidth) / 2  // Centers horizontally (crops sides if needed)
-          const dy = (canvasHeight - targetHeight) / 2  // Centers vertically (crops top/bottom if needed)
-
-          // Mirror webcam horizontally for natural preview/orientation
-          ctx.save()
-          ctx.translate(canvasWidth, 0)
-          ctx.scale(-1, 1)
-          ctx.drawImage(source, dx, dy, targetWidth, targetHeight)
-          ctx.restore()
-
-          drawn = true
-          if (!captureReadyRef.current) captureReadyRef.current = true
-          if (consecutiveFailures > 0) {
-            logger.debug("[Dream] Webcam source recovered, resuming normal drawing")
-            consecutiveFailures = 0
-          }
-        } catch {
-          // Source not ready
-        }
-      }
-
-      // FALLBACK: If webcam not ready, fill with dark purple gradient while waiting
-      if (!drawn) {
-        if (consecutiveFailures === 0) {
-          logger.debug("[Dream] Webcam not ready, showing waiting state")
-        }
-        consecutiveFailures++
-        if (captureReadyRef.current) captureReadyRef.current = false
-
-        // Create a subtle animated gradient to show Dream is waiting for webcam
-        const time = Date.now() / 3000 // Slow pulse
-        const brightness = 10 + Math.sin(time) * 5 // Pulse between 5-15 brightness
-
-        // Dark purple gradient fallback
-        const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight)
-        gradient.addColorStop(0, `hsl(270, 50%, ${brightness}%)`)
-        gradient.addColorStop(1, `hsl(280, 60%, ${brightness * 0.7}%)`)
-        ctx.fillStyle = gradient
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight)
-
-        // Draw status text
-        ctx.font = "bold 24px sans-serif"
-        ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
-        ctx.textAlign = "center"
-        ctx.fillText(webcamError || "Initializing Camera...", canvasWidth / 2, canvasHeight / 2)
-      }
-
-      animationFrameId = requestAnimationFrame(loop)
-    }
-    loop()
-    return () => cancelAnimationFrame(animationFrameId)
-  }, [isDreamActive, webcamReady, webcamError, captureReadyRef])
-
-  // Detect when modals are active to disable Cinema pointer events
-  // Search results are excluded because they close when focus is lost (local state in SearchBar)
-  const { modals, setActiveView, openLeftPanel, selectedCollection } = useUI()
-  const modalActive = modals.isQueueOpen || modals.isMetaDjAiOpen
-
-  // Auto-scene: if user has never chosen a scene, default to the collection recommendation
-  useEffect(() => {
-    if (!enabled) return
-    if (hadPersistedSceneRef.current || userSelectedSceneRef.current) return
-    if (!selectedCollection) return
-
-    const recommended = getRecommendedScene(selectedCollection)
-    if (!recommended) return
-
-    const nextSceneId = isSceneAllowedOnDevice(recommended)
-      ? recommended.id
-      : (allow3DVisualizers ? DEFAULT_SCENE_ID : default2DVisualizerSceneId)
-
-    if (nextSceneId !== selectedScene) {
-      setSelectedScene(nextSceneId)
-    }
-  }, [enabled, selectedCollection, selectedScene, allow3DVisualizers, default2DVisualizerSceneId, isSceneAllowedOnDevice])
-
-  // Re-hydrate scene selection when switching between desktop/mobile layouts.
-  useEffect(() => {
-    if (typeof window === "undefined") return
-
-    const fallback = allow3DVisualizers ? DEFAULT_SCENE_ID : default2DVisualizerSceneId
-    let nextSceneId: SceneId = fallback
-    let hasPersisted = false
-
-    try {
-      const stored = window.localStorage.getItem(sceneStorageKey) as SceneId | null
-      if (stored) {
-        const storedScene = SCENES.find((scene) => scene.id === stored)
-        if (storedScene && isSceneAllowedOnDevice(storedScene)) {
-          nextSceneId = stored
-          hasPersisted = true
-        }
-      }
-    } catch {
-      // ignore
-    }
-
-    hadPersistedSceneRef.current = hasPersisted
-    setSelectedScene((current) => (current === nextSceneId ? current : nextSceneId))
-  }, [allow3DVisualizers, default2DVisualizerSceneId, isSceneAllowedOnDevice, sceneStorageKey])
 
   // Track the shared audio element for the analyzer.
   // audioRef is stable (never changes), so we poll until the element is available.
@@ -784,14 +414,11 @@ export function CinemaOverlay({
     }
   }, [dreamStatus.status])
 
-  // Lifecycle debugging and Webcam cleanup on unmount
+  // Lifecycle debugging (webcam cleanup is handled by useWebcamCapture hook)
   useEffect(() => {
     logger.debug('[CinemaOverlay] Mounted')
     return () => {
       logger.debug('[CinemaOverlay] Unmounted')
-      if (webcamStreamRef.current) {
-        webcamStreamRef.current.getTracks().forEach(t => t.stop())
-      }
     }
   }, [])
 
@@ -822,22 +449,13 @@ export function CinemaOverlay({
     }
   }, [visualizerCanvasEl])
 
-  // Handle seamless scene switching - change video source without remounting
+  // Handle seamless scene switching - reload video when scene changes
   useEffect(() => {
+    // Skip if scene hasn't actually changed (currentSceneRef is managed by hook)
     if (currentSceneRef.current === selectedScene) return
 
     const video = videoRef.current
     const scene = SCENES.find(s => s.id === selectedScene)
-
-    // Update ref and localStorage regardless of scene type
-    currentSceneRef.current = selectedScene
-    try {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(sceneStorageKey, selectedScene)
-      }
-    } catch {
-      // ignore
-    }
 
     // Only handle video loading for video scenes
     const sceneHasVideo = Boolean(
@@ -871,7 +489,7 @@ export function CinemaOverlay({
     return () => {
       video.removeEventListener('loadeddata', handleLoadedData)
     }
-  }, [selectedScene, shouldPlay, currentTrack, videoRef, posterOnly, sceneStorageKey])
+  }, [selectedScene, shouldPlay, currentTrack, videoRef, posterOnly, currentSceneRef])
 
   // Studio feature: Handle tab visibility changes to resume video/stream
   // This prevents video freezing when the tab is backgrounded for a long time
@@ -890,69 +508,6 @@ export function CinemaOverlay({
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [videoRef])
 
-  // Keep state in sync with the browser Fullscreen API (desktop).
-  // Also sync on visibility change to handle alt-tab scenarios where browsers
-  // may exit fullscreen while the tab is backgrounded.
-  useEffect(() => {
-    if (typeof document === "undefined") return
-
-    const syncFullscreenState = () => {
-      const browserIsFullscreen = !!document.fullscreenElement
-      // Sync app state with browser state (handles both enter and exit)
-      if (browserIsFullscreen !== isFullscreen) {
-        onFullscreenToggle(browserIsFullscreen)
-      }
-    }
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        syncFullscreenState()
-      }
-    }
-
-    document.addEventListener("fullscreenchange", syncFullscreenState)
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    return () => {
-      document.removeEventListener("fullscreenchange", syncFullscreenState)
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-    }
-  }, [isFullscreen, onFullscreenToggle])
-
-  // Focus management for fullscreen modal dialog
-  // When entering fullscreen, focus moves to the dialog to trap focus properly
-  // When exiting fullscreen, focus returns to previously focused element
-  const previousFocusRef = useRef<HTMLElement | null>(null)
-  useEffect(() => {
-    if (isFullscreen) {
-      // Store current focus before moving to fullscreen
-      previousFocusRef.current = document.activeElement as HTMLElement | null
-      // Focus the dialog container for keyboard navigation
-      dialogRef.current?.focus()
-    } else if (previousFocusRef.current) {
-      // Restore focus when exiting fullscreen
-      previousFocusRef.current.focus()
-      previousFocusRef.current = null
-    }
-  }, [isFullscreen, dialogRef])
-
-  // Escape closes fullscreen (browser fullscreen when active, otherwise internal overlay)
-  useEffect(() => {
-    if (!isFullscreen) return
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (typeof document !== "undefined" && document.fullscreenElement) {
-          void document.exitFullscreen().catch(() => {
-            // ignore
-          })
-        } else {
-          onFullscreenToggle(false)
-        }
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown)
-    return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [isFullscreen, onFullscreenToggle])
-
   // Dream toggle handler - must be before early return to satisfy hooks rules
   const handleDreamToggle = useCallback(() => {
     if (dreamStatus.status === "idle" || dreamStatus.status === "error") {
@@ -961,33 +516,6 @@ export function CinemaOverlay({
       void stopDream()
     }
   }, [dreamStatus.status, startDream, stopDream])
-
-  // Desktop-only fullscreen toggle (uses browser Fullscreen API when available)
-  const handleFullscreenToggle = useCallback(() => {
-    const shouldEnter = !isFullscreen
-
-    if (typeof document === "undefined") {
-      onFullscreenToggle(shouldEnter)
-      return
-    }
-
-    if (shouldEnter) {
-      onFullscreenToggle(true)
-      if (typeof document.documentElement.requestFullscreen === "function") {
-        void document.documentElement.requestFullscreen().catch(() => {
-          // Fall back to internal overlay fullscreen.
-        })
-      }
-      return
-    }
-
-    if (document.fullscreenElement) {
-      void document.exitFullscreen().catch(() => {
-        // ignore
-      })
-    }
-    onFullscreenToggle(false)
-  }, [isFullscreen, onFullscreenToggle])
 
   const isPlaceholderScene = !isVisualizerScene && !hasVideoSource
   const effectiveReady = isVisualizerScene ? true : (posterOnly ? true : videoReady)
@@ -1013,11 +541,9 @@ export function CinemaOverlay({
     paddingTop: `${headerHeight}px`,
   })
 
-  // Scene selection handler
-  const handleSceneSelect = (scene: Scene) => {
-    userSelectedSceneRef.current = true
-    setSelectedScene(scene.id)
-    setIsSceneMenuOpen(false)
+  // Scene selection handler (wraps hook's handler with video retry and analytics)
+  const handleSceneSelect = useCallback((scene: Scene) => {
+    baseHandleSceneSelect(scene)
     // Reset video state when switching to a video scene for a fresh attempt
     const sceneHasVideo = Boolean(
       scene.videoPath ||
@@ -1033,7 +559,7 @@ export function CinemaOverlay({
     } catch (error) {
       logger.debug('Analytics: trackSceneChanged failed', { sceneId: scene.id, error: String(error) })
     }
-  }
+  }, [baseHandleSceneSelect, posterOnly, retryVideo])
 
   // Handler to switch to 2D visualizer when WebGL context is lost
   const handleSwitchTo2DVisualizer = useCallback(() => {
@@ -1041,7 +567,6 @@ export function CinemaOverlay({
       (scene) => (scene.visualizerStyle?.renderer ?? "2d") === "2d"
     )
     if (scene2D) {
-      userSelectedSceneRef.current = true
       setSelectedScene(scene2D.id)
       setWebglContextLost(false)
       setWebglRecovering(false)
@@ -1052,29 +577,7 @@ export function CinemaOverlay({
         logger.debug('Analytics: trackSceneChanged failed', { sceneId: scene2D.id, error: String(error) })
       }
     }
-  }, [])
-
-  // Keyboard shortcut: "F" toggles fullscreen on desktop when Cinema is open
-  useEffect(() => {
-    if (!enabled || !shouldUseSidePanels) return
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null
-      if (
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement ||
-        target instanceof HTMLSelectElement ||
-        (target && target.isContentEditable)
-      ) {
-        return
-      }
-      if (event.key === "f" || event.key === "F") {
-        event.preventDefault()
-        handleFullscreenToggle()
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown)
-    return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [enabled, shouldUseSidePanels, handleFullscreenToggle])
+  }, [setSelectedScene])
 
   return (
     <div
@@ -1253,7 +756,7 @@ export function CinemaOverlay({
         <CinemaWebcamError
           webcamError={webcamError}
           onRetry={() => {
-            setWebcamError(null)
+            retryWebcam()
             retryDream()
           }}
           onCancel={() => void stopDream()}

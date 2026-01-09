@@ -14,3 +14,6 @@ export {
   PERFORMANCE_THRESHOLDS,
   type CinemaPerformanceMetrics,
 } from "./use-cinema-performance"
+export { useWebcamCapture } from "./use-webcam-capture"
+export { useCinemaScene } from "./use-cinema-scene"
+export { useCinemaFullscreen } from "./use-cinema-fullscreen"

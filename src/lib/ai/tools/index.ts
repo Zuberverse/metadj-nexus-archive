@@ -1,10 +1,14 @@
 /**
- * AI Tools Module
+ * AI Tools
  *
- * Barrel export for AI tool utilities.
+ * Barrel export for all AI tool modules and utilities.
  *
  * @module lib/ai/tools
  */
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────────────────────────────────────
 
 export {
   // Constants
@@ -24,3 +28,35 @@ export {
   stringSimilarity,
   fuzzyMatch,
 } from "./utils"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MUSIC HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export {
+  findTrackByTitle,
+  findCollectionByName,
+  resolveTracksForProposal,
+} from "./music-helpers"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOOLS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export { searchCatalog } from "./catalog"
+export { getPlatformHelp } from "./platform-help"
+export { getRecommendations } from "./recommendations"
+export { getZuberantContext, warmupKnowledgeEmbeddings } from "./knowledge"
+export { getWisdomContent } from "./wisdom"
+export {
+  proposePlayback,
+  proposeQueueSet,
+  proposePlaylist,
+  proposeSurface,
+} from "./proposals"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOOL PROVIDER
+// ─────────────────────────────────────────────────────────────────────────────
+
+export { getTools } from "./provider"
