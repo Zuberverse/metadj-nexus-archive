@@ -91,7 +91,7 @@ function PlaylistListComponent({
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Playlists..."
             aria-label="Search playlists"
-            className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus-ring-light focus:bg-white/10 focus:border-white/30 transition-all"
+            className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus-ring-light focus:bg-white/10 transition-all"
           />
           {searchQuery && (
             <button
@@ -141,7 +141,7 @@ function PlaylistListComponent({
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search Playlists..."
           aria-label="Search playlists"
-          className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus-ring-light focus:bg-white/10 focus:border-white/30 transition-all"
+          className="w-full bg-white/5 border border-white/20 rounded-lg py-2 pl-9 pr-3 text-xs text-white placeholder:text-white/60 focus-ring-light focus:bg-white/10 transition-all"
         />
         {searchQuery && (
           <button

@@ -144,7 +144,7 @@ export function PlaylistCreator({
             maxLength={100}
             autoFocus
             disabled={isCreating}
-            className={`w-full rounded-lg border bg-black/30 px-4 py-3 font-sans text-sm text-white placeholder-white/40 transition-colors focus:border-purple-neon focus-ring-light disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`w-full rounded-lg border bg-black/30 px-4 py-3 font-sans text-sm text-white placeholder-white/40 transition-colors focus-ring-light disabled:cursor-not-allowed disabled:opacity-50 ${
               error ? "border-red-500" : "border-(--border-standard)"
             }`}
             aria-invalid={!!error}

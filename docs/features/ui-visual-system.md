@@ -2,7 +2,7 @@
 
 > **Source of truth for MetaDJ Nexus's premium glass-neon presentation**
 
-**Last Modified**: 2026-01-10 15:20 EST
+**Last Modified**: 2026-01-10 15:54 EST
 
 ---
 
@@ -404,7 +404,7 @@ MetaDJ Nexus is built with a mobile-first approach, ensuring optimal touch inter
   - All interactive elements include `aria-label` or `aria-pressed` states; queue uses `role="dialog"`.
   - Search dropdown uses `onMouseDown` prevent-default to keep input focus.
   - Welcome overlay locks body scroll and closes on `Esc`.
-- Focus styling: `.focus-ring-light` for inputs/low-emphasis fields, `.focus-ring` for standard controls, `.focus-ring-glow` for primary CTAs; keep focus on `:focus-visible` only.
+- Focus styling: `.focus-ring-light` for inputs/low-emphasis fields (MetaDJai purple ring: subtle border tint + soft glow), `.focus-ring` for standard controls, `.focus-ring-glow` for primary CTAs; keep focus on `:focus-visible` only.
 
 ## Asset & Media Guidance
 

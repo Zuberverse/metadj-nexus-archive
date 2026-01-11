@@ -1,6 +1,6 @@
 # Changelog
 
-**Last Modified**: 2026-01-10 15:42 EST
+**Last Modified**: 2026-01-10 15:57 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
@@ -15,6 +15,8 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 - Search/playlist inputs use lighter focus rings to reduce visual noise.
 - Focus ring rendering no longer shows squared corners or double outlines.
 - Standardized focus rings in Wisdom editor and MetaDJai popovers to match the core focus utilities.
+- Focus-ring-light now matches the MetaDJai input style across inputs.
+- Applied MetaDJai focus style to Journal title and Dream prompt inputs.
 
 ### 2026-01-09
 

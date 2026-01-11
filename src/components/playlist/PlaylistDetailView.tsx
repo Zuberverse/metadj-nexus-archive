@@ -266,7 +266,7 @@ export function PlaylistDetailView({
                         }
                       }}
                       maxLength={100}
-                      className={`w-full rounded-lg border bg-black/30 px-4 py-3 font-heading text-lg text-white placeholder-white/40 transition-colors focus:border-purple-neon focus-ring-light ${
+                      className={`w-full rounded-lg border bg-black/30 px-4 py-3 font-heading text-lg text-white placeholder-white/40 transition-colors focus-ring-light ${
                         renameError ? "border-red-500" : "border-(--border-standard)"
                       }`}
                       placeholder="Playlist name"

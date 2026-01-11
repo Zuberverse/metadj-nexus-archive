@@ -1,6 +1,6 @@
 # Testing Guide — MetaDJ Nexus
 
-**Last Modified**: 2026-01-08 13:45 EST
+**Last Modified**: 2026-01-10 16:05 EST
 
 ## Overview
 
@@ -38,6 +38,7 @@ npm run test:e2e
 ### Playwright Notes
 - Config: `playwright.config.ts`
 - Uses `npm run dev:http` on port 8100; override with `PORT` or `PLAYWRIGHT_BASE_URL` if needed.
+- Codex Playwright MCP artifacts are stored in `.playwright-mcp/` at the project root (configured via `.mcp.codex.json`).
 
 ### Full Quality Pipeline
 

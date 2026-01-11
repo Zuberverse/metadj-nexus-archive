@@ -883,7 +883,7 @@ export function CinemaOverlay({
                   ? "max-w-[30vh]"
                   : "max-w-[18vh]"
             }`}>
-              <div className="flex items-center gap-3 rounded-full border border-white/30 bg-black/50 px-3 py-1.5 shadow-xl backdrop-blur-xl transition-all duration-300 hover:bg-black/40 hover:border-white/50">
+              <div className="flex items-center gap-3 rounded-full border border-white/30 bg-black/50 px-3 py-1.5 shadow-xl backdrop-blur-xl transition-all duration-300 hover:bg-black/40 hover:border-white/50 focus-within:border-purple-500/50 focus-within:shadow-[0_0_25px_rgba(168,85,247,0.18)]">
                 <span className="text-[11px] uppercase tracking-[0.2em] text-white/90 whitespace-nowrap font-medium pl-1">
                   Prompt
                 </span>
@@ -895,7 +895,7 @@ export function CinemaOverlay({
                   aria-label="Dream prompt"
                   placeholder="Describe your visual style..."
                   rows={1}
-                  className="w-full min-h-[24px] max-h-[120px] resize-none overflow-hidden bg-transparent text-sm text-white focus-ring font-medium placeholder:text-white/40 leading-relaxed translate-y-[1px]"
+                  className="w-full min-h-[24px] max-h-[120px] resize-none overflow-hidden bg-transparent text-sm text-white font-medium placeholder:text-white/40 leading-relaxed translate-y-[1px]"
                   data-csp-style={promptTextareaStyleId}
                 />
                 <button

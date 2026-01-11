@@ -88,6 +88,7 @@ Thumbs.db
 .test-results/
 test-results/
 playwright-report/
+.playwright-mcp/
 
 # Local SSL certificates
 certificates/

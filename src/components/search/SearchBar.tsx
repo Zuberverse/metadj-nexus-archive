@@ -384,7 +384,7 @@ export function SearchBar({
           onChange={(e) => updateQuery(e.target.value)}
           onKeyDown={handleSearchInputKeyDown}
           ref={searchInputRef}
-          className={`w-full bg-white/5 border border-white/20 rounded-lg py-2 ${hideIcon ? "pl-3 pr-10" : "pl-9 pr-10"} text-xs text-white placeholder:text-white/60 focus-ring-light focus:bg-white/10 focus:border-white/30 transition-all`}
+          className={`w-full bg-white/5 border border-white/20 rounded-lg py-2 ${hideIcon ? "pl-3 pr-10" : "pl-9 pr-10"} text-xs text-white placeholder:text-white/60 focus-ring-light focus:bg-white/10 transition-all`}
           aria-label="Search tracks by title"
           aria-describedby={instructionsId}
           role="combobox"
