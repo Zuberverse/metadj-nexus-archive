@@ -1,12 +1,12 @@
 {
   "_meta": {
-    "lastUpdated": "2025-12-27",
-    "version": "1.0",
+    "lastUpdated": "2026-01-12",
+    "version": "1.1",
     "source": "Brand Corpus"
   },
   "category": "identity",
   "title": "Identity",
-  "description": "Brand identity, voice, and visual expression",
+  "description": "Brand identity, voice, visual expression, and platform features",
   "entries": [
     {
       "id": "identity-metadj-creator",
@@ -264,6 +264,198 @@
         "productions",
         "intelligent companion",
         "spectrum ring"
+      ]
+    },
+    {
+      "id": "identity-hub-feature",
+      "title": "Hub: The Music Discovery Center",
+      "content": "Hub is the home base of MetaDJ Nexus—where music discovery, browsing, and playback converge. It displays the music collection library with artwork, track listings, and playback controls. Users can explore by collection (thematic groupings like 'Majestic Ascent' or 'Bridging Reality'), browse individual tracks, build queues, and create playlists. The Hub emphasizes the collection-first approach: music releases as living collections that can grow over time, not static fixed releases. Each collection tells a story—browse by theme, by energy, or by curiosity. The queue system allows building custom listening sessions. Playback controls include shuffle, repeat, and volume. The Hub is the launch point for other experiences—from here, users can enter Cinema for visual immersion or access MetaDJai for creative conversation.",
+      "keywords": [
+        "hub",
+        "music",
+        "browse",
+        "library",
+        "collections",
+        "tracks",
+        "queue",
+        "playlist",
+        "home"
+      ]
+    },
+    {
+      "id": "identity-wisdom-feature",
+      "title": "Wisdom: The Knowledge Hub",
+      "content": "Wisdom is MetaDJ Nexus's knowledge center—a curated collection of guides, essays, and reflections on AI-driven creativity, creative workflows, and the philosophy underlying the work. Content ranges from practical ('How to use AI for music production') to philosophical ('What does it mean to conduct meaning in the AI age'). Wisdom serves as both educational resource and invitation to deeper engagement with MetaDJ's approach. The content demonstrates the 'proof over hype' principle: concrete methodologies, documented experiments, and honest reflections on what works. Wisdom articles are organized by section and topic. Users can browse by category or ask MetaDJai to recommend content based on their interests. The goal is knowledge sharing—showing others the path to AI-amplified creativity.",
+      "keywords": [
+        "wisdom",
+        "knowledge",
+        "guides",
+        "essays",
+        "philosophy",
+        "learn",
+        "articles",
+        "content",
+        "education"
+      ]
+    },
+    {
+      "id": "identity-journal-feature",
+      "title": "Journal: The Local Capture Tool",
+      "content": "Journal is a local-first note capture tool within MetaDJ Nexus—designed for rapid thought capture with voice dictation support. It's built for the way ideas actually arrive: suddenly, incompletely, at inconvenient times. Journal lets users capture thoughts via typing or voice (speech-to-text), storing notes locally on the device without cloud sync. This design prioritizes privacy and immediacy over collaboration. The Journal complements MetaDJai for different creative moments: Journal captures raw thoughts when they arrive; MetaDJai helps develop and structure those thoughts later. For neurodivergent creators especially, the friction-free capture matters—ideas that escape before reaching a 'proper' notes app never get developed. Journal catches them in the moment.",
+      "keywords": [
+        "journal",
+        "notes",
+        "capture",
+        "voice",
+        "dictation",
+        "local",
+        "writing",
+        "thoughts",
+        "ideas"
+      ]
+    },
+    {
+      "id": "identity-target-audience",
+      "title": "Who MetaDJ Nexus Is For",
+      "content": "MetaDJ Nexus is built for creative people who want to explore AI-amplified creativity—especially neurodivergent creators, solo founders, and anyone who has more ideas than time to execute them. Primary audience: neurodivergent creatives who thrive with systems but struggle with traditional productivity approaches. People whose brains generate more possibilities than linear workflows can capture. Solo founders and independent creators building without large teams. AI-curious creatives who want to understand human-AI collaboration beyond the hype. Secondary audience: the DJ and electronic music community exploring new tools. Metaverse-curious creators interested in virtual worlds and immersive experiences. Anyone who resonates with the philosophy of technology amplifying rather than replacing human creativity. The platform assumes intelligence and curiosity. It doesn't simplify concepts patronizingly—it explains them clearly for people ready to go deep.",
+      "keywords": [
+        "audience",
+        "who is this for",
+        "target",
+        "creators",
+        "neurodivergent",
+        "adhd",
+        "solo founders",
+        "independent",
+        "ai curious"
+      ]
+    },
+    {
+      "id": "identity-adhd-friendly-design",
+      "title": "ADHD-Friendly Design Philosophy",
+      "content": "MetaDJ Nexus and MetaDJai are designed with neurodivergent brains in mind—particularly ADHD patterns. This isn't an afterthought; the creator behind MetaDJ has ADHD, and the platform reflects what actually works. Design principles: Structure enables freedom (clear organization means less mental overhead). Progressive disclosure (summary first, details on demand). Bold the signal (key information stands out visually). Friction-free capture (Journal exists because ideas escape). MetaDJai response patterns follow the same philosophy: TL;DR summaries for long responses. Bullets and structure over dense paragraphs. Tables for comparisons. Clear headings for scanning. No buried leads—the point comes first. The goal isn't accommodation; it's optimization for how many creative brains actually work. The same patterns that help ADHD thinkers often help everyone—clarity and structure rarely hurt.",
+      "keywords": [
+        "adhd",
+        "neurodivergent",
+        "accessibility",
+        "design",
+        "structure",
+        "clarity",
+        "friendly",
+        "brain",
+        "focus"
+      ]
+    },
+    {
+      "id": "identity-cinema-cosmos-scene",
+      "title": "Cosmos Visualizer: The Infinite Journey",
+      "content": "Cosmos is MetaDJ Nexus's signature 3D visualizer—an audio-reactive cosmic environment that responds to music in real-time. The visual language: deep space, flowing nebulae, geometric forms emerging from darkness, cosmic gradients from purple through cyan to magenta. The emotional register: expansive, contemplative, infinite. Cosmos embodies the 'Taking you on a cosmic journey' promise literally. The infinite starfield invites mental wandering while audio-reactive elements anchor attention to the music. Best paired with: techno-orchestral tracks from Majestic Ascent, progressive builds, music that rewards patience. The philosophy: visuals should serve the music, not compete with it. Cosmos provides atmosphere without distraction—immersive enough to enter but not so demanding it pulls focus from the sonic journey.",
+      "keywords": [
+        "cosmos",
+        "visualizer",
+        "3d",
+        "space",
+        "stars",
+        "cosmic",
+        "nebula",
+        "immersive",
+        "journey"
+      ]
+    },
+    {
+      "id": "identity-cinema-disco-ball-scene",
+      "title": "Disco Ball Visualizer: Celebration Energy",
+      "content": "Disco Ball is the high-energy visualizer—an audio-reactive crystalline sphere that fragments light into dancing patterns. The visual language: refracted light, dynamic movement, celebration geometry. The emotional register: joyful, energetic, social. Disco Ball channels the communal energy of the dancefloor into a visual experience. It responds to rhythm with enthusiasm, matching the energy of upbeat tracks. Best paired with: vocal tracks from Bridging Reality or Metaverse Revelation, anything meant to move bodies. The philosophy: some moments call for unbridled energy. Disco Ball provides the visual equivalent of turning up the volume—unapologetic celebration without restraint.",
+      "keywords": [
+        "disco ball",
+        "visualizer",
+        "3d",
+        "energy",
+        "party",
+        "dance",
+        "celebration",
+        "fun",
+        "upbeat"
+      ]
+    },
+    {
+      "id": "identity-cinema-black-hole-scene",
+      "title": "Black Hole Visualizer: Deep Focus",
+      "content": "Black Hole is the focus-oriented visualizer—an audio-reactive gravitational phenomenon that draws attention inward. The visual language: event horizon, particle streams, controlled intensity. The emotional register: focused, concentrated, hypnotic. Black Hole serves deep work. The visual pull toward center mirrors the mental state of concentrated attention. Movement is purposeful rather than chaotic—active enough to engage peripheral awareness without demanding focus. Best paired with: instrumental tracks, ambient elements, music for working rather than active listening. The philosophy: sometimes visuals should recede rather than advance. Black Hole provides just enough stimulus to anchor attention without competing for cognitive resources.",
+      "keywords": [
+        "black hole",
+        "visualizer",
+        "3d",
+        "focus",
+        "concentration",
+        "deep work",
+        "gravity",
+        "hypnotic",
+        "minimal"
+      ]
+    },
+    {
+      "id": "identity-cinema-space-travel-scene",
+      "title": "Space Travel Visualizer: Forward Motion",
+      "content": "Space Travel is the momentum visualizer—an audio-reactive starfield that creates the sensation of moving through space. The visual language: streaming stars, forward velocity, warp-speed energy. The emotional register: progressive, driven, optimistic. Space Travel embodies forward momentum. The visual of traveling through space matches the feeling of making progress, moving toward something. Best paired with: progressive tracks with builds, music that earns its peaks, anything with forward momentum in its structure. The philosophy: some work needs the feeling of going somewhere. Space Travel provides that visual metaphor—the sense that effort connects to progress, that the journey has direction.",
+      "keywords": [
+        "space travel",
+        "visualizer",
+        "3d",
+        "stars",
+        "motion",
+        "warp",
+        "velocity",
+        "progress",
+        "forward"
+      ]
+    },
+    {
+      "id": "identity-cinema-pixel-paradise-scene",
+      "title": "Pixel Paradise Visualizer: Retro Warmth",
+      "content": "Pixel Paradise is the retro-futuristic 2D visualizer—audio-reactive pixel art environments with 8-bit aesthetic warmth. The visual language: chunky pixels, limited palettes, nostalgic digital landscapes. The emotional register: playful, warm, deliberately low-fi. Pixel Paradise connects to the 80s warmth aesthetic that runs through MetaDJ's work. It references early video games, the era when digital meant possibility rather than complexity. Best paired with: tracks with 8-bit elements, anything from collections with retro touchstones. The philosophy: sometimes low-resolution carries more warmth than high-fidelity. Pixel Paradise celebrates the aesthetic of constraint—what becomes possible when limitations force creativity.",
+      "keywords": [
+        "pixel paradise",
+        "visualizer",
+        "2d",
+        "retro",
+        "8-bit",
+        "pixel art",
+        "nostalgic",
+        "warmth",
+        "games"
+      ]
+    },
+    {
+      "id": "identity-cinema-synthwave-horizon-scene",
+      "title": "Synthwave Horizon Visualizer: Neon Dreams",
+      "content": "Synthwave Horizon is the aesthetic-forward 2D visualizer—audio-reactive neon landscapes with retrofuturistic styling. The visual language: neon grids, sunset gradients, palm silhouettes, chrome text effects. The emotional register: dreamy, nostalgic, aspirational. Synthwave Horizon leans fully into the 80s visual vocabulary—the neon-soaked vision of the future that never quite arrived but still resonates. It matches the sonic palette of synthwave music but complements any track with retro-futuristic energy. Best paired with: synthwave elements, melodic electronic tracks, anything that benefits from aesthetic context. The philosophy: some visuals are about establishing mood rather than responding to music. Synthwave Horizon creates atmosphere first, responds to audio second.",
+      "keywords": [
+        "synthwave horizon",
+        "visualizer",
+        "2d",
+        "neon",
+        "synthwave",
+        "retro",
+        "80s",
+        "sunset",
+        "grid"
+      ]
+    },
+    {
+      "id": "identity-dream-feature",
+      "title": "Dream: AI Visual Generation Layer",
+      "content": "Dream is an experimental AI visual generation layer powered by Daydream/StreamDiffusion technology. When active, it ingests the Cinema feed and generates a real-time AI-transformed visual overlay. Dream represents the bleeding edge of AI-driven visual experience—generative imagery that responds to both the audio and visual context in near real-time. The feature requires warm-up time and works even without music playing. Dream demonstrates the 'technology amplifies' philosophy in visual form: taking human-curated visual input and generating unexpected variations through AI processing. The experience is inherently experimental—sometimes surprising, sometimes chaotic, always exploratory. Dream is optional and toggled separately from standard Cinema visualizers. It serves users who want to explore the frontier of AI-generated visual experience, not those seeking polished, predictable results.",
+      "keywords": [
+        "dream",
+        "daydream",
+        "ai generation",
+        "streamdiffusion",
+        "experimental",
+        "generative",
+        "visual",
+        "overlay",
+        "frontier"
       ]
     }
   ]

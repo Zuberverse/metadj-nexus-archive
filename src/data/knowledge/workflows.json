@@ -1,7 +1,7 @@
 {
     "_meta": {
-        "lastUpdated": "2025-12-26",
-        "version": "1.0",
+        "lastUpdated": "2026-01-12",
+        "version": "1.1",
         "source": "Brand Corpus"
     },
     "category": "workflows",
@@ -61,6 +61,95 @@
                 "atmosphere",
                 "color",
                 "prompts"
+            ]
+        },
+        {
+            "id": "workflow-music-discovery",
+            "title": "Music Discovery & Exploration",
+            "content": "MetaDJai can help explore the music catalog in personalized ways.\n\n**Discovery Approaches:**\n- **By mood**: Tell MetaDJai the current emotional state or desired feeling. Example: \"I need something energizing but not aggressive\" or \"Something contemplative for late-night work.\"\n- **By activity**: Describe what the listener is doing. Example: \"I'm coding and need focus music\" or \"Getting ready for a presentation.\"\n- **By curiosity**: Ask about specific tracks, collections, or genres. Example: \"What's the story behind Majestic Ascent?\" or \"Which tracks have 8-bit elements?\"\n- **By exploration**: Request surprises. Example: \"Play something I haven't heard yet\" or \"What's your favorite track and why?\"\n\nMetaDJai draws from catalog knowledge to make recommendations based on genre, energy, and thematic content. It can explain the creative intent behind any track or collection.",
+            "keywords": [
+                "music discovery",
+                "recommendations",
+                "explore",
+                "find music",
+                "mood",
+                "suggest",
+                "catalog",
+                "what to listen"
+            ]
+        },
+        {
+            "id": "workflow-learning-ai-creativity",
+            "title": "Learning About AI-Driven Creativity",
+            "content": "MetaDJai can explain the creative methodologies and philosophies that power MetaDJ's work.\n\n**Topics to explore:**\n- **Synthetic Orchaistra**: How AI serves as an infinite ensemble under human direction. Ask: \"How does MetaDJ use AI to make music?\"\n- **Iterative Curation**: The generate → select → refine workflow. Ask: \"What's the curation process like?\"\n- **Three-tier framework**: Compose, Orchestrate, Conduct—understanding human-AI roles. Ask: \"What does 'humans conduct meaning' actually mean?\"\n- **Digital Jockey concept**: The evolution of DJing in the AI age. Ask: \"What's a Digital Jockey?\"\n- **Brand Corpus**: How identity gets encoded for AI consistency. Ask: \"How does MetaDJai know how to sound like this?\"\n\nMetaDJai explains these concepts in accessible terms, with practical examples from the actual creative work.",
+            "keywords": [
+                "learn",
+                "ai creativity",
+                "how it works",
+                "methodology",
+                "explain",
+                "teach",
+                "understand",
+                "philosophy"
+            ]
+        },
+        {
+            "id": "workflow-platform-navigation",
+            "title": "Platform Navigation Help",
+            "content": "MetaDJai provides guidance on using MetaDJ Nexus features.\n\n**What to ask about:**\n- **Hub**: \"How do I browse music?\" \"What are collections?\" \"How does the queue work?\"\n- **Cinema**: \"What visualizers are available?\" \"How do I go fullscreen?\" \"What's Dream mode?\"\n- **Wisdom**: \"What content is in Wisdom?\" \"How do I find guides?\"\n- **Journal**: \"What's the Journal for?\" \"How does voice dictation work?\"\n- **Playback**: \"How do I shuffle?\" \"Can I create playlists?\" \"How do I control volume?\"\n\nMetaDJai can walk through any feature step by step or provide quick answers for experienced users. Just describe what you're trying to accomplish.",
+            "keywords": [
+                "help",
+                "how to",
+                "navigation",
+                "features",
+                "tutorial",
+                "guide",
+                "use",
+                "platform"
+            ]
+        },
+        {
+            "id": "workflow-creative-sparring",
+            "title": "Creative Sparring Partner",
+            "content": "MetaDJai is designed for active creative collaboration, not just answering questions.\n\n**Sparring modes:**\n- **Challenge mode**: Present an idea and ask MetaDJai to poke holes, find weaknesses, or identify what's missing. Example: \"Challenge this concept.\"\n- **Expansion mode**: Start with a seed and ask for variations, adjacent ideas, or unexpected angles. Example: \"Give me 5 different directions for this.\"\n- **Synthesis mode**: Share scattered thoughts and ask MetaDJai to find patterns, consolidate into themes, or create structure. Example: \"What's the thread connecting these ideas?\"\n- **Devil's advocate**: Ask MetaDJai to argue the opposite position to strengthen thinking. Example: \"Why might this NOT work?\"\n\nThe goal is rapid iteration. MetaDJai matches energy—brief when speed matters, detailed when depth serves the work.",
+            "keywords": [
+                "sparring",
+                "brainstorm",
+                "creative",
+                "challenge",
+                "ideas",
+                "collaborate",
+                "partner",
+                "iterate"
+            ]
+        },
+        {
+            "id": "workflow-getting-started",
+            "title": "Getting Started with MetaDJ Nexus",
+            "content": "New to MetaDJ Nexus? Here's how to begin.\n\n**First steps:**\n1. **Explore the music**: Browse collections in the Hub. Start with 'Majestic Ascent' for the signature sound, or 'Bridging Reality' for vocal-driven energy.\n2. **Try Cinema**: Click a visualizer to enter fullscreen immersion. Cosmos for cosmic gradients, Disco Ball for playful energy, Space Travel for calm focus.\n3. **Chat with MetaDJai**: Ask anything—about the music, the platform, or creative ideas. Example first questions: \"What should I listen to first?\" or \"Tell me about MetaDJ.\"\n4. **Discover Wisdom**: Explore guides and essays on AI creativity, creative workflows, and the philosophy behind the work.\n\nMetaDJai is here to help at any point. There's no wrong way to explore—follow curiosity.",
+            "keywords": [
+                "getting started",
+                "new user",
+                "beginner",
+                "first time",
+                "onboarding",
+                "start",
+                "how to begin",
+                "introduction"
+            ]
+        },
+        {
+            "id": "workflow-metadjai-capabilities",
+            "title": "What MetaDJai Can Help With",
+            "content": "MetaDJai is a Creative Companion—here's what it does well.\n\n**Strong capabilities:**\n- Music discovery and recommendations based on mood, activity, or curiosity\n- Explaining MetaDJ's creative philosophy, methods, and approach\n- Platform navigation and feature guidance\n- Creative brainstorming, idea expansion, and sparring\n- Writing assistance—drafting, structuring, tone-checking\n- Synthesizing messy thoughts into clear frameworks\n- Deep work support and accountability\n\n**What MetaDJai doesn't do:**\n- Generate music, images, or code directly (it's a conversational companion, not a generator)\n- Access external websites or real-time information beyond its knowledge base\n- Remember previous conversations (each session starts fresh)\n- Make decisions for the user—it offers options, humans choose\n\nMetaDJai is most useful when users bring creative intent. The more specific the question or challenge, the more useful the response.",
+            "keywords": [
+                "capabilities",
+                "what can you do",
+                "help with",
+                "limitations",
+                "features",
+                "abilities",
+                "metadjai"
             ]
         }
     ]
