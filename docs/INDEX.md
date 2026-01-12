@@ -2,7 +2,7 @@
 
 > Quick navigation to all project documentation
 
-**Last Modified**: 2025-12-28 09:48 EST
+**Last Modified**: 2026-01-10 21:50 EST
 
 ---
 
@@ -68,6 +68,7 @@
 | [REPLIT](./REPLIT.md) | Replit deployment guide |
 | [MEDIA-STORAGE](./MEDIA-STORAGE.md) | Cloudflare R2 storage configuration |
 | [INCIDENT-RESPONSE](./INCIDENT-RESPONSE.md) | Incident handling procedures |
+| [operations/INCIDENT-POSTMORTEM-TEMPLATE](./operations/INCIDENT-POSTMORTEM-TEMPLATE.md) | Status update and post-mortem template |
 
 ### Operations
 - [operations/](./operations/) — Deployment and operations guides

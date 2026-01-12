@@ -2,7 +2,7 @@
 
 > **Curated listening experiences based on mood and activity states**
 
-**Last Modified**: 2026-01-05 18:06 EST
+**Last Modified**: 2026-01-11 12:23 EST
 **Status**: GATED (Left Panel only, behind feature flag)
 **Feature Flag**: `FEATURE_MOOD_CHANNELS` gates the Left Panel list (`src/lib/app.constants.ts`)
 
@@ -10,9 +10,9 @@
 
 ## Feature Status (Current)
 
-Mood Channels are currently **gated behind the `FEATURE_MOOD_CHANNELS` feature flag**. The Left Panel Mood Channel list will be enabled when the catalog is broad enough to make channel browsing feel distinct.
+Mood Channels are currently **staged and not surfaced in the UI**. The data and scoring logic live behind the `FEATURE_MOOD_CHANNELS` feature flag so the Left Panel list can ship once the catalog is broad enough to make channel browsing feel distinct.
 
-**Catalog note**: The current catalog only includes Majestic Ascent. Channels that reference future collections are placeholders until the catalog expands.
+**Catalog note**: The current catalog only includes Majestic Ascent. All channels map to Majestic Ascent until additional collections are released.
 
 **To enable the Left Panel list**:
 1. Set `FEATURE_MOOD_CHANNELS = true` in `src/lib/app.constants.ts`
@@ -62,7 +62,7 @@ Mood Channels embody MetaDJ's approach to intelligent curation:
 
 ### Energy Boost
 
-**Purpose**: Forward motion — placeholder for a future high-energy collection (currently Majestic Ascent).
+**Purpose**: Forward motion — built from Majestic Ascent until the catalog expands.
 
 | Property | Value |
 |----------|-------|
@@ -70,7 +70,7 @@ Mood Channels embody MetaDJ's approach to intelligent curation:
 | Energy Level | 9/10 |
 | BPM Range | 125-145 |
 | Preferred Genres | Techno, EDM |
-| Preferred Collections | Majestic Ascent (temporary) |
+| Preferred Collections | Majestic Ascent (current) |
 | Visual Identity | Fuchsia to purple to indigo gradient |
 | Icon | Lightning bolt with motion lines |
 
@@ -78,15 +78,15 @@ Mood Channels embody MetaDJ's approach to intelligent curation:
 
 ### Creative Inspiration
 
-**Purpose**: Spark the next idea — placeholder for a future collection (currently Majestic Ascent).
+**Purpose**: Spark the next idea — built from Majestic Ascent until the catalog expands.
 
 | Property | Value |
 |----------|-------|
 | ID | `creative-flow` |
 | Energy Level | 6/10 |
 | BPM Range | 110-135 |
-| Preferred Genres | Retro Future, Melodic Techno |
-| Preferred Collections | Majestic Ascent (temporary) |
+| Preferred Genres | Retro Future, Melodic |
+| Preferred Collections | Majestic Ascent (current) |
 | Visual Identity | Cyan to blue to indigo gradient |
 | Icon | Flowing wave with sparkle accent |
 

@@ -96,6 +96,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { announce } from '@/components/accessibility/ScreenReaderAnnouncer';
 import { DEFAULT_COLLECTION_ID } from '@/lib/app.constants';
 import { logger } from '@/lib/logger';
+import { useReducedMotion } from '@/lib/motion-utils';
 import { STORAGE_KEYS, getBoolean, setBoolean, getString, setString, getValue, setValue, isStorageAvailable } from '@/lib/storage';
 import { useModal } from './ModalContext';
 import type { Track, UIContextValue, ActiveView, Collection, LeftPanelTab, SelectedCollectionSource, WisdomSection } from '@/types';
@@ -253,22 +254,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     setString(STORAGE_KEYS.ACTIVE_VIEW, activeView);
   }, [activeView]);
 
-  // Reduced motion preference
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReducedMotion(mediaQuery.matches);
-
-    const handler = (event: MediaQueryListEvent) => {
-      setReducedMotion(event.matches);
-    };
-
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
-  }, []);
+  // Reduced motion preference - use centralized hook from motion-utils
+  const reducedMotion = useReducedMotion();
 
   // Wisdom section tracking (for MetaDJai content context)
   const [wisdomSection, setWisdomSection] = useState<WisdomSection>(null);

@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2025-12-31",
+    "lastUpdated": "2026-01-11",
     "version": "1.0",
     "source": "Brand Corpus"
   },
@@ -220,7 +220,7 @@
     {
       "id": "metadj-mission",
       "title": "MetaDJ's Mission & Vision",
-      "content": "Mission (MetaDJ): MetaDJ aims to become the living proof point that a solo creator amplified by AI can build meaningful creative experiences—performances that transform how people see what's possible.\n\nMission (Zuberant ecosystem): Foster authentic expression and meaningful connection at scale.\n\nVision: Technology amplifying capability so people can create what they envision and pursue the life they desire.\n\nAspiration: Spark imagination to bridge reality—closing the gap between vision and creation.\n\nMetaDJ expresses the broader mission through performances, collections, and multi-sensory experiences. AI handles mechanical execution; human curation, orchestration, and taste shape meaning.",
+      "content": "Mission (MetaDJ): MetaDJ aims to become the living proof point that a solo creator amplified by AI can build meaningful creative experiences—performances that transform how people see what's possible.\n\nMission (Zuberant ecosystem): To spark transformation.\n\nVision: A world where technology amplifies human capability—anyone can create what they envision and pursue the life they desire.\n\nMethod: Through innovative technology, authentic expression, and meaningful connection.\n\nTagline: Spark imagination to bridge reality.\n\nMetaDJ expresses the broader mission through performances, collections, and multi-sensory experiences. AI handles mechanical execution; human curation, orchestration, and taste shape meaning.",
       "keywords": [
         "mission",
         "purpose",
@@ -229,6 +229,23 @@
         "amplification",
         "spark",
         "imagination"
+      ]
+    },
+    {
+      "id": "metadj-chronicles",
+      "title": "MetaDJ Chronicles & The Humble Hero",
+      "content": "MetaDJ Chronicles is the official label for all lore-driven storytelling content featuring MetaDJ as a character within the Zuberverse—animated content, narrative media, and character-focused experiences.\n\nIn the Chronicles, MetaDJ embodies the Humble Hero archetype—passionate and driven, yet grounded in vulnerability and authentic struggle. This isn't a savior who rescues passive audiences; it's an inspirer who leads by example, showing what's possible while acknowledging the real difficulties of the journey.\n\nWhat Humble Hero means:\n- Not a savior: MetaDJ inspires by example rather than rescuing others\n- Vulnerable strength: Power comes from acknowledging struggle, not hiding it\n- Transformation through work: Growth is earned through doing the work, publicly and imperfectly\n- Honest about the journey: The struggles are real, not manufactured drama\n\nThe Humble Hero gains depth through contrast with GrumpyDJ—the shadow self representing valid skepticism, internal struggles, and the contrarian voice. This isn't good vs. evil; it's the honest tension between optimistic possibility and grounded reality.\n\nChronicles are distinct from documentary-style content about the real Z/MetaDJ journey. Documentary captures the creator's actual path; Chronicles are narrative fiction featuring MetaDJ as a character.\n\nAs the storyworld expands, MetaDJ Chronicles may evolve to Zuberverse Chronicles to encompass other characters and storylines.",
+      "keywords": [
+        "chronicles",
+        "humble hero",
+        "hero",
+        "character",
+        "lore",
+        "story",
+        "narrative",
+        "archetype",
+        "grumpydj",
+        "zuberverse"
       ]
     },
     {

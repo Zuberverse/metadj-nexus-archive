@@ -9,7 +9,8 @@
  * - Smooth drag interaction for desktop and mobile
  * - Large touch target (48px) for mobile usability
  * - Hover effects for better UX
- * - Accessible slider with ARIA labels and keyboard support
+ * - Accessible slider with ARIA labels and full keyboard support
+ *   (Arrow keys 5%, PageUp/Down 10%, Home/End for start/end)
  *
  * PERFORMANCE OPTIMIZATION:
  * - Wrapped with React.memo to prevent unnecessary re-renders
@@ -188,23 +189,46 @@ function ProgressBarComponent({
           tabIndex={isInteractive ? 0 : -1}
           onKeyDown={(e) => {
             // Keyboard accessibility with proper clamping
+            // WCAG 2.1 slider: Arrow keys (5%), PageUp/Down (10%), Home/End (0%/100%)
             if (!isInteractive) return
 
             const currentPercent = Number.isFinite(displayProgress) ? displayProgress : 0
             let newPosition = currentPercent
-            if (e.key === 'ArrowLeft') {
-              e.preventDefault()
-              newPosition = currentPercent - 5
-            } else if (e.key === 'ArrowRight') {
-              e.preventDefault()
-              newPosition = currentPercent + 5
-            } else {
-              return
+
+            switch (e.key) {
+              case 'ArrowLeft':
+              case 'ArrowDown':
+                e.preventDefault()
+                newPosition = currentPercent - 5
+                break
+              case 'ArrowRight':
+              case 'ArrowUp':
+                e.preventDefault()
+                newPosition = currentPercent + 5
+                break
+              case 'PageDown':
+                e.preventDefault()
+                newPosition = currentPercent - 10
+                break
+              case 'PageUp':
+                e.preventDefault()
+                newPosition = currentPercent + 10
+                break
+              case 'Home':
+                e.preventDefault()
+                newPosition = 0
+                break
+              case 'End':
+                e.preventDefault()
+                newPosition = 100
+                break
+              default:
+                return
             }
-            
+
             // CLAMP to [0, 100] to prevent invalid seek positions
             newPosition = Math.max(0, Math.min(100, newPosition))
-            
+
             updateSeekPosition(newPosition)
             onSeek?.(newPosition / 100)
           }}

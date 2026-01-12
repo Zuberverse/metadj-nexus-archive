@@ -1,6 +1,14 @@
 "use client"
 
+/**
+ * Toast Context
+ *
+ * Manages toast notifications with collapse support for rapid updates.
+ * Includes screen reader announcements for accessibility (WCAG 2.1 AA).
+ */
+
 import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from "react"
+import { announce } from '@/components/accessibility/ScreenReaderAnnouncer';
 import { type ToastVariant } from "@/types"
 
 // Time window for collapsing similar toasts (ms)
@@ -67,6 +75,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       // New collapse group - register it
       collapseMapRef.current.set(toast.collapseKey, { id, timestamp: now })
     }
+
+    // Announce toast to screen readers
+    // Use 'alert' for error toasts to ensure immediate announcement
+    const announcementType = toast.variant === 'error' ? 'alert' : 'status';
+    const priority = toast.variant === 'error' ? 'assertive' : 'polite';
+    announce(toast.message, { type: announcementType, priority });
 
     setToasts((prev) => {
       // Limit to 3 toasts, removing oldest if needed

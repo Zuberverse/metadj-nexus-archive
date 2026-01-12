@@ -579,7 +579,7 @@ function NowPlayingSectionComponent({
             </div>
             <div className="text-center space-y-1">
               <p className="text-sm font-heading font-bold tracking-wide text-heading-solid opacity-80">Choose a track to start listening</p>
-              <p className="text-[11px] text-white/55">Browse collections or search the catalog.</p>
+              <p className="text-[11px] text-muted-accessible">Browse collections or search the catalog.</p>
             </div>
           </div>
         )}

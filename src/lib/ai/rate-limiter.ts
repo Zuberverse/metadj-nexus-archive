@@ -7,6 +7,7 @@ import {
   MAX_MESSAGES_PER_REQUEST,
 } from '@/lib/ai/limits'
 import { logger } from '@/lib/logger'
+import { BoundedMap, DEFAULT_MAX_ENTRIES } from '@/lib/rate-limiting/bounded-map'
 import {
   getClientIdentifier as getClientIdentifierBase,
   generateSessionId as generateSessionIdBase,
@@ -434,9 +435,9 @@ export interface RateLimitResult {
 // Re-export ClientIdentifier type
 export type { ClientIdentifier }
 
-// In-memory rate limiting storage
-const rateLimitMap = new Map<string, RateLimitRecord>()
-const transcribeRateLimitMap = new Map<string, RateLimitRecord>()
+// In-memory rate limiting storage with bounded growth (LRU eviction)
+const rateLimitMap = new BoundedMap<string, RateLimitRecord>(DEFAULT_MAX_ENTRIES)
+const transcribeRateLimitMap = new BoundedMap<string, RateLimitRecord>(DEFAULT_MAX_ENTRIES)
 const CLEANUP_INTERVAL_MS = RATE_LIMIT_WINDOW_MS
 let lastCleanup = 0
 

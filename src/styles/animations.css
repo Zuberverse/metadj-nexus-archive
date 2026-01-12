@@ -120,9 +120,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Prevent jitter from rapid updates */
+  /* GPU layer promotion for smooth updates (avoid will-change: contents as it's expensive) */
   transform: translateZ(0);
-  will-change: contents;
 }
 
 .streaming-text p,

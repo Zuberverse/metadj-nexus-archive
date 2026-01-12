@@ -232,11 +232,11 @@ export function HubExperience({
                       {card.excerpt}
                     </p>
                     <div className="mt-auto pt-2 flex items-center justify-between">
-                      <p className="text-[10px] text-white/55 uppercase tracking-wider flex items-center gap-1.5">
+                      <p className="text-[10px] text-muted-accessible uppercase tracking-wider flex items-center gap-1.5">
                         <card.icon className="h-3 w-3" />
                         {card.type}
                       </p>
-                      <p className="text-[10px] text-white/55 uppercase tracking-wider">
+                      <p className="text-[10px] text-muted-accessible uppercase tracking-wider">
                         {card.meta}
                       </p>
                     </div>

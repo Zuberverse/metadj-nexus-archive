@@ -1,6 +1,6 @@
 # MetaDJai Knowledge Base Standard
 
-**Last Modified**: 2025-12-27 15:26 EST
+**Last Modified**: 2026-01-11 13:15 EST
 
 ## Purpose
 
@@ -28,12 +28,13 @@ Applies to:
 - Avoid "AI assistant" in content (ok in search synonyms only).
 - Use **Digital Jockey** with capitalization.
 
-## Canonical Mission / Vision / Aspiration
+## Canonical Mission / Vision / Method / Tagline
 
 When quoted, keep the short-form sentences verbatim:
-- **Mission**: Foster authentic expression and meaningful connection at scale.
-- **Vision**: Technology amplifying capability so people can create what they envision and pursue the life they desire.
-- **Aspiration**: Spark imagination to bridge reality—closing the gap between vision and creation.
+- **Mission**: To spark transformation.
+- **Vision**: A world where technology amplifies human capability—anyone can create what they envision and pursue the life they desire.
+- **Method**: Through innovative technology, authentic expression, and meaningful connection.
+- **Tagline**: Spark imagination to bridge reality.
 
 Source: `1-system/1-context/1-knowledge/0-core/core-mission-vision.md`.
 
@@ -47,12 +48,12 @@ Source: `1-system/1-context/1-knowledge/0-core/core-mission-vision.md`.
 
 1. When Brand Corpus canon changes, update the knowledge base entries.
 2. Keep `_meta.lastUpdated` current in each knowledge JSON.
-3. Re-check mission/vision/aspiration phrasing after edits.
+3. Re-check mission/vision/method/tagline phrasing after edits.
 
 ## Review Checklist
 
 - Third-person voice preserved.
 - Canonical glossary terms used.
-- Mission/Vision/Aspiration verbatim when present.
+- Mission/Vision/Method/Tagline verbatim when present.
 - MetaDJai persona framing correct.
 - `_meta.lastUpdated` updated.

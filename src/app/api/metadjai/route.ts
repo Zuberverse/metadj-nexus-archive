@@ -27,7 +27,7 @@ import {
   SESSION_COOKIE_PATH,
   RATE_LIMIT_WINDOW_MS,
 } from '@/lib/ai/rate-limiter';
-import { recordSpending } from '@/lib/ai/spending-alerts';
+import { isSpendingAllowed, recordSpending } from '@/lib/ai/spending-alerts';
 import { getTools } from '@/lib/ai/tools';
 import { validateMetaDjAiRequest } from '@/lib/ai/validation';
 import { getEnv } from '@/lib/env';
@@ -101,6 +101,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: 'MetaDJai is not configured.' },
       { status: 503 },
+    );
+  }
+
+  // Check spending limits before processing (when blocking is enabled)
+  if (!(await isSpendingAllowed())) {
+    logger.warn('AI spending limit exceeded - request blocked', { requestId });
+    return NextResponse.json(
+      { error: 'AI spending limit exceeded. Please try again later.' },
+      { status: 429 },
     );
   }
 

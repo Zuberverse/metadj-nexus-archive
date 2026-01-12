@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 const KB = 1024;
 const MB = 1024 * KB;
 
+/**
+ * Default timeout for reading request body (30 seconds)
+ * Prevents slowloris-style attacks where clients send data very slowly
+ */
+const BODY_READ_TIMEOUT_MS = 30_000;
+
 export const MAX_REQUEST_SIZE = {
   '/api/log': 10 * KB,
   '/api/health': 1 * KB,
@@ -34,6 +40,22 @@ export function buildPayloadTooLargeResponse(maxBytes: number): NextResponse {
   );
 }
 
+/**
+ * Build a timeout response for slow body reads
+ */
+function buildBodyTimeoutResponse(): NextResponse {
+  return new NextResponse(
+    JSON.stringify({
+      error: 'Request Timeout',
+      message: 'Request body read timed out. Please try again.',
+    }),
+    {
+      status: 408,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+}
+
 type BodyReadResult =
   | { ok: true; body: string; size: number }
   | { ok: false; response: NextResponse };
@@ -48,9 +70,21 @@ function concatChunks(chunks: Uint8Array[], totalLength: number): Uint8Array {
   return combined;
 }
 
+/**
+ * Read request body with size limit and timeout protection
+ *
+ * @param request - Next.js request object
+ * @param maxBytes - Maximum allowed body size in bytes
+ * @param timeoutMs - Timeout in milliseconds (default: 30 seconds)
+ * @returns Body read result or error response
+ *
+ * Security: Protects against slowloris-style attacks by enforcing a timeout
+ * on body reading. If a client sends data too slowly, the request is aborted.
+ */
 export async function readRequestBodyWithLimit(
   request: NextRequest,
-  maxBytes: number
+  maxBytes: number,
+  timeoutMs: number = BODY_READ_TIMEOUT_MS
 ): Promise<BodyReadResult> {
   const contentLength = request.headers.get('content-length');
   if (contentLength) {
@@ -64,30 +98,57 @@ export async function readRequestBodyWithLimit(
     return { ok: true, body: '', size: 0 };
   }
 
-  const reader = request.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let size = 0;
+  // Wrap body reading with timeout to prevent slowloris attacks
+  const readBodyWithTimeout = async (): Promise<BodyReadResult> => {
+    const reader = request.body!.getReader();
+    const chunks: Uint8Array[] = [];
+    let size = 0;
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    if (!value) continue;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (!value) continue;
 
-    size += value.byteLength;
-    if (size > maxBytes) {
-      await reader.cancel();
-      return { ok: false, response: buildPayloadTooLargeResponse(maxBytes) };
+        size += value.byteLength;
+        if (size > maxBytes) {
+          await reader.cancel();
+          return { ok: false, response: buildPayloadTooLargeResponse(maxBytes) };
+        }
+        chunks.push(value);
+      }
+
+      if (!chunks.length) {
+        return { ok: true, body: '', size };
+      }
+
+      const combined = concatChunks(chunks, size);
+      const body = new TextDecoder().decode(combined);
+      return { ok: true, body, size };
+    } catch (error) {
+      // Handle reader cancellation or other errors
+      try {
+        await reader.cancel();
+      } catch {
+        // Ignore cancel errors
+      }
+      throw error;
     }
-    chunks.push(value);
-  }
+  };
 
-  if (!chunks.length) {
-    return { ok: true, body: '', size };
-  }
+  // Create timeout promise
+  const timeoutPromise = new Promise<BodyReadResult>((_, reject) => {
+    setTimeout(() => reject(new Error('Body read timeout')), timeoutMs);
+  });
 
-  const combined = concatChunks(chunks, size);
-  const body = new TextDecoder().decode(combined);
-  return { ok: true, body, size };
+  try {
+    return await Promise.race([readBodyWithTimeout(), timeoutPromise]);
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Body read timeout') {
+      return { ok: false, response: buildBodyTimeoutResponse() };
+    }
+    throw error;
+  }
 }
 
 type JsonBodyResult<T> = { ok: true; data: T } | { ok: false; response: NextResponse };

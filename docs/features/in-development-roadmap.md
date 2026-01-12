@@ -1,4 +1,4 @@
-**Last Modified**: 2026-01-10 13:36 EST
+**Last Modified**: 2026-01-11 12:23 EST
 
 # In-Development Roadmap
 
@@ -18,7 +18,7 @@
 
 ### Smart Playback Features
 - **Recently Played (Library)** — Last 50 plays pinned under Featured in the Music panel (localStorage)
-- **Mood Channels** — Curated listening experiences (Deep Focus, Energy Boost, Creative Flow)
+- **Mood Channels (gated)** — Data + scoring logic ready; UI integration pending (Deep Focus, Energy Boost, Creative Flow)
 
 ### MetaDJai Enhancements
 - **Conversation Persistence** — Sessions preserved across page reloads via localStorage

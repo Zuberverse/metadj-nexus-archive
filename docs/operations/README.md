@@ -1,6 +1,6 @@
 # Operations Documentation
 
-**Last Modified**: 2025-12-14 23:45 EST
+**Last Modified**: 2026-01-10 21:50 EST
 
 Operational guides for monitoring, deployment, and platform management.
 
@@ -13,6 +13,7 @@ Operational guides for monitoring, deployment, and platform management.
 | [BUILD-DEPLOYMENT-GUIDE.md](./BUILD-DEPLOYMENT-GUIDE.md) | Build and deployment procedures |
 | [DATA-SYNC-PROTOCOL.md](./DATA-SYNC-PROTOCOL.md) | Data synchronization between corpus and app |
 | [ERROR-TRACKING.md](./ERROR-TRACKING.md) | Error monitoring and incident response |
+| [INCIDENT-POSTMORTEM-TEMPLATE.md](./INCIDENT-POSTMORTEM-TEMPLATE.md) | Status update and post-mortem template |
 | [UPTIME-MONITORING.md](./UPTIME-MONITORING.md) | Uptime and health monitoring setup |
 
 ## Quick Links

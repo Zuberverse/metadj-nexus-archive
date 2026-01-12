@@ -41,7 +41,8 @@
     "test:api": "vitest run tests/api --reporter=verbose",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "clean": "rm -rf .next .turbo node_modules/.cache coverage"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.2",

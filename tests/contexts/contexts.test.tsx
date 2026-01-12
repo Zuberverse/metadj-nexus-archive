@@ -82,6 +82,7 @@ vi.mock('@/lib/music', () => ({
 // Mock analytics
 vi.mock('@/lib/analytics', () => ({
   trackEvent: vi.fn(),
+  trackActivationFirstPlaylist: vi.fn(),
 }));
 
 /**

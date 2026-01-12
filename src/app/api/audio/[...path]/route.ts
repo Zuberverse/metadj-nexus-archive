@@ -165,9 +165,18 @@ export async function HEAD(
   const params = await props.params;
   const pathArray = params.path;
 
-  // Handle warmup requests
+  // Handle warmup requests (bypass rate limiting)
   if (pathArray.length === 1 && pathArray[0] === "warmup") {
     return new NextResponse(null, { status: 200 });
+  }
+
+  // Rate limit check
+  const rateLimitResult = await checkMediaRateLimit(request);
+  if (!rateLimitResult.allowed) {
+    return new NextResponse(null, {
+      status: 429,
+      headers: buildRateLimitHeaders(rateLimitResult),
+    });
   }
 
   const filePath = sanitizeAudioPath(pathArray, request);

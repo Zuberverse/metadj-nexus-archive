@@ -28,6 +28,19 @@ export interface MoodChannel {
   energyLevel: number
 }
 
+export const MOOD_CHANNEL_MIN_CATALOG_TRACKS = 50
+export const MOOD_CHANNEL_MIN_TRACKS_PER_CHANNEL = 10
+
+export interface MoodChannelReadiness {
+  totalTracks: number
+  minCatalogTracks: number
+  minTracksPerChannel: number
+  channelCounts: Record<string, number>
+  channelsBelowMinimum: string[]
+  meetsCatalogMinimum: boolean
+  isReady: boolean
+}
+
 export const MOOD_CHANNELS: MoodChannel[] = [
   {
     id: "deep-focus",
@@ -43,23 +56,23 @@ export const MOOD_CHANNELS: MoodChannel[] = [
   {
     id: "energy-boost",
     name: "Energy Boost",
-    description: "Forward motion — and dive into Bridging Reality.",
+    description: "Forward motion — and keep Majestic Ascent moving.",
     gradient: "from-fuchsia-900/60 via-purple-900/50 to-indigo-900/40",
     glowColor: "rgba(192, 132, 252, 0.25)",
     bpmRange: { min: 125, max: 145 },
     preferredGenres: ["Techno", "EDM"],
-    preferredCollections: ["bridging-reality"],
+    preferredCollections: ["majestic-ascent"],
     energyLevel: 9,
   },
   {
     id: "creative-flow",
     name: "Creative Inspiration",
-    description: "Spark the next idea — and open Metaverse Revelation.",
+    description: "Spark the next idea — and stay with Majestic Ascent.",
     gradient: "from-cyan-900/60 via-blue-900/50 to-indigo-900/40",
     glowColor: "rgba(6, 182, 212, 0.25)",
     bpmRange: { min: 110, max: 135 },
-    preferredGenres: ["Retro Future", "Melodic Techno"],
-    preferredCollections: ["metaverse-revelation"],
+    preferredGenres: ["Retro Future", "Melodic"],
+    preferredCollections: ["majestic-ascent"],
     energyLevel: 6,
   },
 ]
@@ -171,4 +184,32 @@ export function sortTracksByMoodRelevance(
 
     return scoreB - scoreA
   })
+}
+
+export function getMoodChannelReadiness(
+  channels: MoodChannel[],
+  allTracks: { id: string; bpm?: number; genres?: string[]; collection: string }[]
+): MoodChannelReadiness {
+  const channelCounts: Record<string, number> = {}
+
+  for (const channel of channels) {
+    channelCounts[channel.id] = getTracksForMoodChannel(channel, allTracks).length
+  }
+
+  const totalTracks = allTracks.length
+  const channelsBelowMinimum = Object.entries(channelCounts)
+    .filter(([, count]) => count < MOOD_CHANNEL_MIN_TRACKS_PER_CHANNEL)
+    .map(([id]) => id)
+  const meetsCatalogMinimum = totalTracks >= MOOD_CHANNEL_MIN_CATALOG_TRACKS
+  const isReady = meetsCatalogMinimum && channelsBelowMinimum.length === 0
+
+  return {
+    totalTracks,
+    minCatalogTracks: MOOD_CHANNEL_MIN_CATALOG_TRACKS,
+    minTracksPerChannel: MOOD_CHANNEL_MIN_TRACKS_PER_CHANNEL,
+    channelCounts,
+    channelsBelowMinimum,
+    meetsCatalogMinimum,
+    isReady,
+  }
 }

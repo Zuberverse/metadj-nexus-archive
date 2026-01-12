@@ -1,27 +1,17 @@
 /**
- * Dream Hook Module Index
+ * Dream Hooks
  *
- * Organizes Daydream AI video integration hooks into focused modules.
- *
- * Module Structure:
- * - use-dream.ts (main) - Primary hook for stream lifecycle
- * - use-dream-countdown.ts - Warmup countdown timer management
- * - use-dream-status-poll.ts - Stream status polling logic
- * - use-dream-prompt-sync.ts - Runtime prompt synchronization
- *
- * Usage:
- * ```tsx
- * import { useDream } from "@/hooks/use-dream"
- * // or import focused hooks for testing/composition:
- * import { useDreamCountdown } from "@/hooks/dream"
- * ```
+ * Extracted hooks for Daydream AI video integration.
+ * These hooks are composed by the main use-dream.ts hook.
  *
  * @module hooks/dream
  */
 
-export { useDreamCountdown } from "../use-dream-countdown"
-export { useDreamStatusPoll } from "../use-dream-status-poll"
-export { useDreamPromptSync } from "../use-dream-prompt-sync"
+export { useWhipConnection } from "./use-whip-connection"
+export type { UseWhipConnectionOptions, UseWhipConnectionReturn } from "./use-whip-connection"
 
-// Types re-exported for convenience
-export type { DaydreamStatus } from "@/types/daydream.types"
+export { useStatusPoll } from "./use-dream-status-poll"
+export type { UseStatusPollOptions, UseStatusPollReturn } from "./use-dream-status-poll"
+
+export { usePromptSync } from "./use-dream-prompt-sync"
+export type { UsePromptSyncOptions, UsePromptSyncReturn } from "./use-dream-prompt-sync"

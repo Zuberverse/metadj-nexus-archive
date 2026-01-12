@@ -3,6 +3,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { logger } from "@/lib/logger";
 import { generateNonce } from "@/lib/nonce";
+import { BoundedMap } from "@/lib/rate-limiting/bounded-map";
 import { buildPayloadTooLargeResponse, getMaxRequestSize } from "@/lib/validation/request-size";
 
 // ============================================================================
@@ -63,9 +64,11 @@ const upstashLimiters = redis
   }
   : null;
 
-// 2. In-Memory Fallback (Map)
+// 2. In-Memory Fallback (BoundedMap from shared module)
 // Used when Redis is not configured
-const localRateLimitMap = new Map<string, RateLimitRecord>();
+// BoundedMap prevents memory exhaustion attacks by limiting entries
+// @see lib/rate-limiting/bounded-map.ts
+const localRateLimitMap = new BoundedMap<string, RateLimitRecord>(10000);
 
 function checkLocalRateLimit(
   identifier: string,

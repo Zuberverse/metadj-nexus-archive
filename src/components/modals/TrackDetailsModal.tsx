@@ -123,7 +123,7 @@ export function TrackDetailsModal({
               <div className="absolute inset-0 pointer-events-none bg-linear-to-tr from-black/20 via-transparent to-white/10 opacity-40" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[0.6rem] uppercase tracking-[0.45em] text-white/55">
+              <p className="text-[0.6rem] uppercase tracking-[0.45em] text-muted-accessible">
                 Track insight
               </p>
               <h2
@@ -164,7 +164,7 @@ export function TrackDetailsModal({
               {/* Production Details Card */}
               {(track.bpm || track.key) && (
                 <div className="rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-purple-900/20 via-indigo-900/10 to-cyan-900/20 px-4 py-3">
-                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/55 mb-2">
+                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-muted-accessible mb-2">
                     Production details
                   </p>
                   <div className="flex flex-wrap gap-4">
@@ -209,7 +209,7 @@ export function TrackDetailsModal({
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-3xl overflow-hidden border border-white/10 bg-white/5 px-4 py-4 space-y-2">
-                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/55">
+                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-muted-accessible">
                     About this track
                   </p>
                   <p className="text-sm text-white/80 leading-relaxed">
@@ -217,7 +217,7 @@ export function TrackDetailsModal({
                   </p>
                 </div>
                 <div className="rounded-3xl overflow-hidden border border-white/10 bg-white/5 px-4 py-4 space-y-2">
-                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/55">
+                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-muted-accessible">
                     Creator log
                   </p>
                   <p className="text-sm text-white/80 leading-relaxed">

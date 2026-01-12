@@ -62,7 +62,7 @@ import {
   SESSION_COOKIE_MAX_AGE,
   SESSION_COOKIE_PATH,
 } from '@/lib/ai/rate-limiter'
-import { recordSpending } from '@/lib/ai/spending-alerts'
+import { isSpendingAllowed, recordSpending } from '@/lib/ai/spending-alerts'
 import { getTools } from '@/lib/ai/tools'
 import { validateMetaDjAiRequest } from '@/lib/ai/validation'
 import { getEnv } from '@/lib/env'
@@ -198,6 +198,15 @@ export async function POST(request: NextRequest) {
       hasGoogle,
       hasXai,
     })
+  }
+
+  // Check spending limits before processing (when blocking is enabled)
+  if (!(await isSpendingAllowed())) {
+    logger.warn('AI spending limit exceeded - request blocked', { requestId })
+    return NextResponse.json(
+      { error: 'AI spending limit exceeded. Please try again later.' },
+      { status: 429 }
+    )
   }
 
   // Check rate limiting
@@ -431,6 +440,37 @@ export async function POST(request: NextRequest) {
           toolCalls,
           durationMs: Date.now() - requestStartTime,
           success: true,
+          clientId: client.id,
+          usedFallback,
+        })
+      },
+      onError: ({ error }) => {
+        // Handle mid-stream errors
+        clearTimeout(timeout)
+        const errorMessage = error instanceof Error ? error.message : String(error)
+
+        logger.error('MetaDJai streaming error (mid-stream)', {
+          requestId,
+          provider: providerInfo.provider,
+          model: providerInfo.model,
+          error: errorMessage,
+          durationMs: Date.now() - requestStartTime,
+          usedFallback,
+        })
+
+        // Record failure for circuit breaker if it's a provider error
+        if (isProviderError(error)) {
+          recordFailure(providerInfo.provider, errorMessage)
+        }
+
+        // Log failed usage for metrics
+        logAIUsage({
+          requestId,
+          provider: providerInfo.provider,
+          model: providerInfo.model,
+          durationMs: Date.now() - requestStartTime,
+          success: false,
+          error: errorMessage,
           clientId: client.id,
           usedFallback,
         })

@@ -416,6 +416,9 @@ export function getFallbackModelSettings(providerOverride?: AIProvider): ModelSe
   }
 }
 
+// Track logged unknown models to avoid spam (log once per model per session)
+const loggedUnknownModels = new Set<string>();
+
 /**
  * Estimate cost for a given number of tokens
  *
@@ -423,10 +426,24 @@ export function getFallbackModelSettings(providerOverride?: AIProvider): ModelSe
  * @param inputTokens - Number of input tokens
  * @param outputTokens - Number of output tokens
  * @returns Estimated cost in USD
+ *
+ * NOTE: If model is not in COST_PER_MILLION_TOKENS, uses default rates
+ * and logs a warning (once per session per model) to surface unrecognized models.
  */
 export function estimateCost(model: string, inputTokens: number, outputTokens: number): number {
-  const rates = COST_PER_MILLION_TOKENS[model] || COST_PER_MILLION_TOKENS['default']
-  return (inputTokens * rates.input + outputTokens * rates.output) / 1_000_000
+  const rates = COST_PER_MILLION_TOKENS[model]
+  if (!rates) {
+    // Log warning once per unknown model to help identify models needing cost entries
+    if (!loggedUnknownModels.has(model)) {
+      loggedUnknownModels.add(model)
+      logger.warn('[AI Providers] Unknown model for cost estimation, using default rates', {
+        model,
+        defaultRates: COST_PER_MILLION_TOKENS['default'],
+      })
+    }
+  }
+  const effectiveRates = rates || COST_PER_MILLION_TOKENS['default']
+  return (inputTokens * effectiveRates.input + outputTokens * effectiveRates.output) / 1_000_000
 }
 
 /**

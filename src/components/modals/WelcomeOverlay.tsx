@@ -229,7 +229,7 @@ export function WelcomeOverlay({ onClose }: WelcomeOverlayProps) {
                   </button>
                 </div>
 
-                <div className="pt-3 text-center text-[11px] sm:text-xs text-white/55">
+                <div className="pt-3 text-center text-[11px] sm:text-xs text-muted-accessible">
                   <Link
                     href="/terms"
                     onClick={(e) => handleClose(e)}

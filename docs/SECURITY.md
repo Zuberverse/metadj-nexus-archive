@@ -1,6 +1,6 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2026-01-08 11:56 EST
+**Last Modified**: 2026-01-10 22:05 EST
 > Pragmatic security approach for a music showcasing MVP
 
 *Last Reviewed: 2026-01-08*
@@ -28,10 +28,10 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | **Referrer Policy** | strict-origin-when-cross-origin | Controls referrer information |
 | **Client Error Telemetry** | `/api/log` proxy + `LOGGING_WEBHOOK_URL` + `LOGGING_SHARED_SECRET` + `LOGGING_CLIENT_KEY` | Captures browser errors without exposing webhook URLs; contexts are sanitized/redacted server‑side before forwarding; client key is embedded in the UI, shared secret stays server‑side |
 | **AI Rate Limiting** | In‑app session/fingerprint limiter for `/api/metadjai*` (20 / 5m, 500ms min interval) + Replit platform throttling. Optional: **Upstash Redis** for distributed rate limiting + burst enforcement across instances (`src/lib/ai/rate-limiter.ts`) | Prevents abuse and cost spikes for MetaDJai (chat + transcription) |
-| **AI Spending Alerts** | Hourly ($1) and daily ($10) spending thresholds with automatic alerts (`src/lib/ai/spending-alerts.ts`). Supports Upstash Redis for distributed tracking. Optional blocking via `AI_SPENDING_BLOCK_ON_LIMIT=true`. | Cost visibility and runaway spending prevention |
+| **AI Spending Alerts** | Hourly ($1) and daily ($10) spending thresholds with automatic alerts (`src/lib/ai/spending-alerts.ts`). Supports Upstash Redis for distributed tracking. Optional blocking via `AI_SPENDING_BLOCK_ON_LIMIT=true`. **Pre-request enforcement**: Routes check `isSpendingAllowed()` before processing AI requests when blocking is enabled. | Cost visibility and runaway spending prevention |
 | **Daydream Stream Limits** | Single active stream + cooldown with optional Upstash Redis backing (`src/lib/daydream/stream-limiter.ts`) | Prevents stream abuse and resource spikes |
 | **Wisdom Rate Limiting** | 60 req/min per client with optional Upstash Redis backing (`src/lib/rate-limiting/wisdom-rate-limiter.ts`) | Mitigates scraping/abuse of static content |
-| **Scoped Media Access** | `/api/audio` is MP3-only + path traversal protection; `/api/video` is MP4/WebM/MOV-only + path traversal protection | Prevents accidental exposure of non-media objects |
+| **Scoped Media Access** | `/api/audio` is MP3-only + path traversal protection; `/api/video` is MP4/WebM/MOV-only + path traversal protection. **Rate limiting** applies to both GET and HEAD requests on both routes. **Warmup bypass** available for health checks. | Prevents accidental exposure of non-media objects |
 | **Cookie Path Isolation** | Session cookies scoped to `/api/metadjai` | Prevents cookie leakage to unrelated routes |
 | **Body Size Limits** | 1MB limit on server actions | Prevents DoS via large payloads |
 | **Generic Error Messages** | Internal details logged server-side only | Prevents information disclosure |
@@ -318,6 +318,7 @@ A: Yes, for a public music player. You're not storing passwords or processing pa
 
 ## Updates
 
+- **2026-01-10**: Added pre-request spending enforcement, HEAD request rate limiting on media routes, warmup bypass for video route
 - **2025-12-14**: Added comprehensive CSP in proxy.ts, health endpoint information disclosure fix, dev endpoint authentication, AI provider circuit breaker for resilience
 - **2025-12-03**: Added cookie path isolation, body size limits, generic error responses
 - **2025-10-04**: Simplified to pragmatic MVP approach

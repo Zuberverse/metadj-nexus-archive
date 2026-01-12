@@ -1,6 +1,6 @@
 # Error Tracking Setup Guide
 
-**Last Modified**: 2026-01-05 18:06 EST
+**Last Modified**: 2026-01-10 21:50 EST
 
 > **Capture and triage client-side errors automatically with Sentry**
 
@@ -48,7 +48,7 @@ MetaDJ Nexus will follow the hardened error-monitoring rollout already proven in
 
 Tracking the work:
 - Add a `tracking issue / docs entry` referencing this plan once the MVP launches.
-- Re-use the status template from MetaDJai system documentation in `3-projects/archive/software/2025-11-25-metadj-ai/docs/system/` so the two apps follow identical audit trails.
+- Use `docs/operations/INCIDENT-POSTMORTEM-TEMPLATE.md` for status updates and post-mortems so audit trails stay consistent.
 
 ## Why Error Tracking Matters
 

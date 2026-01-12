@@ -16,6 +16,7 @@ import { createHash } from 'crypto'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { logger } from '@/lib/logger'
+import { BoundedMap, DEFAULT_MAX_ENTRIES } from './bounded-map'
 import type { NextRequest } from 'next/server'
 
 // ============================================================================
@@ -52,7 +53,8 @@ interface RateLimitRecord {
   resetAt: number
 }
 
-const mediaRateLimitMap = new Map<string, RateLimitRecord>()
+// Bounded map with LRU eviction for memory protection
+const mediaRateLimitMap = new BoundedMap<string, RateLimitRecord>(DEFAULT_MAX_ENTRIES)
 let lastCleanup = 0
 const CLEANUP_INTERVAL_MS = MEDIA_RATE_LIMIT_WINDOW_MS
 

@@ -1,11 +1,41 @@
 # Changelog
 
-**Last Modified**: 2026-01-10 15:57 EST
+**Last Modified**: 2026-01-11 12:41 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-11
+
+**Accessibility**
+- Added full WCAG 2.1 AA keyboard controls to ProgressBar (Home/End for start/end, PageUp/PageDown for 10% jumps).
+- Consolidated focus ring variants: removed duplicate CSS classes in favor of Tailwind utilities in globals.css.
+- Added high contrast mode override using attribute selector `[class*="focus-ring"]`.
+
+**Backend Security**
+- Added body read timeout (30s) to prevent slowloris-style attacks on request body streaming.
+- Consolidated BoundedMap import in proxy.ts to use shared rate-limiting module.
+
+**AI Integration**
+- Added warning logging for unknown models in cost estimation (prevents silent cost calculation issues).
+- Added onError callback to AI streaming for proper failure recording and circuit breaker updates.
+
+**Performance**
+- Removed `will-change: contents` from streaming-text CSS class (expensive and counterproductive).
+
+**Code Quality**
+- Consolidated BoundedMap implementations to single shared module (`lib/rate-limiting/bounded-map.ts`).
+
+**Mood Channels**
+- Updated mood channel metadata for Majestic Ascent alignment and added readiness gating helpers.
+
+**Testing**
+- Added unit coverage for mood channel matching, sorting, and readiness gating.
+
+**Documentation**
+- Updated mood channel documentation and disabled feature gating notes for current readiness thresholds.
 
 ### 2026-01-10
 

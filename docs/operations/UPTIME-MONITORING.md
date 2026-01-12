@@ -2,7 +2,7 @@
 
 > **Get alerted when MetaDJ Nexus goes down before users notice**
 
-**Last Modified**: 2026-01-05 22:08 EST
+**Last Modified**: 2026-01-10 21:50 EST
 **Version**: 0.8.0
 **Status**: Ready to implement (Set up after launch when domain is finalized)
 
@@ -518,7 +518,7 @@ Solution:
 - [ ] Create public status page
 - [ ] Configure custom domain for status page
 - [ ] Add secondary API monitors (audio, video)
-- [ ] Set up incident post-mortem template
+- [ ] Set up incident post-mortem template (`docs/operations/INCIDENT-POSTMORTEM-TEMPLATE.md`)
 - [ ] Create alert response runbook
 
 ### Ongoing Maintenance
