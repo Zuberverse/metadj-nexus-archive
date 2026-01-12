@@ -1,6 +1,6 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2026-01-10 22:05 EST
+**Last Modified**: 2026-01-12 10:20 EST
 > Pragmatic security approach for a music showcasing MVP
 
 *Last Reviewed: 2026-01-08*
@@ -297,6 +297,75 @@ npm audit --omit=dev
 
 ---
 
+## Deployment Configuration
+
+### Rate Limiting
+
+Rate limiting protects against abuse and controls API costs. In-memory by default; distributed via Upstash Redis for multi-instance deployments.
+
+**Environment Variables**:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `UPSTASH_REDIS_REST_URL` | (none) | Upstash Redis REST URL for distributed rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | (none) | Upstash Redis REST token |
+| `RATE_LIMIT_FAIL_CLOSED` | `false` | If `true`, block requests when rate limiter fails; if `false`, allow through |
+
+**Rate Limits** (configured in source):
+- **MetaDJai Chat/Stream**: 20 requests per 5 minutes, 500ms minimum interval
+- **MetaDJai Transcription**: 5 requests per 5 minutes, 2s minimum interval
+- **Wisdom API**: 60 requests per minute
+- **Daydream Streams**: 1 concurrent stream, 30s cooldown between streams
+
+**Implementation Files**:
+- `src/lib/ai/rate-limiter.ts` — MetaDJai rate limiting
+- `src/lib/rate-limiting/wisdom-rate-limiter.ts` — Wisdom API rate limiting
+- `src/lib/daydream/stream-limiter.ts` — Daydream stream limiting
+
+### AI Spending Alerts
+
+Spending alerts monitor AI API costs and optionally block requests when limits are exceeded.
+
+**Environment Variables**:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `AI_SPENDING_HOURLY_LIMIT` | `1` | Hourly spending limit in USD |
+| `AI_SPENDING_DAILY_LIMIT` | `10` | Daily spending limit in USD |
+| `AI_SPENDING_WARNING_THRESHOLD` | `0.8` | Warn at 80% of limit |
+| `AI_SPENDING_BLOCK_ON_LIMIT` | `false` | If `true`, block AI requests when limit exceeded |
+
+**Behavior**:
+- **Warning**: Logged when spending reaches warning threshold
+- **Alert**: Logged when spending exceeds limit
+- **Blocking** (optional): When `AI_SPENDING_BLOCK_ON_LIMIT=true`, returns 503 to clients
+
+**Monitoring Endpoint**: `GET /api/health/ai` (requires `x-internal-request` header in production)
+
+**Implementation**: `src/lib/ai/spending-alerts.ts`
+
+### Recommended Production Configuration
+
+```env
+# Distributed rate limiting (required for multi-instance)
+UPSTASH_REDIS_REST_URL=https://your-instance.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your-token
+
+# Conservative spending limits
+AI_SPENDING_HOURLY_LIMIT=5
+AI_SPENDING_DAILY_LIMIT=50
+AI_SPENDING_WARNING_THRESHOLD=0.7
+AI_SPENDING_BLOCK_ON_LIMIT=true
+
+# Fail-closed for production
+RATE_LIMIT_FAIL_CLOSED=true
+
+# Internal monitoring
+INTERNAL_API_SECRET=your-secret-for-health-endpoints
+```
+
+---
+
 ## FAQ
 
 **Q: Can people download my music?**
@@ -318,6 +387,7 @@ A: Yes, for a public music player. You're not storing passwords or processing pa
 
 ## Updates
 
+- **2026-01-12**: Added Deployment Configuration section with rate limiting and spending alert environment variables
 - **2026-01-10**: Added pre-request spending enforcement, HEAD request rate limiting on media routes, warmup bypass for video route
 - **2025-12-14**: Added comprehensive CSP in proxy.ts, health endpoint information disclosure fix, dev endpoint authentication, AI provider circuit breaker for resilience
 - **2025-12-03**: Added cookie path isolation, body size limits, generic error responses

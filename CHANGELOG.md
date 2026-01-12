@@ -1,11 +1,31 @@
 # Changelog
 
-**Last Modified**: 2026-01-12 08:53 EST
+**Last Modified**: 2026-01-12 10:25 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-12
+
+**Code Architecture**
+- Extracted `CinemaState` and `ModalState` interfaces to shared `src/types/shell.types.ts`, eliminating duplicate definitions in DesktopShell and MobileShell.
+
+**AI Integration**
+- Condensed system prompt from ~4325 tokens (108% of budget) to ~2800-3000 tokens (70-75% of budget):
+  - `BASE_SYSTEM_INSTRUCTIONS`: 150 → 45 lines while preserving all essential guidance.
+  - `TOOLS_GUIDELINES`: Both variants condensed ~50%.
+
+**Documentation**
+- Added "Deployment Configuration" section to `SECURITY.md` with rate limiting and spending alert environment variables.
+- Updated timestamps in `docs/README.md`, `docs/PLATFORM-ARCHITECTURE.md`, `docs/SECURITY.md`.
+
+**Dependencies**
+- Applied patch updates: @ai-sdk/openai, @ai-sdk/xai, @upstash/ratelimit, @vitest/coverage-v8, ai, framer-motion, vitest.
+
+**Maintenance**
+- Cleaned local test artifacts (.playwright-mcp, test-results).
 
 ### 2026-01-11
 
