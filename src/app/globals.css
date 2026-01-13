@@ -222,6 +222,48 @@
   &::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 }
 
+/* Scrollbar-on-hover pattern for accessibility (WCAG 2.1 AA)
+   Shows scrollbar on hover/focus for keyboard users while maintaining clean UI */
+@utility scrollbar-on-hover {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+
+  /* Show scrollbar on hover or when focused within */
+  &:hover,
+  &:focus-within {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+
+  /* Always show scrollbar for keyboard navigation (when element has focus) */
+  &:focus {
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
 @utility overscroll-none {
   overscroll-behavior: none;
   overscroll-behavior-y: none;
@@ -283,6 +325,29 @@
   border-radius: 2px;
   margin: 6px auto;
   flex-shrink: 0;
+}
+
+/* Touch target utility - ensures minimum 44x44px touch area for accessibility (WCAG 2.1 AA) */
+@utility touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  position: relative;
+  /* Expand touch area without affecting visual layout */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    /* Ensure touch area reaches 44px even for smaller visual elements */
+  }
+}
+
+/* Touch target for icon buttons - maintains visual compactness while ensuring accessibility */
+@utility touch-target-icon {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @utility animate-pulse-gentle {
@@ -587,5 +652,53 @@
     width: 0;
     height: 0;
     display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT (WCAG 2.1 AA Compliance)
+
+   Respects user preferences for reduced motion. Disables non-essential
+   animations while preserving functional transitions for usability.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Preserve essential visual feedback with minimal motion */
+  .focus-ring:focus-visible,
+  .focus-ring-glow:focus-visible,
+  .focus-ring-light:focus-visible {
+    transition-duration: 0.1s !important;
+  }
+
+  /* Disable decorative animations */
+  .animate-wave,
+  .animate-breathe,
+  .animate-ai-pulse,
+  .animate-shimmer,
+  .animate-float,
+  .animate-glow-pulse-mobile,
+  .animate-pulse-gentle,
+  .text-marquee {
+    animation: none !important;
+  }
+
+  /* Disable interactive scale effects */
+  .interactive-scale:hover,
+  .interactive-scale:active {
+    transform: none !important;
+  }
+
+  /* Disable neon glow hover effects */
+  .neon-glow:hover {
+    transform: none !important;
   }
 }

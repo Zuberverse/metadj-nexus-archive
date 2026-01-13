@@ -80,10 +80,6 @@ export function useAudioPlayback({
   
   // Auto-skip delay ref to prevent infinite loops
   const autoSkipTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  
-  // First play fade-in to mask AudioContext initialization noise
-  const hasPlayedOnceRef = useRef(false)
-  const fadeInTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Compose sub-hooks
   const analytics = useAudioAnalytics({ track, currentTime, duration })
@@ -153,14 +149,10 @@ export function useAudioPlayback({
       return
     }
 
-    // First play fade-in: Start at low volume to mask AudioContext initialization noise
-    // Then ramp up to target volume over ~80ms
-    const isFirstPlay = !hasPlayedOnceRef.current
-    const targetVolume = externalVolume ?? audio.volume
-    
-    if (isFirstPlay) {
-      // Start at near-zero volume
-      audio.volume = 0.01
+    // Ensure volume is set to external volume before playing
+    // (volume-sync effect handles ongoing changes, but we need it set for initial play)
+    if (externalVolume !== undefined) {
+      audio.volume = externalVolume
     }
 
     const playPromise = audio.play()
@@ -172,35 +164,6 @@ export function useAudioPlayback({
         setPlaybackBlocked(false)
         playbackBlockedRef.current = false
         markAudioUnlocked()
-        
-        // Fade in on first play to mask any AudioContext initialization glitches
-        if (isFirstPlay) {
-          hasPlayedOnceRef.current = true
-          
-          // Clear any existing fade timeout
-          if (fadeInTimeoutRef.current) {
-            clearTimeout(fadeInTimeoutRef.current)
-          }
-          
-          // Smooth volume ramp over ~80ms (4 steps of 20ms each)
-          let step = 0
-          const steps = 4
-          const rampStep = () => {
-            step++
-            const progress = step / steps
-            // Ease-out curve for natural fade-in
-            const easedProgress = 1 - Math.pow(1 - progress, 2)
-            audio.volume = 0.01 + (targetVolume - 0.01) * easedProgress
-            
-            if (step < steps) {
-              fadeInTimeoutRef.current = setTimeout(rampStep, 20)
-            } else {
-              audio.volume = targetVolume
-              fadeInTimeoutRef.current = null
-            }
-          }
-          fadeInTimeoutRef.current = setTimeout(rampStep, 20)
-        }
       })
       .catch((err) => {
         playPromiseRef.current = null
@@ -408,10 +371,6 @@ export function useAudioPlayback({
       if (autoSkipTimeoutRef.current) {
         clearTimeout(autoSkipTimeoutRef.current)
         autoSkipTimeoutRef.current = null
-      }
-      if (fadeInTimeoutRef.current) {
-        clearTimeout(fadeInTimeoutRef.current)
-        fadeInTimeoutRef.current = null
       }
     }
   }, [onNext, onPlayStateChange, onShouldPlayChange, onError, track, audioSrc, repeatMode, analytics, safePlay, autoSkipOnError])

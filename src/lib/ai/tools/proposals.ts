@@ -19,6 +19,7 @@ import {
 import {
   MAX_ACTIVE_CONTROL_TRACKS,
   sanitizeAndValidateToolResult,
+  sanitizeInputQuery,
 } from '@/lib/ai/tools/utils'
 import { trackList, collectionList } from '@/lib/music/data'
 
@@ -75,7 +76,8 @@ export const proposePlayback = {
     }
 
     if (searchQuery && (action === 'play' || action === 'queue')) {
-      const rawQuery = searchQuery.slice(0, 200).trim()
+      // Sanitize input to prevent indirect prompt injection
+      const rawQuery = sanitizeInputQuery(searchQuery)
       const q = rawQuery.toLowerCase()
 
       // Find best match in tracks

@@ -14,6 +14,8 @@ import {
 import { recordSpending } from "@/lib/ai/spending-alerts";
 import { getServerEnv } from "@/lib/env";
 import { logger } from "@/lib/logger";
+import { getRequestId } from "@/lib/request-id";
+import { validateOrigin, buildOriginForbiddenResponse } from "@/lib/validation/origin-validation";
 
 /**
  * Zod schema for OpenAI transcription API response.
@@ -144,6 +146,15 @@ function validateAudioType(type: string | undefined): { valid: boolean; warning?
 }
 
 export async function POST(req: NextRequest) {
+    const requestId = getRequestId(req);
+
+    // Validate origin for CSRF protection
+    const { allowed: originAllowed } = validateOrigin(req);
+    if (!originAllowed) {
+        logger.warn("Request blocked: invalid origin", { requestId });
+        return buildOriginForbiddenResponse();
+    }
+
     try {
         const { OPENAI_API_KEY, OPENAI_TRANSCRIBE_MODEL } = getServerEnv();
 

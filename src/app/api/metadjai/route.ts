@@ -33,6 +33,7 @@ import { validateMetaDjAiRequest } from '@/lib/ai/validation';
 import { getEnv } from '@/lib/env';
 import { logger } from '@/lib/logger';
 import { getRequestId } from '@/lib/request-id';
+import { validateOrigin, buildOriginForbiddenResponse } from '@/lib/validation/origin-validation';
 import { getMaxRequestSize, readJsonBodyWithLimit } from '@/lib/validation/request-size';
 import type {
   MetaDjAiApiRequestBody,
@@ -72,6 +73,13 @@ export const runtime = 'nodejs';
  */
 export async function POST(request: NextRequest) {
   const requestId = getRequestId(request);
+
+  // Validate origin for CSRF protection
+  const { allowed: originAllowed } = validateOrigin(request);
+  if (!originAllowed) {
+    logger.warn('Request blocked: invalid origin', { requestId });
+    return buildOriginForbiddenResponse();
+  }
 
   let env;
   try {

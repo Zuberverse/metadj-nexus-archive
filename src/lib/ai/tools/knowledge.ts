@@ -190,6 +190,83 @@ let knowledgeEmbeddingsPromise: Promise<EmbeddedKnowledgeEntry[]> | null = null
 const EMBEDDING_MODEL_ID = 'text-embedding-3-small'
 const MAX_EMBED_TEXT_LENGTH = 2000
 
+/** Check if running on server (Node.js environment) */
+const isServer = typeof window === 'undefined'
+
+interface CachedEmbeddings {
+  hash: string
+  model: string
+  embeddings: { id: string; embedding: number[] }[]
+}
+
+/** Compute content hash for cache invalidation (server-only) */
+async function computeKnowledgeHash(): Promise<string> {
+  if (!isServer) return ''
+  try {
+    const { createHash } = await import('crypto')
+    const content = FLAT_KNOWLEDGE_ENTRIES.map(({ entry }) =>
+      `${entry.id}:${entry.title}:${entry.content}`
+    ).join('|')
+    return createHash('sha256').update(content).digest('hex').slice(0, 16)
+  } catch {
+    return ''
+  }
+}
+
+/** Get cache file path (server-only) */
+async function getCacheFilePath(): Promise<string | null> {
+  if (!isServer) return null
+  try {
+    const { join } = await import('path')
+    return join(process.cwd(), 'node_modules', '.cache', 'metadj-embeddings', 'knowledge-embeddings.json')
+  } catch {
+    return null
+  }
+}
+
+/** Load embeddings from file cache (server-only) */
+async function loadCachedEmbeddings(): Promise<CachedEmbeddings | null> {
+  if (!isServer) return null
+  try {
+    const cacheFile = await getCacheFilePath()
+    if (!cacheFile) return null
+    const { existsSync, readFileSync } = await import('fs')
+    if (!existsSync(cacheFile)) return null
+    const data = readFileSync(cacheFile, 'utf-8')
+    return JSON.parse(data) as CachedEmbeddings
+  } catch {
+    return null
+  }
+}
+
+/** Save embeddings to file cache (server-only) */
+async function saveCachedEmbeddings(embeddings: EmbeddedKnowledgeEntry[]): Promise<void> {
+  if (!isServer) return
+  try {
+    const cacheFile = await getCacheFilePath()
+    if (!cacheFile) return
+    const { mkdirSync, writeFileSync } = await import('fs')
+    const { dirname } = await import('path')
+    const hash = await computeKnowledgeHash()
+    mkdirSync(dirname(cacheFile), { recursive: true })
+    const cache: CachedEmbeddings = {
+      hash,
+      model: EMBEDDING_MODEL_ID,
+      embeddings: embeddings.map((e) => ({
+        id: e.entry.id,
+        embedding: e.embedding,
+      })),
+    }
+    writeFileSync(cacheFile, JSON.stringify(cache), 'utf-8')
+    logger.info('Knowledge embeddings cached to disk', {
+      entriesCount: embeddings.length,
+      cacheFile,
+    })
+  } catch (error) {
+    logger.warn('Failed to cache embeddings to disk', { error: String(error) })
+  }
+}
+
 function buildEmbeddingText(entry: KnowledgeEntry): string {
   const text = `${entry.title}\n\n${entry.content}`
   return text.slice(0, MAX_EMBED_TEXT_LENGTH)
@@ -213,6 +290,24 @@ async function loadKnowledgeEmbeddings(): Promise<EmbeddedKnowledgeEntry[]> {
   if (knowledgeEmbeddingsPromise) return knowledgeEmbeddingsPromise
 
   knowledgeEmbeddingsPromise = (async () => {
+    const currentHash = await computeKnowledgeHash()
+
+    // Try to load from file cache first (server-only)
+    const cached = await loadCachedEmbeddings()
+    if (cached && cached.hash === currentHash && cached.model === EMBEDDING_MODEL_ID) {
+      // Cache hit - reconstruct embedded entries from cache
+      const embeddingMap = new Map(cached.embeddings.map((e) => [e.id, e.embedding]))
+      knowledgeEmbeddingsCache = FLAT_KNOWLEDGE_ENTRIES.map((item) => ({
+        ...item,
+        embedding: embeddingMap.get(item.entry.id) ?? [],
+      }))
+      logger.info('Knowledge embeddings loaded from disk cache', {
+        entriesCount: knowledgeEmbeddingsCache.length,
+        hash: currentHash,
+      })
+      return knowledgeEmbeddingsCache
+    }
+
     const openaiClient = createEmbeddingsOpenAIClient()
 
     if (!openaiClient) {
@@ -221,6 +316,11 @@ async function loadKnowledgeEmbeddings(): Promise<EmbeddedKnowledgeEntry[]> {
     }
 
     try {
+      logger.info('Generating new knowledge embeddings (cache miss or content changed)', {
+        cacheExists: !!cached,
+        hashMatch: cached?.hash === currentHash,
+      })
+
       const model = openaiClient.embedding(EMBEDDING_MODEL_ID)
       const values = FLAT_KNOWLEDGE_ENTRIES.map(({ entry }) =>
         buildEmbeddingText(entry)
@@ -231,6 +331,9 @@ async function loadKnowledgeEmbeddings(): Promise<EmbeddedKnowledgeEntry[]> {
         ...item,
         embedding: embeddings[index] ?? [],
       }))
+
+      // Save to file cache for next startup (server-only)
+      await saveCachedEmbeddings(knowledgeEmbeddingsCache)
 
       return knowledgeEmbeddingsCache
     } catch (error) {

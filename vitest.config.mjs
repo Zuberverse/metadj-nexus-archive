@@ -41,8 +41,8 @@ export default defineConfig({
       //
       // Current Phase: Public Preview (v0.9.x)
       // Enforcing v0.10.x thresholds early to harden critical paths.
-      // Thresholds are enforced when running `npm run test:coverage`.
-      // CI currently runs `npm test` (no coverage) during Public Preview.
+      // CI runs `npm run test:coverage` to enforce these thresholds.
+      // PRs failing coverage will be blocked from merging.
       //
       // MILESTONE ROADMAP:
       // ------------------

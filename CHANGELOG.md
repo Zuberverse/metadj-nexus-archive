@@ -1,11 +1,16 @@
 # Changelog
 
-**Last Modified**: 2026-01-12 10:25 EST
+**Last Modified**: 2026-01-13 08:05 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-13
+
+**Bug Fixes**
+- Fixed audio volume stuck at 1% (0.01) after first play. Removed problematic fade-in logic in `use-audio-playback.ts` that used setTimeout-based volume ramping, which was being interrupted by React effect cleanup during re-renders.
 
 ### 2026-01-12
 

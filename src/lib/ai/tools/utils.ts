@@ -109,6 +109,23 @@ function sanitizeInjectionPatterns(value: string): string {
 }
 
 /**
+ * Sanitize a user-provided input query to prevent indirect prompt injection
+ *
+ * Use this for search queries and other user-provided input that will be
+ * processed or returned to the AI model.
+ *
+ * @param query - User-provided query string
+ * @param maxLength - Maximum length of the query (default 200)
+ * @returns Sanitized query string
+ */
+export function sanitizeInputQuery(query: string, maxLength = 200): string {
+  // First truncate to prevent excessive length
+  const truncated = query.slice(0, maxLength).trim()
+  // Then apply injection pattern filtering
+  return sanitizeInjectionPatterns(truncated)
+}
+
+/**
  * Recursively sanitize all string values in an object to prevent injection
  *
  * @param obj - Object to sanitize
@@ -219,9 +236,10 @@ export function sanitizeAndValidateToolResult<T>(result: T, toolName: string): T
 }
 
 /**
- * Wraps a tool execute function with error handling
+ * Wraps a tool execute function with error handling and observability
  *
  * Provides graceful degradation when tool execution fails:
+ * - Logs tool invocations for observability and debugging
  * - Catches and logs errors
  * - Returns user-friendly error messages to the AI
  * - Prevents tool failures from crashing the entire request
@@ -235,15 +253,39 @@ export function safeToolExecute<TInput, TOutput>(
   handler: (input: TInput) => Promise<TOutput>
 ): (input: TInput) => Promise<TOutput | { error: string; toolName: string }> {
   return async (input: TInput) => {
+    const startTime = Date.now()
+    const inputSummary = JSON.stringify(input).slice(0, 200)
+
+    // Log tool invocation for observability
+    logger.info(`Tool invoked: ${toolName}`, {
+      tool: toolName,
+      inputSummary,
+    })
+
     try {
-      return await handler(input)
+      const result = await handler(input)
+      const durationMs = Date.now() - startTime
+
+      // Log successful completion
+      logger.info(`Tool completed: ${toolName}`, {
+        tool: toolName,
+        durationMs,
+        success: true,
+      })
+
+      return result
     } catch (error) {
+      const durationMs = Date.now() - startTime
       const errorMessage = error instanceof Error ? error.message : String(error)
+
       logger.error(`Tool execution failed: ${toolName}`, {
         tool: toolName,
         error: errorMessage,
         input: JSON.stringify(input).slice(0, 500), // Truncate for logging
+        durationMs,
+        success: false,
       })
+
       return {
         error: `The ${toolName} tool encountered an issue and couldn't complete. Please try again or rephrase your request.`,
         toolName,
