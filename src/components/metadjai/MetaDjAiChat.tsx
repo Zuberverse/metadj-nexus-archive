@@ -948,7 +948,7 @@ export function MetaDjAiChat({
                       aria-label="Model options"
                       className="absolute left-0 top-10 z-100 min-w-[160px] rounded-2xl border border-white/15 bg-(--bg-surface-elevated)/95 p-2 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl"
                     >
-                      <div className="px-2 pb-2 text-sm font-heading font-semibold uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-200">
+                      <div className="px-2 pb-2 text-sm font-heading font-semibold uppercase tracking-[0.2em] text-heading-solid">
                         Model
                       </div>
                       <div className="flex flex-col gap-1">

@@ -146,7 +146,7 @@ export function MobileBottomNav({
 
               {/* Label - refined typography for high-density mobile displays */}
               <span className={`
-                text-[10px] leading-tight font-heading font-semibold uppercase tracking-[0.1em]
+                text-[10px] leading-tight font-heading font-semibold uppercase tracking-[0.2em]
               ${active ? "text-white" : "text-muted-accessible"}
               `}>
                 {item.label}

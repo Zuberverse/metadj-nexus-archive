@@ -1,6 +1,6 @@
 # Journal Feature
 
-**Last Modified**: 2026-01-13 08:56 EST
+**Last Modified**: 2026-01-13 14:10 EST
 
 Added in v0.9.46
 
@@ -22,7 +22,7 @@ The **Journal** is a private, local-first space for users to capture ideas, drea
 
 ### 3. Speech-to-Text (STT)
 - **Voice Input**: Integrated microphone button in the editor allows users to dictate entries.
-- **Transcription**: Uses the [`/api/metadjai/transcribe`](../../api/metadjai/transcribe/route.ts) endpoint with OpenAI GPT-4o transcription (`gpt-4o-mini-transcribe-2025-12-15` by default).
+- **Transcription**: Uses the [`/api/metadjai/transcribe`](../../src/app/api/metadjai/transcribe/route.ts) endpoint with OpenAI GPT-4o transcription (`gpt-4o-mini-transcribe-2025-12-15` by default).
 - **Seamless Editing**: Transcribed text appends to the end of the entry for a reliable voice-first flow.
 - **Centered Access**: Voice input sits centered just below the writing surface for quick dictation.
 - **Limits**: 60‑second client cap; 10MB server cap (OpenAI file upload guidance allows up to 25MB).

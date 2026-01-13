@@ -846,7 +846,7 @@ export const Journal: FC = () => {
                             <div className="flex items-center gap-2 ml-auto shrink-0">
                                 <button
                                     onClick={handleSave}
-                                    className="flex items-center gap-1.5 px-6 py-2 rounded-full bg-linear-to-r from-purple-500 via-blue-500 to-cyan-500 hover:scale-105 active:scale-95 text-white transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] font-heading font-bold uppercase tracking-widest text-[11px] group border border-white/20"
+                                    className="flex items-center gap-1.5 px-6 py-2 rounded-full brand-gradient hover:scale-105 active:scale-95 text-white transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:brightness-110 font-heading font-bold uppercase tracking-widest text-[11px] group border border-white/20"
                                     title="Save & Close"
                                 >
                                     <Save className="h-4 w-4 group-hover:animate-pulse" />
@@ -929,7 +929,7 @@ export const Journal: FC = () => {
             <header className="flex flex-col gap-3 border-b border-white/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 className="text-xl min-[1100px]:text-3xl font-heading font-bold text-pop">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">Journal</span>
+                        <span className="text-heading-solid">Journal</span>
                     </h2>
                     <p className="text-white/60 text-xs min-[1100px]:text-sm">
                         Your personal space

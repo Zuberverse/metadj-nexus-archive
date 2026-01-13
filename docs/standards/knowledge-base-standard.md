@@ -1,6 +1,6 @@
 # MetaDJai Knowledge Base Standard
 
-**Last Modified**: 2026-01-11 13:15 EST
+**Last Modified**: 2026-01-13 13:42 EST
 
 ## Purpose
 
@@ -27,6 +27,11 @@ Applies to:
 - Prefer **AI companion** / **Creative Companion**.
 - Avoid "AI assistant" in content (ok in search synonyms only).
 - Use **Digital Jockey** with capitalization.
+
+## Platform Content (Public Only)
+
+- Describe features at a user level; avoid internal routes, dashboards, or implementation details.
+- Keep admin references high-level (no endpoints, credentials, or access steps).
 
 ## Canonical Mission / Vision / Method / Tagline
 

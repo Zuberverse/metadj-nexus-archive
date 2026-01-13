@@ -47,6 +47,11 @@ const serverEnvSchema = z.object({
     message: 'LOGGING_CLIENT_KEY must be at least 32 characters for security',
   }).optional(),
 
+  // Internal health endpoints auth
+  INTERNAL_API_SECRET: z.string().min(32, {
+    message: 'INTERNAL_API_SECRET must be at least 32 characters for security',
+  }).optional(),
+
   // MetaDJai AI configuration
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   OPENAI_API_KEY: z.string().min(1).optional(),

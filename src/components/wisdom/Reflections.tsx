@@ -116,7 +116,7 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
 
         <header className="text-center">
           <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-3">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">Personal Stories & Insights</span>
+            <span className="text-gradient-reflections">Personal Stories & Insights</span>
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
             Explore MetaDJ&apos;s reality—personal narratives, origin stories, and the path that

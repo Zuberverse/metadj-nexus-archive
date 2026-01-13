@@ -318,15 +318,6 @@
   animation: glow-pulse-mobile 3s ease-in-out infinite;
 }
 
-@utility pull-indicator {
-  width: 36px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-  margin: 6px auto;
-  flex-shrink: 0;
-}
-
 /* Touch target utility - ensures minimum 44x44px touch area for accessibility (WCAG 2.1 AA) */
 @utility touch-target {
   min-height: 44px;

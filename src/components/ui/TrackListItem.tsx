@@ -130,7 +130,7 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
           'transition-all duration-300 focus-ring',
           'active:scale-[0.98] active:bg-white/12 touch-manipulation',
           isCurrent
-            ? 'border-purple-500/30 bg-linear-to-r from-purple-500/10 to-blue-500/10 shadow-[0_0_20px_rgba(124,58,237,0.1)]'
+            ? 'border-purple-500/30 gradient-2-tint shadow-[0_0_20px_rgba(124,58,237,0.1)]'
             : cn('border-white/8 bg-white/2', hoverStyles),
           styles.container,
           className

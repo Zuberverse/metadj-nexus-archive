@@ -1,10 +1,10 @@
 # MetaDJ Nexus API Documentation
 
-**Last Modified**: 2026-01-05 22:43 EST
+**Last Modified**: 2026-01-13 15:10 EST
 
 ## Overview
 
-MetaDJ Nexus exposes several API endpoints for media streaming, AI chat, health monitoring, and logging. All endpoints use the Next.js App Router API routes.
+MetaDJ Nexus exposes several API endpoints for media streaming, authentication, feedback, AI chat, health monitoring, and logging. All endpoints use the Next.js App Router API routes.
 
 ## Base URL
 
@@ -84,6 +84,160 @@ Streams video files from Cloudflare R2 (primary; Replit App Storage fallback) fo
 
 ---
 
+### Authentication
+
+#### `POST /api/auth/login`
+
+Authenticates a user and sets the `nexus_session` cookie.
+
+**Request Body**:
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "user": { "id": "user_123", "email": "user@example.com", "isAdmin": false }
+}
+```
+
+**Status Codes**:
+- `200 OK` — Authenticated
+- `400 Bad Request` — Missing email/password
+- `401 Unauthorized` — Invalid credentials
+- `500 Internal Server Error` — Auth error
+
+#### `POST /api/auth/register`
+
+Creates a new account and sets the session cookie. Registration can be disabled with `AUTH_REGISTRATION_ENABLED=false`.
+
+**Request Body**:
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+**Status Codes**:
+- `200 OK` — Registered
+- `400 Bad Request` — Validation error or registration disabled
+
+#### `POST /api/auth/logout`
+
+Clears the session cookie.
+
+**Response**:
+```json
+{ "success": true }
+```
+
+#### `GET /api/auth/session`
+
+Returns the current session state.
+
+**Response**:
+```json
+{
+  "authenticated": true,
+  "user": { "id": "user_123", "email": "user@example.com", "isAdmin": false }
+}
+```
+
+#### `PATCH /api/auth/account`
+
+Updates email or password for the current user.
+
+**Request Body (email)**:
+```json
+{ "action": "updateEmail", "email": "new@example.com" }
+```
+
+**Request Body (password)**:
+```json
+{ "action": "updatePassword", "currentPassword": "old", "newPassword": "new" }
+```
+
+**Status Codes**:
+- `200 OK` — Update succeeded
+- `400 Bad Request` — Invalid action or validation error
+- `401 Unauthorized` — Not authenticated
+
+**Environment**:
+- `AUTH_SECRET` (min 32 chars; required in production)
+- `ADMIN_PASSWORD` (required for admin login)
+- `AUTH_REGISTRATION_ENABLED` (set `false` to disable registration)
+
+---
+
+### Feedback
+
+#### `GET /api/feedback`
+
+Lists feedback items. Admins see all; users see only their own items.
+
+**Query Params**:
+- `type` — `bug` | `feature` | `feedback` | `idea`
+- `status` — `new` | `reviewed` | `in-progress` | `resolved` | `closed`
+
+**Status Codes**:
+- `200 OK`
+- `401 Unauthorized` — Not authenticated
+
+#### `POST /api/feedback`
+
+Submits feedback. Authentication is optional; when present, user id/email are attached.
+
+**Request Body**:
+```json
+{
+  "type": "bug",
+  "title": "Playback stutter",
+  "description": "Audio skips after 2 minutes.",
+  "severity": "medium"
+}
+```
+
+**Status Codes**:
+- `200 OK`
+- `400 Bad Request` — Missing/invalid fields
+
+#### `GET /api/feedback/[id]`
+
+Fetches a single feedback item. Non-admin users can only access their own items.
+
+**Status Codes**:
+- `200 OK`
+- `401 Unauthorized`
+- `403 Forbidden` — Not authorized
+- `404 Not Found`
+
+#### `PATCH /api/feedback/[id]`
+
+Admin-only. Updates `status` and/or `severity`.
+
+**Status Codes**:
+- `200 OK`
+- `400 Bad Request`
+- `403 Forbidden` — Admin access required
+- `404 Not Found`
+
+#### `DELETE /api/feedback/[id]`
+
+Admin-only. Deletes a feedback item.
+
+**Status Codes**:
+- `200 OK`
+- `403 Forbidden` — Admin access required
+- `404 Not Found`
+
+---
+
 ### MetaDJai Chat (Non-Streaming)
 
 #### `POST /api/metadjai`
@@ -127,9 +281,17 @@ Sends a message to MetaDJai and receives a complete response.
   - `nowPlayingTitle` / `nowPlayingArtist` — Current track (if any)
   - `selectedCollectionTitle` — Currently selected collection
   - `mode` — `"adaptive"` (optional internal hint; no UI mode toggle)
-  - `cinemaActive` / `wisdomActive` — Whether those surfaces are open
+  - `cinemaActive` / `wisdomActive` / `dreamActive` — Whether those surfaces are open
   - `pageContext` — `{ view, details }` describing what the user is doing
+    - `view`: `"collections"` | `"cinema"` | `"wisdom"` | `"journal"` | `"search"` | `"queue"`
+    - `details`: Optional UI context (max 280 chars)
+  - `contentContext` — Wisdom-specific context (optional)
+    - `view`: `"wisdom"`
+    - `section`: `"thoughts"` | `"guides"` | `"reflections"`
+    - `id`: Optional identifier (max 120 chars)
+    - `title`: Optional title (max 200 chars)
   - `catalogSummary` — Optional rich catalog snapshot for recommendations
+    - Limits: `collectionTitles` max 50, `collections` max 30, `sampleTracks` max 10, `primaryGenres` max 10
 - `personalization` (optional) — User preference profile for MetaDJai
   - `enabled` — Whether personalization is active
   - `profileId` — `"default"` | `"creative"` | `"mentor"` | `"dj"` | `"custom"`
@@ -1390,7 +1552,7 @@ Provider health is tracked with a three-state circuit breaker:
 
 ### Tool Output Sanitization
 
-All tool results are sanitized for injection protection:
+All tool results are sanitized for injection protection, including provider-native `web_search` and local MCP tools:
 
 **Blocked Patterns**:
 - System role impersonation (`system:`, `[SYSTEM]`)
@@ -1399,7 +1561,7 @@ All tool results are sanitized for injection protection:
 
 **Size Limits**:
 - Tool results capped at ~8KB to prevent token exhaustion
-- Nested objects truncated with `...[truncated]` marker
+- Truncation adds a `_meta.truncated` flag (arrays may be returned as `{ items, _meta }`)
 
 ---
 
@@ -1423,6 +1585,7 @@ Required for API functionality:
 | `VISUALS_BUCKET_ID` | Yes (if `STORAGE_PROVIDER=replit`) | Replit App Storage for video |
 | `LOGGING_WEBHOOK_URL` | No | External logging endpoint |
 | `LOGGING_SHARED_SECRET` | No | Logging authentication |
+| `INTERNAL_API_SECRET` | No | Auth for internal health endpoints (`/api/health/ai`, `/api/health/providers`) |
 | `AI_REQUEST_TIMEOUT_MS` | No | Global AI request timeout in ms (default: 30000) |
 | `AI_TIMEOUT_STREAM` | No | Streaming route timeout in ms (default: 60000) |
 | `AI_TIMEOUT_CHAT` | No | Chat route timeout in ms (default: 30000) |

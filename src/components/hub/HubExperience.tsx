@@ -133,7 +133,7 @@ export function HubExperience({
         title: thought.title,
         excerpt: thought.excerpt,
         meta: thought.date,
-        accent: "from-purple-900/60 via-indigo-900/50 to-blue-900/40",
+        accent: "gradient-4-soft",
       },
       guide && {
         id: "guides" as const,
@@ -143,7 +143,7 @@ export function HubExperience({
         title: guide.title,
         excerpt: guide.excerpt,
         meta: guide.category,
-        accent: "from-cyan-900/60 via-blue-900/50 to-indigo-900/40",
+        accent: "gradient-4-soft",
       },
       reflection && {
         id: "reflections" as const,
@@ -153,7 +153,7 @@ export function HubExperience({
         title: reflection.title,
         excerpt: reflection.excerpt,
         meta: "Reflection notes",
-        accent: "from-indigo-900/60 via-purple-900/50 to-violet-900/40",
+        accent: "gradient-4-soft",
       },
     ]
 
@@ -177,11 +177,11 @@ export function HubExperience({
       {/* Hero Section - No container */}
       <section className="relative px-6 lg:px-8 pb-2 pt-4 flex flex-col items-center justify-center gap-6 text-center min-h-[25vh]">
         {/* Dynamic Aurora Background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-brand opacity-10 blur-[100px] animate-aurora pointer-events-none mix-blend-screen" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] brand-gradient opacity-10 blur-[100px] animate-aurora pointer-events-none mix-blend-screen" />
 
         <div className="relative z-10 space-y-4">
-          <h1 className="font-heading font-black leading-[0.9] text-[clamp(1.5rem,4vw,3.5rem)] tracking-tight max-w-[90vw] mx-auto text-pop">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-violet-300">Explore</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-300 via-cyan-300 to-indigo-300">MetaDJ&apos;s Imagination</span>
+          <h1 className="font-heading font-black leading-[0.9] text-[clamp(1.5rem,4vw,3.5rem)] tracking-tight max-w-[90vw] mx-auto text-pop text-gradient-hero">
+            Explore MetaDJ&apos;s Imagination
           </h1>
           <p className="text-lg sm:text-xl text-indigo-100/90 font-light max-w-2xl mx-auto">
             Where human vision meets AI-driven creation
@@ -194,7 +194,7 @@ export function HubExperience({
             size="lg"
             variant="secondary"
             onClick={handleStartCinematicListening}
-            className="group w-full xs:w-auto min-w-52 h-14 py-3 text-lg bg-gradient-to-r from-purple-900/50 via-indigo-900/40 to-cyan-900/35 hover:from-purple-800/60 hover:via-indigo-800/50 hover:to-cyan-800/45 border-purple-400/40 hover:border-cyan-400/60 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(139,92,246,0.15),0_0_30px_rgba(139,92,246,0.08)] hover:shadow-[0_0_20px_rgba(6,182,212,0.18),0_0_40px_rgba(139,92,246,0.1)]"
+            className="group w-full xs:w-auto min-w-52 h-14 py-3 text-lg brand-gradient border border-purple-400/40 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 hover:brightness-110 shadow-[0_0_15px_rgba(139,92,246,0.15),0_0_30px_rgba(139,92,246,0.08)] hover:shadow-[0_0_20px_rgba(6,182,212,0.18),0_0_40px_rgba(139,92,246,0.1)]"
             leftIcon={<Play className="h-5 w-5 shrink-0 fill-current text-cyan-300 group-hover:text-cyan-100 transition-colors" />}
           >
             <span className="text-heading-solid font-semibold">Enter Cinema</span>
@@ -203,7 +203,7 @@ export function HubExperience({
             size="lg"
             variant="secondary"
             onClick={handleChatWithMetaDjAi}
-            className="group w-full xs:w-auto min-w-52 h-14 py-3 text-lg bg-gradient-to-r from-indigo-900/50 via-purple-900/40 to-fuchsia-900/35 hover:from-indigo-800/60 hover:via-purple-800/50 hover:to-fuchsia-800/45 border-purple-400/40 hover:border-fuchsia-400/60 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(139,92,246,0.15),0_0_30px_rgba(217,70,239,0.08)] hover:shadow-[0_0_20px_rgba(217,70,239,0.18),0_0_40px_rgba(139,92,246,0.1)]"
+            className="group w-full xs:w-auto min-w-52 h-14 py-3 text-lg gradient-4 border border-purple-400/40 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 hover:brightness-110 shadow-[0_0_15px_rgba(139,92,246,0.15),0_0_30px_rgba(217,70,239,0.08)] hover:shadow-[0_0_20px_rgba(217,70,239,0.18),0_0_40px_rgba(139,92,246,0.1)]"
             leftIcon={<MessageSquare className="h-5 w-5 shrink-0 text-fuchsia-300 group-hover:text-fuchsia-100 transition-colors" />}
           >
             <span className="text-heading-solid font-semibold">Chat with MetaDJai</span>
@@ -250,7 +250,7 @@ export function HubExperience({
                     "border border-white/5 hover:border-white/20"
                   )}
                 >
-                  <div className="absolute inset-0 bg-linear-to-br from-cyan-900/60 via-indigo-900/50 to-purple-900/40 opacity-60" />
+                  <div className="absolute inset-0 gradient-4-soft opacity-60" />
 
                   <div className="relative z-10 flex flex-col gap-2 min-h-[110px]">
                     <p className="text-[10px] uppercase tracking-wider text-cyan-100/80">
@@ -283,7 +283,7 @@ export function HubExperience({
                       "border border-white/5 hover:border-white/20"
                     )}
                   >
-                    <div className={clsx("absolute inset-0 bg-linear-to-br opacity-55", card.accent)} />
+                    <div className={clsx("absolute inset-0 opacity-55", card.accent)} />
 
                     <div className="relative z-10 flex flex-col gap-1.5 min-h-[110px]">
                       <h3 className="text-base font-heading font-bold text-heading-solid line-clamp-2">

@@ -60,7 +60,10 @@ export function UserGuideOverlay({ onClose }: UserGuideOverlayProps) {
     if (section && container) {
       const offset = 80
       const top = section.offsetTop - offset
-      container.scrollTo({ top, behavior: "smooth" })
+      const prefersReducedMotion = typeof window !== "undefined"
+        && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      const behavior: ScrollBehavior = prefersReducedMotion ? "auto" : "smooth"
+      container.scrollTo({ top, behavior })
       setActiveSection(sectionId)
       setIsNavDropdownOpen(false)
     }
@@ -226,7 +229,7 @@ export function UserGuideOverlay({ onClose }: UserGuideOverlayProps) {
                 <button
                   type="button"
                   onClick={handleAskMetaDJai}
-                  className="hidden sm:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 px-3 py-1.5 text-xs font-medium text-white transition-all duration-300 hover:from-purple-500/30 hover:to-cyan-500/30 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus-ring-glow whitespace-nowrap"
+                  className="hidden sm:inline-flex items-center gap-2 rounded-full gradient-2-tint border border-purple-500/30 px-3 py-1.5 text-xs font-medium text-white transition-all duration-300 hover:brightness-110 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus-ring-glow whitespace-nowrap"
                 >
                   <Sparkles className="h-3.5 w-3.5 text-purple-400" />
                   <span>Ask MetaDJai</span>
@@ -235,23 +238,25 @@ export function UserGuideOverlay({ onClose }: UserGuideOverlayProps) {
                 <button
                   type="button"
                   onClick={handleAskMetaDJai}
-                  className="sm:hidden inline-flex items-center justify-center w-8 h-8 min-h-[44px] min-w-[44px] rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 text-purple-400 transition-all duration-300 hover:from-purple-500/30 hover:to-cyan-500/30 touch-manipulation"
+                  className="sm:hidden inline-flex items-center justify-center w-8 h-8 min-h-[44px] min-w-[44px] rounded-full gradient-2-tint border border-purple-500/30 text-purple-400 transition-all duration-300 hover:brightness-110 touch-manipulation"
                   aria-label="Ask MetaDJai"
                 >
                   <Sparkles className="h-4 w-4" />
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleClose()
-                    startTour()
-                  }}
-                  className="hidden sm:inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-medium text-white transition-all duration-300 hover:bg-white/10 hover:border-white/20 whitespace-nowrap"
-                >
-                  <Sparkles className="h-3.5 w-3.5 text-purple-400" />
-                  <span>Start Tour</span>
-                </button>
+                {isDesktop && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleClose()
+                      startTour()
+                    }}
+                    className="hidden sm:inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-medium text-white transition-all duration-300 hover:bg-white/10 hover:border-white/20 whitespace-nowrap"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 text-purple-400" />
+                    <span>Start Tour</span>
+                  </button>
+                )}
 
                 <button
                   ref={closeButtonRef}

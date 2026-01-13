@@ -2,7 +2,7 @@
 
 > **Comprehensive playback behavior and UX patterns for MetaDJ Nexus's audio player**
 
-**Last Modified**: 2026-01-13 08:00 EST
+**Last Modified**: 2026-01-13 14:35 EST
 
 ---
 
@@ -91,7 +91,7 @@ The Action Bar is a centered shell that hugs the bottom edge with feature button
 
 **Layout Structure:**
 - **Action Bar**: feature buttons plus a rounded-square Controls trigger. No inline media controls.
-- **Control Panel overlay**: Floating panel with queue header (badge, track count, clear), inline queue list, centered transport controls, and a circular info toggle that swaps the entire pane to the Track Insight card. No repeat control.
+- **Control Panel overlay**: Floating panel with queue header (badge, track count, clear), inline queue list, centered transport controls (including repeat), and a circular info toggle that swaps the entire pane to the Track Insight card.
 
 ### Player Dimensions
 - **Width**: 840-1200px responsive (wider center column to give the progress bar breathing room)

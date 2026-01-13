@@ -253,7 +253,7 @@ export function CinemaWebGLContextLoss({
       {isRecovering && (
         <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden mt-2 mb-4 pointer-events-none">
           <div
-            className="h-full bg-gradient-to-r from-purple-500 to-cyan-400 rounded-full animate-pulse w-[60%] [animation-duration:1.5s]"
+            className="h-full gradient-4 rounded-full animate-pulse w-[60%] [animation-duration:1.5s]"
           />
         </div>
       )}

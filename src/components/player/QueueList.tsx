@@ -178,7 +178,7 @@ export function QueueList({
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3">
                     {currentCollectionTitle && (
-                        <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-linear-to-r from-[#5F6CFF]/60 via-[#38D4FF]/55 to-[#A250FF]/60 px-3 py-1 text-xs font-semibold text-white shadow-[0_10px_24px_rgba(6,8,28,0.45)]">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/25 gradient-4 px-3 py-1 text-xs font-semibold text-white shadow-[0_10px_24px_rgba(6,8,28,0.45)]">
                             <span className="truncate max-w-[180px] sm:max-w-[220px]">{currentCollectionTitle}</span>
                         </span>
                     )}
@@ -192,7 +192,7 @@ export function QueueList({
                         <button
                             type="button"
                             onClick={() => setShowClearConfirm(true)}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-(--border-elevated) bg-white/5 px-3 py-1.5 text-xs font-heading font-semibold text-white/80 transition hover:border-(--border-active) hover:bg-white/10 focus-ring-glow min-h-[36px]"
+                            className="inline-flex items-center gap-1.5 rounded-full border border-(--border-elevated) bg-white/5 px-3 py-1.5 text-xs font-heading font-semibold text-white/80 transition hover:border-(--border-active) hover:bg-white/10 focus-ring-glow min-h-[44px]"
                             aria-expanded={showClearConfirm}
                         >
                             <X className="h-4 w-4" />
@@ -226,14 +226,14 @@ export function QueueList({
                             <button
                                 type="button"
                                 onClick={() => setShowClearConfirm(false)}
-                                className="inline-flex items-center rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 transition hover:bg-white/10 hover:text-white focus-ring-glow min-h-[36px]"
+                                className="inline-flex items-center rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 transition hover:bg-white/10 hover:text-white focus-ring-glow min-h-[44px]"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="button"
                                 onClick={handleClearQueue}
-                                className="inline-flex items-center rounded-lg border border-red-500/40 bg-red-500/20 px-3 py-1.5 text-xs font-semibold text-red-200 transition hover:bg-red-500/30 hover:text-white focus-ring-glow min-h-[36px]"
+                                className="inline-flex items-center rounded-lg border border-red-500/40 bg-red-500/20 px-3 py-1.5 text-xs font-semibold text-red-200 transition hover:bg-red-500/30 hover:text-white focus-ring-glow min-h-[44px]"
                                 autoFocus
                             >
                                 Clear All

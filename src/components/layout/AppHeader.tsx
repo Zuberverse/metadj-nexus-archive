@@ -94,6 +94,9 @@ export function AppHeader({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const [searchContentResults, setSearchContentResults] = useState<SearchContentResults | null>(null)
+  const [searchOverlayHoveredIndex, setSearchOverlayHoveredIndex] = useState<number | null>(null)
+  const searchOverlayRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const searchInputId = "header-search-input"
 
   // Navigation pill state - animate between tabs only after view hydration
   // Use a fixed width to avoid hydration wobble when fonts load.
@@ -252,6 +255,85 @@ export function AppHeader({
     return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
   }
 
+  const handleOverlayTrackSelect = useCallback((track: Track) => {
+    onTrackSelect(track)
+    closeSearchOverlay()
+  }, [onTrackSelect, closeSearchOverlay])
+
+  const handleOverlayCollectionSelect = useCallback((collection: Collection) => {
+    onCollectionSelect(collection)
+    closeSearchOverlay()
+  }, [onCollectionSelect, closeSearchOverlay])
+
+  const handleOverlayWisdomSelect = useCallback((entry: WisdomSearchEntry) => {
+    onWisdomSelect?.(entry)
+    closeSearchOverlay()
+  }, [onWisdomSelect, closeSearchOverlay])
+
+  const handleOverlayJournalSelect = useCallback((entry: JournalSearchEntry) => {
+    onJournalSelect?.(entry)
+    closeSearchOverlay()
+  }, [onJournalSelect, closeSearchOverlay])
+
+  const handleOverlayResultKeyDown = useCallback((
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    index: number,
+    type: 'track' | 'collection' | 'wisdom' | 'journal',
+    item: Track | Collection | WisdomSearchEntry | JournalSearchEntry
+  ) => {
+    const refs = searchOverlayRefs.current
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault()
+      const next = refs[index + 1] ?? refs[0]
+      next?.focus()
+      return
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault()
+      if (index === 0) {
+        document.getElementById(searchInputId)?.focus()
+      } else {
+        refs[index - 1]?.focus()
+      }
+      return
+    }
+
+    if (event.key === "Enter") {
+      event.preventDefault()
+      if (type === "track") {
+        handleOverlayTrackSelect(item as Track)
+      } else if (type === "collection") {
+        handleOverlayCollectionSelect(item as Collection)
+      } else if (type === "wisdom") {
+        handleOverlayWisdomSelect(item as WisdomSearchEntry)
+      } else {
+        handleOverlayJournalSelect(item as JournalSearchEntry)
+      }
+      return
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault()
+      closeSearchOverlay()
+    }
+  }, [
+    handleOverlayTrackSelect,
+    handleOverlayCollectionSelect,
+    handleOverlayWisdomSelect,
+    handleOverlayJournalSelect,
+    closeSearchOverlay,
+    searchInputId
+  ])
+
+  useEffect(() => {
+    if (!isSearchOverlayOpen) {
+      setSearchOverlayHoveredIndex(null)
+    }
+    searchOverlayRefs.current = []
+  }, [isSearchOverlayOpen, searchQuery])
+
   return (
     <>
       <header
@@ -293,7 +375,7 @@ export function AppHeader({
                     className="object-contain object-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.45)]"
                   />
                 </div>
-                <span className="font-heading font-bold text-sm tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">
+                <span className="font-heading font-bold text-sm tracking-wide text-gradient-primary">
                   Nexus
                 </span>
               </div>
@@ -310,7 +392,7 @@ export function AppHeader({
                     className="object-contain object-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.45)]"
                   />
                 </div>
-                <span className="font-heading font-bold text-lg tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">
+                <span className="font-heading font-bold text-lg tracking-wide text-gradient-primary">
                   Nexus
                 </span>
               </div>
@@ -324,8 +406,8 @@ export function AppHeader({
                   className={clsx(
                     "group/music flex items-center gap-2 w-[200px] min-w-[200px] max-w-[200px] overflow-hidden rounded-full px-2.5 py-1.5 border transition-all duration-300",
                     isLeftPanelOpen && leftPanelTab === "browse"
-                      ? "border-purple-500/50 bg-gradient-to-r from-purple-900/50 via-indigo-900/40 to-cyan-900/35 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
-                      : "border-white/25 bg-gradient-to-r from-purple-900/45 via-indigo-900/35 to-cyan-900/30 hover:border-purple-400/40 hover:from-purple-800/50 hover:via-indigo-800/40 hover:to-cyan-800/35"
+                      ? "border-purple-500/50 gradient-4-soft shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                      : "border-white/25 bg-white/5 hover:border-purple-400/40 hover-gradient-2"
                   )}
                   aria-label={currentTrack ? "Open Music Library" : "Open Music Library (Choose a Track)"}
                 >
@@ -516,8 +598,8 @@ export function AppHeader({
                     className={clsx(
                       "group/music-mobile flex items-center gap-2 flex-1 min-w-0 overflow-hidden rounded-full px-2 py-1 border transition-all duration-300 active:scale-95",
                       isLeftPanelOpen && leftPanelTab === "browse"
-                        ? "border-purple-500/50 bg-gradient-to-r from-purple-900/50 via-indigo-900/40 to-cyan-900/35 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
-                        : "border-white/25 bg-gradient-to-r from-purple-900/45 via-indigo-900/35 to-cyan-900/30 hover:border-purple-400/40 hover:from-purple-800/50 hover:via-indigo-800/40 hover:to-cyan-800/35"
+                        ? "border-purple-500/50 gradient-4-soft shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                        : "border-white/25 bg-white/5 hover:border-purple-400/40 hover-gradient-2"
                     )}
                     aria-label={currentTrack ? "Open Music Library" : "Open Music Library (choose a track)"}
                   >
@@ -619,8 +701,8 @@ export function AppHeader({
                 className={clsx(
                   "hidden min-[1100px]:flex items-center gap-2 px-5 py-2 rounded-full text-sm font-heading font-bold uppercase tracking-wide border transition-all duration-300 focus-ring-glow touch-manipulation",
                   isRightPanelOpen
-                    ? "border-cyan-500/50 bg-gradient-to-r from-indigo-900/50 via-purple-900/40 to-fuchsia-900/35 text-white shadow-[0_0_15px_rgba(6,182,212,0.25)]"
-                    : "border-white/25 bg-gradient-to-r from-indigo-900/45 via-purple-900/35 to-fuchsia-900/30 backdrop-blur-md text-white/90 hover:border-purple-400/40 hover:from-indigo-800/50 hover:via-purple-800/40 hover:to-fuchsia-800/35 hover:text-white"
+                    ? "border-cyan-500/50 gradient-4-soft text-white shadow-[0_0_15px_rgba(6,182,212,0.25)]"
+                    : "border-white/25 bg-white/5 backdrop-blur-md text-white/90 hover:border-purple-400/40 hover-gradient-2 hover:text-white"
                 )}
                 aria-label={isRightPanelOpen ? "Close MetaDJai" : "Open MetaDJai"}
                 aria-pressed={isRightPanelOpen}
@@ -699,6 +781,7 @@ export function AppHeader({
                 className="w-full"
                 hideIcon={false}
                 disableDropdown={true}
+                inputId={searchInputId}
               />
             </div>
 
@@ -707,6 +790,14 @@ export function AppHeader({
               <div className="border-t border-white/10 max-h-[60vh] overflow-y-auto">
                 {(() => {
                   const { collections: collectionResults, tracks: trackResults, wisdom: wisdomResults, journal: journalResults, totalCount } = resolvedSearchContentResults
+                  const visibleCollections = collectionResults.slice(0, 3)
+                  const visibleTracks = trackResults.slice(0, 8)
+                  const visibleWisdom = wisdomResults.slice(0, 4)
+                  const visibleJournal = journalResults.slice(0, 4)
+                  const collectionOffset = 0
+                  const trackOffset = collectionOffset + visibleCollections.length
+                  const wisdomOffset = trackOffset + visibleTracks.length
+                  const journalOffset = wisdomOffset + visibleWisdom.length
 
                   if (totalCount === 0) {
                     return (
@@ -720,19 +811,29 @@ export function AppHeader({
 
                   return (
                     <div className="divide-y divide-white/5">
-                      {collectionResults.length > 0 && (
+                      {visibleCollections.length > 0 && (
                         <div className="px-4 py-3">
                           <p className="text-xs uppercase tracking-wider text-(--text-muted) mb-2">Collections</p>
                           <div className="space-y-1">
-                            {collectionResults.slice(0, 3).map((collection) => (
+                            {visibleCollections.map((collection, index) => {
+                              const actualIndex = collectionOffset + index
+                              return (
                               <button
                                 key={collection.id}
                                 type="button"
-                                onClick={() => {
-                                  onCollectionSelect(collection)
-                                  closeSearchOverlay()
+                                onClick={() => handleOverlayCollectionSelect(collection)}
+                                onKeyDown={(event) => handleOverlayResultKeyDown(event, actualIndex, "collection", collection)}
+                                onMouseEnter={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onMouseLeave={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                onFocus={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onBlur={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                ref={(element) => {
+                                  searchOverlayRefs.current[actualIndex] = element
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors text-left"
+                                className={clsx(
+                                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left focus-ring-glow",
+                                  searchOverlayHoveredIndex === actualIndex ? "bg-white/10" : "hover:bg-white/5"
+                                )}
                               >
                                 <div className="relative w-10 h-10 rounded-md overflow-hidden shrink-0">
                                   <Image
@@ -747,52 +848,65 @@ export function AppHeader({
                                   <p className="text-xs text-(--text-muted)">{collection.trackCount} tracks</p>
                                 </div>
                               </button>
-                            ))}
+                              )
+                            })}
                           </div>
                         </div>
                       )}
 
-                      {trackResults.length > 0 && (
+                      {visibleTracks.length > 0 && (
                         <div className="px-4 py-3">
                           <p className="text-xs uppercase tracking-wider text-(--text-muted) mb-2">Tracks</p>
                           <div className="space-y-1" role="listbox" aria-label="Track results">
-                            {trackResults.slice(0, 8).map((track, index) => (
+                            {visibleTracks.map((track, index) => {
+                              const actualIndex = trackOffset + index
+                              return (
                               <SearchResultItem
                                 key={track.id}
                                 track={track}
-                                index={index}
+                                index={actualIndex}
                                 isActive={track.id === currentTrack?.id}
-                                isHovered={false}
-                                onSelect={() => {
-                                  onTrackSelect(track)
-                                  closeSearchOverlay()
-                                }}
+                                isHovered={searchOverlayHoveredIndex === actualIndex}
+                                onSelect={() => handleOverlayTrackSelect(track)}
                                 onQueueAdd={() => onTrackQueueAdd(track)}
-                                onKeyDown={() => { }}
-                                onMouseEnter={() => { }}
-                                onMouseLeave={() => { }}
-                                onFocus={() => { }}
-                                onBlur={() => { }}
-                                buttonRef={() => { }}
+                                onKeyDown={(event) => handleOverlayResultKeyDown(event, actualIndex, "track", track)}
+                                onMouseEnter={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onMouseLeave={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                onFocus={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onBlur={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                buttonRef={(element) => {
+                                  searchOverlayRefs.current[actualIndex] = element
+                                }}
                               />
-                            ))}
+                              )
+                            })}
                           </div>
                         </div>
                       )}
 
-                      {wisdomResults.length > 0 && (
+                      {visibleWisdom.length > 0 && (
                         <div className="px-4 py-3">
                           <p className="text-xs uppercase tracking-wider text-(--text-muted) mb-2">Wisdom</p>
                           <div className="space-y-1">
-                            {wisdomResults.slice(0, 4).map((entry) => (
+                            {visibleWisdom.map((entry, index) => {
+                              const actualIndex = wisdomOffset + index
+                              return (
                               <button
                                 key={`wisdom-${entry.section}-${entry.id}`}
                                 type="button"
-                                onClick={() => {
-                                  onWisdomSelect?.(entry)
-                                  closeSearchOverlay()
+                                onClick={() => handleOverlayWisdomSelect(entry)}
+                                onKeyDown={(event) => handleOverlayResultKeyDown(event, actualIndex, "wisdom", entry)}
+                                onMouseEnter={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onMouseLeave={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                onFocus={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onBlur={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                ref={(element) => {
+                                  searchOverlayRefs.current[actualIndex] = element
                                 }}
-                                className="w-full flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors text-left"
+                                className={clsx(
+                                  "w-full flex items-start gap-3 px-3 py-2 rounded-lg transition-colors text-left focus-ring-glow",
+                                  searchOverlayHoveredIndex === actualIndex ? "bg-white/10" : "hover:bg-white/5"
+                                )}
                               >
                                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-cyan-200 shrink-0">
                                   <Sparkles className="h-4 w-4" />
@@ -802,24 +916,35 @@ export function AppHeader({
                                   <p className="text-xs text-(--text-muted)">{formatWisdomLabel(entry)}</p>
                                 </div>
                               </button>
-                            ))}
+                              )
+                            })}
                           </div>
                         </div>
                       )}
 
-                      {journalResults.length > 0 && (
+                      {visibleJournal.length > 0 && (
                         <div className="px-4 py-3">
                           <p className="text-xs uppercase tracking-wider text-(--text-muted) mb-2">Journal</p>
                           <div className="space-y-1">
-                            {journalResults.slice(0, 4).map((entry) => (
+                            {visibleJournal.map((entry, index) => {
+                              const actualIndex = journalOffset + index
+                              return (
                               <button
                                 key={`journal-${entry.id}`}
                                 type="button"
-                                onClick={() => {
-                                  onJournalSelect?.(entry)
-                                  closeSearchOverlay()
+                                onClick={() => handleOverlayJournalSelect(entry)}
+                                onKeyDown={(event) => handleOverlayResultKeyDown(event, actualIndex, "journal", entry)}
+                                onMouseEnter={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onMouseLeave={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                onFocus={() => setSearchOverlayHoveredIndex(actualIndex)}
+                                onBlur={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
+                                ref={(element) => {
+                                  searchOverlayRefs.current[actualIndex] = element
                                 }}
-                                className="w-full flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors text-left"
+                                className={clsx(
+                                  "w-full flex items-start gap-3 px-3 py-2 rounded-lg transition-colors text-left focus-ring-glow",
+                                  searchOverlayHoveredIndex === actualIndex ? "bg-white/10" : "hover:bg-white/5"
+                                )}
                               >
                                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-purple-200 shrink-0">
                                   <Book className="h-4 w-4" />
@@ -829,7 +954,8 @@ export function AppHeader({
                                   <p className="text-xs text-(--text-muted)">Updated {formatJournalDate(entry.updatedAt)}</p>
                                 </div>
                               </button>
-                            ))}
+                              )
+                            })}
                           </div>
                         </div>
                       )}

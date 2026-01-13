@@ -2,7 +2,7 @@
 
 > **Desktop side panel architecture for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-13 11:39 EST
+**Last Modified**: 2026-01-13 14:35 EST
 ## Overview
 
 The Panel System provides a two-panel desktop layout with responsive behavior. The **Left Panel** hosts navigation, queue, and playback controls, while the **Right Panel** hosts the MetaDJai chat experience.
@@ -77,7 +77,7 @@ The Left Panel has three main tabs:
 
 ### Sections
 
-- **Panel Header** — Centered “Music” label, then the three tab pills (Library / Playlists / Queue).
+- **Panel Header** — Three tab pills (Library / Playlists / Queue); no separate “Music” label.
 - **Library** — SearchBar + Featured card + collections list (`BrowseView.tsx`), then `CollectionDetailView.tsx` (Play All, Shuffle, About Collection).
 - **Queue** — Queue list with filter/search (inline with track count), reorder, and remove with undo toast (`QueueSection.tsx`).
 - **Playlists** — Playlist list + playlist detail view (`PlaylistList`, `PlaylistDetailView`).

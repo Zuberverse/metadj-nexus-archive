@@ -42,7 +42,7 @@ export function PageLoadingSkeleton() {
 
           {/* Collection Dropdown Skeleton */}
           <div className="mb-6 flex justify-center">
-            <div className="h-[52px] w-full max-w-md rounded-[24px] border border-(--border-standard) bg-linear-to-r from-[#5F6CFF]/20 via-[#38D4FF]/15 to-[#A250FF]/20 backdrop-blur-3xl animate-pulse" />
+            <div className="h-[52px] w-full max-w-md rounded-[24px] border border-(--border-standard) gradient-2-tint backdrop-blur-3xl animate-pulse" />
           </div>
 
           {/* Description Card Skeleton */}

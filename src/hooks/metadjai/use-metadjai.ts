@@ -18,14 +18,14 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { mapErrorToUserMessage } from '@/lib/ai'
+import { mapErrorToUserMessage } from '@/lib/ai/errors'
 import { MODEL_LABELS } from '@/lib/ai/model-preferences'
 import {
   buildPersonalizationPayload,
   DEFAULT_PERSONALIZATION_STATE,
   normalizePersonalizationState,
 } from '@/lib/ai/personalization'
-import { OPEN_FEEDBACK_EVENT, type OpenFeedbackEventDetail } from '@/lib/ai/tools'
+import { OPEN_FEEDBACK_EVENT, type OpenFeedbackEventDetail } from '@/lib/ai/tools/feedback'
 import { logger } from '@/lib/logger'
 import { parseProposal } from '@/lib/metadjai/proposal-schema'
 import { getString, getValue, setString, setValue, STORAGE_KEYS } from '@/lib/storage'

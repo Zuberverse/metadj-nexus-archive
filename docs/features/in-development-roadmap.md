@@ -1,6 +1,6 @@
-**Last Modified**: 2026-01-13 13:34 EST
-
 # In-Development Roadmap
+
+**Last Modified**: 2026-01-13 14:10 EST
 
 > Canonical snapshot of features that are actively in development, staged, or otherwise not live in the current MetaDJ Nexus build.
 

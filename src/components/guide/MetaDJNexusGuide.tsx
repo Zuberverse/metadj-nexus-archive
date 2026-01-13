@@ -114,7 +114,7 @@ export function MetaDJNexusGuide() {
             <button
               type="button"
               onClick={handleAskMetaDJai}
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:from-purple-500/30 hover:to-cyan-500/30 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus-ring-glow"
+              className="inline-flex items-center gap-2 rounded-full gradient-2-tint border border-purple-500/30 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:brightness-110 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus-ring-glow"
             >
               <Sparkles className="h-4 w-4 text-purple-400" />
               <span>Ask MetaDJai</span>

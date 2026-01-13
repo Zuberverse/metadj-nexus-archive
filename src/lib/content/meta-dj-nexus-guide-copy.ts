@@ -57,9 +57,9 @@ export const GUIDE_NAV_SECTIONS: GuideSection[] = [
 // Welcome section
 export const GUIDE_WELCOME = {
   tagline: "Where music, visuals, and creative guidance converge",
-  intro: "MetaDJ Nexus is my living studio and stage: original music, Cinema visuals, Wisdom, a private Journal, and MetaDJai as your creative companion. The Hub is mission control for launching a cinematic listen and catching the latest updates, while the Music panel holds the library, playlists, and queue.",
+  intro: "MetaDJ Nexus is my living studio and stage: original music, Cinema visuals, Wisdom, a private Journal, and MetaDJai as your creative companion. The Hub is mission control for launching a cinematic listen and catching the latest updates, while the Music panel holds Browse, Playlists, and Queue.",
   previewNotice:
-    "Welcome to the Public Preview—an early look at the MetaDJ Nexus experience. Explore original music, Cinema visuals, and MetaDJai as the platform evolves toward full launch.",
+    "Public Preview is open while the core experience is refined. Playlists, queue state, and Journal entries stay local on this device for now.",
   askAiPrompt: "Questions? Ask MetaDJai for a walkthrough, creative guidance, or a listening flow.",
 }
 
@@ -68,20 +68,20 @@ export const GUIDE_QUICK_START: QuickStartStep[] = [
   {
     number: "1",
     title: "Start in the Hub",
-    description: "On the Hub, tap Enter Cinema to play the hero track and open the visual layer. Or open the Music panel → Library to browse Featured, Recently Played, and collections. Inside a collection, use the \"About Collection\" toggle to read the story.",
+    description: "On the Hub, tap Enter Cinema to play the hero track and open the visual layer. Or open the Music panel → Browse to explore Featured, Recently Played, and collections. Inside a collection, use the \"About Collection\" toggle to read the story.",
     tip: "Featured is 10 curated tracks; Recently Played keeps your last 50 plays on this device.",
   },
   {
     number: "2",
-    title: "Play From the Library",
+    title: "Play From Browse",
     description: "Tap any track card to load it into the player. Use the ••• menu or Track Details to add to Queue or Playlists.",
-    tip: "Ctrl/Cmd + Space plays/pauses, Ctrl/Cmd + / focuses search."
+    tip: "Ctrl/Cmd + Space plays/pauses, Ctrl/Cmd + K or / focuses search."
   },
   {
     number: "3",
     title: "Shape the Experience",
     description: "Toggle Cinema for fullscreen visuals, open Wisdom for guides, journal your ideas, or chat with MetaDJai for creative direction. On mobile, the bottom nav switches surfaces; on desktop, use the header toggles and side panels.",
-    tip: "Ctrl/Cmd + S shuffles, Ctrl/Cmd + R cycles repeat."
+    tip: "Ctrl/Cmd + S shuffles, Ctrl/Cmd + R cycles repeat, Ctrl/Cmd + J opens MetaDJai."
   },
 ]
 
@@ -106,8 +106,8 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
     icon: "🎵",
     description: "Original music organized into collections that grow as the creative exploration continues.",
     features: [
-      "Library tab: Featured highlights, Recently Played (last 50 plays), and collections",
-      "Tabs: Library, Playlists, Queue",
+      "Browse tab: Featured highlights, Recently Played (last 50 plays), and collections",
+      "Tabs: Browse, Playlists, Queue",
       "Track details: BPM, key, release date, and share links",
       "Share deep links for tracks, collections, and playlists",
       "Add to Queue: manual picks stay at the top",
@@ -123,7 +123,7 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
     features: [
       "Scene selector: switch between visualizers and video scenes",
       "3D visualizers (desktop): Cosmos, Black Hole, Space Travel, Disco Ball",
-      "2D visualizers: Pixel Portal, 8-Bit Adventure, Synthwave Horizon",
+      "2D visualizers: Pixel Portal, 8-Bit Adventure, Synthwave Horizon, Spectrum Ring, Starlight Drift",
       "Video scenes: MetaDJ Avatar",
       "Dream overlay: optional AI remix layer (requires Daydream config + webcam)",
       "Audio-reactive with auto-hide controls for full-screen immersion",
@@ -149,7 +149,7 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
     icon: "📝",
     description: "Private, local-first space for capturing ideas, drafts, and reflections.",
     features: [
-      "Local-first entries stored in your browser (no account required)",
+      "Local-first entries stored in your browser (no cloud sync)",
       "Rich-text editor with formatting toolbar",
       "Voice dictation with a 60-second recording limit",
       "Autosaved drafts and session restore on refresh",
@@ -170,13 +170,18 @@ export const GUIDE_COLLECTIONS: CollectionInfo[] = [
     description: "Portal narration meets orchestral/electronic fusion powered by AI-driven creation. Cinematic compositions across 10 tracks.",
     vibe: "Epic • Orchestral • Cinematic"
   },
+  {
+    name: "Metaverse Revelation",
+    description: "Epic techno, nu disco, and synthwave anthems exploring virtual worlds and AI-driven creativity.",
+    vibe: "High-energy • Anthemic • Synthwave"
+  },
 ]
 
 // MetaDJai section
 export const GUIDE_METADJAI = {
   title: "MetaDJai",
   description: "MetaDJai is an AI-driven creative companion built on my creative philosophy and methods. It tracks what you're listening to and which surface you're exploring, then uses that context to respond. Transparent about being AI while channeling MetaDJ's voice to help you navigate, create, and explore.",
-  howToOpen: "Click MetaDJai in the header (desktop) or the bottom nav (mobile).",
+  howToOpen: "Click MetaDJai in the header (desktop) or the bottom nav (mobile), or press Ctrl/Cmd + J.",
   features: [
     {
       title: "Context-Aware",
@@ -211,13 +216,13 @@ export const GUIDE_METADJAI = {
     "Ask for a platform walkthrough if you're new",
     "Use the Actions menu for fast starters tied to the current moment",
     "Open History to jump between chats",
-    "MetaDJai suggests tracks only when you ask",
+    "MetaDJai suggests tracks when you ask",
     "Ask for DJ support (play, queue, playlists) when you want music-first help",
     "Use the Model dropdown if you want a different tone or approach",
     "Voice input requires microphone permission",
   ],
   rateLimit: "20 messages every 5 minutes. The usage indicator shows where you are in the window.",
-  disclaimer: "MetaDJai generates options; you make the meaningful choices. Technology amplifies; humans conduct meaning.",
+  disclaimer: "MetaDJai generates options; you make the meaningful choices. Technology amplifies; people conduct meaning.",
 }
 
 // Queue & Playback section
@@ -239,7 +244,7 @@ export const GUIDE_QUEUE = {
     },
     {
       title: "Visual Hierarchy",
-      description: "Manual picks are highlighted at the top so you always know what's yours."
+      description: "Manual picks stay pinned at the top so your selections play first."
     },
     {
       title: "Persistent Queue",
@@ -249,7 +254,7 @@ export const GUIDE_QUEUE = {
   controls: [
     { action: "Add to Queue", description: "Use the ••• menu, Track Details, or search results" },
     { action: "Remove", description: "Click the X or press Delete/Backspace on a focused item" },
-    { action: "Reorder", description: "Drag tracks (desktop) or long-press to move them on mobile" },
+    { action: "Reorder", description: "Drag tracks on desktop, or use Arrow Up/Down on a focused item" },
     { action: "Clear", description: "Tap Clear in the queue header to remove everything" },
   ],
   playlists: {
@@ -267,21 +272,23 @@ export const GUIDE_QUEUE = {
 // Search section
 export const GUIDE_SEARCH = {
   title: "Search & Discovery",
-  description: "Find tracks and collections by title—fast, anywhere in the app.",
+  description: "Find tracks, collections, Wisdom entries, and Journal notes fast from anywhere in the app.",
   features: [
     "Desktop: Use the search icon in the playback pill to open the header search",
-    "Music panel: Library SearchBar lives above Featured",
-    "Real-time results as you type (tracks + collections)",
+    "Music panel: Browse SearchBar lives above Featured",
+    "Header search includes tracks, collections, Wisdom, and Journal results",
+    "Results update in real time as you type",
     "Shows artwork, genres, and inline action buttons",
     "Play or queue directly from search results",
     "Glass aesthetic dropdown matches the MetaDJai vibe",
-    "Press Ctrl/Cmd + / to focus search from anywhere",
+    "Press Ctrl/Cmd + K or / to focus search from anywhere",
     "Stays above Cinema for uninterrupted crate digging",
   ],
   tips: [
     "Search track titles: \"odyssey\" finds \"Metaversal Odyssey\"",
     "Search collections: \"majestic\" surfaces \"Majestic Ascent\" under Collections",
     "Multi-word queries work: \"boss battle\" matches \"Boss Battle\"",
+    "Journal results appear after you save entries on this device",
   ],
 }
 
@@ -289,18 +296,20 @@ export const GUIDE_SEARCH = {
 export const GUIDE_SHORTCUTS: KeyboardShortcut[] = [
   // Playback (require Ctrl/Cmd)
   { key: "Ctrl/Cmd + Space", label: "Play / Pause", category: "playback" },
-  { key: "Ctrl/Cmd + ←", label: "Seek backward / Previous track", category: "playback" },
-  { key: "Ctrl/Cmd + →", label: "Seek forward / Next track", category: "playback" },
+  { key: "Ctrl/Cmd + ←", label: "Previous track", category: "playback" },
+  { key: "Ctrl/Cmd + →", label: "Next track", category: "playback" },
   { key: "Ctrl/Cmd + ↑", label: "Volume up (+10%)", category: "playback" },
   { key: "Ctrl/Cmd + ↓", label: "Volume down (-10%)", category: "playback" },
   { key: "Ctrl/Cmd + M", label: "Mute / Unmute", category: "playback" },
   // Navigation
   { key: "Ctrl/Cmd + /", label: "Focus search bar", category: "navigation" },
+  { key: "Ctrl/Cmd + K", label: "Focus search bar", category: "navigation" },
+  { key: "Ctrl/Cmd + J", label: "Toggle MetaDJai", category: "navigation" },
   { key: "Esc", label: "Close modals / Exit fullscreen", category: "navigation" },
   { key: "?", label: "Show keyboard shortcuts", category: "navigation" },
   // Queue (require Ctrl/Cmd)
   { key: "Ctrl/Cmd + N", label: "Next track in queue", category: "queue" },
-  { key: "Ctrl/Cmd + P", label: "Previous track (or restart)", category: "queue" },
+  { key: "Ctrl/Cmd + P", label: "Previous track", category: "queue" },
   { key: "Ctrl/Cmd + S", label: "Toggle shuffle", category: "queue" },
   { key: "Ctrl/Cmd + R", label: "Cycle repeat mode", category: "queue" },
 ]
@@ -312,11 +321,19 @@ export const GUIDE_HELP = {
   options: [
     {
       title: "This Guide",
-      description: "Tap the info button (ⓘ) in the header anytime to reopen this guide."
+      description: "Open via the header info button (desktop), the footer User Guide link, or the mobile \"Help & shortcuts\" button."
     },
     {
       title: "MetaDJai",
       description: "Ask MetaDJai for a walkthrough, creative prompts, or help with any surface you're exploring."
+    },
+    {
+      title: "Feedback",
+      description: "Use the feedback button in the header (message +) to send bugs, feature requests, or ideas."
+    },
+    {
+      title: "Connect",
+      description: "Follow @metadjai on X, YouTube, Instagram, TikTok, or Threads for updates."
     },
     {
       title: "Keyboard Shortcuts",

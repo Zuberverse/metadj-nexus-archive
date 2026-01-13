@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "lastUpdated": "2025-12-29",
-    "version": "1.0",
+    "lastUpdated": "2026-01-13",
+    "version": "1.1",
     "source": "Brand Corpus"
   },
   "category": "ecosystem",
@@ -25,6 +25,94 @@
         "broader vision",
         "connected ecosystem",
         "unified experience"
+      ]
+    },
+    {
+      "id": "ecosystem-metadj-nexus",
+      "title": "MetaDJ Nexus: The Current Hub",
+      "content": "MetaDJ Nexus is the primary platform hub inside the Zuberverse. It is the current home base where music, visuals, knowledge, and MetaDJai converge into a single, evolving experience. Think of it as the central portal for discovering MetaDJ’s work and the easiest starting point for new listeners, collaborators, and curious builders.\n\nThe platform blends multiple surfaces into one coherent flow: music collections, Cinema visuals, Wisdom content, a private Journal, and MetaDJai as a creative companion. It also serves as a full-stack showcase of AI-driven creation across code, sound, visuals, and narrative. This is where new ideas get tested in public and where the ecosystem’s tools prove themselves in real use.\n\nMetaDJ Nexus is not the entire Zuberverse; it is the current hub that anchors everything today. When people refer to the broader world model or long-term expansion, that is the Zuberverse (The Verse). When they want the platform they can use right now, that is MetaDJ Nexus at metadjnexus.ai.",
+      "keywords": [
+        "metadj nexus",
+        "nexus",
+        "platform",
+        "hub",
+        "metadjnexus",
+        "home base",
+        "zuberverse"
+      ],
+      "synonyms": [
+        "platform hub",
+        "current hub",
+        "metadj platform"
+      ]
+    },
+    {
+      "id": "ecosystem-the-verse",
+      "title": "The Verse: The Broader Ecosystem",
+      "content": "The Verse (or The 'Verse) is shorthand for the broader ecosystem vision, not the MetaDJ Nexus platform. It is a layered term that carries multiple meanings: the Zuberverse itself, the broader Metaverse, the Universe as a connected whole, and the musical sense of verse. The term is intentionally poetic, but its use is precise.\n\nWhen someone says The Verse, they are referencing the long-term, interconnected world model - the network of experiences, venues, and creative touchpoints that expand beyond a single platform. It signals scale and continuity rather than a specific app or feature set. The Verse is about the ecosystem; MetaDJ Nexus is about the current hub.\n\nUse The Verse when discussing the broader expansion story or the future of the ecosystem. Use MetaDJ Nexus when talking about the platform someone can access right now. Keep capitalization consistent: The Verse or The 'Verse, never lowercase.",
+      "keywords": [
+        "the verse",
+        "the 'verse",
+        "zuberverse",
+        "ecosystem",
+        "metaverse",
+        "universe",
+        "terminology"
+      ],
+      "synonyms": [
+        "broader ecosystem",
+        "expanded vision"
+      ]
+    },
+    {
+      "id": "ecosystem-metadj-live",
+      "title": "MetaDJ Live: The Performance Brand",
+      "content": "MetaDJ Live is the live performance brand for MetaDJ experiences across virtual worlds, physical venues, and phygital moments. It is the unified name for performances no matter where they happen, keeping the identity consistent even when the venue changes.\n\nThe naming format is simple and portable: \"MetaDJ Live in [Venue/Platform].\" Examples include MetaDJ Live in Decentraland, MetaDJ Live in Hyperfy, or MetaDJ Live at a physical venue. The goal is platform-agnostic clarity that still feels intentional and cinematic.\n\nMetaDJ Live ties the performance layer of the ecosystem together. It helps audiences recognize that the live experiences are part of the same world, whether they encounter them in a browser-based venue, a festival stage, or a hybrid event.",
+      "keywords": [
+        "metadj live",
+        "live",
+        "performance",
+        "event",
+        "venue",
+        "show"
+      ],
+      "synonyms": [
+        "live events",
+        "performances"
+      ]
+    },
+    {
+      "id": "ecosystem-sphaira",
+      "title": "The Sphaira: MetaDJ's Spherical Venue",
+      "content": "The Sphaira is MetaDJ’s browser-first spherical venue built in Hyperfy. It is a cinematic circular-screen environment designed for immersive listening and visual storytelling, with a layout that emphasizes the feeling of being inside the experience rather than watching from the outside.\n\nThe venue is stream-native and built for direct access, making it ideal for MetaDJ Live sessions, premieres, and immersive showcases. It brings the visual identity of MetaDJ into a dedicated environment that feels distinct from a traditional webpage or flat video player.\n\nAccess points include thesphaira.com and thesphaira.xyz. The Sphaira is part of the broader ecosystem network of venues, offering a dedicated space for immersive MetaDJ experiences.",
+      "keywords": [
+        "sphaira",
+        "hyperfy",
+        "venue",
+        "spherical",
+        "cinematic",
+        "metadj live"
+      ],
+      "synonyms": [
+        "spherical venue",
+        "hyperfy venue"
+      ]
+    },
+    {
+      "id": "ecosystem-camp-metadj",
+      "title": "Camp MetaDJ: The Decentraland Campfire",
+      "content": "Camp MetaDJ is MetaDJ’s virtual campfire venue in Decentraland, located at coordinates -105, 85. It is designed as a gathering space - warm, communal, and grounded - where people can connect through music and shared experience.\n\nThe campfire setting creates a different energy from high-intensity performance stages. It is built for intimate sessions, community check-ins, and moments where the focus is connection rather than spectacle. It still carries the MetaDJ aesthetic, but with a calmer, more human scale.\n\nCamp MetaDJ functions as a recurring venue within the MetaDJ Live ecosystem, providing a consistent location for community-centered events inside Decentraland.",
+      "keywords": [
+        "camp metadj",
+        "decentraland",
+        "campfire",
+        "venue",
+        "community",
+        "metadj live"
+      ],
+      "synonyms": [
+        "camp",
+        "decentraland venue"
       ]
     },
     {

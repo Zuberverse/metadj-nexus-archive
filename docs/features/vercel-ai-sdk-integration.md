@@ -2,7 +2,7 @@
 
 > **Complete reference for Vercel AI SDK implementation in MetaDJ Nexus**
 
-**Last Modified**: 2026-01-12 08:53 EST
+**Last Modified**: 2026-01-13 13:42 EST
 
 ## Overview
 
@@ -140,6 +140,7 @@ MetaDJai uses proposal tools for any action that changes playback or navigation.
 
 **Response Caching** (`src/lib/ai/cache.ts`):
 - In-memory LRU cache for repeated queries
+- Cache keys use a normalized signature of recent messages plus context signature to reduce collisions
 - Configurable via environment variables:
   - `AI_CACHE_ENABLED`: Enable/disable caching (default: `true` in production)
   - `AI_CACHE_TTL_MS`: Cache TTL in milliseconds (default: 1,800,000 = 30 min, range: 60,000–86,400,000)

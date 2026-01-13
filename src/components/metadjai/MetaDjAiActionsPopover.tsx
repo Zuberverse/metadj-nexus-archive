@@ -121,7 +121,7 @@ export function MetaDjAiActionsPopover({
       <div className="grid gap-2 sm:grid-cols-2 overflow-y-auto flex-1 min-h-0 pr-1 scrollbar-hide">
         {/* Context Suggestions */}
         <div className="col-span-full mb-3">
-          <p className="text-center text-sm font-heading font-semibold uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">
+          <p className="text-center text-sm font-heading font-semibold uppercase tracking-[0.2em] text-heading-solid">
             {hasTrack ? "Now Playing" : "Collection Context"}
           </p>
         </div>
@@ -151,7 +151,7 @@ export function MetaDjAiActionsPopover({
 
         {/* Curated On-Demand */}
         <div className="col-span-full mb-3 mt-5">
-          <p className="text-center text-sm font-heading font-semibold uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-200">
+          <p className="text-center text-sm font-heading font-semibold uppercase tracking-[0.2em] text-heading-solid">
             On Demand
           </p>
         </div>
@@ -181,7 +181,7 @@ export function MetaDjAiActionsPopover({
 
         {/* Custom Actions */}
         <div className="col-span-full mt-5 flex items-center justify-between">
-          <p className="text-sm font-heading font-semibold uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-fuchsia-200">
+          <p className="text-sm font-heading font-semibold uppercase tracking-[0.2em] text-heading-solid">
             Custom Actions
           </p>
           <span className="text-[10px] text-muted-accessible">{customActions.length}/{MAX_CUSTOM_ACTIONS} saved</span>

@@ -44,7 +44,7 @@ export function ReadingProgressBar({
       >
         <span className="sr-only">{`${label}: ${progressPercent}%`}</span>
         <div
-          className="absolute inset-y-0 left-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500"
+          className="absolute inset-y-0 left-0 gradient-4"
           data-csp-style={fillStyleId}
         />
       </div>

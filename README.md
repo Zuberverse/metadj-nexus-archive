@@ -5,7 +5,7 @@
 > The primary creative hub for MetaDJ — where human vision meets AI-driven execution to uplift and inspire as you pioneer the Metaverse
 
 *Version: 0.9.46*
-**Last Modified**: 2026-01-09 19:49 EST
+**Last Modified**: 2026-01-13 14:04 EST
 **Platform:** MetaDJ Nexus at **metadjnexus.ai**
 **Social:** **@metadjai**
 
@@ -14,7 +14,7 @@
 **MetaDJ Nexus is currently in Public Preview.**
 
 - **Everything is completely free** — Full access to all features
-- **No account required** — Jump right in, no registration needed
+- **Account required** — Create a free account to access the full experience
 - **Focused iteration** — The preview phase is about polishing the core experience
 
 ## Overview
@@ -292,7 +292,7 @@ _First-time E2E setup_: `npx playwright install`
 ## Roadmap
 
 ### Current: Public Preview (v0.9.46)
-Everything unlocked, free access, no account required.
+Everything unlocked, free access, account required for entry.
 
 - ✅ MetaDJai creative companion with GPT-5.2 (Unified Persona)
 - ✅ Fullscreen visual console with scene selection

@@ -17,14 +17,10 @@ import { UIProvider } from '@/contexts/UIContext';
 import tracks from '@/data/music.json';
 import { getAppBaseUrl } from '@/lib/app-url';
 import { FEATURED_TRACK_IDS } from '@/lib/app.constants';
-import { initAxe } from '@/lib/axe';
+// Axe-core disabled - run accessibility audits manually via Playwright or Lighthouse
+// import { initAxe } from '@/lib/axe';
 import { generateArtistSchema, generateWebsiteSchema, generateFeaturedPlaylistSchema, combineSchemas } from '@/lib/structured-data';
 import type { Metadata } from 'next';
-
-// Initialize axe-core for accessibility validation in development
-if (process.env.NODE_ENV === 'development') {
-  initAxe();
-}
 
 const appBaseUrl = getAppBaseUrl();
 

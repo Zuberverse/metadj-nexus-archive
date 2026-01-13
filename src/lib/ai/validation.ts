@@ -10,8 +10,20 @@
 
 import { z } from 'zod'
 import {
+  MAX_CATALOG_COLLECTIONS,
+  MAX_CATALOG_TITLES,
+  MAX_COLLECTION_DESCRIPTION_LENGTH,
+  MAX_COLLECTION_GENRE_LENGTH,
+  MAX_COLLECTION_ID_LENGTH,
+  MAX_COLLECTION_PRIMARY_GENRES,
+  MAX_COLLECTION_SAMPLE_TRACKS,
+  MAX_COLLECTION_TITLE_LENGTH,
+  MAX_COLLECTION_TRACK_TITLE_LENGTH,
+  MAX_CONTENT_CONTEXT_ID_LENGTH,
+  MAX_CONTENT_CONTEXT_TITLE_LENGTH,
   MAX_MESSAGE_CONTENT_LENGTH,
   MAX_MESSAGES_PER_REQUEST,
+  MAX_PAGE_CONTEXT_DETAILS_LENGTH,
   MAX_PERSONALIZATION_LENGTH,
 } from '@/lib/ai/limits'
 import { formatZodErrorString } from '@/lib/validation/format'
@@ -55,7 +67,10 @@ const personalizationSchema = z.object({
  */
 const pageContextSchema = z.object({
   view: z.enum(['collections', 'wisdom', 'cinema', 'journal', 'search', 'queue'] as const),
-  details: z.string().optional(),
+  details: z.string().max(
+    MAX_PAGE_CONTEXT_DETAILS_LENGTH,
+    `Page context details exceed ${MAX_PAGE_CONTEXT_DETAILS_LENGTH} characters`
+  ).optional(),
 })
 
 /**
@@ -64,8 +79,14 @@ const pageContextSchema = z.object({
 const contentContextSchema = z.object({
   view: z.literal('wisdom'),
   section: z.enum(['thoughts', 'guides', 'reflections'] as const).optional(),
-  id: z.string().optional(),
-  title: z.string().optional(),
+  id: z.string().max(
+    MAX_CONTENT_CONTEXT_ID_LENGTH,
+    `Content context id exceeds ${MAX_CONTENT_CONTEXT_ID_LENGTH} characters`
+  ).optional(),
+  title: z.string().max(
+    MAX_CONTENT_CONTEXT_TITLE_LENGTH,
+    `Content context title exceeds ${MAX_CONTENT_CONTEXT_TITLE_LENGTH} characters`
+  ).optional(),
 })
 
 /**
@@ -73,15 +94,51 @@ const contentContextSchema = z.object({
  */
 const catalogSummarySchema = z.object({
   totalCollections: z.number().int().nonnegative(),
-  collectionTitles: z.array(z.string()),
+  collectionTitles: z.array(
+    z.string().max(
+      MAX_COLLECTION_TITLE_LENGTH,
+      `Collection title exceeds ${MAX_COLLECTION_TITLE_LENGTH} characters`
+    )
+  ).max(
+    MAX_CATALOG_TITLES,
+    `Too many collection titles. Limit is ${MAX_CATALOG_TITLES}.`
+  ),
   collections: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string().optional(),
+    id: z.string().max(
+      MAX_COLLECTION_ID_LENGTH,
+      `Collection id exceeds ${MAX_COLLECTION_ID_LENGTH} characters`
+    ),
+    title: z.string().max(
+      MAX_COLLECTION_TITLE_LENGTH,
+      `Collection title exceeds ${MAX_COLLECTION_TITLE_LENGTH} characters`
+    ),
+    description: z.string().max(
+      MAX_COLLECTION_DESCRIPTION_LENGTH,
+      `Collection description exceeds ${MAX_COLLECTION_DESCRIPTION_LENGTH} characters`
+    ).optional(),
     trackCount: z.number().int().nonnegative(),
-    sampleTracks: z.array(z.string()),
-    primaryGenres: z.array(z.string()).optional(),
-  })),
+    sampleTracks: z.array(
+      z.string().max(
+        MAX_COLLECTION_TRACK_TITLE_LENGTH,
+        `Sample track title exceeds ${MAX_COLLECTION_TRACK_TITLE_LENGTH} characters`
+      )
+    ).max(
+      MAX_COLLECTION_SAMPLE_TRACKS,
+      `Too many sample tracks. Limit is ${MAX_COLLECTION_SAMPLE_TRACKS}.`
+    ),
+    primaryGenres: z.array(
+      z.string().max(
+        MAX_COLLECTION_GENRE_LENGTH,
+        `Genre exceeds ${MAX_COLLECTION_GENRE_LENGTH} characters`
+      )
+    ).max(
+      MAX_COLLECTION_PRIMARY_GENRES,
+      `Too many primary genres. Limit is ${MAX_COLLECTION_PRIMARY_GENRES}.`
+    ).optional(),
+  })).max(
+    MAX_CATALOG_COLLECTIONS,
+    `Too many collections in catalog summary. Limit is ${MAX_CATALOG_COLLECTIONS}.`
+  ),
 })
 
 /**

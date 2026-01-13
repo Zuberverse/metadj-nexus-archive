@@ -2,7 +2,7 @@
 
 > **Animation specifications and motion principles for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-30 17:42 EST
+**Last Modified**: 2026-01-13 14:10 EST
 
 ## Overview
 
@@ -554,7 +554,7 @@ requestAnimationFrame(() => {
 
 ## Related Documentation
 
-- [UI Visual System](3-projects/5-software/metadj-studio/docs/features/ui-visual-system.md) - Design tokens and styling
-- [Modal Patterns](3-projects/5-software/metadj-nexus/docs/features/modal-patterns.md) - Modal animation specifications
-- [State Patterns](state-patterns.md) - Loading and transition states
+- [UI Visual System](./ui-visual-system.md) - Design tokens and styling
+- [Modal Patterns](./modal-patterns.md) - Modal animation specifications
+- [Components UI Reference](../reference/components-ui-reference.md) - Loading and skeleton state patterns
 - [Component Architecture](../architecture/component-architecture.md) - Component implementation

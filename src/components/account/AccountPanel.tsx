@@ -109,7 +109,7 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
         {/* User Info */}
         <div className="p-4 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full brand-gradient flex items-center justify-center">
               <User className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -205,7 +205,7 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
               <button
                 type="submit"
                 disabled={isLoading || user?.email === 'admin'}
-                className="w-full py-3 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 brand-gradient text-white font-medium rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Updating...' : 'Update Email'}
               </button>
@@ -266,7 +266,7 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
               <button
                 type="submit"
                 disabled={isLoading || user?.email === 'admin'}
-                className="w-full py-3 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 brand-gradient text-white font-medium rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Updating...' : 'Update Password'}
               </button>

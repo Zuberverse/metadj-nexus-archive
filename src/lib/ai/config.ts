@@ -65,12 +65,6 @@ export function getAIRequestTimeout(route?: string): number {
   return DEFAULT_TIMEOUT_MS
 }
 
-/**
- * AI request timeout in milliseconds
- * @deprecated Use getAIRequestTimeout(route) for route-specific timeouts
- */
-export const AI_REQUEST_TIMEOUT_MS = getAIRequestTimeout()
-
 /** Maximum number of tool-calling steps before forcing stop */
 export const MAX_TOOL_STEPS = 3
 

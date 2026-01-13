@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react"
 import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import { DEFAULT_SCENE_ID } from "@/data/scenes"
+import { MAX_CATALOG_COLLECTIONS, MAX_CATALOG_TITLES } from "@/lib/ai/limits"
 import { STORAGE_KEYS, getString } from "@/lib/storage/persistence"
 import type { usePlayer } from "@/contexts/PlayerContext"
 import type { useQueue } from "@/contexts/QueueContext"
@@ -144,10 +145,13 @@ export function useMetaDjAiContext({
    * Catalog summary - comprehensive overview of available music
    */
   const metaDjAiCatalogSummary = useMemo(() => {
+    const cappedCollections = collections.slice(0, MAX_CATALOG_COLLECTIONS)
+    const cappedTitles = collections.slice(0, MAX_CATALOG_TITLES)
+
     return {
       totalCollections: collections.length,
-      collectionTitles: collections.map((collection) => collection.title),
-      collections: collections.map((collection) => {
+      collectionTitles: cappedTitles.map((collection) => collection.title),
+      collections: cappedCollections.map((collection) => {
         const narrative = COLLECTION_NARRATIVES[collection.id] ?? COLLECTION_NARRATIVES.featured
         const collectionTrackList = tracks.filter((track) => track.collection === collection.title)
         const genreCounter = new Map<string, number>()

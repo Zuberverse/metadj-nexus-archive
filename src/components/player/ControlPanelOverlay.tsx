@@ -198,6 +198,8 @@ export function ControlPanelOverlay({
       if (event.key === "Escape") {
         if (showClearConfirm) {
           setShowClearConfirm(false)
+        } else if (searchQuery.trim()) {
+          setSearchQuery("")
         } else {
           onClose?.()
         }
@@ -205,7 +207,7 @@ export function ControlPanelOverlay({
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [isOpen, onClose, showClearConfirm])
+  }, [isOpen, onClose, showClearConfirm, searchQuery])
 
   if (!isOpen) return null
 
@@ -226,8 +228,6 @@ export function ControlPanelOverlay({
             {/* Note: .radiant-panel handles the before/after pseudo-elements via CSS */}
 
             <div className="relative z-10 flex h-full min-h-0 flex-col gap-4 p-4 sm:p-5 pt-1.5 sm:pt-5 backdrop-blur-3xl bg-[rgba(11,15,38,0.85)] safe-area-x pb-[max(1rem,env(safe-area-inset-bottom))] max-w-3xl mx-auto w-full">
-              {/* Pull-down indicator for mobile affordance */}
-              <div className="sm:hidden pull-indicator" aria-hidden="true" />
               {track ? (
                 <>
                   {/* Search Bar */}

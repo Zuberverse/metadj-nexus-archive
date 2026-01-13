@@ -1,9 +1,9 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2026-01-12 10:20 EST
+**Last Modified**: 2026-01-13 14:15 EST
 > Pragmatic security approach for a music showcasing MVP
 
-*Last Reviewed: 2026-01-08*
+*Last Reviewed: 2026-01-13*
 *Status: ✅ Beta MVP Ready*
 
 ---
@@ -32,7 +32,8 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | **Daydream Stream Limits** | Single active stream + cooldown with optional Upstash Redis backing (`src/lib/daydream/stream-limiter.ts`) | Prevents stream abuse and resource spikes |
 | **Wisdom Rate Limiting** | 60 req/min per client with optional Upstash Redis backing (`src/lib/rate-limiting/wisdom-rate-limiter.ts`) | Mitigates scraping/abuse of static content |
 | **Scoped Media Access** | `/api/audio` is MP3-only + path traversal protection; `/api/video` is MP4/WebM/MOV-only + path traversal protection. **Rate limiting** applies to both GET and HEAD requests on both routes. **Warmup bypass** available for health checks. | Prevents accidental exposure of non-media objects |
-| **Cookie Path Isolation** | Session cookies scoped to `/api/metadjai` | Prevents cookie leakage to unrelated routes |
+| **Authentication & Sessions** | Email/password auth with signed, HTTP-only session cookies (`nexus_session`) for `/app` and `/admin` access | Restricts authenticated surfaces |
+| **Cookie Path Isolation** | MetaDJai rate-limit cookie scoped to `/api/metadjai` | Prevents AI session cookies from leaking to unrelated routes |
 | **Body Size Limits** | 1MB limit on server actions | Prevents DoS via large payloads |
 | **Generic Error Messages** | Internal details logged server-side only | Prevents information disclosure |
 | **Internal Monitoring** | `/api/health/ai` + `/api/health/providers` require `x-internal-request` header in production (`INTERNAL_API_SECRET`) | Prevents public access to operational telemetry |
@@ -68,10 +69,10 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | Aspect | Status | Rationale |
 |--------|--------|-----------|
 | **Audio Files** | Publicly accessible | Standard for streaming platforms (Soundcloud, Bandcamp) |
-| **Authentication** | None | Public music player by design |
+| **Account Hardening** | No MFA or email verification | Acceptable for beta; add before broader launch |
 | **Download Prevention** | None | Technical prevention doesn't work; legal protection sufficient |
 | **DRM** | None | Overkill for indie music showcasing |
-| **CSRF Tokens** | Not implemented | No state-changing routes in MVP; avoids handing out meaningless cookies |
+| **CSRF Tokens** | Not implemented | Relies on SameSite cookies + JSON APIs; add before public form expansion |
 
 ---
 
@@ -102,7 +103,10 @@ Strict-Transport-Security: max-age=31536000
 
 ## Feedback Intake
 
-The experimental bug-report overlay and API route were removed in v0.71. All listener feedback now flows through direct channels (email/social) until we introduce a more durable system. This keeps the attack surface lean and avoids unbounded filesystem writes.
+Feedback is collected in-app via `FeedbackModal` and the `/api/feedback` endpoints.
+- Submissions accept optional session context; authenticated sessions attach user id/email.
+- Admin review and updates are restricted to admin sessions.
+- Data is stored in `data/feedback.json` (JSON file storage); add rate limiting if public intake expands.
 
 ---
 
@@ -151,23 +155,23 @@ For licensing: licensing@metadj.ai
 
 ### No Risk (By Design)
 
-**Public Player**
-- No authentication needed
-- No user data collected
-- No payment processing
-- No backend infrastructure to secure
+**Public Streaming**
+- Media endpoints are public by design (audio/video)
+- Accounts only gate the app UI; no payments
+- Minimal user data stored (email + hashed password)
 
 ---
 
 ## Dependency Security
 
-**Production Dependencies**: 29 total
+**Production Dependencies**: 30 total
 - `@ai-sdk/anthropic` - Anthropic AI provider (MetaDJai optional)
+- `@ai-sdk/devtools` - AI SDK dev middleware (local debugging)
 - `@ai-sdk/google` - Google AI provider (MetaDJai optional)
+- `@ai-sdk/mcp` - MCP tool integration (local/dev only)
 - `@ai-sdk/openai` - OpenAI provider (MetaDJai default)
 - `@ai-sdk/xai` - xAI provider (MetaDJai optional)
 - `@aws-sdk/client-s3` - Cloudflare R2 (S3-compatible storage)
-- `@react-three/drei` - Three.js helpers
 - `@react-three/fiber` - React renderer for Three.js
 - `@react-three/postprocessing` - Three.js post-processing
 - `@replit/object-storage` - Replit media storage (fallback)
@@ -180,7 +184,7 @@ For licensing: licensing@metadj.ai
 - `lucide-react` - Icons
 - `marked` - Markdown parsing
 - `next` - Framework
-- `openai` - OpenAI SDK (transcriptions)
+- `postprocessing` - Postprocessing core (audio-reactive visuals)
 - `react` - UI library
 - `react-dom` - React DOM
 - `react-markdown` - Markdown rendering
@@ -192,7 +196,7 @@ For licensing: licensing@metadj.ai
 - `turndown` - HTML to Markdown
 - `zod` - Schema validation
 
-**Status**: ✅ Zero known vulnerabilities (verified 2025-12-28)
+**Status**: ✅ Zero known vulnerabilities (verified 2026-01-13)
 
 **Monitoring**:
 ```bash
@@ -259,7 +263,7 @@ npm audit --omit=dev
 - [x] No secrets in repository
 - [x] Dependencies audited
 - [x] HTTPS enforced (via hosting)
-- [x] No authentication needed
+- [x] Auth flows verified (login/logout, registration toggle, admin access)
 
 **Post-Launch** (Monitor)
 - [ ] Check bandwidth usage monthly
@@ -291,7 +295,7 @@ npm audit --omit=dev
 ### Unrealistic Threats
 
 **Data Breach** - No user data to breach
-**Account Takeover** - No accounts
+**Account Takeover** - Low (beta scale; mitigated by PBKDF2 + httpOnly cookies)
 **SQL Injection** - No database
 **Payment Fraud** - No payments
 

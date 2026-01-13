@@ -2,7 +2,7 @@
 
 > **Get up and running with MetaDJ Nexus in 5 minutes**
 
-**Last Modified**: 2025-12-29 16:45 EST
+**Last Modified**: 2026-01-13 14:29 EST
 
 ## Prerequisites
 
@@ -43,6 +43,17 @@ OPENAI_API_KEY=sk-...
 MUSIC_BUCKET_ID=your-music-bucket
 VISUALS_BUCKET_ID=your-visuals-bucket
 ```
+
+**Authentication (required in production, optional in dev)**:
+
+```env
+AUTH_SECRET=your-auth-secret-min-32-chars-here
+ADMIN_PASSWORD=your-admin-password
+AUTH_SESSION_DURATION=604800
+AUTH_REGISTRATION_ENABLED=true
+```
+
+In development, MetaDJ Nexus uses a default local auth secret if `AUTH_SECRET` is unset. Set `ADMIN_PASSWORD` to access `/admin`.
 
 **Optional**:
 

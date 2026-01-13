@@ -2,7 +2,7 @@
 
 > **Complete reference for the MetaDJai knowledge base architecture, content, and extension**
 
-**Last Modified**: 2026-01-05 18:06 EST
+**Last Modified**: 2026-01-13 13:42 EST
 ## Overview
 
 MetaDJai is the AI companion built by Z (the creator behind MetaDJ) and serves as MetaDJ's AI extension inside MetaDJ Nexus. It includes a comprehensive knowledge base system that provides accurate, curated information about MetaDJ, Zuberant, the broader ecosystem vision, creative philosophy, and brand identity. This enables MetaDJai to answer questions about the artist, studio, and creative approach with grounded, consistent responses.
@@ -38,6 +38,7 @@ src/data/knowledge/
 ├── ecosystem.json     # Ecosystem vision, culture, community
 ├── philosophy.json    # AI & creative philosophy
 ├── identity.json      # Brand voice, visual identity
+├── platform-features.json # Platform capabilities and navigation
 └── workflows.json     # Creative protocols (Deep Work, Ideation)
 ```
 
@@ -80,7 +81,7 @@ The avatar and Digital Jockey.
 - Musical identity and influences
 - Creative principles
 - Music collections philosophy
-- Music collections (Majestic Ascent; Bridging Reality and Metaverse Revelation archived drafts)
+- Music collections (Majestic Ascent, Bridging Reality, Metaverse Revelation, Transformer)
 - Performance methodology
 - Key milestones
 
@@ -126,6 +127,7 @@ The broader ecosystem vision anchored by MetaDJ Nexus.
 - Community participation
 - MetaDJ as Digital Jockey within the ecosystem
 - Long-term expansion framing
+- MetaDJ Nexus, The Verse, MetaDJ Live, The Sphaira, Camp MetaDJ
 
 **Example Queries**:
 - "What is the ecosystem vision?"
@@ -169,6 +171,8 @@ Brand identity, voice, and visual expression.
 - Color philosophy (Purple, Cyan, Magenta, Blue)
 - Visual design language
 - Typography system
+- Journal as a local-first capture tool
+- Neurodivergent-friendly design principles
 - The MetaDJ avatar
 - What Being Zuberant looks like
 
@@ -178,23 +182,44 @@ Brand identity, voice, and visual expression.
 - "What typography does MetaDJ use?"
 - "How should MetaDJ sound?"
 
-### 6. Workflows (`workflows.json`)
+### 6. Platform Features (`platform-features.json`)
+
+Platform capabilities and navigation.
+
+**Topics Covered**:
+- Authentication and access flow
+- Feedback system and submission types
+- Admin access (public-facing summary)
+- Platform views (Hub, Cinema, Wisdom, Journal)
+- MetaDJai access points and usage
+
+**Example Queries**:
+- "How do I log in?"
+- "Where do I submit feedback?"
+- "What is the Journal for?"
+- "How do I open MetaDJai?"
+
+### 7. Workflows (`workflows.json`)
 
 Creative protocols and structured working modes.
 
 **Topics Covered**:
 - Deep Work protocol
-- Ideation session structure
-- Writing assistance mode
-- Learning/Research framework
-- Coding companion mode
-- Zuberant Method application
+- Ideation and brainstorming partnership
+- Writing unblocker mode
+- Visual exploration sessions
+- Music discovery and exploration
+- Learning about AI-driven creativity
+- Platform navigation help
+- Creative sparring partner workflows
+- Getting started guidance
+- MetaDJai capabilities and limitations
 
 **Example Queries**:
 - "Start a deep work session"
 - "Help me brainstorm ideas"
 - "I need to write a blog post"
-- "Let's code something"
+- "How do I use the Journal?"
 
 ## Entry Schema
 

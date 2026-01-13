@@ -2,7 +2,7 @@
 
 > **Complete reference for developing, deploying, and understanding MetaDJ Nexus**
 
-**Last Modified**: 2026-01-12 10:15 EST
+**Last Modified**: 2026-01-13 14:29 EST
 **Version**: 0.9.46
 
 ## Quick Start
@@ -10,9 +10,10 @@
 **New to MetaDJ Nexus?** Start here:
 1. [QUICKSTART.md](QUICKSTART.md) - **Developer quickstart guide** (5-minute setup)
 2. [README.md](../README.md) - Project overview and features
-3. [MEDIA-STORAGE.md](MEDIA-STORAGE.md) - Cloudflare R2 media storage and streaming
-4. [NAMING-CONVENTIONS.md](NAMING-CONVENTIONS.md) - Code naming standards
-5. [../CLAUDE.md](../CLAUDE.md) - Development standards and guidelines
+3. [AUTH-SYSTEM.md](AUTH-SYSTEM.md) - Authentication, feedback, and admin dashboard
+4. [MEDIA-STORAGE.md](MEDIA-STORAGE.md) - Cloudflare R2 media storage and streaming
+5. [NAMING-CONVENTIONS.md](NAMING-CONVENTIONS.md) - Code naming standards
+6. [../CLAUDE.md](../CLAUDE.md) - Development standards and guidelines
 
 ## Core Documentation
 
@@ -29,6 +30,7 @@
 | [operations/BUILD-DEPLOYMENT-GUIDE.md](operations/BUILD-DEPLOYMENT-GUIDE.md) | Deployment procedures | Developers |
 | [KEYBOARD-SHORTCUTS.md](KEYBOARD-SHORTCUTS.md) | Global keyboard shortcuts reference | Everyone |
 | [SECURITY.md](SECURITY.md) | Security philosophy and approach | Everyone |
+| [AUTH-SYSTEM.md](AUTH-SYSTEM.md) | Authentication, feedback, and admin dashboard | Developers |
 | [TESTING.md](TESTING.md) | Testing guide (Vitest + Playwright E2E multi-browser) | Developers |
 | [PERFORMANCE.md](PERFORMANCE.md) | Performance benchmarks and optimization | Developers |
 | [INCIDENT-RESPONSE.md](INCIDENT-RESPONSE.md) | Incident response runbook | Developers |
@@ -103,6 +105,7 @@ metadj-nexus/
 │   ├── QUICKSTART.md                # Developer quickstart
 │   ├── KEYBOARD-SHORTCUTS.md        # Global keyboard shortcuts
 │   ├── SECURITY.md                  # Security overview
+│   ├── AUTH-SYSTEM.md               # Authentication + feedback system
 │   ├── TESTING.md                   # Testing guide (Vitest + Playwright E2E multi-browser)
 │   ├── PERFORMANCE.md               # Performance benchmarks
 │   ├── INCIDENT-RESPONSE.md         # Incident response runbook

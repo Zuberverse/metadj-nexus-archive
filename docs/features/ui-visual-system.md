@@ -2,7 +2,7 @@
 
 > **Source of truth for MetaDJ Nexus's premium glass-neon presentation**
 
-**Last Modified**: 2026-01-13 11:47 EST
+**Last Modified**: 2026-01-13 14:45 EST
 
 ---
 
@@ -51,11 +51,11 @@ MetaDJ Nexus establishes the visual benchmark for all MetaDJ experiences. This g
 
 The top header serves as the persistent MetaDJ brand anchor and reflects the active feature:
 
-- **Welcome / User Guide** — MetaDJ logo + “verse” suffix.  
-- **Music feature** — MetaDJ logo + “Music” label.  
-- **Cinema feature** — MetaDJ logo + “Cinema” label.  
-- **Wisdom feature** — MetaDJ logo + “Wisdom” label.  
-- **MetaDJai panel** — Cinzel “MetaDJai” wordmark only (no logo), to distinguish the companion from the main navigation stack. Control Panel shares the same glass treatment so both overlays feel consistent.
+- **Welcome / User Guide** — MetaDJ logo + "Nexus" suffix.  
+- **Music feature** — MetaDJ logo + "Music" label.  
+- **Cinema feature** — MetaDJ logo + "Cinema" label.  
+- **Wisdom feature** — MetaDJ logo + "Wisdom" label.  
+- **MetaDJai panel** — Cinzel "MetaDJai" wordmark only (no logo), to distinguish the companion from the main navigation stack. Control Panel shares the same glass treatment so both overlays feel consistent.
 
 This pattern keeps the brand consistent while making it clear which experience the listener is currently in, without introducing separate platform names.
 
@@ -152,7 +152,7 @@ This pattern keeps the brand consistent while making it clear which experience t
     - **Legal Accuracy**: Removed all inaccurate copyright symbols and year markers in favor of a clean, factual legal statement.
     - **Mobile Optimization**: Uses stylized bullet separators (`&bull;`) and uppercase tracking (`0.2em`) for an ultra-minimal, high-end mobile experience.
 - **Floating Border**: Bottom border uses a radial-style gradient (`from-transparent via-white/15 to-transparent`) instead of a solid line, creating a floating effect.
-- **Left (desktop):** Music toggle + MetaDJ wordmark image + "verse" gradient label.
+- **Left (desktop):** Music toggle + MetaDJ wordmark image + "Nexus" gradient label.
 - **Center (desktop):** View toggles + Playback pill (track title + prev/play/next + one-tap Library/Queue + Search dropdown).
 - **View toggle icons:** Optically balanced sizes (Cinema slightly larger, Wisdom matched to Hub) with non-shrinking icons so every tab shows a consistent glyph.
 - **Mobile header:** Header is completely hidden on mobile (`hidden min-[1100px]:block`). All navigation handled via MobileBottomNav.
@@ -180,7 +180,7 @@ This pattern keeps the brand consistent while making it clear which experience t
 - Collections are browsed from the Left Panel **Library** tab (`leftPanelTab="browse"`, rendered by `BrowseView.tsx`) rather than center-page tabs.
 - The Library includes a SearchBar above Featured for quick track + collection discovery.
 - Featured and Recently Played render as text-only categories, followed by a vertical list of collections with artwork + track count.
-- Selecting a collection opens `CollectionDetailView.tsx` with Play All / Shuffle controls and an optional “About Collection” toggle.
+- Selecting a collection opens `CollectionDetailView.tsx` with Play All / Shuffle controls and an optional "About Collection" toggle.
 
 ### Track Listing (Collection Detail)
 
@@ -254,7 +254,7 @@ Empty states maintain the premium glass-neon aesthetic even when content is abse
 
 - Full-screen overlay (`z-100`) using the shared `gradient-1` + `--bg-overlay` blur stack.
 - Container: `rounded-[30px]` with `gradient-2-border`, inner `gradient-media` + `gradient-media-bloom`.
-- **Auto-open gating**: `STORAGE_KEYS.WELCOME_SHOWN` + a per-session flag (`metadj_welcome_shown_session`) keep it first-time-only by default (alternate key: `STORAGE_KEYS.WELCOME_DISMISSED`).
+- **Auto-open gating**: `STORAGE_KEYS.WELCOME_DISMISSED` + a per-session flag (`metadj_welcome_shown_session`) keep it opt-out (while `STORAGE_KEYS.WELCOME_SHOWN` tracks first view).
 - **Header**: "Welcome to MetaDJ Nexus" with wordmark integration.
 - **Tagline**: "Where music, visuals, and wisdom converge".
 - **Feature Cards**: Original Music / Immersive Visuals / Beyond the Sound (glass cards with icon + heading + description).
@@ -540,6 +540,34 @@ All track and collection artwork uses consistent styling:
 │ ┌────┐  Track Title                          [Add] [Play]   │
 │ │Art │  Collection                                           │
 │ └────┘                                                       │
+├──────────────────────────────────────────────────────────────┤
+│                        Wisdom                                 │
+├──────────────────────────────────────────────────────────────┤
+│ [✶]  Entry Title (text-heading-solid)                        │
+│      Category (text-(--text-muted))                          │
+├──────────────────────────────────────────────────────────────┤
+│                        Journal                                │
+├──────────────────────────────────────────────────────────────┤
+│ [📓] Entry Title (text-heading-solid)                        │
+│      Updated MMM DD                                          │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Control Panel Search Results Overlay
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ Search Results (Across Nexus)                     [X Close]  │
+├──────────────────────────────────────────────────────────────┤
+│ Collections                                                   │
+│ ┌────┐  Collection Title                                     │
+│ └────┘                                                       │
+│ Tracks                                                        │
+│ ┌────┐  Track Title                       [▶] [Queue]        │
+│ Wisdom                                                        │
+│ [✶]  Entry Title                                             │
+│ Journal                                                       │
+│ [📓] Entry Title                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -561,6 +589,7 @@ Skeletons match the exact dimensions and radii of the components they replace:
 | `BrowseView.tsx` | `src/components/panels/left-panel/` | Collection browser |
 | `QueueSection.tsx` | `src/components/panels/left-panel/` | Queue management |
 | `SearchBar.tsx` | `src/components/search/` | Search with results |
+| `SearchResultsOverlay.tsx` | `src/components/player/` | Control panel search overlay |
 | `SearchResultItem.tsx` | `src/components/search/` | Individual search result |
 | `TrackCard.tsx` | `src/components/playlist/` | Playlist track card |
 | `Skeleton.tsx` | `src/components/ui/` | Loading skeletons |

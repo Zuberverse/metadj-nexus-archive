@@ -1,6 +1,6 @@
 # MetaDJ Nexus - Build & Deployment Guide
 
-**Last Modified**: 2026-01-09 19:49 EST
+**Last Modified**: 2026-01-13 14:29 EST
 
 ---
 
@@ -213,6 +213,10 @@ XAI_API_KEY=your_xai_key_here
 LOGGING_CLIENT_KEY=min_32_characters_random_string_here
 LOGGING_SHARED_SECRET=min_32_characters_different_random_string_here
 
+# Authentication (Required)
+AUTH_SECRET=your-auth-secret-min-32-chars-here
+ADMIN_PASSWORD=your-admin-password
+
 # Media Storage (Required for audio/video)
 STORAGE_PROVIDER=r2
 R2_ACCOUNT_ID=your_cloudflare_account_id
@@ -245,6 +249,10 @@ AI_FAILOVER_ENABLED=true
 
 # Optional speech-to-text override (defaults to gpt-4o-mini-transcribe-2025-12-15)
 OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe-2025-12-15
+
+# Auth tuning (Optional)
+AUTH_SESSION_DURATION=604800
+AUTH_REGISTRATION_ENABLED=true
 ```
 
 ### Generating Secure Keys
@@ -254,6 +262,9 @@ OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe-2025-12-15
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 # Generate LOGGING_SHARED_SECRET (32+ chars)
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# Generate AUTH_SECRET (32+ chars)
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 

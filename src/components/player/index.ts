@@ -2,7 +2,6 @@
 export { CollectionArtwork } from './CollectionArtwork'
 export { AudioPlayer } from './AudioPlayer'
 export { ControlPanelOverlay } from './ControlPanelOverlay'
-export { MobileNowPlayingDock } from './MobileNowPlayingDock'
 export { PlaybackControls } from './PlaybackControls'
 export { PlaybackUnlockOverlay } from './PlaybackUnlockOverlay'
 export { ProgressBar } from './ProgressBar'

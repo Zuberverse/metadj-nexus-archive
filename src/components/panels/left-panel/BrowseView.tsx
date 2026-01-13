@@ -135,7 +135,7 @@ export function BrowseView({
 
       {/* Collections Grid */}
       <div className="space-y-2">
-        <h3 className="text-sm font-heading font-bold uppercase tracking-widest px-1 text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">
+        <h3 className="text-sm font-heading font-bold uppercase tracking-widest px-1 text-heading-solid">
           Collections
         </h3>
         <div className="space-y-2">

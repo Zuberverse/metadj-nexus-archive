@@ -73,7 +73,7 @@ export const SearchResultItem = memo(function SearchResultItem({
       className={clsx(
         "group relative w-full flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-all duration-300",
         isActive
-          ? "border-purple-500/30 bg-linear-to-r from-purple-500/10 to-blue-500/10 shadow-[0_0_20px_rgba(124,58,237,0.1)]"
+          ? "border-purple-500/30 gradient-2-tint shadow-[0_0_20px_rgba(124,58,237,0.1)]"
           : clsx("border-white/10 bg-white/3", getCollectionHoverStyles(track.collection))
       )}
       onMouseEnter={() => onMouseEnter(index)}

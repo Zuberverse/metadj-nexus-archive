@@ -2,7 +2,7 @@
 
 > Unified persistence layer for MetaDJ Nexus client-side state management.
 
-**Last Modified**: 2026-01-05 18:06 EST
+**Last Modified**: 2026-01-13 14:50 EST
 ## Overview
 
 The storage layer provides type-safe localStorage management with:
@@ -105,7 +105,7 @@ export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
 | Wisdom | `WISDOM_LAST_SECTION`, `WISDOM_JOURNAL_*` | Knowledge hub + journal persistence |
 | MetaDJai | `METADJAI_SESSION`, `METADJAI_PROVIDER` | AI chat session reference + model selector preference |
 | Playlists | `PLAYLISTS` | User-created playlists |
-| Onboarding | `WELCOME_SHOWN`, `WELCOME_DISMISSED`, `VISITED` | First-run experience |
+| Onboarding | `WELCOME_SHOWN`, `WELCOME_DISMISSED`, `VISITED` | Welcome overlay opt-out + first-visit tracking |
 | System | `SCHEMA_VERSION` | Migration tracking |
 
 ---

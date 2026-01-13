@@ -197,7 +197,7 @@ export function PlaylistSelector({
             role="option"
             aria-selected={selectedIndex === 0}
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/20 bg-linear-to-r from-purple-500/20 via-blue-500/20 to-cyan-400/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/20 gradient-2-soft">
               <Plus className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">

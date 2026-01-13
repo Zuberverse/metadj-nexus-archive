@@ -18,20 +18,22 @@ const mod = isMac ? '⌘' : 'Ctrl'
 const shortcuts: Shortcut[] = [
   // Playback (require modifier)
   { key: `${mod} + Space`, action: "Play / Pause", category: "playback" },
-  { key: `${mod} + ←`, action: "Seek backward / Previous track", category: "playback" },
-  { key: `${mod} + →`, action: "Seek forward / Next track", category: "playback" },
+  { key: `${mod} + ←`, action: "Previous track", category: "playback" },
+  { key: `${mod} + →`, action: "Next track", category: "playback" },
   { key: `${mod} + ↑`, action: "Volume up (+10%)", category: "playback" },
   { key: `${mod} + ↓`, action: "Volume down (-10%)", category: "playback" },
   { key: `${mod} + M`, action: "Toggle mute", category: "playback" },
 
   // Queue & Navigation (require modifier)
   { key: `${mod} + N`, action: "Next track in queue", category: "queue" },
-  { key: `${mod} + P`, action: "Previous track (or restart)", category: "queue" },
+  { key: `${mod} + P`, action: "Previous track", category: "queue" },
   { key: `${mod} + S`, action: "Toggle shuffle", category: "queue" },
   { key: `${mod} + R`, action: "Cycle repeat mode", category: "queue" },
 
   // Navigation
   { key: `${mod} + /`, action: "Focus search", category: "navigation" },
+  { key: `${mod} + K`, action: "Focus search", category: "navigation" },
+  { key: `${mod} + J`, action: "Toggle MetaDJai", category: "navigation" },
   { key: "Esc", action: "Close modals / Exit fullscreen", category: "navigation" },
   { key: "Tab", action: "Navigate interactive elements", category: "navigation" },
 
@@ -79,7 +81,7 @@ export function KeyboardShortcutsModal({ onClose }: KeyboardShortcutsModalProps)
                       <span className="text-sm sm:text-base text-white/90">
                         {shortcut.action}
                       </span>
-                      <kbd className="px-3 py-1.5 text-xs sm:text-sm font-mono font-semibold text-white bg-linear-to-br from-purple-500/20 to-blue-500/20 border border-white/20 rounded-lg shadow-xs">
+                      <kbd className="px-3 py-1.5 text-xs sm:text-sm font-mono font-semibold text-white gradient-2-soft border border-white/20 rounded-lg shadow-xs">
                         {shortcut.key}
                       </kbd>
                     </div>

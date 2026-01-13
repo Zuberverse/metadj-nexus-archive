@@ -85,7 +85,7 @@ export const OnboardingChecklist: FC<OnboardingChecklistProps> = ({
   return (
     <section
       className={clsx(
-        "rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-900/40 via-black/60 to-purple-900/40 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.35)] backdrop-blur-xl",
+        "rounded-3xl border border-white/10 gradient-3 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.35)] backdrop-blur-xl",
         className
       )}
       aria-label="Quick start checklist"

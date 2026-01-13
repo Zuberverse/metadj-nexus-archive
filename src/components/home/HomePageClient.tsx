@@ -33,7 +33,7 @@ import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts"
 import { useRecentlyPlayed } from "@/hooks/use-recently-played"
 import { useResponsivePanels } from "@/hooks/use-responsive-panels"
 import { useTrackDetails } from "@/hooks/use-track-details"
-import { OPEN_FEEDBACK_EVENT } from "@/lib/ai/tools"
+import { OPEN_FEEDBACK_EVENT } from "@/lib/ai/tools/feedback"
 import { FEATURED_TRACK_IDS, DEFAULT_COLLECTION_ID, FEATURES, RECENTLY_PLAYED_MAX_ITEMS } from "@/lib/app.constants"
 import { META_DJAI_PROMPT_EVENT, type MetaDjAiExternalPromptDetail } from "@/lib/metadjai/external-prompts"
 import {

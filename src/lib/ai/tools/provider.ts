@@ -19,8 +19,41 @@ import {
   proposeSurface,
 } from '@/lib/ai/tools/proposals'
 import { getRecommendations } from '@/lib/ai/tools/recommendations'
-import { wrapToolsWithErrorHandling, safeToolExecute } from '@/lib/ai/tools/utils'
+import {
+  wrapToolsWithErrorHandling,
+  safeToolExecute,
+  sanitizeAndValidateToolResult,
+} from '@/lib/ai/tools/utils'
 import { getWisdomContent } from '@/lib/ai/tools/wisdom'
+
+type ToolSet = Record<string, unknown>
+
+function wrapToolsWithOutputSanitization(tools: ToolSet): ToolSet {
+  const wrapped: ToolSet = {}
+
+  for (const [name, tool] of Object.entries(tools)) {
+    if (
+      tool &&
+      typeof tool === 'object' &&
+      'execute' in tool &&
+      typeof (tool as { execute?: unknown }).execute === 'function'
+    ) {
+      const execute = (tool as { execute: (input: unknown) => Promise<unknown> }).execute
+      wrapped[name] = {
+        ...tool,
+        execute: safeToolExecute(name, async (input: unknown) => {
+          const result = await execute(input)
+          return sanitizeAndValidateToolResult(result, name)
+        }),
+      }
+      continue
+    }
+
+    wrapped[name] = tool
+  }
+
+  return wrapped
+}
 
 /**
  * Get tools for the current provider
@@ -50,7 +83,7 @@ export async function getTools(
     proposePlaylist,
     proposeSurface,
   })
-  const mcpTools = await getMcpTools()
+  const mcpTools = wrapToolsWithOutputSanitization(await getMcpTools())
 
   const webSearchAvailable =
     provider === 'openai' && (options?.webSearchAvailable ?? true)
@@ -62,10 +95,12 @@ export async function getTools(
     const wrappedWebSearch = {
       ...webSearchTool,
       execute: webSearchTool.execute
-        ? safeToolExecute(
-            'web_search',
-            webSearchTool.execute as (input: unknown) => Promise<unknown>
-          )
+        ? safeToolExecute('web_search', async (input: unknown) => {
+            const result = await (
+              webSearchTool.execute as (input: unknown) => Promise<unknown>
+            )(input)
+            return sanitizeAndValidateToolResult(result, 'web_search')
+          })
         : webSearchTool.execute,
     }
 

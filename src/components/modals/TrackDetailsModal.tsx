@@ -163,7 +163,7 @@ export function TrackDetailsModal({
 
               {/* Production Details Card */}
               {(track.bpm || track.key) && (
-                <div className="rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-purple-900/20 via-indigo-900/10 to-cyan-900/20 px-4 py-3">
+                <div className="rounded-3xl overflow-hidden border border-white/10 gradient-2-soft px-4 py-3">
                   <p className="text-[0.6rem] uppercase tracking-[0.35em] text-muted-accessible mb-2">
                     Production details
                   </p>

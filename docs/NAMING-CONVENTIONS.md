@@ -2,7 +2,7 @@
 
 > **Canonical naming standards for consistent code organization**
 
-**Last Modified**: 2025-12-30 17:42 EST
+**Last Modified**: 2026-01-13 14:10 EST
 **Status**: Authoritative Standard
 
 ## Overview
@@ -377,7 +377,9 @@ src/components/
 
 ```
 src/app/
-  (experience)/   # single-route experience shell for Hub/Cinema/Wisdom (state-driven)
+  app/            # protected experience shell (state-driven Hub/Cinema/Wisdom/Journal)
+  admin/          # admin dashboard (protected)
+  (experience)/   # share metadata routes (track/collection/playlist/wisdom)
   guide/
   terms/
   api/

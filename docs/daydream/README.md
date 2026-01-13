@@ -1,6 +1,6 @@
 # Daydream Integration (StreamDiffusion)
 
-**Last Modified**: 2026-01-10 15:24 EST
+**Last Modified**: 2026-01-13 14:29 EST
 
 Central reference point for bringing Daydream StreamDiffusion into MetaDJ Nexus. Use this folder to coordinate API contracts, environment variables, ingest/playback flows, and Cinema-specific behavior for the Dream toggle.
 
@@ -29,7 +29,7 @@ Our app fronts these with Next.js API routes for key/host protection and WHIP ho
 
 ## Environment Variables
 - `DAYDREAM_API_KEY` — required, `daydream_live_*`
-- `DAYDREAM_PUBLIC_ENABLED` — set `true` to enable public preview in production (defaults to enabled in development when unset)
+- `DAYDREAM_PUBLIC_ENABLED` — set `true` to enable Daydream streams in production (defaults to enabled in development when unset)
 - `DAYDREAM_API_GATEWAY` — optional override, default `https://api.daydream.live`
 - `DAYDREAM_WHIP_ALLOWED_HOSTS` — CSV allowlist, defaults to `daydream.live,sdaydream.live,livepeer.com,livepeer.studio,livepeer.cloud,lp-playback.studio`. If Daydream returns WHIP URLs on additional domains, add those base domains here.
 - `DAYDREAM_WHIP_ALLOW_DEV` — `true` to allow local HTTP WHIP during development

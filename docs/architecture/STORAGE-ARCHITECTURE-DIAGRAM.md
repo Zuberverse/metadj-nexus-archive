@@ -1,6 +1,6 @@
-**Last Modified**: 2026-01-05 18:06 EST
-
 # MetaDJ Nexus Storage Architecture — Visual Reference
+
+**Last Modified**: 2026-01-13 14:10 EST
 
 **Quick visual guide to understand what breaks what**
 

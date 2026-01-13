@@ -2,12 +2,12 @@
 
 > **Design strategy and implementation for the MetaDJ Nexus User Guide**
 
-**Last Modified**: 2025-12-31 16:45 EST
+**Last Modified**: 2026-01-13 14:33 EST
 ## Overview
 
 The User Guide system provides comprehensive onboarding and feature documentation through two complementary surfaces:
 
-1. **User Guide Overlay** (`src/components/guide/UserGuideOverlay.tsx`) - Quick-access modal via the header info button (ⓘ), Hub “User Guide” chip, or Welcome Overlay CTA.
+1. **User Guide Overlay** (`src/components/guide/UserGuideOverlay.tsx`) - Quick-access modal via the header info button (ⓘ) on desktop, the footer User Guide link, the mobile "Help & shortcuts" button, or the Welcome Overlay CTA.
 2. **Guide Page** (`src/components/guide/MetaDJNexusGuide.tsx`) - Full standalone page at `/guide`
 
 Both surfaces share the same content source (`src/lib/content/meta-dj-nexus-guide-copy.ts`) and the same renderer (`src/components/guide/GuideContent.tsx`) to avoid drift between overlay and page.
@@ -32,15 +32,13 @@ meta-dj-nexus-guide-copy.ts (Single Source of Truth)
 **Header Layout (Overlay)**:
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    [Navigation Pills]        [AI] [X]   │
-│         (centered on page)               (fixed right)  │
+│   [Navigation Pills / Dropdown]      [AI] [Tour] [X]    │
 └─────────────────────────────────────────────────────────┘
 ```
 
-- Navigation pills are **centered** on the page for visual balance
-- Action buttons (Ask MetaDJai, Close) are **absolute-positioned right**
-- Desktop layout is designed to keep pills readable without feeling cramped
-- Mobile: pills wrap naturally while buttons stay accessible
+- Desktop uses a full navigation pill row; mobile uses a dropdown selector.
+- Action buttons (Ask MetaDJai, Start Tour on desktop, Close) sit on the right.
+- Layout keeps pills readable without crowding the header actions.
 
 ### Quick-Jump Navigation
 
@@ -59,18 +57,17 @@ Eleven sections with icon + label pills:
 
 ### Public Preview Status
 
-The User Guide prominently displays the platform's Public Preview status:
+The User Guide surfaces the platform's Public Preview status:
 
 **Visual Elements**:
-- **Public Preview Badge**: Animated badge at the top with pulsing cyan indicator
-- **Preview Notice Box**: Cyan-tinted callout in the hero section explaining access status
+- **Preview Notice Box**: Cyan-tinted callout in the hero section with a pulsing dot + "Public Preview" label
 
 The guide keeps the preview notice simple and focused on current access, including that playlists, queue state, and journal entries stay local to the current device.
 
 **Active Section Tracking**:
 - Scroll position determines active pill highlighting
-- `IntersectionObserver`-style pattern tracks visible sections
-- Clicking a pill smooth-scrolls to that section
+- Uses scroll listeners (window for `/guide`, container for overlay)
+- Clicking a pill smooth-scrolls to that section with reduced-motion support
 
 ### MetaDJai Integration
 
@@ -82,7 +79,12 @@ The "Ask MetaDJai" button creates a seamless handoff:
 
 This pattern encourages AI-driven onboarding without forcing users into a specific flow.
 
-Each major guide section includes a **“Summarize”** chip. Clicking it dispatches an external prompt into MetaDJai with that section’s current copy and a consistent output format (thesis → key bullets → “try this next” steps). This mirrors the Wisdom “Summarize with MetaDJai” pattern for fast, contextual onboarding.
+Each major guide section includes a **"Summarize"** chip. Clicking it dispatches an external prompt into MetaDJai with that section's current copy and a consistent output format (thesis -> key bullets -> "try this next" steps). This mirrors the Wisdom "Summarize with MetaDJai" pattern for fast, contextual onboarding.
+
+### Tour Availability
+
+- **Desktop only**: "Start Tour" and "Start Interactive Tour" appear only at `BREAKPOINTS.DESKTOP_PANELS`.
+- **Non-desktop**: The footer callout reads "Interactive tour available on desktop."
 
 ## Component Architecture
 

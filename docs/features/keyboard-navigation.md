@@ -2,7 +2,7 @@
 
 > **Keyboard accessibility patterns for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-29 15:30 EST
+**Last Modified**: 2026-01-13 14:10 EST
 
 ## Overview
 
@@ -397,7 +397,7 @@ test('page has no accessibility violations', async () => {
 
 ## Related Documentation
 
-- [Audio Player Standards](3-projects/5-software/metadj-nexus/docs/features/audio-player-standards.md) - Player control specifications
-- [Modal Patterns](3-projects/5-software/metadj-nexus/docs/features/modal-patterns.md) - Modal and overlay patterns
-- [UI Visual System](3-projects/5-software/metadj-studio/docs/features/ui-visual-system.md) - Focus styling specifications
+- [Audio Player Standards](./audio-player-standards.md) - Player control specifications
+- [Modal Patterns](./modal-patterns.md) - Modal and overlay patterns
+- [UI Visual System](./ui-visual-system.md) - Focus styling specifications
 - [Accessibility Validation](../ACCESSIBILITY-VALIDATION.md) - Testing procedures

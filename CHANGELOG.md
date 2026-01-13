@@ -1,6 +1,6 @@
 # Changelog
 
-**Last Modified**: 2026-01-13 13:34 EST
+**Last Modified**: 2026-01-13 15:29 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
@@ -27,10 +27,20 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 - Fixed audio volume stuck at 1% (0.01) after first play. Removed problematic fade-in logic in `use-audio-playback.ts` that used setTimeout-based volume ramping, which was being interrupted by React effect cleanup during re-renders.
 - MetaDJai feedback tool now triggers the feedback modal on tool results and filters Gemini tool JSON for `openFeedback`.
 
+**UX**
+- Improved search overlay keyboard navigation and focus handling in the header overlay and control panel search results.
+- Standardized Now Playing time display to show total duration and updated ARIA value text for sliders.
+- Raised touch targets on queue/search controls to 44px minimum for mobile usability.
+- Aligned CTA, nav, and heading gradients across core surfaces (landing, hub, header, AI popovers, wisdom, search, queue) to token utilities; standardized reading progress and skeleton fills to the gradient system.
+- Removed unused mobile dock and feature rail components to match documented behavior.
+
 **AI Integration**
 - Added `openFeedback` to MetaDJai tool instructions so the model can invoke the feedback flow directly.
 - MetaDJai now uses `ToolLoopAgent` with structured outputs for the non-streaming endpoint.
 - Added local-only MCP tools and DevTools middleware gated by `AI_MCP_ENABLED` and `AI_DEVTOOLS_ENABLED`.
+- Sanitized and size-limited OpenAI `web_search` and MCP tool outputs for injection protection and token safety.
+- Added MetaDJai context size caps and prompt budget trimming for optional context sections.
+- Added `INTERNAL_API_SECRET` env validation for internal AI health endpoints.
 
 **Data**
 - Renamed `src/data/tracks.json` to `src/data/music.json` and updated validation tooling references.
@@ -39,6 +49,20 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 **Testing**
 - Added deep link parsing tests for music share routes.
 - Added journal export/import tests with encryption coverage.
+- Mocked sessionStorage in Vitest setup for consistent welcome overlay session tests.
+
+**Dependencies**
+- Removed unused `@react-three/drei`, `openai`, and `dotenv`.
+- Added explicit `postprocessing` dependency for Visualizer3D.
+
+**Maintenance**
+- Removed legacy public image archive assets.
+- Promoted root `replit.md` as the canonical Replit deployment report (docs pointer retained).
+- Dropped deprecated `AI_REQUEST_TIMEOUT_MS` export and legacy focus-ring CSS classes.
+
+**Documentation**
+- Updated security dependency inventory and audit timestamp.
+- Added Replit database hosting guidance and ops checklist.
 
 ### 2026-01-12
 

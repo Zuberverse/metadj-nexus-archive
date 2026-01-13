@@ -1,11 +1,14 @@
 # Code → Docs Map (MetaDJ Nexus)
 
-**Last Modified**: 2026-01-13 13:34 EST
+**Last Modified**: 2026-01-13 14:10 EST
 
 This is a code-first index: start from a file/folder in `src/`, then jump to the doc(s) that explain it.
 
 ## App Router (`src/app/`)
 
+- `src/app/page.tsx` → `../AUTH-SYSTEM.md`, `../architecture/routing.md`
+- `src/app/app/layout.tsx`, `src/app/app/page.tsx` → `../architecture/routing.md`, `../features/hub-system.md`, `../features/cinema-system.md`, `../features/wisdom-system.md`, `../features/panel-system.md`
+- `src/app/admin/layout.tsx`, `src/app/admin/page.tsx` → `../AUTH-SYSTEM.md`, `../architecture/routing.md`
 - `src/app/(experience)/layout.tsx`, `src/app/(experience)/page.tsx` → `../architecture/routing.md`, `../features/hub-system.md`, `../features/cinema-system.md`, `../features/wisdom-system.md`, `../features/panel-system.md`
 - `src/app/(experience)/track/[id]/page.tsx` → `../architecture/routing.md`, `../features/collections-system.md`
 - `src/app/(experience)/collection/[id]/page.tsx` → `../architecture/routing.md`, `../features/collections-system.md`
@@ -38,6 +41,13 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 | `/api/health/providers` | `src/app/api/health/providers/route.ts` | `../API.md`, `../operations/UPTIME-MONITORING.md`, `../features/vercel-ai-sdk-integration.md` |
 | `/api/log` | `src/app/api/log/route.ts` | `../API.md`, `../operations/ERROR-TRACKING.md` |
 | `/api/dev/clear-rate-limits` | `src/app/api/dev/clear-rate-limits/route.ts` | `../API.md`, `../features/vercel-ai-sdk-integration.md` |
+| `/api/auth/login` | `src/app/api/auth/login/route.ts` | `../API.md`, `../AUTH-SYSTEM.md` |
+| `/api/auth/register` | `src/app/api/auth/register/route.ts` | `../API.md`, `../AUTH-SYSTEM.md` |
+| `/api/auth/logout` | `src/app/api/auth/logout/route.ts` | `../API.md`, `../AUTH-SYSTEM.md` |
+| `/api/auth/session` | `src/app/api/auth/session/route.ts` | `../API.md`, `../AUTH-SYSTEM.md` |
+| `/api/auth/account` | `src/app/api/auth/account/route.ts` | `../API.md`, `../AUTH-SYSTEM.md` |
+| `/api/feedback` | `src/app/api/feedback/route.ts` | `../API.md`, `../AUTH-SYSTEM.md` |
+| `/api/feedback/[id]` | `src/app/api/feedback/[id]/route.ts` | `../API.md`, `../AUTH-SYSTEM.md` |
 | `/api/daydream/config` | `src/app/api/daydream/config/route.ts` | `../API.md`, `../daydream/README.md` |
 | `/api/daydream/streams/*` | `src/app/api/daydream/streams/**/route.ts` | `../API.md`, `../daydream/README.md` |
 
@@ -67,6 +77,8 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 - Media streaming primitives (`src/lib/media/streaming.ts`) → `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
 - Storage provider abstraction (`src/lib/media-storage.ts`) → `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
 - Analytics helpers (`src/lib/analytics.ts`) → `../features/analytics-implementation.md`
+- Auth utilities (`src/lib/auth/*`) → `../AUTH-SYSTEM.md`
+- Feedback storage (`src/lib/feedback/*`) → `../AUTH-SYSTEM.md`
 - Validation schemas (`src/lib/validation/*`) + `scripts/validate-music.js` → `../architecture/data-architecture.md`, `./barrel-export-patterns.md`
 - Playlist repository (`src/lib/playlists/*`) → `../features/playlist-system.md`, `./barrel-export-patterns.md`
 - Journal transfer (`src/lib/journal/*`) → `../features/journal-feature.md`
@@ -111,6 +123,9 @@ Centralized module exports for clean imports. See `./barrel-export-patterns.md` 
 - Wisdom (`src/components/wisdom/*`) → `../features/wisdom-system.md`
 - Reading progress (`src/components/wisdom/ReadingProgressBar.tsx`) → `../features/wisdom-system.md`
 - MetaDJai (`src/components/metadjai/*`) → `../features/vercel-ai-sdk-integration.md`
+- Landing (`src/components/landing/*`) → `../AUTH-SYSTEM.md`
+- Feedback (`src/components/feedback/*`) → `../AUTH-SYSTEM.md`
+- Admin (`src/components/admin/*`) → `../AUTH-SYSTEM.md`
 - Shared UI system (`src/components/ui/*`) → `../features/ui-visual-system.md`, `../features/gradient-system.md`, `./barrel-export-patterns.md`
 - ErrorBoundary (`src/components/ui/ErrorBoundary.tsx`) → `./error-boundary-patterns.md`, `../features/ui-visual-system.md`
 - EmptyState (`src/components/ui/EmptyState.tsx`) → `../features/ui-visual-system.md`, `./components-ui-reference.md`

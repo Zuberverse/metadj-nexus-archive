@@ -152,7 +152,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
         {/* Header */}
         <header className="text-center space-y-3">
           <h1 className="font-heading font-black leading-[0.9] text-[clamp(1.5rem,4vw,3.5rem)] tracking-tight max-w-[90vw] mx-auto text-pop">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">Wisdom</span>
+            <span className="text-heading-solid">Wisdom</span>
           </h1>
           <p className="text-lg sm:text-xl text-indigo-100/90 font-light max-w-2xl mx-auto">
             {data.thoughts.length} Thoughts · {data.guides.length} Guides · {data.reflections.length} Reflections
@@ -166,7 +166,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             onClick={() => setActiveSection("thoughts")}
             className="group relative rounded-3xl border border-white/10 bg-white/3 p-6 text-left shadow-[var(--shadow-glow-purple)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-white/5 hover:shadow-[var(--shadow-glow-purple)] focus-ring-glow"
           >
-            <div className="mb-4 inline-flex items-center justify-center rounded-full bg-linear-to-br from-purple-500 via-blue-500 to-cyan-400 p-3">
+            <div className="mb-4 inline-flex items-center justify-center rounded-full gradient-4 p-3">
               <BookOpen className="h-6 w-6 text-white" />
             </div>
             <h3 className="mb-1 text-xl font-heading font-bold text-heading-solid">
@@ -183,7 +183,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             onClick={() => setActiveSection("guides")}
             className="group relative rounded-3xl border border-white/10 bg-white/3 p-6 text-left shadow-[var(--shadow-glow-cyan)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-white/5 hover:shadow-[var(--shadow-glow-cyan)] focus-ring-glow"
           >
-            <div className="mb-4 inline-flex items-center justify-center rounded-full bg-linear-to-br from-cyan-400 via-blue-500 to-purple-500 p-3">
+            <div className="mb-4 inline-flex items-center justify-center rounded-full gradient-4 p-3">
               <Layers className="h-6 w-6 text-white" />
             </div>
             <h3 className="mb-1 text-xl font-heading font-bold text-heading-solid">
@@ -201,7 +201,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             onClick={() => setActiveSection("reflections")}
             className="group relative rounded-3xl border border-white/10 bg-white/3 p-6 text-left shadow-[var(--shadow-glow-emerald)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-white/5 hover:shadow-[var(--shadow-glow-emerald)] focus-ring-glow"
           >
-            <div className="mb-4 inline-flex items-center justify-center rounded-full bg-linear-to-br from-blue-600 via-teal-500 to-emerald-400 p-3">
+            <div className="mb-4 inline-flex items-center justify-center rounded-full gradient-4 p-3">
               <User className="h-6 w-6 text-white" />
             </div>
             <h3 className="mb-1 text-xl font-heading font-bold text-heading-solid">

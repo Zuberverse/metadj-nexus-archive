@@ -1,11 +1,13 @@
 # Routing & Navigation Contracts — MetaDJ Nexus
 
-**Last Modified**: 2026-01-13 13:34 EST
+**Last Modified**: 2026-01-13 14:10 EST
 
-> MetaDJ Nexus is a single-route experience. Hub/Cinema/Wisdom are state-driven views inside `/` (no route changes for view switching). The URL stays clean while you browse.
+> MetaDJ Nexus uses a protected single-route experience at `/app`. Hub/Cinema/Wisdom are state-driven views inside `/app` (no route changes for view switching).
 
 ## Page Map
-- `/` → Single experience surface. Renders Hub/Cinema/Wisdom + panels via `src/app/(experience)/layout.tsx` → `HomePageClient`.
+- `/` → Landing page (auth gateway). Renders `src/app/page.tsx` → `LandingPage`.
+- `/app` → Protected experience surface. Renders Hub/Cinema/Wisdom + panels via `src/app/app/layout.tsx` → `HomePageClient`.
+- `/admin` → Admin dashboard (admin-only).
 - `/track/[id]` → Share metadata route (no UI) via `src/app/(experience)/track/[id]/page.tsx`.
 - `/collection/[id]` → Share metadata route (no UI) via `src/app/(experience)/collection/[id]/page.tsx`.
 - `/playlist/[id]` → Share metadata route (no UI) via `src/app/(experience)/playlist/[id]/page.tsx`.
@@ -40,9 +42,18 @@
 - `/api/log` → Logging hook (expects shared secret).
 - `/api/dev/clear-rate-limits` → Dev-only helper (requires DEV_SECRET).
 
+### Authentication & Feedback
+- `/api/auth/login` → Authenticate user and set session cookie.
+- `/api/auth/register` → Register new account and set session cookie.
+- `/api/auth/logout` → Clear session cookie.
+- `/api/auth/session` → Return current session data.
+- `/api/auth/account` → Update email/password for current user.
+- `/api/feedback` → Submit feedback (optional session) + list feedback (auth required).
+- `/api/feedback/[id]` → Fetch/update/delete feedback item (admin for update/delete).
+
 ## SEO Notes
 - Inline structured data in `src/app/layout.tsx` stays inline for SEO, but now uses the per-request CSP nonce surfaced by `src/proxy.ts`.
 
 ## Operational Reminders
 - Keep `getMusicSnapshot()` (hub data loader) fast; consider caching if latency rises.
-- Keep Hub/Cinema/Wisdom navigation state-driven inside `/`; avoid introducing routes for view switching.
+- Keep Hub/Cinema/Wisdom navigation state-driven inside `/app`; avoid introducing routes for view switching.

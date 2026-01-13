@@ -26,10 +26,10 @@ export function FeatureNavigation({ activeView, onViewChange, compact = false }:
             key={feature.id}
             type="button"
             onClick={() => onViewChange(feature.id)}
-            className={clsx(
-              "flex-1 flex items-center justify-center gap-2 rounded-xl px-2 py-2.5 text-sm font-semibold transition focus-ring border",
+              className={clsx(
+                "flex-1 flex items-center justify-center gap-2 rounded-xl px-2 py-2.5 text-sm font-semibold transition focus-ring border",
               isActive
-                ? "border-white/30 bg-linear-to-r from-[#5F6CFF]/60 via-[#38D4FF]/55 to-[#A250FF]/65 shadow-[0_18px_40px_rgba(6,8,28,0.55)] text-white"
+                ? "border-white/30 gradient-4 shadow-[0_18px_40px_rgba(6,8,28,0.55)] text-white"
                 : "border-(--border-standard) text-white/80 bg-white/4 hover:border-(--border-elevated) hover:bg-white/8"
             )}
             aria-pressed={isActive}

@@ -336,7 +336,7 @@ export function MetaDjAiChatInput({
               className={clsx(
                 "flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 shadow-lg",
                 isSubmitReady
-                  ? "bg-linear-to-br from-purple-600 to-blue-600 text-white hover:scale-105 hover:shadow-cyan-500/25 hover:from-purple-500 hover:to-blue-500"
+                  ? "gradient-4 text-white hover:scale-105 hover:shadow-cyan-500/25 hover:brightness-110"
                   : "bg-white/5 text-white/20 cursor-not-allowed"
               )}
               aria-label="Send message"

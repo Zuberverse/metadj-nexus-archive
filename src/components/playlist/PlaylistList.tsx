@@ -190,7 +190,7 @@ function PlaylistListComponent({
                 type="button"
                 onClick={() => onPlaylistSelect(playlist.id)}
                 className={`flex w-full items-center gap-3 px-2 py-2 rounded-lg transition-all focus-ring-glow ${isActive
-                  ? "bg-linear-to-r from-purple-500/10 via-blue-500/10 to-cyan-400/10 border border-purple-neon/50"
+                  ? "gradient-2-tint border border-purple-neon/50"
                   : "hover:bg-black/30 hover:scale-102"
                   }`}
               >

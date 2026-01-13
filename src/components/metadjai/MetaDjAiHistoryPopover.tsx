@@ -85,7 +85,7 @@ export function MetaDjAiHistoryPopover({
         )}
       >
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm font-heading font-semibold uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-200">
+          <p className="text-sm font-heading font-semibold uppercase tracking-[0.2em] text-heading-solid">
             History
           </p>
           <div className="flex items-center gap-2">

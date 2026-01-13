@@ -45,7 +45,7 @@ export function PanelLayout({
       <main
         id={mainContentId}
         tabIndex={-1}
-        className="min-h-screen flex flex-col overflow-x-hidden pt-[72px]"
+        className="min-h-screen flex flex-col overflow-x-hidden"
         data-csp-style={wrapperStyleId}
       >
         {renderMiddleContent(activeView)}

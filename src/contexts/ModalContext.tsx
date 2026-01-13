@@ -54,6 +54,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
   });
 
   // After hydration, decide whether we should show the welcome overlay.
+  // Show once per session unless the user opts out permanently.
   useEffect(() => {
     runMigrations();
 
@@ -65,15 +66,14 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     }
 
     const hasDismissed = getBoolean(STORAGE_KEYS.WELCOME_DISMISSED, false);
-    const hasShownEver = getBoolean(STORAGE_KEYS.WELCOME_SHOWN, false);
 
-    // Auto-open only once (first-time visit) unless the user dismissed it forever.
-    // This prevents refresh-time flashes and avoids re-showing on returning visits.
-    if (hasDismissed || hasShownEver || hasShownInSession) return;
+    // Auto-open once per session unless the user has dismissed it permanently.
+    // This prevents refresh-time flashes while keeping the overlay available until opt-out.
+    if (hasDismissed || hasShownInSession) return;
 
     setModals(prev => ({ ...prev, isWelcomeOpen: true }));
 
-    // Mark as shown so refreshes / future visits never flash it again.
+    // Track that the overlay has been shown at least once.
     setBoolean(STORAGE_KEYS.WELCOME_SHOWN, true);
 
     try {
@@ -87,7 +87,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
   const setWelcomeOpen = useCallback((open: boolean) => {
     setModals(prev => ({ ...prev, isWelcomeOpen: open }));
     announce(open ? 'Welcome dialog opened' : 'Welcome dialog closed', { type: 'status', priority: 'polite' });
-    // Note: Auto-open persistence is handled here via `STORAGE_KEYS.WELCOME_SHOWN`.
+    // Note: Auto-open persistence is handled via the session flag + WELCOME_DISMISSED opt-out.
   }, []);
 
   const setInfoOpen = useCallback((open: boolean) => {

@@ -1,6 +1,6 @@
 # Gradient System — MetaDJ Nexus
 
-**Last Modified**: 2025-12-28 16:59 EST
+**Last Modified**: 2026-01-13 14:45 EST
 
 MetaDJ Nexus now uses a tokenized gradient stack so every surface—code, docs, and future agents—pulls from the same source of truth. The system lives in `src/app/globals.css` and exposes:
 
@@ -202,6 +202,11 @@ export default function Page() {
 4. **Hover effects**: prefer `.hover-gradient-2` for icon-only controls instead of repeating gradient declarations.
 5. **Pseudo-elements**: when you need a sheen, use `.before-gradient-2` or `.before-gradient-2-tint` plus the usual Tailwind `before:` utilities.
 6. **Text**: use `.text-heading-solid` for non-hero headings; reserve `.text-gradient-hero` for marquee H1s and hero wordmarks; use `.text-gradient-primary` for accents/wordmarks; prefer `.text-gradient-*` utilities instead of hardcoded gradients.
+
+### Exceptions (Temporary)
+
+- **Collection themes**: collection-specific gradients remain centralized in `src/lib/collection-theme.ts` until tokenized variants are added to `src/styles/gradients.css`.
+- **Decorative sheens**: white → transparent overlay gradients are permitted when no tokenized alternative exists.
 
 ---
 

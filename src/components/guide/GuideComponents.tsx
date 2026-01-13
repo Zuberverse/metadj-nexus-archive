@@ -24,9 +24,9 @@ export function SectionHeader({
         <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
           {icon}
         </div>
-        <h3 className="font-heading font-bold text-lg text-heading-solid">
+        <h2 className="font-heading font-bold text-lg text-heading-solid">
           {title}
-        </h3>
+        </h2>
       </div>
       {action}
     </div>

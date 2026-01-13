@@ -48,7 +48,7 @@ export default function TermsPage() {
               Terms &amp; Conditions
             </h1>
             <p className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-muted-accessible">
-              Last updated: 2025‑12‑20
+              Last updated: 2026‑01‑13
             </p>
           </div>
         </header>
@@ -117,7 +117,8 @@ export default function TermsPage() {
                 5. Data &amp; Privacy
               </h2>
               <p className="text-white/80 leading-relaxed text-sm">
-                The app doesn&apos;t require an account. It may store local preferences in your browser.
+                The landing page doesn&apos;t require an account. The full experience currently requires
+                a free account during Public Preview. The app may store local preferences in your browser.
                 We may collect basic, non‑identifying analytics to understand usage.
               </p>
             </div>
@@ -169,7 +170,7 @@ export default function TermsPage() {
             </div>
             <div className="pt-4 border-t border-white/5">
               <p className="text-cyan-200/80 text-sm">
-                Questions? Reach out through metadjnexus.ai
+                Questions? Use the feedback button in the app or reach out @metadjai
               </p>
             </div>
           </div>

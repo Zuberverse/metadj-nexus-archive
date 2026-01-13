@@ -292,7 +292,7 @@ export function PlaylistDetailView({
                     <button
                       type="button"
                       onClick={handleRenameSave}
-                      className="flex-1 rounded-lg bg-linear-to-r from-purple-500 via-blue-500 to-cyan-400 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
+                      className="flex-1 rounded-lg gradient-4 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
                     >
                       Save
                     </button>
@@ -389,7 +389,7 @@ export function PlaylistDetailView({
             <button
               type="button"
               onClick={handlePlayAll}
-              className="flex h-11 items-center gap-2 rounded-lg bg-linear-to-r from-purple-500 via-blue-500 to-cyan-400 px-6 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
+              className="flex h-11 items-center gap-2 rounded-lg gradient-4 px-6 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
             >
               <Play className="h-4 w-4" />
               Start

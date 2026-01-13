@@ -457,7 +457,7 @@ describe('UIContext', () => {
       expect(result.current.modals.isMetaDjAiOpen).toBe(false);
     });
 
-    it('does not auto-open welcome overlay after it has been shown', async () => {
+    it('auto-opens welcome overlay even after it has been shown (until dismissed)', async () => {
       mockLocalStorage.setItem('metadj-nexus-welcome-shown', 'true');
 
       const { result } = renderHook(() => useUI(), {
@@ -465,7 +465,7 @@ describe('UIContext', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.modals.isWelcomeOpen).toBe(false);
+        expect(result.current.modals.isWelcomeOpen).toBe(true);
       });
     });
 

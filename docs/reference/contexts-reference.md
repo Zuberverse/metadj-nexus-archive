@@ -2,7 +2,7 @@
 
 > **React Context providers for MetaDJ Nexus state management**
 
-**Last Modified**: 2026-01-10 13:36 EST
+**Last Modified**: 2026-01-13 14:39 EST
 ## Overview
 
 MetaDJ Nexus uses 7 React Context providers for global state. Contexts can be imported directly from their files or via the `@/contexts` barrel export.
@@ -71,7 +71,7 @@ import { ModalProvider, useModal } from '@/contexts/ModalContext';
 ```
 
 **Persistence**
-- Welcome auto-open gating uses `STORAGE_KEYS.WELCOME_SHOWN` + `metadj_welcome_shown_session` (alternate key: `STORAGE_KEYS.WELCOME_DISMISSED`).
+- Welcome auto-open gating uses `STORAGE_KEYS.WELCOME_DISMISSED` + `metadj_welcome_shown_session` (`STORAGE_KEYS.WELCOME_SHOWN` tracks first view).
 
 ---
 

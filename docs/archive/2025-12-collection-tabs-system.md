@@ -1,7 +1,7 @@
-**Last Modified**: 2025-12-22 13:13 EST
-**Status**: ARCHIVED (dropdown removed in v0.8.1 cleanup)
-
 # Collection Dropdown System
+
+**Last Modified**: 2026-01-13 14:15 EST
+**Status**: ARCHIVED (dropdown removed in v0.8.1 cleanup)
 
 > Unified dropdown selector for browsing collections with integrated subtitles and optional collection details. Styled with MetaDJ's glass morphism and gradient aesthetic for all screen sizes.
 

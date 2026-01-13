@@ -596,7 +596,7 @@ export function SearchBar({
                                         className="object-cover"
                                       />
                                     ) : (
-                                      <div className="absolute inset-0 bg-linear-to-br from-purple-500/20 to-blue-500/20" />
+                                      <div className="absolute inset-0 gradient-2-soft" />
                                     )}
                                   </div>
                                   <div>

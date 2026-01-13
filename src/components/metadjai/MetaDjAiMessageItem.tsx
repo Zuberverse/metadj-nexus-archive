@@ -947,8 +947,8 @@ export const MetaDjAiMessageItem = memo(forwardRef<HTMLDivElement, MessageItemPr
         )
       },
       blockquote: ({ children }) => (
-        <blockquote className="my-4 relative border-l-2 border-cyan-500/30 bg-gradient-to-r from-cyan-900/10 to-transparent px-5 py-3 text-white/75 italic">
-          <div className="absolute -left-1.5 top-0 h-full w-[2px] bg-gradient-to-b from-cyan-400 via-blue-500 to-transparent opacity-50" />
+        <blockquote className="my-4 relative border-l-2 border-cyan-500/30 bg-white/5 px-5 py-3 text-white/75 italic">
+          <div className="absolute -left-1.5 top-0 h-full w-[2px] bg-cyan-400/60 opacity-50" />
           {children}
         </blockquote>
       ),
@@ -1147,9 +1147,9 @@ export const MetaDjAiMessageItem = memo(forwardRef<HTMLDivElement, MessageItemPr
                   aria-label="MetaDJai is responding"
                 >
                   <span className="sr-only">Responding</span>
-                  <span className="h-2 w-2 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400 animate-[pulse_1s_ease-in-out_infinite]" />
-                  <span className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-400 animate-[pulse_1s_ease-in-out_0.2s_infinite]" />
-                  <span className="h-2 w-2 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400 animate-[pulse_1s_ease-in-out_0.4s_infinite]" />
+                  <span className="h-2 w-2 rounded-full gradient-4 animate-[pulse_1s_ease-in-out_infinite]" />
+                  <span className="h-2 w-2 rounded-full gradient-4 animate-[pulse_1s_ease-in-out_0.2s_infinite]" />
+                  <span className="h-2 w-2 rounded-full gradient-4 animate-[pulse_1s_ease-in-out_0.4s_infinite]" />
                 </span>
               )}
             </div>

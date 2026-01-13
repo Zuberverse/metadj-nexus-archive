@@ -2,7 +2,7 @@
 
 > Quick navigation to all project documentation
 
-**Last Modified**: 2026-01-13 08:56 EST
+**Last Modified**: 2026-01-13 14:10 EST
 
 ---
 
@@ -81,6 +81,7 @@
 | Document | Description |
 |----------|-------------|
 | [SECURITY](./SECURITY.md) | Security overview |
+| [AUTH-SYSTEM](./AUTH-SYSTEM.md) | Authentication and feedback system |
 | [security/README](./security/README.md) | Security documentation index |
 | [security/SECURITY-SCANNING](./security/SECURITY-SCANNING.md) | Security scanning procedures |
 | [security/CSP-NONCE-IMPLEMENTATION-PLAN](./security/CSP-NONCE-IMPLEMENTATION-PLAN.md) | CSP implementation |

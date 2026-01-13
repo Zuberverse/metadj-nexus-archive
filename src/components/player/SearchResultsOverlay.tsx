@@ -1,6 +1,8 @@
 "use client"
 
+import { useRef } from "react"
 import { Book, BookOpen, ListPlus, Play, Search, X } from "lucide-react"
+import { useFocusTrap } from "@/hooks"
 import { cn } from "@/lib/utils"
 import { CollectionArtwork } from "./CollectionArtwork"
 import type { JournalSearchEntry, SearchContentResults, WisdomSearchEntry } from "@/lib/search/search-results"
@@ -29,6 +31,9 @@ export function SearchResultsOverlay({
 }: SearchResultsOverlayProps) {
     const { tracks, collections, wisdom, journal, totalCount } = results
     const hasResults = totalCount > 0
+    const overlayRef = useRef<HTMLDivElement>(null)
+
+    useFocusTrap(overlayRef, { enabled: true })
 
     const formatWisdomLabel = (entry: WisdomSearchEntry) => {
         if (entry.section === "guides") {
@@ -46,7 +51,15 @@ export function SearchResultsOverlay({
     }
 
     return (
-        <div className="absolute inset-x-5 top-[88px] bottom-5 z-20 rounded-[18px] border border-white/20 bg-[rgba(6,8,28,0.95)] shadow-[0_25px_65px_rgba(5,4,18,0.75)] backdrop-blur-3xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div
+            ref={overlayRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="search-results-title"
+            aria-describedby="search-results-description"
+            tabIndex={-1}
+            className="absolute inset-x-5 top-[88px] bottom-5 z-20 rounded-[18px] border border-white/20 bg-[rgba(6,8,28,0.95)] shadow-[0_25px_65px_rgba(5,4,18,0.75)] backdrop-blur-3xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        >
             <div className="pointer-events-none absolute inset-0 gradient-media-bloom opacity-50" />
             <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-linear-to-b from-white/18 via-transparent to-transparent opacity-60" />
 
@@ -55,8 +68,11 @@ export function SearchResultsOverlay({
                 <div className="shrink-0 flex items-center justify-between gap-3 border-b border-white/20 px-4 py-3 sm:px-5 sm:py-4 backdrop-blur-xl bg-white/2">
                     <div>
                         <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/70">Search Results</p>
-                        <p className="text-heading-solid font-heading text-lg font-semibold">
+                        <p id="search-results-title" className="text-heading-solid font-heading text-lg font-semibold">
                             Across Nexus
+                        </p>
+                        <p id="search-results-description" className="sr-only">
+                            Use Tab to move through results and Escape to close.
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -64,8 +80,9 @@ export function SearchResultsOverlay({
                             {totalCount} {totalCount === 1 ? "result" : "results"}
                         </span>
                         <button
+                            type="button"
                             onClick={onClose}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white/70 transition hover:border-white/40 hover:text-white focus-ring-glow"
+                            className="inline-flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/20 text-white/70 transition hover:border-white/40 hover:text-white focus-ring-glow"
                             aria-label="Close search results"
                         >
                             <X className="h-4 w-4" />
@@ -93,13 +110,13 @@ export function SearchResultsOverlay({
                                     key={`collection-${collection.id}`}
                                     type="button"
                                     onClick={() => onCollectionSelect?.(collection)}
-                                    className="group relative flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left transition hover:border-white/25 hover:bg-white/8"
+                                    className="group relative flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left transition hover:border-white/25 hover:bg-white/8 focus-ring-glow"
                                 >
                                     <div className="h-10 w-10 rounded-md bg-white/10 overflow-hidden relative shrink-0">
                                         {collection.artworkUrl ? (
                                             <CollectionArtwork src={collection.artworkUrl} alt={collection.title} size={40} showLoading={true} />
                                         ) : (
-                                            <div className="absolute inset-0 bg-linear-to-br from-purple-500/20 to-blue-500/20" />
+                                            <div className="absolute inset-0 gradient-2-soft" />
                                         )}
                                     </div>
                                     <div className="min-w-0">
@@ -122,8 +139,8 @@ export function SearchResultsOverlay({
                                         className={cn(
                                             "group relative overflow-hidden flex items-center gap-2.5 rounded-xl border px-3 py-2.5 shadow-[0_12px_26px_rgba(6,8,28,0.4)] transition",
                                             isActive
-                                                ? "border-white/30 bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-cyan-900/20"
-                                                : "border-white/10 bg-gradient-to-br from-indigo-950/50 via-purple-950/30 to-indigo-950/40 hover:border-white/20 hover:from-indigo-900/40 hover:via-purple-900/25 hover:to-cyan-950/25"
+                                                ? "border-purple-400/40 gradient-2-tint"
+                                                : "border-white/10 bg-white/2 hover:border-white/20 hover-gradient-2"
                                         )}
                                     >
                                         <div className="pointer-events-none absolute inset-0 opacity-60 mix-blend-screen bg-linear-to-r from-white/10 via-white/6 to-transparent" />
@@ -139,7 +156,7 @@ export function SearchResultsOverlay({
                                         <button
                                             type="button"
                                             onClick={() => onTrackSelect(resultTrack)}
-                                            className="flex-1 min-w-0 text-left"
+                                            className="flex-1 min-w-0 text-left focus-ring-glow rounded-lg"
                                         >
                                             <p className={cn(
                                                 "truncate text-sm font-heading font-semibold text-heading-solid transition-opacity",
@@ -155,7 +172,7 @@ export function SearchResultsOverlay({
                                             type="button"
                                             onClick={() => onTrackSelect(resultTrack)}
                                             className={cn(
-                                                "shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full border transition",
+                                                "shrink-0 inline-flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border transition focus-ring-glow",
                                                 isActive
                                                     ? "bg-white text-black border-white/50 shadow-[0_0_25px_rgba(255,255,255,0.35)]"
                                                     : "border-white/20 text-white/80 hover:border-white/40 hover:text-white"
@@ -169,7 +186,7 @@ export function SearchResultsOverlay({
                                         <button
                                             type="button"
                                             onClick={() => onQueueAdd(resultTrack)}
-                                            className="shrink-0 inline-flex items-center justify-center gap-1 rounded-full border border-(--border-elevated) bg-white/5 px-3 py-2 text-xs font-heading font-semibold uppercase tracking-[0.16em] text-white/80 transition hover:border-(--border-active) hover:text-white focus-ring-glow"
+                                            className="shrink-0 inline-flex items-center justify-center gap-1 rounded-full border border-(--border-elevated) bg-white/5 px-3 py-2 text-xs font-heading font-semibold uppercase tracking-[0.16em] text-white/80 transition hover:border-(--border-active) hover:text-white focus-ring-glow min-h-[44px] min-w-[44px]"
                                             aria-label={`Add ${resultTrack.title} to queue`}
                                         >
                                             <ListPlus className="h-3.5 w-3.5" />
@@ -189,7 +206,7 @@ export function SearchResultsOverlay({
                                     key={`wisdom-${entry.section}-${entry.id}`}
                                     type="button"
                                     onClick={() => onWisdomSelect?.(entry)}
-                                    className="group flex w-full items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left transition hover:border-white/25 hover:bg-white/8"
+                                    className="group flex w-full items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left transition hover:border-white/25 hover:bg-white/8 focus-ring-glow"
                                 >
                                     <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-cyan-200 shrink-0">
                                         <BookOpen className="h-4 w-4" />
@@ -212,7 +229,7 @@ export function SearchResultsOverlay({
                                     key={`journal-${entry.id}`}
                                     type="button"
                                     onClick={() => onJournalSelect?.(entry)}
-                                    className="group flex w-full items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left transition hover:border-white/25 hover:bg-white/8"
+                                    className="group flex w-full items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left transition hover:border-white/25 hover:bg-white/8 focus-ring-glow"
                                 >
                                     <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-purple-200 shrink-0">
                                         <Book className="h-4 w-4" />

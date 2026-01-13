@@ -173,7 +173,7 @@ export function QueueSection({
                 <div className="relative group/depleted">
                   <div className="absolute -inset-4 bg-cyan-500/10 blur-2xl rounded-full opacity-50 group-hover/depleted:opacity-70 transition-opacity" />
                   <div className="relative w-24 h-24 rounded-full bg-black/40 flex items-center justify-center border border-white/15 backdrop-blur-xl shadow-2xl group-hover/depleted:scale-105 transition-transform duration-500">
-                    <div className="absolute inset-0 bg-linear-to-tr from-purple-500/10 via-transparent to-cyan-500/10 opacity-70" />
+                    <div className="absolute inset-0 gradient-2-tint opacity-70" />
                     <Music className="h-10 w-10 text-cyan-400/40 group-hover/depleted:text-cyan-400/60 transition-colors duration-500" aria-hidden="true" />
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export function QueueSection({
                   <button
                     type="button"
                     onClick={() => setQuery("")}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest bg-linear-to-r from-purple-500/20 to-cyan-500/20 text-white hover:from-purple-500/30 hover:to-cyan-500/30 border border-white/15 transition-all hover:border-white/30 focus-ring-glow interactive-scale"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest gradient-2-tint text-white border border-white/15 transition-all hover:border-white/30 hover:brightness-110 focus-ring-glow interactive-scale"
                   >
                     <ListPlus className="h-4 w-4" />
                     Add More Tracks

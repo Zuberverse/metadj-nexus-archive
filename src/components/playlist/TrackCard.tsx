@@ -202,7 +202,7 @@ export const TrackCard = React.memo(function TrackCard({
       {/* UX-1: Prominent visual feedback overlay when adding to queue - BRAND ALIGNED */}
       {showAdded && (
         <div className="absolute inset-0 flex items-center justify-center bg-purple-900/40 rounded-xl sm:rounded-2xl backdrop-blur-xs pointer-events-none z-20 animate-in fade-in zoom-in-95 duration-300">
-          <div className="flex items-center gap-2 bg-linear-to-r from-purple-600 to-cyan-500 px-4 py-2 rounded-full text-white font-semibold shadow-[0_0_20px_rgba(139,92,246,0.5)] border border-white/20">
+          <div className="flex items-center gap-2 brand-gradient px-4 py-2 rounded-full text-white font-semibold shadow-[0_0_20px_rgba(139,92,246,0.5)] border border-white/20">
             <Check className="h-5 w-5" />
             Added to queue
           </div>

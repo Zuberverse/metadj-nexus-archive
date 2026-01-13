@@ -17,14 +17,14 @@ export const PLATFORM_UPDATES: PlatformUpdate[] = [
   {
     id: "preview-music-cinema",
     title: "Music + Cinema",
-    date: "2025-12-31",
+    date: "2026-01-15",
     summary: "Stream original collections with immersive 3D and 2D visualizers synced to the music.",
     type: "added",
   },
   {
     id: "preview-metadjai",
     title: "MetaDJai companion",
-    date: "2025-12-31",
+    date: "2026-01-15",
     summary: "Your AI creative guide—get recommendations, explore the platform, and discover new flows.",
     type: "added",
   },

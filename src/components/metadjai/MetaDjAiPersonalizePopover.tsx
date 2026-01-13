@@ -53,7 +53,7 @@ export function MetaDjAiPersonalizePopover({
       )}
     >
       <div className="relative mb-3 flex items-center justify-end shrink-0">
-        <p className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-heading font-semibold uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">
+        <p className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-heading font-semibold uppercase tracking-[0.2em] text-heading-solid">
           Customize
         </p>
         <button
@@ -118,7 +118,7 @@ export function MetaDjAiPersonalizePopover({
               className={clsx(
                 "block",
                 personalizeTab === "style"
-                  ? "text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-200"
+                  ? "text-heading-solid"
                   : "text-white/60"
               )}
             >
@@ -141,7 +141,7 @@ export function MetaDjAiPersonalizePopover({
               className={clsx(
                 "block",
                 personalizeTab === "profile"
-                  ? "text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200"
+                  ? "text-heading-solid"
                   : "text-white/60"
               )}
             >

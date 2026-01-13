@@ -114,22 +114,7 @@
    - focus-ring: Standard box-shadow
    - focus-ring-glow: Enhanced glow effect
    - focus-ring-light: Light border + shadow variant
-
-   The utilities below are legacy CSS classes for non-Tailwind contexts.
-   Prefer using Tailwind utilities in components.
    ═══════════════════════════════════════════════════════════════════════════ */
-
-/* Legacy: Standard focus ring - for non-Tailwind contexts */
-.focus-ring-legacy {
-  outline: none;
-}
-
-.focus-ring-legacy:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 2px oklch(0.7 0.2 264 / 0.25),
-    0 0 0 4px oklch(0.7 0.2 264 / 0.15);
-}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ACCESSIBLE MUTED TEXT
@@ -152,8 +137,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @media (prefers-contrast: high) {
-  /* High contrast overrides for Tailwind utilities and legacy classes */
-  .focus-ring-legacy:focus-visible,
+  /* High contrast overrides for Tailwind utilities */
   .interactive-control:focus-visible,
   [class*="focus-ring"]:focus-visible {
     outline: none;

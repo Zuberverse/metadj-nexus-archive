@@ -299,13 +299,16 @@ export function GuideContent({
     if (!section) return
 
     const offset = isModal ? 80 : 120
+    const prefersReducedMotion = typeof window !== "undefined"
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const behavior: ScrollBehavior = prefersReducedMotion ? "auto" : "smooth"
 
     if (isModal && scrollContainerRef?.current) {
       const top = section.offsetTop - offset
-      scrollContainerRef.current.scrollTo({ top, behavior: "smooth" })
+      scrollContainerRef.current.scrollTo({ top, behavior })
     } else {
       const top = section.offsetTop - offset
-      window.scrollTo({ top, behavior: "smooth" })
+      window.scrollTo({ top, behavior })
     }
     setActiveSection(sectionId)
   }, [isModal, scrollContainerRef])
@@ -387,6 +390,19 @@ export function GuideContent({
           <p className="text-white/60 text-sm md:text-base max-w-3xl mx-auto leading-relaxed">
             {GUIDE_WELCOME.intro}
           </p>
+          {GUIDE_WELCOME.previewNotice && (
+            <div className="mx-auto max-w-3xl rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-left">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-cyan-400" aria-hidden="true" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                  Public Preview
+                </span>
+              </div>
+              <p className="mt-1 text-xs sm:text-sm text-white/70 leading-relaxed">
+                {GUIDE_WELCOME.previewNotice}
+              </p>
+            </div>
+          )}
         </header>
 
         {/* Quick Start Section */}
@@ -408,7 +424,7 @@ export function GuideContent({
               >
                 <div>
                   <div className="flex items-center gap-3">
-                    <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 flex items-center justify-center text-xs sm:text-sm font-bold text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]">
+                    <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full gradient-4 flex items-center justify-center text-xs sm:text-sm font-bold text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]">
                       {step.number}
                     </span>
                     <h3 className="font-heading font-semibold text-sm sm:text-base text-heading-solid">
@@ -858,7 +874,7 @@ export function GuideContent({
               <button
                 type="button"
                 onClick={handleAskMetaDJai}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:from-purple-500/30 hover:to-cyan-500/30 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus-ring-glow"
+                className="inline-flex items-center gap-2 rounded-full gradient-2-tint border border-purple-500/30 px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:brightness-110 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus-ring-glow"
               >
                 <Sparkles className="h-4 w-4 text-purple-400" />
                 <span>Ask MetaDJai</span>

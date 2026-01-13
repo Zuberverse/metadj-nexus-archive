@@ -4,7 +4,7 @@
 
 **Platform Notice**: This `CLAUDE.md` is optimized for Claude Code sessions. OpenAI Codex (via the Codex CLI) follows the accompanying `AGENTS.md`, and Cursor IDE relies on the `.cursor/rules/` file when available; each platform gets the same standards.
 
-**Last Modified**: 2026-01-13 13:16 EST
+**Last Modified**: 2026-01-13 14:04 EST
 *Parent: /3-projects/5-software/CLAUDE.md*
 
 ## Scope
@@ -25,7 +25,7 @@
 - Vercel AI SDK (OpenAI default; optional Anthropic).
 
 ## Project Context
-- Single-route experience at `/` with state-driven views (Hub/Cinema/Wisdom/Journal).
+- Single-route experience at `/app` with state-driven views (Hub/Cinema/Wisdom/Journal).
 - Stack: Next.js 16 (Turbopack), React 19, TypeScript, Tailwind, Vercel AI SDK.
 - Web Audio API for playback; Cloudflare R2 for media (Replit App Storage fallback).
 

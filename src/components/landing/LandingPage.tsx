@@ -7,8 +7,10 @@
  */
 
 import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Music, Film, BookOpen, Bot, Sparkles, ArrowRight } from 'lucide-react';
+import { Music, Film, BookOpen, Bot, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 type AuthMode = 'login' | 'signup';
@@ -19,12 +21,20 @@ export function LandingPage() {
   const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Validate terms agreement for signup
+    if (mode === 'signup' && !agreedToTerms) {
+      setError('Please agree to the Terms & Conditions');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -48,73 +58,84 @@ export function LandingPage() {
     {
       icon: Music,
       title: 'Music',
-      description: 'Original electronic music collections crafted for the digital age',
+      description: 'Original music collections built as living releases',
     },
     {
       icon: Film,
       title: 'Cinema',
-      description: 'Immersive visual experiences with AI-driven visualizers',
+      description: 'Immersive visualizers and video scenes synced to the music',
     },
     {
       icon: BookOpen,
       title: 'Wisdom',
-      description: 'Guides, reflections, and insights on AI-human collaboration',
+      description: 'Guides, reflections, and frameworks on AI-human collaboration',
     },
     {
       icon: Bot,
       title: 'MetaDJai',
-      description: 'Your AI companion for exploring the MetaDJ universe',
+      description: 'Your AI companion for exploring MetaDJ Nexus',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a0a2e] to-[#0a0a0a] text-white">
+    <div className="min-h-[100dvh] flex flex-col text-white overflow-hidden">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden flex-1">
         {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-6 py-12">
+        <div className="relative z-10 container mx-auto px-6 py-4 lg:py-6">
           {/* Header */}
-          <header className="flex items-center justify-between mb-16">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <span className="font-cinzel text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                MetaDJ Nexus
+          <header className="flex items-center justify-between mb-4 lg:mb-6">
+            <h1 className="flex items-center gap-2 sm:gap-3 text-pop">
+              <span className="sr-only">MetaDJ</span>
+              <span
+                aria-hidden="true"
+                className="relative flex items-center h-10 sm:h-12 md:h-14 lg:h-16 w-[100px] sm:w-[120px] md:w-[140px] lg:w-[160px]"
+              >
+                <Image
+                  src="/images/metadj-logo-wordmark.png"
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100px, (max-width: 768px) 120px, (max-width: 1024px) 140px, 160px"
+                  priority
+                  className="object-contain object-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+                />
               </span>
-            </div>
+              <span className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-primary">
+                Nexus
+              </span>
+            </h1>
           </header>
 
           {/* Main Content */}
-          <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[70vh]">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-center">
             {/* Left: Hero Text */}
-            <div className="space-y-8">
-              <h1 className="font-cinzel text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+            <div className="space-y-4">
+              <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-pop">
+                <span className="text-gradient-hero">
                   The Creative Hub
                 </span>
                 <br />
                 <span className="text-white/90">for MetaDJ</span>
-              </h1>
-              <p className="text-xl text-white/70 max-w-lg">
-                Experience original electronic music, immersive visuals, and AI-powered discovery.
-                A living showcase of AI-human creative collaboration.
+              </h2>
+              <p className="text-lg lg:text-xl text-white/70 max-w-lg">
+                Experience original electronic music, immersive visuals, and AI-driven exploration.
+                A living showcase of human vision amplified by AI.
               </p>
 
               {/* Feature Grid */}
-              <div className="grid grid-cols-2 gap-4 pt-8">
+              <div className="grid grid-cols-2 gap-3 pt-3">
                 {features.map((feature) => (
                   <div
                     key={feature.title}
-                    className="group p-4 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/50 transition-all duration-300"
+                    className="group rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/50 transition-all duration-300 p-3 lg:p-4"
                   >
                     <feature.icon className="w-8 h-8 text-purple-400 mb-3 group-hover:text-cyan-400 transition-colors" />
-                    <h3 className="font-semibold text-white mb-1">{feature.title}</h3>
+                    <h3 className="font-heading font-semibold text-white mb-1">{feature.title}</h3>
                     <p className="text-sm text-white/60">{feature.description}</p>
                   </div>
                 ))}
@@ -124,14 +145,14 @@ export function LandingPage() {
             {/* Right: Auth Form */}
             <div className="flex justify-center lg:justify-end">
               <div className="w-full max-w-md">
-                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
-                  <div className="flex gap-4 mb-8">
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 lg:p-8 shadow-2xl">
+                  <div className="flex gap-4 mb-6">
                     <button
                       type="button"
                       onClick={() => setMode('login')}
-                      className={`flex-1 py-3 rounded-xl font-medium transition-all ${
+                      className={`flex-1 py-3 rounded-xl font-heading font-semibold transition-all ${
                         mode === 'login'
-                          ? 'bg-gradient-to-r from-purple-500 to-cyan-500 text-white'
+                          ? 'brand-gradient text-white'
                           : 'bg-white/5 text-white/60 hover:text-white'
                       }`}
                     >
@@ -140,9 +161,9 @@ export function LandingPage() {
                     <button
                       type="button"
                       onClick={() => setMode('signup')}
-                      className={`flex-1 py-3 rounded-xl font-medium transition-all ${
+                      className={`flex-1 py-3 rounded-xl font-heading font-semibold transition-all ${
                         mode === 'signup'
-                          ? 'bg-gradient-to-r from-purple-500 to-cyan-500 text-white'
+                          ? 'brand-gradient text-white'
                           : 'bg-white/5 text-white/60 hover:text-white'
                       }`}
                     >
@@ -187,6 +208,32 @@ export function LandingPage() {
                       )}
                     </div>
 
+                    {/* Terms Agreement - Signup only */}
+                    {mode === 'signup' && (
+                      <div className="flex items-start gap-3">
+                        <input
+                          id="terms"
+                          type="checkbox"
+                          checked={agreedToTerms}
+                          onChange={(e) => setAgreedToTerms(e.target.checked)}
+                          className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent text-purple-500 accent-purple-500 focus:ring-purple-500 focus:ring-offset-0"
+                          required
+                          disabled={isSubmitting || authLoading}
+                        />
+                        <label htmlFor="terms" className="text-sm text-white/70 leading-relaxed">
+                          I agree to the{' '}
+                          <Link
+                            href="/terms"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-purple-400 hover:text-purple-300 underline underline-offset-2"
+                          >
+                            Terms & Conditions
+                          </Link>
+                        </label>
+                      </div>
+                    )}
+
                     {error && (
                       <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 text-sm">
                         {error}
@@ -195,8 +242,8 @@ export function LandingPage() {
 
                     <button
                       type="submit"
-                      disabled={isSubmitting || authLoading}
-                      className="w-full py-4 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      disabled={isSubmitting || authLoading || (mode === 'signup' && !agreedToTerms)}
+                      className="w-full py-3 brand-gradient text-white font-heading font-semibold rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -209,31 +256,6 @@ export function LandingPage() {
                     </button>
                   </form>
 
-                  <p className="mt-6 text-center text-sm text-white/50">
-                    {mode === 'login' ? (
-                      <>
-                        New to MetaDJ Nexus?{' '}
-                        <button
-                          type="button"
-                          onClick={() => setMode('signup')}
-                          className="text-purple-400 hover:text-purple-300"
-                        >
-                          Create an account
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        Already have an account?{' '}
-                        <button
-                          type="button"
-                          onClick={() => setMode('login')}
-                          className="text-purple-400 hover:text-purple-300"
-                        >
-                          Sign in
-                        </button>
-                      </>
-                    )}
-                  </p>
                 </div>
               </div>
             </div>
@@ -241,17 +263,35 @@ export function LandingPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-8 mt-auto">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-white/50 text-sm">
-              A Zuberant Production
+      {/* Footer - matching app footer */}
+      <footer className="relative mt-auto w-full backdrop-blur-3xl border-t border-white/5">
+        <div className="absolute inset-0 bg-(--bg-surface-base)/90 pointer-events-none" />
+        <div className="relative z-10 container mx-auto px-6 py-3">
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+            <p className="hidden md:block text-[11px] text-muted-accessible">
+              MetaDJ Nexus. Original works & AI-driven content.
             </p>
-            <div className="flex gap-6 text-sm text-white/50">
-              <a href="/terms" className="hover:text-white transition-colors">Terms</a>
-              <a href="/guide" className="hover:text-white transition-colors">Guide</a>
+            <div className="flex items-center gap-x-1 text-[11px] font-bold text-muted-accessible">
+              <Link
+                href="/terms"
+                className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center hover:text-white transition-colors"
+              >
+                Terms
+              </Link>
+              <Link
+                href="/guide"
+                className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center hover:text-white transition-colors"
+              >
+                Guide
+              </Link>
+              <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-1">
+                <span className="text-white/70 font-black">MetaDJ</span>
+                <span className="text-white/70 font-black">Zuberant</span>
+              </div>
             </div>
+            <p className="md:hidden text-[10px] uppercase tracking-widest text-muted-accessible text-center">
+              Original works & AI-driven content • Zuberant
+            </p>
           </div>
         </div>
       </footer>

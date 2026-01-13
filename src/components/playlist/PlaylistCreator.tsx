@@ -185,7 +185,7 @@ export function PlaylistCreator({
           type="button"
           onClick={handleCreate}
           disabled={isCreating || name.trim().length === 0}
-          className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-linear-to-r from-purple-500 via-blue-500 to-cyan-400 px-4 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg gradient-4 px-4 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Plus className="h-4 w-4" />
           {isCreating ? "Creating..." : "Create Playlist"}

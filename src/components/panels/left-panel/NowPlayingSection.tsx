@@ -105,11 +105,9 @@ function NowPlayingSectionComponent({
     const time = isScrubbing ? scrubPosition : currentTime
     return formatDuration(Math.floor(time))
   }, [currentTime, scrubPosition, isScrubbing])
-  const displayTimeRemaining = useMemo(() => {
-    const time = isScrubbing ? scrubPosition : currentTime
-    const remaining = Math.max(0, safeDuration - time)
-    return formatDuration(Math.floor(remaining))
-  }, [currentTime, scrubPosition, isScrubbing, safeDuration])
+  const displayDuration = useMemo(() => {
+    return formatDuration(Math.floor(safeDuration))
+  }, [safeDuration])
 
   const progressPercent = Math.max(0, Math.min(100, displayProgress))
   const progressStyleId = useCspStyle({ width: `${progressPercent}%` })
@@ -329,7 +327,7 @@ function NowPlayingSectionComponent({
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={Math.round(displayProgress)}
-                  aria-valuetext={`${displayTime}, ${displayTimeRemaining} remaining`}
+                  aria-valuetext={`${displayTime} of ${displayDuration}`}
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (safeDuration === 0) return
@@ -348,7 +346,7 @@ function NowPlayingSectionComponent({
                 >
                   <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                     <div
-                      className={`h-full bg-linear-to-r from-purple-500 to-cyan-400 ${isScrubbing ? '' : 'transition-[width] duration-75 ease-linear'}`}
+                      className={`h-full gradient-4 ${isScrubbing ? '' : 'transition-[width] duration-75 ease-linear'}`}
                       data-csp-style={progressStyleId}
                     />
                   </div>
@@ -357,7 +355,7 @@ function NowPlayingSectionComponent({
                     data-csp-style={thumbStyleId}
                   />
                 </div>
-                <span className="text-[10px] font-mono text-muted-accessible w-8 tabular-nums">{displayTimeRemaining}</span>
+                <span className="text-[10px] font-mono text-muted-accessible w-8 tabular-nums">{displayDuration}</span>
               </div>
 
               {/* Secondary controls row - slightly larger icons with more spacing */}
@@ -534,7 +532,7 @@ function NowPlayingSectionComponent({
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={Math.round(displayProgress)}
-                aria-valuetext={`${displayTime}, ${displayTimeRemaining} remaining`}
+                aria-valuetext={`${displayTime} of ${displayDuration}`}
                 tabIndex={0}
                 onKeyDown={(e) => {
                   if (safeDuration === 0) return
@@ -553,7 +551,7 @@ function NowPlayingSectionComponent({
               >
                 <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                   <div
-                    className={`h-full bg-linear-to-r from-purple-500 to-cyan-400 ${isScrubbing ? '' : 'transition-[width] duration-75 ease-linear'
+                    className={`h-full gradient-4 ${isScrubbing ? '' : 'transition-[width] duration-75 ease-linear'
                       }`}
                     data-csp-style={progressStyleId}
                   />
@@ -568,7 +566,7 @@ function NowPlayingSectionComponent({
 
               <div className="flex justify-between text-[10px] font-medium text-white/60 mt-1 font-mono tracking-wider">
                 <span>{displayTime}</span>
-                <span>{displayTimeRemaining}</span>
+                <span>{displayDuration}</span>
               </div>
             </div>
           </>

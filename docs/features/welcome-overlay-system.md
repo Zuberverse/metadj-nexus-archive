@@ -1,33 +1,30 @@
 # Welcome Overlay System
 
-> **First-time visitor onboarding experience for MetaDJ Nexus**
+> **Session-based onboarding overlay for MetaDJ Nexus**
 
-**Last Modified**: 2025-12-31 16:45 EST
+**Last Modified**: 2026-01-13 14:42 EST
 ## Overview
 
-The Welcome Overlay is a modal dialog presented to first-time visitors, introducing MetaDJ Nexus and its core experiences. It appears at most once per session and provides immediate pathways to explore the platform.
+The Welcome Overlay is a modal dialog presented to visitors who have not opted out, introducing MetaDJ Nexus and its core experiences. It appears once per session and provides immediate pathways to explore the platform.
 
 ## Public Preview Status
 
-The Welcome Overlay prominently displays the platform's **Public Preview** status:
+The Welcome Overlay surfaces the platform's **Public Preview** status:
 
 ### Visual Elements
-- **Public Preview Badge**: Animated badge at the top with pulsing cyan indicator
-- **Preview Notice Box**: Cyan-tinted callout explaining access status
+- **Preview Notice Box**: Cyan-tinted callout with a pulsing dot + "Public Preview" label
 
 ### Key Messaging
 The overlay communicates:
-1. **Currently in Public Preview** — Everything is free
-2. **No account required** — Full access without registration
-3. **Local-first data** — Playlists and journal entries stay on this device
+1. **Public Preview is open** — The experience is still being refined
+2. **Local-first data** — Playlists, queue state, and journal entries stay on this device
 
 ### Content Exports
 ```typescript
 // From meta-dj-nexus-welcome-copy.ts
-export const METADJNEXUS_PREVIEW_BADGE = "Public Preview"
 export const METADJNEXUS_PREVIEW_NOTICE = {
   title: "Public Preview",
-  description: "Public Preview is free and requires no account. Playlists and journal entries stay local on this device while the core experience is refined."
+  description: "Public Preview is open while the core experience is refined. Playlists, queue state, and Journal entries stay local on this device for now."
 }
 ```
 
@@ -52,15 +49,14 @@ User Guide / Main Experience
 
 ### Show Conditions
 - Not dismissed (`STORAGE_KEYS.WELCOME_DISMISSED` not set; alternate key)
-- Not already shown (`STORAGE_KEYS.WELCOME_SHOWN` not set)
 - Not already shown in this session (`metadj_welcome_shown_session`)
 
 ### Flow Orchestration
 ```
 1. ModalContext initializes `isWelcomeOpen: false` for a clean first paint
-2. After hydration, ModalContext checks localStorage (`WELCOME_SHOWN`, `WELCOME_DISMISSED`) + sessionStorage shown flag
+2. After hydration, ModalContext checks localStorage (`WELCOME_DISMISSED`) + sessionStorage shown flag
 3. If eligible → open WelcomeOverlay and set `STORAGE_KEYS.WELCOME_SHOWN` + `metadj_welcome_shown_session`
-4. User chooses a CTA → close overlay and continue to main experience
+4. User chooses a CTA → close overlay and continue to main experience (optional opt-out persists `WELCOME_DISMISSED`)
 ```
 
 **Component**: `src/components/modals/ModalOrchestrator.tsx` manages display
@@ -88,11 +84,13 @@ From `METADJNEXUS_WELCOME_TAGLINE`:
 | `beyond` | Creative Guidance | Wisdom, Journal, and MetaDJai to shape ideas and next steps |
 
 ### Actions
-- **CTA**: "Take Tour" → Starts the interactive desktop tour (on mobile, opens the User Guide)
+- **CTA (desktop)**: "Take Tour" → Starts the interactive desktop tour
+- **CTA (mobile/tablet)**: "Open User Guide" → Opens the User Guide overlay
 - **Primary CTA**: "Start Exploring" → Closes overlay
 - **Inline link**: "Open the User Guide" → Opens the User Guide overlay (placed under creator note)
 - **Footer link**: "Terms & Conditions" → Navigates to `/terms`
-- **Auto-open**: The overlay is shown once by default (persisted via `STORAGE_KEYS.WELCOME_SHOWN`).
+- **Opt-out**: "Do not show this again" stores `WELCOME_DISMISSED`
+- **Auto-open**: The overlay is shown once per session until opt-out.
 
 ## Visual Design
 
@@ -107,7 +105,6 @@ From `METADJNEXUS_WELCOME_TAGLINE`:
 - Heavy blur: `backdrop-blur-3xl`
 - Gradient overlay: `.gradient-1` at 95% opacity
 - Inner bloom: `.gradient-media-bloom` at 70% opacity
-- Scroll hint: Gradient fade + chevron indicator appears only when content overflows (non-interactive)
 
 ### Typography
 - Heading: `font-heading` (Cinzel), gradient text
@@ -115,9 +112,9 @@ From `METADJNEXUS_WELCOME_TAGLINE`:
 - Cards: Smaller text with icon badges
 
 ### Feature Cards
-- Uses `.radiant-panel` utility
+- Uses `.glass-radiant-sm` utility
 - Icon + Title + Description layout
-- Grid: 1 column mobile, 3 columns desktop
+- Grid: compact 3-up on mobile, expanded cards with descriptions on sm+
 
 ## Accessibility
 
@@ -137,7 +134,7 @@ From `METADJNEXUS_WELCOME_TAGLINE`:
 **Screen Reader Support**:
 - `role="dialog"` with `aria-modal="true"`
 - `aria-labelledby` points to heading
-- `aria-describedby` points to music description
+- `aria-describedby` points to the intro copy block
 - Decorative images marked with `aria-hidden`
 
 **Body Scroll Lock**:
@@ -150,14 +147,14 @@ Events tracked via `trackEvent()`:
 
 | Event | Trigger | Properties |
 |-------|---------|------------|
-| `welcome_dismissed` | User closes overlay | None |
+| `welcome_dismissed` | User closes overlay | `dismissed_permanently` |
 | `user_guide_opened` | "Open the User Guide" clicked | `source: 'welcome_overlay'` |
 
 ## State Persistence
 
 **Storage Keys**:
-- `STORAGE_KEYS.WELCOME_SHOWN` (`metadj-nexus-welcome-shown`)
-- `STORAGE_KEYS.WELCOME_DISMISSED` (`metadj-nexus-welcome-dismissed`, alternate key)
+- `STORAGE_KEYS.WELCOME_SHOWN` (`metadj-nexus-welcome-shown`) — tracks first view
+- `STORAGE_KEYS.WELCOME_DISMISSED` (`metadj-nexus-welcome-dismissed`) — opt-out flag
 **Session Key**: `metadj_welcome_shown_session`
 
 **Error Handling**: Gracefully handles localStorage errors (private browsing)

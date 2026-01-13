@@ -2,7 +2,7 @@
 
 > **Complete track listings and ordering for all navigation tabs**
 
-**Last Modified**: 2025-12-22 13:13 EST
+**Last Modified**: 2026-01-13 14:10 EST
 *Version: 0.71*
 
 ## Overview
@@ -207,7 +207,7 @@ All navigation tabs display collection badges for consistent visual identity.
 
 ## Related Documentation
 
-- [collections-system.md](./collections-system.md) — Collection metadata standards  
-- [audio-player-standards.md](./audio-player-standards.md) — Player implementation  
+- [collections-system.md](../features/collections-system.md) — Collection metadata standards  
+- [audio-player-standards.md](../features/audio-player-standards.md) — Player implementation  
 - [../architecture/data-architecture.md](../architecture/data-architecture.md) — Data layer architecture  
 - [../../README.md](../../README.md) — Project overview

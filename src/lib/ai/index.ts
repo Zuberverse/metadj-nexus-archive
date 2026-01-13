@@ -7,7 +7,6 @@
 
 // Configuration
 export {
-  AI_REQUEST_TIMEOUT_MS,
   getAIRequestTimeout,
   createStopCondition,
   isTimeoutError,

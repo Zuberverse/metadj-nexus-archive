@@ -2,7 +2,7 @@
 
 > **Specifications for modal dialogs, overlays, and floating UI elements in MetaDJ Nexus**
 
-**Last Modified**: 2026-01-12 19:45 EST
+**Last Modified**: 2026-01-13 14:10 EST
 
 ## Overview
 
@@ -455,8 +455,8 @@ import { Modal, ModalContent, ConfirmDialog } from '@/components/ui/Modal'
 
 ## Related Documentation
 
-- [UI Visual System](3-projects/5-software/metadj-studio/docs/features/ui-visual-system.md) - Design tokens and styling
-- [Keyboard Navigation](3-projects/5-software/metadj-nexus/docs/features/keyboard-navigation.md) - Keyboard interaction patterns
-- [Motion System](3-projects/5-software/metadj-nexus/docs/features/motion-system.md) - Animation specifications
+- [UI Visual System](./ui-visual-system.md) - Design tokens and styling
+- [Keyboard Navigation](./keyboard-navigation.md) - Keyboard interaction patterns
+- [Motion System](./motion-system.md) - Animation specifications
 - [Component Architecture](../architecture/component-architecture.md) - Component patterns
 - [Shared UI Components](../architecture/shared-ui-components.md) - Button, Card, Modal component specs
