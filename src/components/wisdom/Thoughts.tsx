@@ -1,6 +1,6 @@
 "use client"
 
-import { type FC, useCallback, useEffect, useMemo, useState } from "react"
+import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Calendar, BookOpen, ChevronRight, Clock, Share2, Sparkles } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
@@ -12,6 +12,7 @@ import {
   setContinueReading,
   stripSignoffParagraphs,
 } from "@/lib/wisdom"
+import { ReadingProgressBar } from "./ReadingProgressBar"
 import { WisdomBreadcrumb, type BreadcrumbItem } from "./WisdomBreadcrumb"
 import { WisdomFilters, type ReadTimeFilter } from "./WisdomFilters"
 import { WisdomFooter } from "./WisdomFooter"
@@ -29,6 +30,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
   const [selectedPost, setSelectedPost] = useState<ThoughtPost | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
   const [selectedLength, setSelectedLength] = useState<ReadTimeFilter>("all")
+  const articleRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (!deeplinkId) return
@@ -263,7 +265,14 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
       )}
 
       {/* Article content */}
-      <div className="rounded-2xl border border-(--border-standard) bg-black/45 p-6 sm:p-8 backdrop-blur-xl">
+      <div
+        ref={articleRef}
+        className="rounded-2xl border border-(--border-standard) bg-black/45 p-6 sm:p-8 backdrop-blur-xl"
+      >
+        <ReadingProgressBar
+          targetRef={articleRef}
+          className="-mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-6"
+        />
         <header className="mb-8 pb-6 border-b border-(--border-subtle)">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-gradient-hero mb-4 leading-tight text-pop">
             {selectedPost.title}

@@ -36,8 +36,8 @@ The foundational library providing unified APIs for text generation, structured 
 - `@ai-sdk/anthropic` - Anthropic provider integration
 - `@ai-sdk/google` - Google provider integration
 - `@ai-sdk/xai` - xAI provider integration
-- `@ai-sdk/mcp` - Model Context Protocol client (planned; not yet integrated)
-- `@ai-sdk/devtools` - DevTools middleware for debugging (planned; not yet integrated)
+- `@ai-sdk/mcp` - Model Context Protocol client (local-only tooling; gated by `AI_MCP_ENABLED`)
+- `@ai-sdk/devtools` - DevTools middleware for debugging (local-only; gated by `AI_DEVTOOLS_ENABLED`)
 
 **Installation** (see `package.json` for current versions):
 ```json
@@ -46,7 +46,9 @@ The foundational library providing unified APIs for text generation, structured 
   "@ai-sdk/openai": "^3.0.1",
   "@ai-sdk/anthropic": "^3.0.1",
   "@ai-sdk/google": "^3.0.1",
-  "@ai-sdk/xai": "^3.0.1"
+  "@ai-sdk/xai": "^3.0.1",
+  "@ai-sdk/mcp": "^1.0.6",
+  "@ai-sdk/devtools": "^0.0.4"
 }
 ```
 
@@ -101,13 +103,13 @@ MetaDJ Nexus is fully on AI SDK 6.x. This table clarifies what is live now vs pl
 | `generateText` + `streamText` | In use | Primary `/api/metadjai` and `/api/metadjai/stream` endpoints |
 | Tool calling | In use | Local tools + OpenAI `web_search` when available |
 | UI message streaming | In use | SSE via `toUIMessageStreamResponse()`; parser supports SSE + data stream |
-| ToolLoopAgent | Planned | Multi-step tool chains with a shared loop controller |
-| Structured output (`Output.*`) | In progress | Proposal schemas validated client-side; SDK `Output.*` adoption still planned |
+| ToolLoopAgent | In use | `/api/metadjai` uses ToolLoopAgent for multi-step tool loops |
+| Structured output (`Output.*`) | In use | MetaDJai responses use `Output.object()` with a reply schema |
 | Tool approval (`needsApproval`) | In use | Proposal tools flagged and gated by explicit user confirmation |
 | Tool schema strict mode + `inputExamples` | Planned | Improve tool-call reliability and validation |
 | Tool output shaping (`toModelOutput`) | Planned | Control model-visible tool output for safety and brevity |
-| MCP tools (`@ai-sdk/mcp`) | Planned | OAuth, resources, prompts, elicitation |
-| DevTools (`@ai-sdk/devtools`) | Planned | Local debugging and trace inspection |
+| MCP tools (`@ai-sdk/mcp`) | In use (local only) | Gated by `AI_MCP_ENABLED` + stdio command |
+| DevTools (`@ai-sdk/devtools`) | In use (local only) | Gated by `AI_DEVTOOLS_ENABLED`; dev-only middleware |
 | `rerank()` | Planned | Future RAG improvements when needed |
 
 ### Current Implementation
@@ -269,10 +271,10 @@ export function getFallbackModel(providerOverride?: AIProvider) {
 Streaming enables real-time chat experiences with progressive token delivery.
 
 **AI SDK 6.x Notes**:
-- `ToolLoopAgent` manages multi-step tool loops with a `stopWhen: stepCountIs(20)` default (planned adoption)
+- `/api/metadjai` uses `ToolLoopAgent` for multi-step tool loops; streaming stays on `streamText`
 - For direct `streamText` calls, use custom `stopWhen` to control tool execution steps
 - `convertToModelMessages()` is async if you use it (replaces deprecated `convertToCoreMessages`)
-- Prefer `Output.object()` for structured output instead of deprecated `generateObject` (planned adoption)
+- MetaDJai uses `Output.object()` for structured reply parsing on the non-streaming endpoint
 
 ```typescript
 import { streamText } from 'ai'
@@ -535,6 +537,13 @@ OPENAI_API_KEY=sk-proj-...
 
 # Failover toggle (optional; defaults to true)
 # AI_FAILOVER_ENABLED=true
+
+# Local AI tooling (optional; dev only)
+# AI_MCP_ENABLED=false
+# AI_MCP_SERVER_COMMAND=
+# AI_MCP_SERVER_ARGS=
+# AI_MCP_SERVER_CWD=
+# AI_DEVTOOLS_ENABLED=false
 ```
 
 **Environment Validation** (`src/lib/env.ts`):
@@ -544,6 +553,11 @@ const serverEnvSchema = z.object({
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   GOOGLE_API_KEY: z.string().min(1).optional(),
   XAI_API_KEY: z.string().min(1).optional(),
+  AI_MCP_ENABLED: z.enum(['true', 'false']).optional(),
+  AI_MCP_SERVER_COMMAND: z.string().optional(),
+  AI_MCP_SERVER_ARGS: z.string().optional(),
+  AI_MCP_SERVER_CWD: z.string().optional(),
+  AI_DEVTOOLS_ENABLED: z.enum(['true', 'false']).optional(),
 });
 ```
 
@@ -626,13 +640,13 @@ MetaDJ Nexus uses provider-native tools through the unified SDK, but only enable
 - **Source attribution**: The system instructions specify that MetaDJai should include a "Sources:" section with hyperlinked references when using web search results
 - **Natural mention**: MetaDJai mentions when it searched the web (e.g., "I searched for that..." or "Based on what I found...")
 
-### Model Context Protocol (Planned)
+### Model Context Protocol (Local Only)
 
-Use `@ai-sdk/mcp` to connect to approved MCP servers with OAuth support, resources, prompts, and elicitation. We will treat MCP servers as external tools with explicit allowlists and user-visible context boundaries.
+Use `@ai-sdk/mcp` to connect to a local MCP server (stdio transport). Enabled only when `AI_MCP_ENABLED=true` and `AI_MCP_SERVER_COMMAND` is set. Disabled in production by default; treat MCP servers as external tools with explicit allowlists and user-visible context boundaries.
 
-### DevTools (Planned)
+### DevTools (Local Only)
 
-Add `@ai-sdk/devtools` middleware for local debugging only (dev mode). Keep disabled in production. Launch via `npx @ai-sdk/devtools` at `http://localhost:4983`.
+`@ai-sdk/devtools` middleware is available for local debugging only. Enable with `AI_DEVTOOLS_ENABLED=true` in non-production environments and launch via `npx @ai-sdk/devtools` at `http://localhost:4983`.
 
 ### Voice Interaction (OpenAI Audio Transcriptions)
 
@@ -658,7 +672,8 @@ MetaDJ Nexus integrates **OpenAI Audio Transcriptions** for high-fidelity speech
 
 ### Future Capabilities
 
-**Structured Data Extraction** (planned):
+**Structured Data Extraction** (available):
+MetaDJai already uses `Output.object()` for reply parsing; expand this pattern for other structured payloads as needed.
 ```typescript
 import { generateText, Output } from 'ai'
 
@@ -681,8 +696,8 @@ const result = await generateText({
 - Stored locally first, with a clear “what MetaDJai knows about me” surface and granular toggles.
 - Injected into the MetaDJai system instructions to enable deeper, more personal collaboration without breaking transparency or control.
 
-**Agentic Multi‑Step Tool Calling** (planned):
-- Move multi-step flows to `ToolLoopAgent` for consistent loop control and tool chaining.
+**Agentic Multi‑Step Tool Calling** (active):
+- `ToolLoopAgent` powers the non-streaming MetaDJai endpoint for consistent loop control and tool chaining.
 - Keep the "propose -> confirm -> execute" pattern and add `needsApproval` for action tools.
 - Enables richer workflows beyond single-step tool calls while keeping safety and predictability intact.
 

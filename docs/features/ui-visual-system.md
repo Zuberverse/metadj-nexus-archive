@@ -2,7 +2,7 @@
 
 > **Source of truth for MetaDJ Nexus's premium glass-neon presentation**
 
-**Last Modified**: 2026-01-10 15:54 EST
+**Last Modified**: 2026-01-13 11:47 EST
 
 ---
 
@@ -506,6 +506,8 @@ All track and collection artwork uses consistent styling:
 │ └────┘                                                       │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+- Collections header uses the Nexus gradient: `text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300`.
 
 ### QueueSection Layout
 

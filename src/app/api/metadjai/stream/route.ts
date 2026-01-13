@@ -402,13 +402,13 @@ export async function POST(request: NextRequest) {
   const failoverEnabled = isFailoverEnabled() && isFailoverAvailable(preferredProvider)
 
   // Helper function to create streaming result with a specific model
-  const createStreamingResult = (
+  const createStreamingResult = async (
     model: ReturnType<typeof getModel>,
     settings: ReturnType<typeof getModelSettingsForProvider>,
     providerInfo: { provider: 'openai' | 'anthropic' | 'google' | 'xai'; model: string },
     usedFallback: boolean
   ) => {
-    const tools = getTools(settings.provider, {
+    const tools = await getTools(settings.provider, {
       webSearchAvailable: settings.provider === 'openai' && hasOpenAI,
     })
     const providerOptions = getProviderOptions(settings.provider)
@@ -499,7 +499,7 @@ export async function POST(request: NextRequest) {
 
     if (fallbackModel && fallbackModelInfo && fallbackSettings) {
       try {
-        const result = createStreamingResult(fallbackModel, fallbackSettings, fallbackModelInfo, true)
+        const result = await createStreamingResult(fallbackModel, fallbackSettings, fallbackModelInfo, true)
         return createResponse(result)
       } catch (fallbackError) {
         const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError)
@@ -520,7 +520,7 @@ export async function POST(request: NextRequest) {
     const model = getModel(preferredProvider)
     const modelSettings = getModelSettingsForProvider(preferredProvider)
 
-    const result = createStreamingResult(model, modelSettings, modelInfo, false)
+    const result = await createStreamingResult(model, modelSettings, modelInfo, false)
     return createResponse(result)
   } catch (primaryError) {
     const primaryMessage = primaryError instanceof Error ? primaryError.message : String(primaryError)
@@ -558,7 +558,7 @@ export async function POST(request: NextRequest) {
         const fallbackTimeout = setTimeout(() => fallbackController.abort(), timeoutMs)
 
         try {
-          const fallbackTools = getTools(fallbackSettings.provider, {
+          const fallbackTools = await getTools(fallbackSettings.provider, {
             webSearchAvailable: fallbackSettings.provider === 'openai' && hasOpenAI,
           })
           const fallbackProviderOptions = getProviderOptions(fallbackSettings.provider)

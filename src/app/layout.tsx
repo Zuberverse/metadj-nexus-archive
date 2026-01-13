@@ -6,6 +6,7 @@ import { GlobalScreenReaderRegions } from '@/components/accessibility/ScreenRead
 import { AppErrorBoundary } from '@/components/error';
 import { OfflineIndicator } from '@/components/ui/OfflineIndicator';
 import { ToastContainer } from '@/components/ui/ToastContainer';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { ModalProvider } from '@/contexts/ModalContext';
 import { PlayerProvider } from '@/contexts/PlayerContext';
 import { PlaylistProvider } from '@/contexts/PlaylistContext';
@@ -154,24 +155,26 @@ export default async function RootLayout({
         )}
 
         <AppErrorBoundary>
-          <ModalProvider>
-            <UIProvider>
-              <TourProvider>
-                <ToastProvider>
-                  <QueueProvider>
-                    <PlayerProvider>
-                      <PlaylistProvider>
-                        <GlobalScreenReaderRegions />
-                        <OfflineIndicator />
-                        {children}
-                        <ToastContainer />
-                      </PlaylistProvider>
-                    </PlayerProvider>
-                  </QueueProvider>
-                </ToastProvider>
-              </TourProvider>
-            </UIProvider>
-          </ModalProvider>
+          <AuthProvider>
+            <ModalProvider>
+              <UIProvider>
+                <TourProvider>
+                  <ToastProvider>
+                    <QueueProvider>
+                      <PlayerProvider>
+                        <PlaylistProvider>
+                          <GlobalScreenReaderRegions />
+                          <OfflineIndicator />
+                          {children}
+                          <ToastContainer />
+                        </PlaylistProvider>
+                      </PlayerProvider>
+                    </QueueProvider>
+                  </ToastProvider>
+                </TourProvider>
+              </UIProvider>
+            </ModalProvider>
+          </AuthProvider>
         </AppErrorBoundary>
       </body>
     </html>

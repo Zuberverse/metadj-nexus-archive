@@ -1,6 +1,6 @@
 # Playlist Management System — Design Specification
 
-**Last Modified**: 2026-01-10 15:12 EST
+**Last Modified**: 2026-01-13 13:34 EST
 **Status**: Implemented (Phase 2 live in Public Preview)
 **Version**: 1.2
 
@@ -19,7 +19,7 @@ This specification defines a user-created playlist system for MetaDJ Nexus that 
 - Add tracks to playlists from anywhere (track cards, queue, collections)
 - Remove tracks from playlists
 - Play entire playlist (queue all tracks)
-- Share playlists (share platform link + playlist name)
+- Share playlists (deep link with playlist name + track count metadata)
 - View playlist contents
 - Delete playlists
 
@@ -605,33 +605,27 @@ Queue • Playing from "Late Night Focus"
 
 **Share URL Format**:
 ```
-https://metadjnexus.ai/playlist/{playlistId}
+https://metadjnexus.ai/playlist/{playlistId}?name=Late%20Night%20Focus&count=12
 ```
 
-**Share Modal**:
+**Share Menu (Popover)**:
 ```
 ┌─────────────────────────────────────┐
 │ Share Playlist                      │
 ├─────────────────────────────────────┤
-│                                     │
-│ Late Night Focus                    │
-│ 12 tracks • 48 min                  │
-│                                     │
-│ Share Link:                         │
-│ [https://metadjnexus.ai...] [📋]   │
-│                                     │
-│ [Copy Link]  [Close]                │
+│ Share via system sheet              │
+│ Copy link                           │
 └─────────────────────────────────────┘
 ```
 
-**Public Preview Note**: Current share behavior uses the base URL (no playlist deep link yet). The `/playlist/{playlistId}` route is the target format once deep links ship.
+**Public Preview Note**: Playlist deep links are live, but playlists remain local-only. Recipients without the playlist stored locally will see “Playlist not found” until server-backed sharing ships.
 
 **Copy Behavior**:
-- Click copy button
+- Click copy link
 - Toast: "✓ Link copied to clipboard"
-- Modal stays open for additional shares
+- Menu closes after copy
 
-**Shared Playlist View** (Recipient Experience):
+**Shared Playlist View** (Future Recipient Experience):
 ```
 ┌─────────────────────────────────────────────────────┐
 │ Late Night Focus                                    │
@@ -667,20 +661,22 @@ src/
 │       ├── PlaylistHeader.tsx           # Playlist detail header
 │       ├── PlaylistTrackList.tsx        # Track list with drag-drop
 │       ├── PlaylistTrackRow.tsx         # Individual track row
-│       ├── PlaylistShareModal.tsx       # Share dialog
 │       └── EmptyPlaylist.tsx            # Empty state component
 │
 ├── lib/
-│   └── playlists/
-│       ├── repository.ts                # Playlist CRUD operations
-│       ├── storage.ts                   # localStorage abstraction
-│       ├── validation.ts                # Name/limit validation
-│       └── types.ts                     # Playlist-specific types
+│   ├── playlists/
+│   │   ├── repository.ts                # Playlist CRUD operations
+│   │   ├── storage.ts                   # localStorage abstraction
+│   │   ├── validation.ts                # Name/limit validation
+│   │   └── types.ts                     # Playlist-specific types
+│   └── music/
+│       └── deeplink.ts                  # Deep link helpers for share URLs
 │
 └── app/
-    └── playlist/
-        └── [id]/
-            └── page.tsx                 # Shared playlist view route
+    └── (experience)/
+        └── playlist/
+            └── [id]/
+                └── page.tsx             # Playlist share metadata route
 ```
 
 ### 5.2 Modified Files
@@ -691,6 +687,7 @@ src/contexts/UIContext.tsx               # Add playlist UI state
 src/components/panels/left-panel/LeftPanel.tsx  # Add playlist section
 src/components/ui/TrackListItem.tsx      # Inline track actions surface
 src/components/ui/TrackOptionsMenu.tsx   # Add to Playlist / Queue menu
+src/components/ui/ShareButton.tsx        # Share menu + deep link copy
 src/lib/analytics.ts                     # Add playlist event tracking
 ```
 
@@ -723,8 +720,8 @@ src/lib/analytics.ts                     # Add playlist event tracking
 - [x] Implement keyboard shortcuts
 
 **Phase 4: Sharing & Polish** (Days 10-12)
-- [ ] Build share modal and link generation
-- [ ] Create shared playlist view route
+- [x] Build share menu and deep link generation
+- [x] Add playlist deep link metadata route
 - [ ] Implement "Save to My Playlists" feature
 - [ ] Add analytics event tracking
 - [ ] Conduct accessibility audit

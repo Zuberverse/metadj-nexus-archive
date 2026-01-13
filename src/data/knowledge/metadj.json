@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "lastUpdated": "2026-01-11",
-    "version": "1.0",
+    "lastUpdated": "2026-01-13",
+    "version": "1.1",
     "source": "Brand Corpus"
   },
   "category": "metadj",
@@ -191,7 +191,7 @@
     {
       "id": "metadj-metaverse-revelation",
       "title": "Metaverse Revelation Collection",
-      "content": "Metaverse Revelation is a rallying cry for creative empowerment and high-energy transformation across the dancefloor and the Metaverse.\n\nWhere Bridging Reality explored the conceptual space between realities, Metaverse Revelation is the invitation to action—the call to creative power. Focused on empowerment themes, crowd-moving momentum, and the balance between individual creative power and community transformation.\n\nThe collection features 9 tracks: \"I Want to Believe\", \"Embrace the Moment\", \"Pioneers\", \"Cosmic Journey\", \"Metaverse Revelation\" (title track), \"MetaDJ Revolution\", \"Cosmic Rendezvous\", \"Dreaming of a World\", and \"Welcome to the Zuberverse\".\n\nSonic identity: Crowd-moving energy designed for dancefloors and virtual spaces. Empowerment-focused lyrics and themes. High-momentum production driving collective experience. Each track captures the raw transformation of stepping into a universe built for creative liberation.",
+      "content": "Metaverse Revelation is a rallying cry for creative empowerment and high-energy transformation across the dancefloor and the Metaverse.\n\nWhere Bridging Reality explored the conceptual space between realities, Metaverse Revelation is the invitation to action - the call to creative power. Focused on empowerment themes, crowd-moving momentum, and the balance between individual creative power and community transformation.\n\nThe collection features 10 tracks: \"I Want to Believe\", \"Embrace the Moment\", \"Metaverse Revelation\" (title track), \"We Unite the Nation with the Metaverse\", \"We're the Dreamers\", \"In the Metaverse\", \"MetaDJ Revolution\", \"Welcome to the Zuberverse\", \"Pioneers\", and \"Cosmic Journey\".\n\nSonic identity: Crowd-moving energy designed for dancefloors and virtual spaces. Empowerment-focused lyrics and themes. High-momentum production driving collective experience. Each track captures the raw transformation of stepping into a universe built for creative liberation.",
       "keywords": [
         "Metaverse Revelation",
         "collection",
@@ -200,6 +200,25 @@
         "creative power",
         "zuberverse",
         "i want to believe"
+      ]
+    },
+    {
+      "id": "metadj-transformer",
+      "title": "Transformer Collection",
+      "content": "Transformer is a focused MetaDJ collection built around metamorphosis, evolution, and energy surge. It is a short, high-intensity release designed to capture the moment when pressure becomes propulsion and change becomes momentum. The collection is intentionally compact: a five-track launch that emphasizes impact over volume and keeps the narrative tight and urgent.\n\nThe thematic core centers on transformation as an active force. Transformer frames evolution not as a slow drift but as a decisive shift in state. It is built for moments when creators need a push into motion, not a prolonged contemplation. The sound is engineered for change-state energy: electronic and techno foundations with a sense of lift and acceleration.\n\nStatus: Active collection in MetaDJ Nexus with a preview placeholder while ingestion completes. Track naming and final ordering will be published once upload finishes, but the intent is already defined: high-momentum music that reinforces the creative choice to move forward.\n\nTransformer expands the collections philosophy by demonstrating how small, precise releases can still carry strong thematic weight. It proves that a collection can be minimal in length while still delivering a full arc of transformation.",
+      "keywords": [
+        "transformer",
+        "collection",
+        "transformation",
+        "evolution",
+        "momentum",
+        "techno",
+        "energy",
+        "metadj"
+      ],
+      "synonyms": [
+        "metamorphosis",
+        "change state"
       ]
     },
     {
@@ -322,7 +341,7 @@
     {
       "id": "metadj-key-milestones",
       "title": "Key Milestones",
-      "content": "2022 Breakthrough: Stable Diffusion and ChatGPT unlocked creative potential. The moment of realizing complete multi-sensory experiences could finally be composed alone—moving from 'make content faster' to bringing entire visions to life.\n\n2023 Digital Jockey Birth: Generative music and video completed the toolkit. The Digital Jockey archetype crystallized—composing entire experiences across realities using AI assistance. The methodology that had been forming finally had the technology to exist.\n\nDecentraland Music Festival 2023: First proof that this works in practice. Pioneered virtual-space experience architecture with real audiences across continents experiencing the same journey simultaneously.\n\nNFT NYC 2024: 'Creative Curation with AI' talk marked the shift from doing this personally to showing others the path. 'Synth Haven' debut demonstrated the Synthetic Orchaistra methodology in action.\n\nMajestic Ascent 2025: First music collection telling the Metaverse discovery story. A narrative invitation for others to explore what was found, with tracks as the vehicle. The moment MetaDJ shifted from personal avatar to movement catalyst.\n\nNFT NYC 2025: Three performances across satellite events. I came prepared with a traditional set, tested my own music during the night, and saw strong audience response—the first public test of my originals. 'Majestic Ascent' art showcase synchronized with the music collection release—multi-sensory storytelling beyond single-medium experiences.",
+      "content": "2022 Breakthrough: Stable Diffusion and ChatGPT unlocked creative potential. The moment of realizing complete multi-sensory experiences could finally be composed alone - moving from 'make content faster' to bringing entire visions to life.\n\n2023 Digital Jockey Birth: Generative music and video completed the toolkit. The Digital Jockey archetype crystallized - composing entire experiences across realities using AI assistance. The methodology that had been forming finally had the technology to exist.\n\nDecentraland Music Festival 2023: First proof that this works in practice. Pioneered virtual-space experience architecture with real audiences across continents experiencing the same journey simultaneously.\n\nNFT NYC 2024: 'Creative Curation with AI' talk marked the shift from doing this personally to showing others the path. 'Synth Haven' debut demonstrated the Synthetic Orchaistra methodology in action.\n\nMajestic Ascent 2025: First music collection telling the Metaverse discovery story. A narrative invitation for others to explore what was found, with tracks as the vehicle. The moment MetaDJ shifted from personal avatar to movement catalyst.\n\nNFT NYC 2025: Three performances across satellite events. The creator came prepared with a traditional set, tested original music during the night, and saw strong audience response - the first public test of the originals. 'Majestic Ascent' art showcase synchronized with the music collection release - multi-sensory storytelling beyond single-medium experiences.",
       "keywords": [
         "milestones",
         "timeline",

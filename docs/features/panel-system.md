@@ -2,7 +2,7 @@
 
 > **Desktop side panel architecture for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-10 15:20 EST
+**Last Modified**: 2026-01-13 11:39 EST
 ## Overview
 
 The Panel System provides a two-panel desktop layout with responsive behavior. The **Left Panel** hosts navigation, queue, and playback controls, while the **Right Panel** hosts the MetaDJai chat experience.
@@ -249,13 +249,7 @@ When Cinema view is active:
 
 **Header**: Hidden on mobile (`hidden min-[1100px]:block`). All navigation and controls handled via MobileBottomNav.
 
-**Bottom Navigation** (`MobileBottomNav.tsx`):
-```
-┌─────────────────────────────────────────────────────────────┐
-│  Hub   Cinema  Wisdom  Journal  Music   MetaDJai           │
-│  [🏠]   [🎬]    [✨]    [📓]    [🎵]     [💬]              │
-└─────────────────────────────────────────────────────────────┘
-```
+**Bottom Navigation** (`MobileBottomNav.tsx`): See the canonical schematic in `docs/features/ui-visual-system.md` → **Mobile Navigation**.
 - Fixed 6-button bar at bottom of viewport
 - Active button shows brand gradient background (no pulsing animation)
 - Button sizing: `min-w-12 min-h-11 px-2.5 py-1.5 rounded-xl`

@@ -78,6 +78,7 @@ const KNOWN_TOOL_NAMES = new Set([
   'getWisdomContent',
   'getRecommendations',
   'getZuberantContext',
+  'openFeedback',
   'proposePlayback',
   'proposeQueueSet',
   'proposePlaylist',

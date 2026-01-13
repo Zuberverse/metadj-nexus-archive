@@ -7,6 +7,7 @@ import { useToast } from "@/contexts/ToastContext"
 import { useClickAway, useEscapeKey } from "@/hooks"
 import { useCspStyle } from "@/hooks/use-csp-style"
 import { trackEvent } from "@/lib/analytics"
+import { buildMusicDeepLinkPath, buildMusicDeepLinkUrl } from "@/lib/music"
 import type { Track, Collection } from "@/types"
 import type { Playlist } from "@/types/playlist.types"
 
@@ -133,7 +134,7 @@ export function ShareButton({
     if (track) {
       const title = `${track.title} — MetaDJ Original`
       const text = `Check out "${track.title}" — one of my originals on MetaDJ Nexus`
-      const url = baseUrl
+      const url = buildMusicDeepLinkUrl("track", track.id, baseUrl)
 
       // Curated message for social media
       const socialText = `🎵 Listening to "${track.title}" by @metadjai\n\nOriginal track created through AI-driven creation. ${track.genres?.[0] ? `#${track.genres[0].replace(/\s+/g, '')}` : '#Music'} #MetaDJ\n\n🎧 Experience it on MetaDJ Nexus`
@@ -144,7 +145,7 @@ export function ShareButton({
     if (collection) {
       const title = `${collection.title} — MetaDJ`
       const text = `Check out my ${collection.title} collection on MetaDJ Nexus`
-      const url = baseUrl
+      const url = buildMusicDeepLinkUrl("collection", collection.id, baseUrl)
       const socialText = `🎧 Exploring the ${collection.title} collection by @metadjai\n\nHuman vision, AI-driven execution. #MetaDJ #AIMusic\n\n🎧 Experience it on MetaDJ Nexus`
 
       return { title, text, url, socialText }
@@ -153,7 +154,12 @@ export function ShareButton({
     if (playlist) {
       const title = `${playlist.name} — MetaDJ Playlist`
       const text = `Check out my playlist "${playlist.name}" on MetaDJ Nexus`
-      const url = baseUrl
+      const url = (() => {
+        const playlistUrl = new URL(buildMusicDeepLinkPath("playlist", playlist.id), baseUrl)
+        playlistUrl.searchParams.set("name", playlist.name)
+        playlistUrl.searchParams.set("count", playlist.trackIds.length.toString())
+        return playlistUrl.toString()
+      })()
       const socialText = `🎧 Explore my playlist "${playlist.name}" on MetaDJ Nexus\n\nHuman vision, AI-driven execution. #MetaDJ #AIMusic\n\n🎧 Listen now`
 
       return { title, text, url, socialText }

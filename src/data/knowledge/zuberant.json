@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "lastUpdated": "2026-01-11",
-    "version": "1.0",
+    "lastUpdated": "2026-01-13",
+    "version": "1.1",
     "source": "Brand Corpus"
   },
   "category": "zuberant",
@@ -151,7 +151,7 @@
     {
       "id": "zuberant-living-collections",
       "title": "Music Collections Model",
-      "content": "MetaDJ releases music in collections, not static releases. Formal term: music collections. This is a deliberate philosophy: collections grow organically as creative exploration continues. No artificial completion. Collections have thematic coherence without being 'finished.' Think of them as evolving longform release arcs that keep expanding.\n\nThis model matches how AI-enabled creators actually work: constantly generating, constantly discovering new territories within chosen themes. Why force ongoing exploration into fixed release cycles when music collections better represent the creative reality?\n\nStrategic benefits include liberation from perfectionism, substantial releases without forced closure, and continuous creative exploration. Traditional release models freeze at launch. Music collections maintain thematic coherence while remaining open to organic growth.\n\nCurrent music collections: Majestic Ascent (A Portal Into the Metaverse, techno-orchestral fusion exploring discovery of the Metaverse), Bridging Reality (high-energy anthems demonstrating AI-driven execution in pioneering Metaverse work), and Metaverse Revelation (creative empowerment and transformation, the rallying cry).\n\nEach track represents intensive curation. Majestic Ascent involved over 1,000 track variations generated to curate the final collection; each track represents 40+ generations on average. The process demonstrates Iterative Curation methodology: AI generates abundance; humans curate toward vision.",
+      "content": "MetaDJ releases music in collections, not static releases. Formal term: music collections. This is a deliberate philosophy: collections grow organically as creative exploration continues. No artificial completion. Collections have thematic coherence without being 'finished.' Think of them as evolving longform release arcs that keep expanding.\n\nThis model matches how AI-enabled creators actually work: constantly generating, constantly discovering new territories within chosen themes. Why force ongoing exploration into fixed release cycles when music collections better represent the creative reality?\n\nStrategic benefits include liberation from perfectionism, substantial releases without forced closure, and continuous creative exploration. Traditional release models freeze at launch. Music collections maintain thematic coherence while remaining open to organic growth.\n\nCurrent music collections: Majestic Ascent (A Portal Into the Metaverse, techno-orchestral fusion exploring discovery of the Metaverse), Bridging Reality (high-energy anthems demonstrating AI-driven execution in pioneering Metaverse work), Metaverse Revelation (creative empowerment and transformation, the rallying cry), and Transformer (a short, high-intensity exploration of metamorphosis and momentum).\n\nEach track represents intensive curation. Majestic Ascent involved over 1,000 track variations generated to curate the final collection; each track represents 40+ generations on average. The process demonstrates Iterative Curation methodology: AI generates abundance; humans curate toward vision.",
       "keywords": [
         "music collections",
         "music",
@@ -161,7 +161,8 @@
         "ai-enabled",
         "majestic ascent",
         "bridging reality",
-        "Metaverse Revelation"
+        "Metaverse Revelation",
+        "transformer"
       ]
     },
     {

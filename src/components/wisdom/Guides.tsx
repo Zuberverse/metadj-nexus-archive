@@ -1,6 +1,6 @@
 "use client"
 
-import { type FC, useCallback, useEffect, useMemo, useState } from "react"
+import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BookOpen, Layers, ChevronRight, Clock, Share2, Sparkles } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
 import { trackActivationFirstGuide, trackGuideOpened } from "@/lib/analytics"
@@ -13,6 +13,7 @@ import {
   setContinueReading,
   stripSignoffParagraphs,
 } from "@/lib/wisdom"
+import { ReadingProgressBar } from "./ReadingProgressBar"
 import { TableOfContents } from "./TableOfContents"
 import { WisdomBreadcrumb, type BreadcrumbItem } from "./WisdomBreadcrumb"
 import { WisdomFilters, type ReadTimeFilter } from "./WisdomFilters"
@@ -31,6 +32,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
   const [selectedLength, setSelectedLength] = useState<ReadTimeFilter>("all")
+  const articleRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (!deeplinkId) return
@@ -267,7 +269,14 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
       )}
 
       {/* Article content */}
-      <div className="rounded-2xl border border-white/15 bg-black/45 p-6 sm:p-8 backdrop-blur-xl">
+      <div
+        ref={articleRef}
+        className="rounded-2xl border border-white/15 bg-black/45 p-6 sm:p-8 backdrop-blur-xl"
+      >
+        <ReadingProgressBar
+          targetRef={articleRef}
+          className="-mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-6"
+        />
         <header className="mb-8 pb-6 border-b border-white/10">
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 mb-4">
             <BookOpen className="h-4 w-4 text-cyan-400" />

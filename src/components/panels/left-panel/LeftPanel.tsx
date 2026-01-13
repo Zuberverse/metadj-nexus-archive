@@ -119,6 +119,21 @@ export function LeftPanel({
     }
   }, [setActiveTab])
 
+  useEffect(() => {
+    const handleOpenCollection = (event: CustomEvent<{ collectionId?: string }>) => {
+      const collectionId = event.detail?.collectionId
+      if (!collectionId) return
+      setActiveTab("browse")
+      setActiveMoodChannelId(null)
+      setActiveCollectionId(collectionId)
+    }
+
+    window.addEventListener("metadj:openCollection", handleOpenCollection as EventListener)
+    return () => {
+      window.removeEventListener("metadj:openCollection", handleOpenCollection as EventListener)
+    }
+  }, [setActiveTab])
+
   // Notify parent when mood channel changes
   const handleMoodChannelChange = useCallback((channelId: string | null) => {
     setActiveMoodChannelId(channelId)

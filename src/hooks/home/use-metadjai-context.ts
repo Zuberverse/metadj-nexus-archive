@@ -91,6 +91,13 @@ export function useMetaDjAiContext({
       }
     }
 
+    if (ui.activeView === "journal") {
+      return {
+        view: "journal" as const,
+        details: "Writing or reviewing Journal entries.",
+      }
+    }
+
     return {
       view: "collections" as const,
       details: shouldMentionCollection
@@ -104,6 +111,7 @@ export function useMetaDjAiContext({
     searchResults.length,
     selectedCollectionTitle,
     shouldMentionCollection,
+    ui.activeView,
     ui.modals.isWisdomOpen,
     ui.modals.isQueueOpen,
     ui.searchQuery,

@@ -65,6 +65,7 @@ export interface MobileShellProps {
   isTrackDetailsOpen: boolean
   trackDetailsTrack: Track | null
   onInfoOpen: () => void
+  onFeedbackOpen: () => void
   onInfoClose: () => void
   onWelcomeClose: () => void
   onTrackDetailsClose: () => void
@@ -119,6 +120,7 @@ function MobileShell({
   isTrackDetailsOpen,
   trackDetailsTrack,
   onInfoOpen,
+  onFeedbackOpen,
   onInfoClose,
   onWelcomeClose,
   onTrackDetailsClose,
@@ -219,6 +221,7 @@ function MobileShell({
       <AppHeader
         headerRef={headerRef}
         onInfoOpen={onInfoOpen}
+        onFeedbackOpen={onFeedbackOpen}
         onToggleLeftPanel={onToggleLeftPanel}
         isLeftPanelOpen={isLeftPanelOpen}
         showLeftPanelToggle={true}

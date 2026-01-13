@@ -1,11 +1,15 @@
 # Routing & Navigation Contracts — MetaDJ Nexus
 
-**Last Modified**: 2025-12-20 19:03 EST
+**Last Modified**: 2026-01-13 13:34 EST
 
 > MetaDJ Nexus is a single-route experience. Hub/Cinema/Wisdom are state-driven views inside `/` (no route changes for view switching). The URL stays clean while you browse.
 
 ## Page Map
 - `/` → Single experience surface. Renders Hub/Cinema/Wisdom + panels via `src/app/(experience)/layout.tsx` → `HomePageClient`.
+- `/track/[id]` → Share metadata route (no UI) via `src/app/(experience)/track/[id]/page.tsx`.
+- `/collection/[id]` → Share metadata route (no UI) via `src/app/(experience)/collection/[id]/page.tsx`.
+- `/playlist/[id]` → Share metadata route (no UI) via `src/app/(experience)/playlist/[id]/page.tsx`.
+- `/wisdom/[section]/[id]` → Wisdom deep link metadata route (no UI) via `src/app/(experience)/wisdom/[section]/[id]/page.tsx`.
 - `/guide` → Renders MetaDJ Nexus Guide.
 - `/terms` → Renders Terms & Conditions.
 - Errors: `error.tsx` (route-level), `global-error.tsx` (app-level); `not-found.tsx` for 404s.

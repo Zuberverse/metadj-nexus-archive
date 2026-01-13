@@ -8,6 +8,14 @@ export type { MusicRepository } from "./repository";
 export type { Collection, Track } from "@/types";
 export { shuffleTracks } from "./utils";
 export { formatDuration } from "@/lib/utils";
+export {
+  buildMusicDeepLinkPath,
+  buildMusicDeepLinkUrl,
+  parseMusicDeepLinkPath,
+  isMusicDeepLinkKind,
+  type MusicDeepLink,
+  type MusicDeepLinkKind,
+} from "./deeplink";
 
 export const collections: Collection[] = collectionList;
 export const tracks: Track[] = trackList;

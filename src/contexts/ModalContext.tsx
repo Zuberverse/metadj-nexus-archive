@@ -30,6 +30,8 @@ export interface ModalContextValue {
   setWisdomOpen: (open: boolean) => void;
   setKeyboardShortcutsOpen: (open: boolean) => void;
   setMetaDjAiOpen: (open: boolean) => void;
+  setFeedbackOpen: (open: boolean) => void;
+  setAccountOpen: (open: boolean) => void;
 }
 
 const ModalContext = createContext<ModalContextValue | null>(null);
@@ -47,6 +49,8 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     isWisdomOpen: false,
     isKeyboardShortcutsOpen: false,
     isMetaDjAiOpen: false,
+    isFeedbackOpen: false,
+    isAccountOpen: false,
   });
 
   // After hydration, decide whether we should show the welcome overlay.
@@ -121,6 +125,16 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     announce(open ? 'MetaDJai chat opened' : 'MetaDJai chat closed', { type: 'status', priority: 'polite' });
   }, []);
 
+  const setFeedbackOpen = useCallback((open: boolean) => {
+    setModals(prev => ({ ...prev, isFeedbackOpen: open }));
+    announce(open ? 'Feedback form opened' : 'Feedback form closed', { type: 'status', priority: 'polite' });
+  }, []);
+
+  const setAccountOpen = useCallback((open: boolean) => {
+    setModals(prev => ({ ...prev, isAccountOpen: open }));
+    announce(open ? 'Account settings opened' : 'Account settings closed', { type: 'status', priority: 'polite' });
+  }, []);
+
   const value: ModalContextValue = useMemo(() => ({
     modals,
     setWelcomeOpen,
@@ -131,6 +145,8 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     setWisdomOpen,
     setKeyboardShortcutsOpen,
     setMetaDjAiOpen,
+    setFeedbackOpen,
+    setAccountOpen,
   }), [
     modals,
     setWelcomeOpen,
@@ -141,6 +157,8 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     setWisdomOpen,
     setKeyboardShortcutsOpen,
     setMetaDjAiOpen,
+    setFeedbackOpen,
+    setAccountOpen,
   ]);
 
   return (

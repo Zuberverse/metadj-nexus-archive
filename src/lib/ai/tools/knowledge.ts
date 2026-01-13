@@ -15,6 +15,7 @@ import ecosystemKnowledge from '@/data/knowledge/ecosystem.json'
 import identityKnowledge from '@/data/knowledge/identity.json'
 import metadjKnowledge from '@/data/knowledge/metadj.json'
 import philosophyKnowledge from '@/data/knowledge/philosophy.json'
+import platformKnowledge from '@/data/knowledge/platform-features.json'
 import workflowsKnowledge from '@/data/knowledge/workflows.json'
 import zuberantKnowledge from '@/data/knowledge/zuberant.json'
 import { sanitizeAndValidateToolResult } from '@/lib/ai/tools/utils'
@@ -67,6 +68,7 @@ const KNOWLEDGE_BASE: KnowledgeCategory[] = [
   ecosystemKnowledge as KnowledgeCategory,
   philosophyKnowledge as KnowledgeCategory,
   identityKnowledge as KnowledgeCategory,
+  platformKnowledge as KnowledgeCategory,
   workflowsKnowledge as KnowledgeCategory,
 ]
 
@@ -117,6 +119,12 @@ const KNOWLEDGE_FILES_WITH_META: KnowledgeFileWithMeta[] = [
   {
     name: 'identity',
     ...(identityKnowledge as unknown as {
+      _meta?: KnowledgeFileWithMeta['_meta']
+    }),
+  },
+  {
+    name: 'platform',
+    ...(platformKnowledge as unknown as {
       _meta?: KnowledgeFileWithMeta['_meta']
     }),
   },
@@ -403,7 +411,7 @@ const zuberantContextSchema = z.object({
   query: z
     .string()
     .describe(
-      'What the user wants to know about MetaDJ, Zuberant, or the broader ecosystem vision'
+      'What the user wants to know about MetaDJ, Zuberant, the broader ecosystem vision, or platform features'
     ),
   topic: z
     .enum([
@@ -412,6 +420,7 @@ const zuberantContextSchema = z.object({
       'ecosystem',
       'philosophy',
       'identity',
+      'platform',
       'workflows',
       'all',
     ])
@@ -421,7 +430,7 @@ const zuberantContextSchema = z.object({
 
 export const getZuberantContext = {
   description:
-    'Search the Zuberant knowledge base for information about MetaDJ (artist/DJ), Zuberant (studio), the broader ecosystem vision, philosophy, identity, and creative workflows. Use this to answer "who is...", "what is...", "how do I...", or to find creative protocols like "deep work" or "brainstorming".',
+    'Search the Zuberant knowledge base for information about MetaDJ (artist/DJ), Zuberant (studio), the broader ecosystem vision, philosophy, identity, platform features, and creative workflows. Use this to answer "who is...", "what is...", "how do I...", or to find creative protocols like "deep work" or "brainstorming".',
   inputSchema: zuberantContextSchema,
   execute: async ({
     query,
@@ -434,6 +443,7 @@ export const getZuberantContext = {
       | 'ecosystem'
       | 'philosophy'
       | 'identity'
+      | 'platform'
       | 'workflows'
       | 'all'
   }) => {
@@ -558,7 +568,7 @@ export const getZuberantContext = {
       result = {
         found: false,
         suggestion:
-          'No specific matches found. Try asking about: who MetaDJ is, what Zuberant does, the broader ecosystem vision, music collections, the Synthetic Orchaistra method, Digital Jockey, AI philosophy, purest vibes, or creative principles.',
+          'No specific matches found. Try asking about: who MetaDJ is, what Zuberant does, the broader ecosystem vision, platform features, music collections, the Synthetic Orchaistra method, Digital Jockey, AI philosophy, purest vibes, or creative principles.',
         availableTopics: KNOWLEDGE_BASE.map((kb) => ({
           topic: kb.category,
           title: kb.title,

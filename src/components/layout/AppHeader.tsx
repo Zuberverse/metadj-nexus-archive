@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react"
 import Image from "next/image"
 import clsx from "clsx"
-import { Settings, Play, Pause, SkipForward, SkipBack, Search, User, Menu, X, MonitorPlay, Sparkles, LayoutPanelLeft, Music, ChevronLeft, MessageCircle, ChevronDown, ChevronUp, Home, ListMusic, Book, Loader2, Info } from "lucide-react"
+import { Settings, Play, Pause, SkipForward, SkipBack, Search, User, Menu, X, MonitorPlay, Sparkles, LayoutPanelLeft, Music, ChevronLeft, MessageCircle, ChevronDown, ChevronUp, Home, ListMusic, Book, Loader2, Info, MessageSquarePlus } from "lucide-react"
 import { BrandGradientIcon } from "@/components/icons/BrandGradientIcon"
 import { SearchBar } from "@/components/search/SearchBar"
 import { SearchResultItem } from "@/components/search/SearchResultItem"
@@ -18,6 +18,7 @@ import type { RefObject } from "react"
 interface AppHeaderProps {
   headerRef: RefObject<HTMLDivElement | null>
   onInfoOpen: () => void
+  onFeedbackOpen: () => void
 
   // Panel Toggles
   onToggleLeftPanel: () => void
@@ -57,6 +58,7 @@ interface AppHeaderProps {
 export function AppHeader({
   headerRef,
   onInfoOpen,
+  onFeedbackOpen,
   onToggleLeftPanel,
   isLeftPanelOpen,
   onToggleRightPanel,
@@ -588,8 +590,18 @@ export function AppHeader({
               </div>
             </div>
 
-            {/* RIGHT ZONE: MetaDJai Toggle */}
+            {/* RIGHT ZONE: Feedback, Info, MetaDJai Toggle */}
             <div className="flex items-center gap-2 shrink-0">
+              <button
+                id="tour-toggle-feedback"
+                type="button"
+                onClick={onFeedbackOpen}
+                className="inline-flex items-center justify-center h-9 w-9 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/70 hover:text-white hover:border-white/20 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation"
+                aria-label="Send Feedback"
+                title="Send Feedback"
+              >
+                <MessageSquarePlus className="h-4 w-4" />
+              </button>
               <button
                 id="tour-toggle-guide"
                 type="button"

@@ -1,12 +1,16 @@
 # Code → Docs Map (MetaDJ Nexus)
 
-**Last Modified**: 2026-01-09 19:49 EST
+**Last Modified**: 2026-01-13 13:34 EST
 
 This is a code-first index: start from a file/folder in `src/`, then jump to the doc(s) that explain it.
 
 ## App Router (`src/app/`)
 
 - `src/app/(experience)/layout.tsx`, `src/app/(experience)/page.tsx` → `../architecture/routing.md`, `../features/hub-system.md`, `../features/cinema-system.md`, `../features/wisdom-system.md`, `../features/panel-system.md`
+- `src/app/(experience)/track/[id]/page.tsx` → `../architecture/routing.md`, `../features/collections-system.md`
+- `src/app/(experience)/collection/[id]/page.tsx` → `../architecture/routing.md`, `../features/collections-system.md`
+- `src/app/(experience)/playlist/[id]/page.tsx` → `../architecture/routing.md`, `../features/playlist-system.md`
+- `src/app/(experience)/wisdom/[section]/[id]/page.tsx` → `../architecture/routing.md`, `../features/wisdom-system.md`
 - `src/app/layout.tsx` (providers, SEO, analytics script loading) → `./contexts-reference.md`, `../security/README.md`, `../API.md`
 - `src/app/guide/page.tsx` → `../features/user-guide-system.md`
 - `src/app/terms/page.tsx` → `../security/README.md`
@@ -41,6 +45,7 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 
 - Context providers (`src/contexts/*`) → `./contexts-reference.md`
 - Global hooks (`src/hooks/*`) → `./hooks-reference.md`
+- Wisdom reading progress hook (`src/hooks/wisdom/use-reading-progress.ts`) → `../features/wisdom-system.md`
 - Home orchestration hooks (`src/hooks/home/*`) → `./hooks-reference.md`, `../architecture/routing.md`
   - Queue orchestration entry point → `src/hooks/home/use-queue-controls.ts` + `../features/queue-persistence.md`
 - Session bootstrap (`src/components/session/SessionBootstrap.tsx`) → `../features/analytics-implementation.md`, `../operations/ANALYTICS-SETUP.md`, `../API.md`
@@ -58,11 +63,13 @@ This is a code-first index: start from a file/folder in `src/`, then jump to the
 ## Domain Libraries (`src/lib/`)
 
 - Music repository + filters (`src/lib/music/*`) → `../architecture/data-architecture.md`, `../features/collections-system.md`
+- Music deep links (`src/lib/music/deeplink.ts`) → `../architecture/routing.md`, `../features/playlist-system.md`, `../features/collections-system.md`
 - Media streaming primitives (`src/lib/media/streaming.ts`) → `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
 - Storage provider abstraction (`src/lib/media-storage.ts`) → `../MEDIA-STORAGE.md`, `../architecture/STORAGE-ARCHITECTURE-DIAGRAM.md`
 - Analytics helpers (`src/lib/analytics.ts`) → `../features/analytics-implementation.md`
 - Validation schemas (`src/lib/validation/*`) + `scripts/validate-music.js` → `../architecture/data-architecture.md`, `./barrel-export-patterns.md`
 - Playlist repository (`src/lib/playlists/*`) → `../features/playlist-system.md`, `./barrel-export-patterns.md`
+- Journal transfer (`src/lib/journal/*`) → `../features/journal-feature.md`
 - Tour config (`src/lib/tour/*`) → `../features/user-guide-system.md`
 - MetaDJai tools/rate limiting (`src/lib/ai/*`, `src/lib/metadjai/*`) → `../features/vercel-ai-sdk-integration.md`, `../API.md`
 - AI spending alerts (`src/lib/ai/spending-alerts.ts`) → `../features/vercel-ai-sdk-integration.md`, `../operations/UPTIME-MONITORING.md`
@@ -102,6 +109,7 @@ Centralized module exports for clean imports. See `./barrel-export-patterns.md` 
 - Visual atmosphere (`src/components/visuals/*`) → `../features/motion-system.md`
 - Cinema visualizers (`src/components/cinema/visualizers/*`) → `../features/cinema-system.md`, `./barrel-export-patterns.md`
 - Wisdom (`src/components/wisdom/*`) → `../features/wisdom-system.md`
+- Reading progress (`src/components/wisdom/ReadingProgressBar.tsx`) → `../features/wisdom-system.md`
 - MetaDJai (`src/components/metadjai/*`) → `../features/vercel-ai-sdk-integration.md`
 - Shared UI system (`src/components/ui/*`) → `../features/ui-visual-system.md`, `../features/gradient-system.md`, `./barrel-export-patterns.md`
 - ErrorBoundary (`src/components/ui/ErrorBoundary.tsx`) → `./error-boundary-patterns.md`, `../features/ui-visual-system.md`

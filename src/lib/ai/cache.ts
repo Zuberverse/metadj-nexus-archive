@@ -81,6 +81,8 @@ const DEFAULT_TTL_MS = 30 * 60 * 1000
 
 /** Minimum message length for caching (skip very short messages) */
 const MIN_CACHE_MESSAGE_LENGTH = 10
+const DEFAULT_CACHE_MESSAGE_COUNT = 6
+const MAX_CACHE_MESSAGE_CHARS = 200
 
 /**
  * Get the configured cache TTL from environment
@@ -167,8 +169,8 @@ function getUpstashRedis(): Redis | null {
 /**
  * Create a deterministic cache key from messages and context hint
  *
- * Uses the last user message + mode string to create a unique key.
- * This enables cache hits for semantically identical requests.
+ * Uses a normalized signature of recent messages plus the mode/context signature.
+ * This enables cache hits for semantically identical requests while reducing collisions.
  *
  * @param messages - Array of chat messages
  * @param mode - AI context hint (e.g., 'adaptive')
@@ -182,13 +184,14 @@ export function createCacheKey(messages: unknown[], mode: string, contextSignatu
     return ''
   }
 
-  // Normalize the message for better cache hits
-  const normalizedMsg = lastUserMsg
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .trim()
+  const conversationSignature = buildConversationSignature(messages)
+  if (!conversationSignature) {
+    return ''
+  }
 
-  const signature = contextSignature ? `${normalizedMsg}|${contextSignature}` : normalizedMsg
+  const signature = contextSignature
+    ? `${conversationSignature}|${contextSignature}`
+    : conversationSignature
   return `ai:${mode}:${hashString(signature)}`
 }
 
@@ -346,6 +349,28 @@ function findLastUserMessage(messages: unknown[]): string {
     }
   }
   return ''
+}
+
+function buildConversationSignature(messages: unknown[], maxMessages = DEFAULT_CACHE_MESSAGE_COUNT): string {
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return ''
+  }
+
+  const recent = messages.slice(-maxMessages).map((message) => {
+    const msg = message as CacheMessage
+    const role = msg?.role === 'assistant' ? 'a' : 'u'
+    const content = typeof msg?.content === 'string' ? msg.content : ''
+    const normalized = content
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, MAX_CACHE_MESSAGE_CHARS)
+
+    if (!normalized) return ''
+    return `${role}:${normalized}`
+  }).filter(Boolean)
+
+  return recent.join('|')
 }
 
 /**

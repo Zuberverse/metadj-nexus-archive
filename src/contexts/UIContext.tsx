@@ -271,6 +271,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     setWisdomOpen: modalContext.setWisdomOpen,
     setKeyboardShortcutsOpen: modalContext.setKeyboardShortcutsOpen,
     setMetaDjAiOpen: modalContext.setMetaDjAiOpen,
+    setFeedbackOpen: modalContext.setFeedbackOpen,
+    setAccountOpen: modalContext.setAccountOpen,
     // Search state
     searchQuery,
     searchResults,

@@ -16,11 +16,14 @@
  */
 
 import { anthropic } from '@ai-sdk/anthropic'
+import { devToolsMiddleware } from '@ai-sdk/devtools'
 import { createGoogleGenerativeAI, google } from '@ai-sdk/google'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createXai, xai } from '@ai-sdk/xai'
+import { wrapLanguageModel, type LanguageModel } from 'ai'
 import { getServerEnv } from '@/lib/env'
 import { logger } from '@/lib/logger'
+import type { LanguageModelV3 } from '@ai-sdk/provider'
 
 export type AIProvider = 'openai' | 'anthropic' | 'google' | 'xai'
 
@@ -54,6 +57,20 @@ function getXaiClient() {
     return createXai({ apiKey: env.XAI_API_KEY })
   }
   return xai
+}
+
+function shouldEnableDevtools(): boolean {
+  const env = getServerEnv()
+  return env.NODE_ENV !== 'production' && env.AI_DEVTOOLS_ENABLED === 'true'
+}
+
+function maybeWrapWithDevtools(model: LanguageModel): LanguageModel {
+  if (!shouldEnableDevtools()) return model
+  // All our providers return LanguageModelV3; cast to satisfy wrapLanguageModel
+  return wrapLanguageModel({
+    model: model as LanguageModelV3,
+    middleware: devToolsMiddleware(),
+  })
 }
 
 export type ModelSettings = {
@@ -214,18 +231,18 @@ export function getPrimaryModel(providerOverride?: AIProvider) {
   const { PRIMARY_MODEL, ANTHROPIC_MODEL, GOOGLE_MODEL, XAI_MODEL } = getEnvConfig()
   const provider = resolveProvider(providerOverride)
   if (provider === 'anthropic') {
-    return anthropic(ANTHROPIC_MODEL)
+    return maybeWrapWithDevtools(anthropic(ANTHROPIC_MODEL))
   }
   if (provider === 'google') {
     const googleClient = getGoogleClient()
-    return googleClient(GOOGLE_MODEL)
+    return maybeWrapWithDevtools(googleClient(GOOGLE_MODEL))
   }
   if (provider === 'xai') {
     const xaiClient = getXaiClient()
-    return xaiClient(XAI_MODEL)
+    return maybeWrapWithDevtools(xaiClient(XAI_MODEL))
   }
   const openaiClient = getOpenAIClient()
-  return openaiClient(PRIMARY_MODEL)
+  return maybeWrapWithDevtools(openaiClient(PRIMARY_MODEL))
 }
 
 /**
@@ -341,19 +358,19 @@ export function getFallbackModel(providerOverride?: AIProvider) {
   if (!fallbackProvider) return null
 
   if (fallbackProvider === 'anthropic') {
-    return anthropic(ANTHROPIC_MODEL)
+    return maybeWrapWithDevtools(anthropic(ANTHROPIC_MODEL))
   }
   if (fallbackProvider === 'google') {
     const googleClient = getGoogleClient()
-    return googleClient(GOOGLE_MODEL)
+    return maybeWrapWithDevtools(googleClient(GOOGLE_MODEL))
   }
   if (fallbackProvider === 'xai') {
     const xaiClient = getXaiClient()
-    return xaiClient(XAI_MODEL)
+    return maybeWrapWithDevtools(xaiClient(XAI_MODEL))
   }
 
   const openaiClient = getOpenAIClient()
-  return openaiClient(PRIMARY_MODEL)
+  return maybeWrapWithDevtools(openaiClient(PRIMARY_MODEL))
 }
 
 /**

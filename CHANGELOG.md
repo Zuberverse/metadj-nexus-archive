@@ -1,6 +1,6 @@
 # Changelog
 
-**Last Modified**: 2026-01-13 08:05 EST
+**Last Modified**: 2026-01-13 13:34 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
@@ -9,8 +9,36 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ### 2026-01-13
 
+**Features**
+- Added authentication system with email/password registration and login
+- Added admin account with environment variable credentials (`ADMIN_PASSWORD`)
+- Added landing page with platform overview and auth forms
+- Added account settings panel (email/password update)
+- Added feedback submission system (bugs, features, ideas, general feedback)
+- Added admin dashboard with feedback management and analytics
+- Added route protection for `/app` (authenticated) and `/admin` (admin only)
+- New routes: `/` (landing), `/app` (main experience), `/admin` (dashboard)
+- Added share metadata routes for track, collection, and playlist deep links
+- Added deep link handling to open playlists, collections, and track details from share URLs
+- Added Wisdom reading progress bar and topic filter chips
+- Added Journal export/import with optional passphrase encryption
+
 **Bug Fixes**
 - Fixed audio volume stuck at 1% (0.01) after first play. Removed problematic fade-in logic in `use-audio-playback.ts` that used setTimeout-based volume ramping, which was being interrupted by React effect cleanup during re-renders.
+- MetaDJai feedback tool now triggers the feedback modal on tool results and filters Gemini tool JSON for `openFeedback`.
+
+**AI Integration**
+- Added `openFeedback` to MetaDJai tool instructions so the model can invoke the feedback flow directly.
+- MetaDJai now uses `ToolLoopAgent` with structured outputs for the non-streaming endpoint.
+- Added local-only MCP tools and DevTools middleware gated by `AI_MCP_ENABLED` and `AI_DEVTOOLS_ENABLED`.
+
+**Data**
+- Renamed `src/data/tracks.json` to `src/data/music.json` and updated validation tooling references.
+- Updated Majestic Ascent + Metaverse Revelation release dates to 2026-01-15 across Nexus data.
+
+**Testing**
+- Added deep link parsing tests for music share routes.
+- Added journal export/import tests with encryption coverage.
 
 ### 2026-01-12
 

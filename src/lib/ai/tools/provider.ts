@@ -8,7 +8,9 @@
 
 import { openai } from '@ai-sdk/openai'
 import { searchCatalog } from '@/lib/ai/tools/catalog'
+import { openFeedback } from '@/lib/ai/tools/feedback'
 import { getZuberantContext } from '@/lib/ai/tools/knowledge'
+import { getMcpTools } from '@/lib/ai/tools/mcp'
 import { getPlatformHelp } from '@/lib/ai/tools/platform-help'
 import {
   proposePlayback,
@@ -30,7 +32,7 @@ import { getWisdomContent } from '@/lib/ai/tools/wisdom'
  * @param options Provider capabilities override
  * @returns Tools object with provider-appropriate tools
  */
-export function getTools(
+export async function getTools(
   provider: 'openai' | 'anthropic' | 'google' | 'xai',
   options?: { webSearchAvailable?: boolean }
 ) {
@@ -42,11 +44,13 @@ export function getTools(
     getWisdomContent,
     getRecommendations,
     getZuberantContext,
+    openFeedback,
     proposePlayback,
     proposeQueueSet,
     proposePlaylist,
     proposeSurface,
   })
+  const mcpTools = await getMcpTools()
 
   const webSearchAvailable =
     provider === 'openai' && (options?.webSearchAvailable ?? true)
@@ -67,6 +71,7 @@ export function getTools(
 
     return {
       ...baseTools,
+      ...mcpTools,
       // OpenAI native web search tool - enables real-time web search for current information
       // The AI will use this tool when users ask about current events, recent news,
       // or information that may not be in its training data
@@ -76,5 +81,8 @@ export function getTools(
   }
 
   // Anthropic and other providers get base tools only
-  return baseTools
+  return {
+    ...baseTools,
+    ...mcpTools,
+  }
 }

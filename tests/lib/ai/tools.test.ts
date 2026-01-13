@@ -182,10 +182,10 @@ describe('ai/tools', () => {
   it('includes web_search tool only for openai when enabled', async () => {
     const { getTools } = await loadTools({ OPENAI_API_KEY: undefined })
 
-    const openaiTools = getTools('openai', { webSearchAvailable: true }) as Record<string, unknown>
+    const openaiTools = (await getTools('openai', { webSearchAvailable: true })) as Record<string, unknown>
     expect(openaiTools.web_search).toBeDefined()
 
-    const anthropicTools = getTools('anthropic', { webSearchAvailable: true }) as Record<string, unknown>
+    const anthropicTools = (await getTools('anthropic', { webSearchAvailable: true })) as Record<string, unknown>
     expect(anthropicTools.web_search).toBeUndefined()
   })
 })

@@ -11,7 +11,7 @@ import {
     SESSION_COOKIE_PATH,
     TRANSCRIBE_RATE_LIMIT_WINDOW_MS,
 } from "@/lib/ai/rate-limiter";
-import { recordSpending } from "@/lib/ai/spending-alerts";
+import { isSpendingAllowed, recordSpending } from "@/lib/ai/spending-alerts";
 import { getServerEnv } from "@/lib/env";
 import { logger } from "@/lib/logger";
 import { getRequestId } from "@/lib/request-id";
@@ -162,6 +162,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 { error: "OpenAI API key is not configured" },
                 { status: 500 }
+            );
+        }
+
+        if (!(await isSpendingAllowed())) {
+            logger.warn("[Transcribe] AI spending limit exceeded - request blocked", { requestId });
+            return NextResponse.json(
+                { error: "AI spending limit exceeded. Please try again later." },
+                { status: 429 }
             );
         }
 

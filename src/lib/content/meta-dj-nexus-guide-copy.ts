@@ -109,6 +109,7 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
       "Library tab: Featured highlights, Recently Played (last 50 plays), and collections",
       "Tabs: Library, Playlists, Queue",
       "Track details: BPM, key, release date, and share links",
+      "Share deep links for tracks, collections, and playlists",
       "Add to Queue: manual picks stay at the top",
       "Playlists: create, start, and share your own sets",
       "Collection stories: \"About Collection\" reveals the narrative intent",
@@ -152,6 +153,7 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
       "Rich-text editor with formatting toolbar",
       "Voice dictation with a 60-second recording limit",
       "Autosaved drafts and session restore on refresh",
+      "Export or import entries as JSON with optional passphrase encryption",
     ]
   },
 ]

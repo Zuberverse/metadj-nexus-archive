@@ -39,6 +39,9 @@ export {
   proposeQueueSet,
   proposePlaylist,
   proposeSurface,
+  openFeedback,
+  OPEN_FEEDBACK_EVENT,
+  type OpenFeedbackEventDetail,
   // Provider
   getTools,
 } from '@/lib/ai/tools/index'

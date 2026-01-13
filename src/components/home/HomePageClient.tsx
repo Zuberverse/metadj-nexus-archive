@@ -1,6 +1,8 @@
 "use client"
 
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { AccountPanel } from "@/components/account"
+import { FeedbackModal } from "@/components/feedback"
 import { HomeShellRouter } from "@/components/home/HomeShellRouter"
 import { HubExperience, type WisdomSpotlightData } from "@/components/hub/HubExperience"
 import { AudioPlayer } from "@/components/player/AudioPlayer"
@@ -31,9 +33,16 @@ import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts"
 import { useRecentlyPlayed } from "@/hooks/use-recently-played"
 import { useResponsivePanels } from "@/hooks/use-responsive-panels"
 import { useTrackDetails } from "@/hooks/use-track-details"
+import { OPEN_FEEDBACK_EVENT } from "@/lib/ai/tools"
 import { FEATURED_TRACK_IDS, DEFAULT_COLLECTION_ID, FEATURES, RECENTLY_PLAYED_MAX_ITEMS } from "@/lib/app.constants"
 import { META_DJAI_PROMPT_EVENT, type MetaDjAiExternalPromptDetail } from "@/lib/metadjai/external-prompts"
-import { getTracksByCollection } from "@/lib/music"
+import {
+  getCollectionById,
+  getTrackById,
+  getTracksByCollection,
+  parseMusicDeepLinkPath,
+  type MusicDeepLink,
+} from "@/lib/music"
 import { STORAGE_KEYS, setString } from "@/lib/storage"
 import { parseWisdomDeepLinkPath, type WisdomDeepLink, type WisdomSection } from "@/lib/wisdom"
 import type { CinemaState, ModalState, NowPlayingProps } from "@/components/home/shells"
@@ -69,6 +78,8 @@ export function HomePageClient({
   const setWelcomeOpen = ui.setWelcomeOpen
   const setKeyboardShortcutsOpen = ui.setKeyboardShortcutsOpen
   const setWisdomOpen = ui.setWisdomOpen
+  const setFeedbackOpen = ui.setFeedbackOpen
+  const setAccountOpen = ui.setAccountOpen
 
   const handleInfoOpen = useCallback(() => setInfoOpen(true), [setInfoOpen])
   const handleInfoClose = useCallback(() => setInfoOpen(false), [setInfoOpen])
@@ -78,6 +89,10 @@ export function HomePageClient({
     [setKeyboardShortcutsOpen]
   )
   const handleWisdomOpen = useCallback(() => setWisdomOpen(true), [setWisdomOpen])
+  const handleFeedbackOpen = useCallback(() => setFeedbackOpen(true), [setFeedbackOpen])
+  const handleFeedbackClose = useCallback(() => setFeedbackOpen(false), [setFeedbackOpen])
+  const handleAccountOpen = useCallback(() => setAccountOpen(true), [setAccountOpen])
+  const handleAccountClose = useCallback(() => setAccountOpen(false), [setAccountOpen])
 
   const searchResults = ui.searchResults
   const setSearchResults = ui.setSearchResults
@@ -173,6 +188,93 @@ export function HomePageClient({
     })
   }, [ensureViewMounted, handleActiveViewChangeRaw])
 
+  const handleMusicDeepLink = useCallback((deepLink: MusicDeepLink) => {
+    if (typeof window === "undefined") return
+
+    const panelWasClosed = shouldUseSidePanels ? !panels.left.isOpen : !isMobileLeftPanelOpen
+
+    if (activeView !== "hub") {
+      handleActiveViewChange("hub")
+    }
+
+    const targetTab: LeftPanelTab = deepLink.kind === "playlist" ? "playlists" : "browse"
+    ui.setLeftPanelTab(targetTab)
+
+    if (shouldUseSidePanels) {
+      openLeftPanel()
+    } else {
+      setIsMobileLeftPanelOpen(true)
+    }
+
+    const dispatchAfterPanelReady = (action: () => void) => {
+      if (panelWasClosed || !shouldUseSidePanels) {
+        window.setTimeout(action, 120)
+      } else {
+        action()
+      }
+    }
+
+    if (deepLink.kind === "playlist") {
+      dispatchAfterPanelReady(() => {
+        window.dispatchEvent(new CustomEvent("metadj:openPlaylist", {
+          detail: { playlistId: deepLink.id },
+        }))
+      })
+      return
+    }
+
+    if (deepLink.kind === "collection") {
+      const collection = getCollectionById(deepLink.id, collections)
+      if (!collection) {
+        showToast({ message: "That collection link isn't available", variant: "error" })
+        return
+      }
+      setSelectedCollection(collection.id, "system")
+      dispatchAfterPanelReady(() => {
+        window.dispatchEvent(new CustomEvent("metadj:openCollection", {
+          detail: { collectionId: collection.id },
+        }))
+      })
+      return
+    }
+
+    const track = getTrackById(deepLink.id, tracks)
+    if (!track) {
+      showToast({ message: "That track link isn't available", variant: "error" })
+      return
+    }
+
+    const collection = getCollectionById(track.collection, collections)
+    if (collection) {
+      setSelectedCollection(collection.id, "system")
+      dispatchAfterPanelReady(() => {
+        window.dispatchEvent(new CustomEvent("metadj:openCollection", {
+          detail: { collectionId: collection.id },
+        }))
+      })
+    }
+
+    dispatchAfterPanelReady(() => {
+      window.dispatchEvent(new CustomEvent("metadj:scrollToTrack", {
+        detail: { trackId: track.id, collectionTitle: track.collection },
+      }))
+    })
+    openDetails(track)
+  }, [
+    activeView,
+    collections,
+    handleActiveViewChange,
+    isMobileLeftPanelOpen,
+    openDetails,
+    openLeftPanel,
+    panels.left.isOpen,
+    setSelectedCollection,
+    shouldUseSidePanels,
+    showToast,
+    tracks,
+    ui,
+  ])
+
   const handleWisdomSearchSelect = useCallback((entry: WisdomSearchEntry) => {
     setWisdomDeepLink({ section: entry.section, slug: entry.id })
     handleActiveViewChange("wisdom")
@@ -186,7 +288,7 @@ export function HomePageClient({
     handleActiveViewChange("journal")
   }, [handleActiveViewChange])
 
-  // Hybrid: keep tab switching state-driven, but allow Wisdom-only deep links for sharing.
+  // Hybrid: keep tab switching state-driven, but allow deep links for sharing.
   useEffect(() => {
     if (typeof window === "undefined") return
 
@@ -201,18 +303,29 @@ export function HomePageClient({
       return
     }
 
-    const deepLink = parseWisdomDeepLinkPath(pathname)
-    if (!deepLink) return
+    const wisdomLink = parseWisdomDeepLinkPath(pathname)
+    if (wisdomLink) {
+      setWisdomDeepLink(wisdomLink)
+      handleActiveViewChange("wisdom")
 
-    setWisdomDeepLink(deepLink)
-    handleActiveViewChange("wisdom")
+      try {
+        window.history.replaceState(null, "", "/")
+      } catch {
+        // ignore history errors
+      }
+      return
+    }
 
+    const musicLink = parseMusicDeepLinkPath(pathname)
+    if (!musicLink) return
+
+    handleMusicDeepLink(musicLink)
     try {
       window.history.replaceState(null, "", "/")
     } catch {
       // ignore history errors
     }
-  }, [handleActiveViewChange])
+  }, [handleActiveViewChange, handleMusicDeepLink])
 
   // Prefetch Cinema overlay chunk to reduce first-switch lag.
   useEffect(() => {
@@ -432,6 +545,16 @@ export function HomePageClient({
     window.addEventListener(META_DJAI_PROMPT_EVENT, handler as EventListener)
     return () => window.removeEventListener(META_DJAI_PROMPT_EVENT, handler as EventListener)
   }, [handleMetaDjAiOpen, metaDjAiSession])
+
+  // Listen for feedback open requests (from MetaDJai tool calls)
+  useEffect(() => {
+    const handler = () => {
+      handleFeedbackOpen()
+    }
+
+    window.addEventListener(OPEN_FEEDBACK_EVENT, handler)
+    return () => window.removeEventListener(OPEN_FEEDBACK_EVENT, handler)
+  }, [handleFeedbackOpen])
 
   // Player controls (extracted to hook)
   const {
@@ -851,6 +974,7 @@ export function HomePageClient({
           isTrackDetailsOpen,
           trackDetailsTrack,
           onInfoOpen: handleInfoOpen,
+          onFeedbackOpen: handleFeedbackOpen,
           onInfoClose: handleInfoClose,
           onWelcomeClose: handleWelcomeClose,
           onTrackDetailsClose: closeDetails,
@@ -906,6 +1030,7 @@ export function HomePageClient({
           isTrackDetailsOpen,
           trackDetailsTrack,
           onInfoOpen: handleInfoOpen,
+          onFeedbackOpen: handleFeedbackOpen,
           onInfoClose: handleInfoClose,
           onWelcomeClose: handleWelcomeClose,
           onTrackDetailsClose: closeDetails,
@@ -947,6 +1072,16 @@ export function HomePageClient({
         height={512}
         // display: none or visibility: hidden causes captureStream to fail or freeze
         className="fixed top-0 left-0 opacity-0 pointer-events-none -z-50"
+      />
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={ui.modals.isFeedbackOpen}
+        onClose={handleFeedbackClose}
+      />
+      {/* Account Panel */}
+      <AccountPanel
+        isOpen={ui.modals.isAccountOpen}
+        onClose={handleAccountClose}
       />
     </>
   )

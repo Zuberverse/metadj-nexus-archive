@@ -44,6 +44,7 @@ export {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export { searchCatalog } from "./catalog"
+export { openFeedback, OPEN_FEEDBACK_EVENT, type OpenFeedbackEventDetail } from "./feedback"
 export { getPlatformHelp } from "./platform-help"
 export { getRecommendations } from "./recommendations"
 export { getZuberantContext, warmupKnowledgeEmbeddings } from "./knowledge"

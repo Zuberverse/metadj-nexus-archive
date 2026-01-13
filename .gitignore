@@ -53,6 +53,9 @@ next-env.d.ts
 # runtime storage
 /storage/
 
+# auth data (users, feedback)
+/data/
+
 # large media files (keep directory structure in git)
 # Note: All media now served via Replit App Storage API routes
 /public/audio/**/*.mp3

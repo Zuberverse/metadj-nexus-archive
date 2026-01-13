@@ -54,7 +54,7 @@ const personalizationSchema = z.object({
  * Page context schema for navigation awareness
  */
 const pageContextSchema = z.object({
-  view: z.enum(['collections', 'wisdom', 'cinema', 'search', 'queue'] as const),
+  view: z.enum(['collections', 'wisdom', 'cinema', 'journal', 'search', 'queue'] as const),
   details: z.string().optional(),
 })
 

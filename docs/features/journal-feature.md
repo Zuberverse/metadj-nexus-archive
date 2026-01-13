@@ -40,12 +40,18 @@ The **Journal** is a private, local-first space for users to capture ideas, drea
 - **Fixed container**: Editor stays a consistent height even when empty; content scrolls inside the surface when it exceeds the available space.
 - **Clean edges**: Taller surface with no external drop shadow for a tighter glass frame.
 
-### 6. Search Integration
+### 6. Export & Import (Local Only)
+- **Export**: Download a JSON backup of journal entries from the list view.
+- **Import**: Merge entries from a JSON export; newer `updatedAt` wins on conflicts.
+- **Optional encryption**: AES‑GCM with PBKDF2‑derived keys (passphrase never stored).
+- **Local-only**: Export/import stays in browser file I/O—no server transfer.
+
+### 7. Search Integration
 - **Unified search**: Journal entries surface inside the global SearchBar results alongside tracks and wisdom.
 - **Deep linking**: Selecting a Journal result opens the Wisdom view and focuses the selected entry.
 - **Local-only**: Search pulls from `metadj_wisdom_journal_entries` in localStorage.
 
-### 7. Analytics (Metadata Only)
+### 8. Analytics (Metadata Only)
 - **Entry lifecycle**: `journal_entry_created`, `journal_entry_updated`, `journal_entry_deleted`.
 - **Privacy-first metrics**: length and word count metadata only—no journal content is tracked.
 
@@ -84,5 +90,4 @@ interface JournalEntry {
 - `metadj_wisdom_journal_draft_content` — unsaved body buffer
 
 ## Future Enhancements (Planned)
-- **Export/Import**: Allow users to backup their journal to a JSON file.
-- **Encryption**: Optional password protection for journal entries.
+- **Cross-device sync**: Optional cloud sync with explicit user consent.

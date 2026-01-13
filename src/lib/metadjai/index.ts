@@ -13,3 +13,8 @@ export {
 } from "./external-prompts"
 
 export { parseProposal } from "./proposal-schema"
+
+export {
+  metaDjAiResponseSchema,
+  type MetaDjAiStructuredReply,
+} from "./response-schema"

@@ -25,6 +25,7 @@ import {
   DEFAULT_PERSONALIZATION_STATE,
   normalizePersonalizationState,
 } from '@/lib/ai/personalization'
+import { OPEN_FEEDBACK_EVENT, type OpenFeedbackEventDetail } from '@/lib/ai/tools'
 import { logger } from '@/lib/logger'
 import { parseProposal } from '@/lib/metadjai/proposal-schema'
 import { getString, getValue, setString, setValue, STORAGE_KEYS } from '@/lib/storage'
@@ -64,6 +65,20 @@ interface StreamRequestConfig {
 interface StreamRequestResult {
   success: boolean
   hadStreamError: boolean
+}
+
+function dispatchFeedbackOpen(result?: unknown) {
+  if (typeof window === 'undefined') return
+
+  let detail: OpenFeedbackEventDetail | undefined
+  if (result && typeof result === 'object' && 'feedbackType' in result) {
+    const feedbackType = (result as { feedbackType?: OpenFeedbackEventDetail['feedbackType'] }).feedbackType
+    if (feedbackType) {
+      detail = { feedbackType }
+    }
+  }
+
+  window.dispatchEvent(new CustomEvent(OPEN_FEEDBACK_EVENT, { detail }))
 }
 
 /**
@@ -466,7 +481,11 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
       }
 
       // Helper to handle tool results that should surface as proposals
-      const handleToolResult = (_toolName: string, result: unknown) => {
+      const handleToolResult = (toolName: string, result: unknown) => {
+        if (toolName === 'openFeedback') {
+          dispatchFeedbackOpen(result)
+        }
+
         const proposal = parseProposal(result)
         if (!proposal) return
 
@@ -737,7 +756,11 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     }
 
     // Helper to handle tool results that should surface as proposals
-    const handleToolResult = (_toolName: string, result: unknown) => {
+    const handleToolResult = (toolName: string, result: unknown) => {
+      if (toolName === 'openFeedback') {
+        dispatchFeedbackOpen(result)
+      }
+
       const proposal = parseProposal(result)
       if (!proposal) return
 

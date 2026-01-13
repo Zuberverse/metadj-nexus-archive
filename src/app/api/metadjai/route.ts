@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateText } from 'ai';
+import { Output, ToolLoopAgent } from 'ai';
 import { isCircuitOpen, isProviderError, recordFailure, recordSuccess } from '@/lib/ai/circuit-breaker';
 import { createStopCondition, getAIRequestTimeout, isTimeoutError } from '@/lib/ai/config';
 import { isFailoverEnabled } from '@/lib/ai/failover';
@@ -32,6 +32,7 @@ import { getTools } from '@/lib/ai/tools';
 import { validateMetaDjAiRequest } from '@/lib/ai/validation';
 import { getEnv } from '@/lib/env';
 import { logger } from '@/lib/logger';
+import { metaDjAiResponseSchema } from '@/lib/metadjai/response-schema';
 import { getRequestId } from '@/lib/request-id';
 import { validateOrigin, buildOriginForbiddenResponse } from '@/lib/validation/origin-validation';
 import { getMaxRequestSize, readJsonBodyWithLimit } from '@/lib/validation/request-size';
@@ -41,6 +42,7 @@ import type {
 } from '@/types/metadjai.types';
 
 export const runtime = 'nodejs';
+const structuredReplyOutput = Output.object({ schema: metaDjAiResponseSchema });
 
 /**
  * Processes a non-streaming chat request to the MetaDJai AI companion.
@@ -255,10 +257,23 @@ export async function POST(request: NextRequest) {
     return extracted.length > 0 ? extracted : undefined;
   };
 
+  const extractReplyText = (result: { text: string; output?: { reply?: unknown } }) => {
+    const outputReply =
+      result.output && typeof result.output === 'object' && 'reply' in result.output
+        ? result.output.reply
+        : undefined;
+    const reply = typeof outputReply === 'string' && outputReply.trim()
+      ? outputReply
+      : result.text;
+
+    return reply;
+  };
+
   // Helper to build success response and record spending
   const buildSuccessResponse = async (
     result: {
       text: string;
+      output?: { reply?: unknown };
       toolCalls?: Array<{ toolCallId: string; toolName: string }>;
       toolResults?: unknown;
       usage?: { inputTokens?: number; outputTokens?: number };
@@ -272,7 +287,8 @@ export async function POST(request: NextRequest) {
     })) ?? [];
     const toolResults = extractToolResults(result.toolResults);
 
-    const trackedReply = validateWebSearchCitations(result.text, toolUsage);
+    const reply = extractReplyText(result);
+    const trackedReply = validateWebSearchCitations(reply, toolUsage);
 
     const body: MetaDjAiApiResponseBody = {
       reply: trackedReply,
@@ -332,17 +348,21 @@ export async function POST(request: NextRequest) {
     if (fallbackModel && fallbackModelInfo && fallbackSettings) {
       try {
         const providerOptions = getProviderOptions(fallbackSettings.provider);
-        const result = await generateText({
+        const tools = await getTools(fallbackSettings.provider, {
+          webSearchAvailable: isWebSearchAvailable(fallbackSettings.provider),
+        });
+        const agent = new ToolLoopAgent({
           model: fallbackModel,
           maxOutputTokens: fallbackSettings.maxOutputTokens,
           temperature: fallbackSettings.temperature,
-          system: buildSystemInstructions(fallbackSettings.provider, fallbackSettings.name),
-          messages: formattedMessages,
-          tools: getTools(fallbackSettings.provider, {
-            webSearchAvailable: isWebSearchAvailable(fallbackSettings.provider),
-          }),
+          instructions: buildSystemInstructions(fallbackSettings.provider, fallbackSettings.name),
+          tools,
           providerOptions,
           stopWhen: createStopCondition(),
+          output: structuredReplyOutput,
+        });
+        const result = await agent.generate({
+          messages: formattedMessages,
           abortSignal: controller.signal,
         });
 
@@ -372,17 +392,21 @@ export async function POST(request: NextRequest) {
     const modelSettings = getModelSettingsForProvider(preferredProvider);
     const providerOptions = getProviderOptions(modelSettings.provider);
 
-    const result = await generateText({
+    const tools = await getTools(modelSettings.provider, {
+      webSearchAvailable: isWebSearchAvailable(modelSettings.provider),
+    });
+    const agent = new ToolLoopAgent({
       model,
       maxOutputTokens: modelSettings.maxOutputTokens,
       temperature: modelSettings.temperature,
-      system: buildSystemInstructions(modelSettings.provider, modelSettings.name),
-      messages: formattedMessages,
-      tools: getTools(modelSettings.provider, {
-        webSearchAvailable: isWebSearchAvailable(modelSettings.provider),
-      }),
+      instructions: buildSystemInstructions(modelSettings.provider, modelSettings.name),
+      tools,
       providerOptions,
       stopWhen: createStopCondition(),
+      output: structuredReplyOutput,
+    });
+    const result = await agent.generate({
+      messages: formattedMessages,
       abortSignal: controller.signal,
     });
 
@@ -427,17 +451,21 @@ export async function POST(request: NextRequest) {
 
         try {
           const fallbackProviderOptions = getProviderOptions(fallbackSettings.provider);
-          const result = await generateText({
+          const tools = await getTools(fallbackSettings.provider, {
+            webSearchAvailable: isWebSearchAvailable(fallbackSettings.provider),
+          });
+          const agent = new ToolLoopAgent({
             model: fallbackModel,
             maxOutputTokens: fallbackSettings.maxOutputTokens,
             temperature: fallbackSettings.temperature,
-            system: buildSystemInstructions(fallbackSettings.provider, fallbackSettings.name),
-            messages: formattedMessages,
-            tools: getTools(fallbackSettings.provider, {
-              webSearchAvailable: isWebSearchAvailable(fallbackSettings.provider),
-            }),
+            instructions: buildSystemInstructions(fallbackSettings.provider, fallbackSettings.name),
+            tools,
             providerOptions: fallbackProviderOptions,
             stopWhen: createStopCondition(),
+            output: structuredReplyOutput,
+          });
+          const result = await agent.generate({
+            messages: formattedMessages,
             abortSignal: fallbackController.signal,
           });
 

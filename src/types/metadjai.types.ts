@@ -213,7 +213,7 @@ export interface MetaDjAiContext {
   /** Internal intent hint (adaptive default; values ignored in UI) */
   mode?: MetaDjAiMode;
   pageContext?: {
-    view: 'collections' | 'wisdom' | 'cinema' | 'search' | 'queue';
+    view: 'collections' | 'wisdom' | 'cinema' | 'journal' | 'search' | 'queue';
     details?: string;
   };
   /** Specific content the user is viewing (used for Wisdom summaries and page-aware help). */

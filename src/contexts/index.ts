@@ -5,6 +5,9 @@
  * Import from '@/contexts' for cleaner imports.
  */
 
+// Auth Context
+export { AuthProvider, useAuth } from './AuthContext';
+
 // Modal Context
 export { ModalProvider, useModal } from './ModalContext';
 

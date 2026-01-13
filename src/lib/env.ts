@@ -53,6 +53,12 @@ const serverEnvSchema = z.object({
   OPENAI_TRANSCRIBE_MODEL: z.string().min(1).optional(),
   GOOGLE_API_KEY: z.string().min(1).optional(),
   XAI_API_KEY: z.string().min(1).optional(),
+  // Local-only AI tooling
+  AI_MCP_ENABLED: z.enum(['true', 'false']).optional(),
+  AI_MCP_SERVER_COMMAND: z.string().optional(),
+  AI_MCP_SERVER_ARGS: z.string().optional(),
+  AI_MCP_SERVER_CWD: z.string().optional(),
+  AI_DEVTOOLS_ENABLED: z.enum(['true', 'false']).optional(),
 
   // Daydream StreamDiffusion
   DAYDREAM_API_KEY: z.string().min(1, { message: 'DAYDREAM_API_KEY is required for Dream' }).optional(),
@@ -202,6 +208,11 @@ export function getServerEnv() {
     OPENAI_TRANSCRIBE_MODEL: env.OPENAI_TRANSCRIBE_MODEL,
     GOOGLE_API_KEY: env.GOOGLE_API_KEY,
     XAI_API_KEY: env.XAI_API_KEY,
+    AI_MCP_ENABLED: env.AI_MCP_ENABLED,
+    AI_MCP_SERVER_COMMAND: env.AI_MCP_SERVER_COMMAND,
+    AI_MCP_SERVER_ARGS: env.AI_MCP_SERVER_ARGS,
+    AI_MCP_SERVER_CWD: env.AI_MCP_SERVER_CWD,
+    AI_DEVTOOLS_ENABLED: env.AI_DEVTOOLS_ENABLED,
     DAYDREAM_API_KEY: env.DAYDREAM_API_KEY,
     DAYDREAM_API_GATEWAY: env.DAYDREAM_API_GATEWAY,
     DAYDREAM_WHIP_ALLOWED_HOSTS: env.DAYDREAM_WHIP_ALLOWED_HOSTS,

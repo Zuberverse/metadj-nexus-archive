@@ -1,22 +1,15 @@
 "use client"
 
-import { type FC, type ClipboardEvent, useEffect, useState, useRef, useCallback, useMemo } from "react"
+import { type FC, type ClipboardEvent, type ChangeEvent, useEffect, useState, useRef, useCallback, useMemo } from "react"
 import clsx from "clsx"
-import { Book, Plus, Save, Trash2, Mic, Loader2, AlertTriangle, Bold, Italic, Underline, List, Quote, Link, Code, ListOrdered, Heading1, Heading2, Heading3, SeparatorHorizontal } from "lucide-react"
+import { Book, Plus, Save, Trash2, Mic, Loader2, AlertTriangle, Bold, Italic, Underline, List, Quote, Link, Code, ListOrdered, Heading1, Heading2, Heading3, SeparatorHorizontal, Download, Upload } from "lucide-react"
 import { marked } from "marked"
 import TurndownService from "turndown"
 import { useToast } from "@/contexts/ToastContext"
 import { trackJournalEntryCreated, trackJournalEntryDeleted, trackJournalEntryUpdated } from "@/lib/analytics"
+import { createJournalExport, mergeJournalEntries, parseJournalImport, type JournalEntry } from "@/lib/journal"
 import { logger } from "@/lib/logger"
 import { STORAGE_KEYS, getString, setString, removeValue } from "@/lib/storage"
-
-interface JournalEntry {
-    id: string
-    title: string
-    content: string
-    createdAt: string
-    updatedAt: string
-}
 
 type JournalViewState = "list" | "editing"
 
@@ -48,6 +41,17 @@ export const Journal: FC = () => {
     // Delete Confirmation State
     const [entryToDelete, setEntryToDelete] = useState<string | null>(null)
 
+    // Export / Import State
+    const [isExportOpen, setIsExportOpen] = useState(false)
+    const [isImportOpen, setIsImportOpen] = useState(false)
+    const [exportEncrypted, setExportEncrypted] = useState(false)
+    const [exportPassphrase, setExportPassphrase] = useState("")
+    const [importPassphrase, setImportPassphrase] = useState("")
+    const [importFile, setImportFile] = useState<File | null>(null)
+    const [isExporting, setIsExporting] = useState(false)
+    const [isImporting, setIsImporting] = useState(false)
+    const importInputRef = useRef<HTMLInputElement | null>(null)
+
     // Speech to Text State
     const [isRecording, setIsRecording] = useState(false)
     const [isTranscribing, setIsTranscribing] = useState(false)
@@ -58,6 +62,7 @@ export const Journal: FC = () => {
 
     // Max recording duration (60 seconds)
     const MAX_RECORDING_DURATION_MS = 60_000
+    const MIN_PASSPHRASE_LENGTH = 8
 
     const extractTranscriptionText = (payload: unknown) => {
         if (typeof payload === "string") {
@@ -198,6 +203,121 @@ export const Journal: FC = () => {
         removeValue(STORAGE_KEYS.WISDOM_JOURNAL_DRAFT_ENTRY_ID)
         removeValue(STORAGE_KEYS.WISDOM_JOURNAL_LAST_ENTRY_ID)
         setString(STORAGE_KEYS.WISDOM_JOURNAL_LAST_VIEW, JOURNAL_VIEW_LIST)
+    }
+
+    const getExportFileName = (encrypted: boolean) => {
+        const dateLabel = new Date().toISOString().slice(0, 10)
+        return `metadj-journal-${dateLabel}${encrypted ? "-encrypted" : ""}.json`
+    }
+
+    const resetExportState = () => {
+        setIsExportOpen(false)
+        setExportEncrypted(false)
+        setExportPassphrase("")
+        setIsExporting(false)
+    }
+
+    const resetImportState = () => {
+        setIsImportOpen(false)
+        setImportPassphrase("")
+        setImportFile(null)
+        setIsImporting(false)
+        if (importInputRef.current) {
+            importInputRef.current.value = ""
+        }
+    }
+
+    const handleExportOpen = () => {
+        setIsExportOpen(true)
+    }
+
+    const handleExportClose = () => {
+        resetExportState()
+    }
+
+    const handleImportOpen = () => {
+        setIsImportOpen(true)
+    }
+
+    const handleImportClose = () => {
+        resetImportState()
+    }
+
+    const handleImportFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0] ?? null
+        setImportFile(file)
+    }
+
+    const handleExport = async () => {
+        if (entries.length === 0) {
+            showToast({ message: "No journal entries to export", variant: "info" })
+            return
+        }
+
+        const passphrase = exportPassphrase.trim()
+        if (exportEncrypted && passphrase.length < MIN_PASSPHRASE_LENGTH) {
+            showToast({ message: `Passphrase must be at least ${MIN_PASSPHRASE_LENGTH} characters`, variant: "error" })
+            return
+        }
+
+        setIsExporting(true)
+        try {
+            const payload = await createJournalExport(entries, {
+                encrypt: exportEncrypted,
+                passphrase: exportEncrypted ? passphrase : undefined,
+            })
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" })
+            const url = window.URL.createObjectURL(blob)
+            const link = document.createElement("a")
+            link.href = url
+            link.download = getExportFileName(exportEncrypted)
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+            window.URL.revokeObjectURL(url)
+
+            showToast({ message: "Journal export ready", variant: "success" })
+            resetExportState()
+        } catch (error) {
+            showToast({
+                message: error instanceof Error ? error.message : "Unable to export journal",
+                variant: "error",
+            })
+            setIsExporting(false)
+        }
+    }
+
+    const handleImport = async () => {
+        if (!importFile) {
+            showToast({ message: "Select a journal export file", variant: "error" })
+            return
+        }
+
+        setIsImporting(true)
+        try {
+            const fileText = await importFile.text()
+            const result = await parseJournalImport(fileText, {
+                passphrase: importPassphrase.trim() || undefined,
+            })
+            const merged = mergeJournalEntries(entries, result.entries)
+
+            if (merged.added === 0 && merged.updated === 0) {
+                showToast({ message: "No new entries to import", variant: "info" })
+            } else {
+                setEntries(merged.entries)
+                const total = merged.added + merged.updated
+                const updatesLabel = merged.updated > 0 ? ` (${merged.updated} updated)` : ""
+                showToast({ message: `Imported ${total} entries${updatesLabel}`, variant: "success" })
+            }
+
+            resetImportState()
+        } catch (error) {
+            showToast({
+                message: error instanceof Error ? error.message : "Unable to import journal",
+                variant: "error",
+            })
+            setIsImporting(false)
+        }
     }
 
     const handleSave = () => {
@@ -806,7 +926,7 @@ export const Journal: FC = () => {
 
     return (
         <section className="relative space-y-4 max-w-6xl mx-auto px-4 sm:px-6 lg:px-6 pt-4 min-[1100px]:pt-6 pb-24 min-[1100px]:pb-6">
-            <header className="flex items-center justify-between gap-4 border-b border-white/10 pb-3">
+            <header className="flex flex-col gap-3 border-b border-white/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 className="text-xl min-[1100px]:text-3xl font-heading font-bold text-pop">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-violet-400 to-cyan-300">Journal</span>
@@ -815,13 +935,29 @@ export const Journal: FC = () => {
                         Your personal space
                     </p>
                 </div>
-                <button
-                    onClick={handleCreateNew}
-                    className="group flex items-center gap-1.5 px-3 py-1.5 min-[1100px]:px-5 min-[1100px]:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-purple-400/30 hover:border-cyan-400/50 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]"
-                >
-                    <Plus className="h-4 w-4 min-[1100px]:h-5 min-[1100px]:w-5 shrink-0 text-cyan-300 group-hover:text-cyan-200 transition-colors" />
-                    <span className="text-heading-solid font-semibold text-sm min-[1100px]:text-base">New</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                    <button
+                        onClick={handleImportOpen}
+                        className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                    >
+                        <Upload className="h-3.5 w-3.5 text-cyan-200 group-hover:text-cyan-100 transition-colors" />
+                        Import
+                    </button>
+                    <button
+                        onClick={handleExportOpen}
+                        className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                    >
+                        <Download className="h-3.5 w-3.5 text-purple-200 group-hover:text-purple-100 transition-colors" />
+                        Export
+                    </button>
+                    <button
+                        onClick={handleCreateNew}
+                        className="group flex items-center gap-1.5 px-3 py-1.5 min-[1100px]:px-5 min-[1100px]:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-purple-400/30 hover:border-cyan-400/50 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]"
+                    >
+                        <Plus className="h-4 w-4 min-[1100px]:h-5 min-[1100px]:w-5 shrink-0 text-cyan-300 group-hover:text-cyan-200 transition-colors" />
+                        <span className="text-heading-solid font-semibold text-sm min-[1100px]:text-base">New</span>
+                    </button>
+                </div>
             </header>
 
             {entries.length === 0 ? (
@@ -867,6 +1003,135 @@ export const Journal: FC = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {isExportOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="w-full max-w-md bg-(--bg-surface-elevated) border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+                        <div className="flex items-center gap-3 text-cyan-200">
+                            <div className="p-2 rounded-full bg-cyan-400/10">
+                                <Download className="h-5 w-5" />
+                            </div>
+                            <h3 className="text-lg font-heading font-bold text-heading-solid">Export Journal</h3>
+                        </div>
+
+                        <p className="text-sm text-white/70">
+                            Download your journal entries as a JSON file. Encryption is optional and uses a local passphrase.
+                        </p>
+
+                        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/70">
+                            <input
+                                type="checkbox"
+                                checked={exportEncrypted}
+                                onChange={(event) => setExportEncrypted(event.target.checked)}
+                                className="h-4 w-4 rounded border-white/20 bg-black/60 text-cyan-300 focus-ring"
+                            />
+                            Encrypt with passphrase
+                        </label>
+
+                        {exportEncrypted && (
+                            <label className="text-xs font-semibold uppercase tracking-wider text-white/70">
+                                Passphrase
+                                <input
+                                    type="password"
+                                    value={exportPassphrase}
+                                    onChange={(event) => setExportPassphrase(event.target.value)}
+                                    className="mt-2 w-full rounded-xl border border-white/10 bg-black/60 px-3 py-2 text-sm text-white/90 focus-ring"
+                                    placeholder={`Minimum ${MIN_PASSPHRASE_LENGTH} characters`}
+                                />
+                            </label>
+                        )}
+
+                        <div className="flex items-center justify-end gap-3 pt-2">
+                            <button
+                                onClick={handleExportClose}
+                                className="px-4 py-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                                disabled={isExporting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleExport}
+                                className={clsx(
+                                    "px-5 py-2 rounded-full font-semibold transition-colors shadow-lg",
+                                    isExporting
+                                        ? "bg-white/10 text-white/50 cursor-default"
+                                        : "bg-cyan-500/20 text-cyan-100 hover:bg-cyan-500/30 border border-cyan-400/40"
+                                )}
+                                disabled={isExporting}
+                            >
+                                {isExporting ? "Preparing..." : "Download"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isImportOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="w-full max-w-md bg-(--bg-surface-elevated) border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+                        <div className="flex items-center gap-3 text-indigo-200">
+                            <div className="p-2 rounded-full bg-indigo-400/10">
+                                <Upload className="h-5 w-5" />
+                            </div>
+                            <h3 className="text-lg font-heading font-bold text-heading-solid">Import Journal</h3>
+                        </div>
+
+                        <p className="text-sm text-white/70">
+                            Import entries from a JSON export. Encrypted files require the original passphrase.
+                        </p>
+
+                        <label className="text-xs font-semibold uppercase tracking-wider text-white/70">
+                            Journal export file
+                            <input
+                                ref={importInputRef}
+                                type="file"
+                                accept="application/json"
+                                onChange={handleImportFileChange}
+                                className="mt-2 w-full rounded-xl border border-white/10 bg-black/60 px-3 py-2 text-sm text-white/80 focus-ring"
+                            />
+                        </label>
+
+                        {importFile && (
+                            <p className="text-[11px] text-white/60">
+                                Selected: {importFile.name}
+                            </p>
+                        )}
+
+                        <label className="text-xs font-semibold uppercase tracking-wider text-white/70">
+                            Passphrase (if encrypted)
+                            <input
+                                type="password"
+                                value={importPassphrase}
+                                onChange={(event) => setImportPassphrase(event.target.value)}
+                                className="mt-2 w-full rounded-xl border border-white/10 bg-black/60 px-3 py-2 text-sm text-white/90 focus-ring"
+                                placeholder="Leave blank if not encrypted"
+                            />
+                        </label>
+
+                        <div className="flex items-center justify-end gap-3 pt-2">
+                            <button
+                                onClick={handleImportClose}
+                                className="px-4 py-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                                disabled={isImporting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleImport}
+                                className={clsx(
+                                    "px-5 py-2 rounded-full font-semibold transition-colors shadow-lg",
+                                    !importFile || isImporting
+                                        ? "bg-white/10 text-white/50 cursor-default"
+                                        : "bg-indigo-500/20 text-indigo-100 hover:bg-indigo-500/30 border border-indigo-400/40"
+                                )}
+                                disabled={!importFile || isImporting}
+                            >
+                                {isImporting ? "Importing..." : "Import"}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 

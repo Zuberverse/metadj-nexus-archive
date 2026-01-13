@@ -4,7 +4,7 @@
 
 **Platform Notice**: This `AGENTS.md` is optimized for OpenAI Codex workflows running through the Codex CLI. Claude Code uses the paired `CLAUDE.md`, and Cursor IDE relies on the `.cursor/rules/` file when available; each platform gets the same standards.
 
-**Last Modified**: 2026-01-13 10:51 EST
+**Last Modified**: 2026-01-13 13:16 EST
 *Parent: /3-projects/5-software/AGENTS.md*
 
 ## Scope
@@ -141,9 +141,9 @@ MetaDJ Nexus has dedicated commands prefixed with `/nexus-` for common platform 
 
 | Command | Purpose |
 |---------|---------|
-| `/nexus-collection-prep` | Full collection workflow: local org → corpus storage → data files → R2 upload |
+| `/nexus-collection-prep` | Full collection workflow: local org → corpus archive (audio + art + docs) → data files → R2 upload |
 | `/nexus-video-prep` | Prepare video content for Cinema feature |
-| `/nexus-upload-music` | Upload individual tracks to Cloudflare R2 (lower-level) |
+| `/nexus-upload-music` | Upload tracks to Cloudflare R2 with required corpus sync (lower-level) |
 
 **Usage**: Invoke from the corpus root while working on Nexus-related tasks.
 

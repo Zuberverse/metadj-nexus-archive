@@ -173,6 +173,8 @@ export interface ModalStates {
   isWisdomOpen: boolean;
   isKeyboardShortcutsOpen: boolean;
   isMetaDjAiOpen: boolean;
+  isFeedbackOpen: boolean;
+  isAccountOpen: boolean;
 }
 
 /**
@@ -202,6 +204,8 @@ export interface UIContextValue {
   setWisdomOpen: (open: boolean) => void;
   setKeyboardShortcutsOpen: (open: boolean) => void;
   setMetaDjAiOpen: (open: boolean) => void;
+  setFeedbackOpen: (open: boolean) => void;
+  setAccountOpen: (open: boolean) => void;
 
   // Search state
   searchQuery: string;

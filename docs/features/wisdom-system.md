@@ -146,9 +146,13 @@ Wisdom remembers where a user last was:
 ### Filters
 
 Wisdom list views support lightweight discovery filters:
-- **Topic filter** uses the optional `topics` array on each item.
+- **Topic filter chips** use the optional `topics` array on each item (plus an “All topics” chip).
 - **Length filter** uses the `getReadTimeBucket` utility (short/medium/long) derived from read time estimates.
 - Filters apply only to list views; detail views remain accessible from deep links and state.
+
+### Reading Progress
+
+Detail views include a sticky reading progress bar that tracks scroll position across Thoughts, Guides, and Reflections.
 
 ## Sharing
 
@@ -173,7 +177,7 @@ Wisdom list views support lightweight discovery filters:
 - `activeView === "wisdom"` controls visibility; `WisdomExperience` is activated via the `active` prop from the home shells to delay fetching until Wisdom is actually opened.
 - Valid sections are `thoughts`, `guides`, `reflections`, and `journal`; unknown values are ignored.
 - Opening Wisdom automatically closes Cinema and MetaDJai.
-- Journal is private—no deep linking or sharing. Content stays in localStorage only.
+- Journal is private—no deep linking or sharing. Content stays in localStorage only (exports are local files).
 
 ## Content Sections
 
@@ -198,6 +202,7 @@ Wisdom list views support lightweight discovery filters:
 - List view with date, excerpt, and read time
 - Detail view with full content
 - Read time estimation displayed in both views
+- Reading progress bar pinned below the header
 - Header actions: **Share** copies the deep link; **Summarize** starts a fresh MetaDJai chat with a structured summary prompt for the content
 
 ### Guides
@@ -217,6 +222,7 @@ Wisdom list views support lightweight discovery filters:
 **Features**:
 - List view with category, section count, and read time
 - Detail view with table of contents
+- Reading progress bar pinned below the header
 - Smooth scroll navigation to sections
 - Read time estimation
 - Header actions: **Share** copies the deep link; **Summarize** starts a fresh MetaDJai chat with a context-aware summary prompt
@@ -237,6 +243,7 @@ Wisdom list views support lightweight discovery filters:
 **Features**:
 - List view with excerpt + read time
 - Detail view with table of contents and smooth scroll navigation
+- Reading progress bar pinned below the header
 - Read time estimation
 - Footer signs as "— MetaDJ" (sign-offs in body are stripped from render)
 - Header actions: **Share** copies the deep link; **Summarize** starts a fresh MetaDJai chat with a context-aware summary prompt
@@ -262,6 +269,7 @@ Wisdom list views support lightweight discovery filters:
 - **Writing Surface**: Full-height editor with fixed container, internal scrolling, and clean edge styling
 - **Delete Confirmation**: Modal confirmation before permanent deletion
 - **Local Persistence**: Entries stored in `localStorage` (no server sync)
+- **Export/Import**: Optional local JSON export/import with passphrase encryption
 - **Empty State**: Friendly prompt with "Start Writing" CTA when no entries exist
 
 **Voice Recording Flow**:
