@@ -6,7 +6,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession, createSession, updateUserEmail, updateUserPassword } from '@/lib/auth';
+import { getSession, createSession, updateUserEmail, updateUserUsername, updateUserPassword } from '@/lib/auth';
 
 export async function PATCH(request: Request) {
   try {
@@ -20,7 +20,7 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const { action, email, currentPassword, newPassword } = body;
+    const { action, email, username, currentPassword, newPassword } = body;
 
     if (action === 'updateEmail') {
       if (!email) {
@@ -32,7 +32,25 @@ export async function PATCH(request: Request) {
 
       const updatedUser = await updateUserEmail(session.id, email);
       if (updatedUser) {
-        // Update session with new email
+        await createSession(updatedUser);
+      }
+
+      return NextResponse.json({
+        success: true,
+        user: updatedUser,
+      });
+    }
+
+    if (action === 'updateUsername') {
+      if (!username) {
+        return NextResponse.json(
+          { success: false, message: 'Username is required' },
+          { status: 400 }
+        );
+      }
+
+      const updatedUser = await updateUserUsername(session.id, username);
+      if (updatedUser) {
         await createSession(updatedUser);
       }
 

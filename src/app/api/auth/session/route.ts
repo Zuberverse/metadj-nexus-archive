@@ -24,7 +24,9 @@ export async function GET() {
       user: {
         id: session.id,
         email: session.email,
+        username: session.username,
         isAdmin: session.isAdmin,
+        emailVerified: session.emailVerified,
       },
     });
   } catch (error) {

@@ -19,7 +19,9 @@ import {
 interface User {
   id: string;
   email: string;
+  username: string | null;
   isAdmin: boolean;
+  emailVerified: boolean;
 }
 
 interface AuthContextValue {
@@ -28,10 +30,12 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
-  register: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  register: (email: string, username: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   updateEmail: (email: string) => Promise<{ success: boolean; message?: string }>;
+  updateUsername: (username: string) => Promise<{ success: boolean; message?: string }>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; message?: string }>;
+  checkAvailability: (type: 'username' | 'email', value: string) => Promise<{ available: boolean; error?: string }>;
   refreshSession: () => Promise<void>;
 }
 
@@ -85,12 +89,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const register = useCallback(async (email: string, password: string) => {
+  const register = useCallback(async (email: string, username: string, password: string) => {
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, username, password }),
       });
 
       const data = await response.json();
@@ -139,6 +143,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const updateUsername = useCallback(async (username: string) => {
+    try {
+      const response = await fetch('/api/auth/account', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'updateUsername', username }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.user) {
+        setUser(data.user);
+        return { success: true };
+      }
+
+      return { success: false, message: data.message || 'Update failed' };
+    } catch (error) {
+      console.error('[Auth] Update username error:', error);
+      return { success: false, message: 'An error occurred' };
+    }
+  }, []);
+
+  const checkAvailability = useCallback(async (type: 'username' | 'email', value: string) => {
+    try {
+      const response = await fetch('/api/auth/check-availability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, value }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        return { available: data.available, error: data.error };
+      }
+
+      return { available: false, error: data.message || 'Check failed' };
+    } catch (error) {
+      console.error('[Auth] Check availability error:', error);
+      return { available: false, error: 'An error occurred' };
+    }
+  }, []);
+
   const updatePassword = useCallback(async (currentPassword: string, newPassword: string) => {
     try {
       const response = await fetch('/api/auth/account', {
@@ -170,10 +217,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       logout,
       updateEmail,
+      updateUsername,
       updatePassword,
+      checkAvailability,
       refreshSession,
     }),
-    [user, isLoading, login, register, logout, updateEmail, updatePassword, refreshSession]
+    [user, isLoading, login, register, logout, updateEmail, updateUsername, updatePassword, checkAvailability, refreshSession]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -24,13 +24,52 @@ type AuthMode = 'login' | 'signup';
 
 export function LandingPage() {
   const router = useRouter();
-  const { login, register, isLoading: authLoading } = useAuth();
+  const { login, register, checkAvailability, isLoading: authLoading } = useAuth();
   const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [usernameChecking, setUsernameChecking] = useState(false);
   const [password, setPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateUsername = async (value: string) => {
+    if (value.length < 3) {
+      setUsernameError('Username must be at least 3 characters');
+      return;
+    }
+    if (!/^[a-z0-9_]+$/.test(value.toLowerCase())) {
+      setUsernameError('Only lowercase letters, numbers, and underscores');
+      return;
+    }
+    if (/^[0-9]/.test(value)) {
+      setUsernameError('Cannot start with a number');
+      return;
+    }
+    
+    setUsernameChecking(true);
+    setUsernameError('');
+    
+    const result = await checkAvailability('username', value);
+    setUsernameChecking(false);
+    
+    if (!result.available) {
+      setUsernameError(result.error || 'Username is taken');
+    }
+  };
+
+  const handleUsernameChange = (value: string) => {
+    const normalized = value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+    setUsername(normalized);
+    setUsernameError('');
+    
+    if (normalized.length >= 3) {
+      const timeoutId = setTimeout(() => validateUsername(normalized), 500);
+      return () => clearTimeout(timeoutId);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,12 +81,18 @@ export function LandingPage() {
       return;
     }
 
+    // Validate username for signup
+    if (mode === 'signup' && usernameError) {
+      setError('Please fix the username error');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const result = mode === 'login'
         ? await login(email, password)
-        : await register(email, password);
+        : await register(email, username, password);
 
       if (result.success) {
         router.push('/app');
@@ -207,6 +252,44 @@ export function LandingPage() {
                         disabled={isSubmitting || authLoading}
                       />
                     </div>
+
+                    {mode === 'signup' && (
+                      <div>
+                        <label htmlFor="username" className="block text-sm font-medium text-white/70 mb-2">
+                          Username
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="username"
+                            type="text"
+                            value={username}
+                            onChange={(e) => handleUsernameChange(e.target.value)}
+                            placeholder="your_unique_name"
+                            className={`w-full px-4 py-3 bg-white/5 border rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-1 transition-all ${
+                              usernameError 
+                                ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500' 
+                                : username.length >= 3 && !usernameChecking
+                                  ? 'border-green-500/50 focus:border-green-500 focus:ring-green-500'
+                                  : 'border-white/10 focus:border-purple-500 focus:ring-purple-500'
+                            }`}
+                            required
+                            minLength={3}
+                            maxLength={20}
+                            disabled={isSubmitting || authLoading}
+                          />
+                          {usernameChecking && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            </div>
+                          )}
+                        </div>
+                        {usernameError ? (
+                          <p className="mt-2 text-xs text-red-400">{usernameError}</p>
+                        ) : (
+                          <p className="mt-2 text-xs text-white/50">3-20 characters, letters, numbers, underscores</p>
+                        )}
+                      </div>
+                    )}
 
                     <div>
                       <label htmlFor="password" className="block text-sm font-medium text-white/70 mb-2">

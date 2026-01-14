@@ -36,7 +36,9 @@ export async function POST(request: Request) {
       user: {
         id: user.id,
         email: user.email,
+        username: user.username,
         isAdmin: user.isAdmin,
+        emailVerified: user.emailVerified,
       },
     });
   } catch (error) {
