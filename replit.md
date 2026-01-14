@@ -82,7 +82,8 @@ Key capabilities include:
 - **User Account Button**: User icon button in desktop header (visible at 1100px+) for quick access to account settings panel
 
 ### Footer Updates
-- All footer text now uses Cinzel font (`font-heading`) for consistent typography
+- Left legal notice uses Poppins (`font-sans`) for readability; right-side links use Cinzel (`font-heading`)
+- Subtle dot separator between MetaDJ and Zuberant branding text
 - Removed @axe-core/react debug tool (was causing debug box to appear at bottom of page)
 
 ### Session Management

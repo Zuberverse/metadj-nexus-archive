@@ -14,7 +14,7 @@ export function Footer({ onInfoOpen }: FooterProps) {
       <div className="relative z-10 mx-auto w-full max-w-(--breakpoint-2xl) px-4 pt-6 pb-20 sm:px-6 sm:py-4 min-[1100px]:pb-4">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:gap-6">
           {/* Legal Notice - Ultra Minimal (Hidden on very small screens, integrated on desktop) */}
-          <p className="hidden md:block text-[10px] lg:text-[11px] font-heading font-medium text-muted-accessible leading-relaxed hover:text-white/80 transition-colors duration-300 text-left flex-1 truncate">
+          <p className="hidden md:block text-[10px] lg:text-[11px] font-sans font-medium text-muted-accessible leading-relaxed hover:text-white/80 transition-colors duration-300 text-left flex-1 truncate">
             MetaDJ Nexus. Original works & AI-driven content. Reproduction prohibited.
           </p>
 
@@ -37,6 +37,7 @@ export function Footer({ onInfoOpen }: FooterProps) {
             </Link>
             <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-1">
               <span className="text-white/70 font-black">MetaDJ</span>
+              <span className="text-white/30 text-[8px]" aria-hidden="true">•</span>
               <span className="text-white/70 font-black">Zuberant</span>
             </div>
           </div>
