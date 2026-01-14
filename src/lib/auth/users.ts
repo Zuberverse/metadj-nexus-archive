@@ -1,58 +1,15 @@
 /**
  * User Management
  *
- * JSON-based user storage for development and single-instance deployments.
- * For production with multiple instances, migrate to a database.
+ * PostgreSQL-based user storage via Drizzle ORM.
+ * Uses the storage layer for database operations.
  *
- * See docs/AUTH-SYSTEM.md for database migration guide.
+ * See docs/AUTH-SYSTEM.md for architecture details.
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
+import * as storage from '../../../server/storage';
 import { hashPassword, verifyPassword } from './password';
 import type { User, SessionUser, LoginCredentials, RegisterCredentials } from './types';
-
-// Use a data directory that persists (in Replit, this is the project root)
-const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), 'data');
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
-
-/**
- * Ensure the data directory and users file exist
- */
-async function ensureDataFile(): Promise<void> {
-  try {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    try {
-      await fs.access(USERS_FILE);
-    } catch {
-      await fs.writeFile(USERS_FILE, JSON.stringify({ users: [] }, null, 2));
-    }
-  } catch (error) {
-    console.error('[Auth] Failed to initialize data file:', error);
-  }
-}
-
-/**
- * Read all users from storage
- */
-async function readUsers(): Promise<User[]> {
-  await ensureDataFile();
-  try {
-    const data = await fs.readFile(USERS_FILE, 'utf-8');
-    const parsed = JSON.parse(data);
-    return parsed.users || [];
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Write users to storage
- */
-async function writeUsers(users: User[]): Promise<void> {
-  await ensureDataFile();
-  await fs.writeFile(USERS_FILE, JSON.stringify({ users }, null, 2));
-}
 
 /**
  * Generate a unique user ID
@@ -62,10 +19,23 @@ function generateUserId(): string {
 }
 
 /**
+ * Create a virtual admin user object
+ */
+function createAdminUser(): User {
+  return {
+    id: 'admin',
+    email: 'admin',
+    passwordHash: '',
+    isAdmin: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+/**
  * Find a user by email (or "admin" username)
  */
 export async function findUserByEmail(email: string): Promise<User | null> {
-  const users = await readUsers();
   const normalizedEmail = email.toLowerCase().trim();
 
   // Special case: admin login
@@ -75,18 +45,21 @@ export async function findUserByEmail(email: string): Promise<User | null> {
       console.warn('[Auth] ADMIN_PASSWORD not set, admin login disabled');
       return null;
     }
-    // Return a virtual admin user (password checked separately)
-    return {
-      id: 'admin',
-      email: 'admin',
-      passwordHash: '', // Will use env var for password check
-      isAdmin: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    return createAdminUser();
   }
 
-  return users.find((u) => u.email.toLowerCase() === normalizedEmail) || null;
+  const user = await storage.findUserByEmail(normalizedEmail);
+  if (!user) return null;
+
+  // Convert database user to auth user type
+  return {
+    id: user.id,
+    email: user.email,
+    passwordHash: user.passwordHash,
+    isAdmin: user.isAdmin,
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString(),
+  };
 }
 
 /**
@@ -94,18 +67,20 @@ export async function findUserByEmail(email: string): Promise<User | null> {
  */
 export async function findUserById(id: string): Promise<User | null> {
   if (id === 'admin') {
-    return {
-      id: 'admin',
-      email: 'admin',
-      passwordHash: '',
-      isAdmin: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    return createAdminUser();
   }
 
-  const users = await readUsers();
-  return users.find((u) => u.id === id) || null;
+  const user = await storage.findUserById(id);
+  if (!user) return null;
+
+  return {
+    id: user.id,
+    email: user.email,
+    passwordHash: user.passwordHash,
+    isAdmin: user.isAdmin,
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString(),
+  };
 }
 
 /**
@@ -183,21 +158,14 @@ export async function registerUser(
     throw new Error('This email cannot be used for registration');
   }
 
-  const users = await readUsers();
   const passwordHash = await hashPassword(password);
-  const now = new Date().toISOString();
 
-  const newUser: User = {
+  const newUser = await storage.createUser({
     id: generateUserId(),
     email: normalizedEmail,
     passwordHash,
     isAdmin: false,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  users.push(newUser);
-  await writeUsers(users);
+  });
 
   return {
     id: newUser.id,
@@ -229,20 +197,15 @@ export async function updateUserEmail(
     throw new Error('This email is already in use');
   }
 
-  const users = await readUsers();
-  const userIndex = users.findIndex((u) => u.id === userId);
-  if (userIndex === -1) {
+  const updated = await storage.updateUserEmail(userId, normalizedEmail);
+  if (!updated) {
     throw new Error('User not found');
   }
 
-  users[userIndex].email = normalizedEmail;
-  users[userIndex].updatedAt = new Date().toISOString();
-  await writeUsers(users);
-
   return {
-    id: users[userIndex].id,
-    email: users[userIndex].email,
-    isAdmin: users[userIndex].isAdmin,
+    id: updated.id,
+    email: updated.email,
+    isAdmin: updated.isAdmin,
   };
 }
 
@@ -262,8 +225,7 @@ export async function updateUserPassword(
     throw new Error('Password must be at least 8 characters');
   }
 
-  const users = await readUsers();
-  const user = users.find((u) => u.id === userId);
+  const user = await findUserById(userId);
   if (!user) {
     throw new Error('User not found');
   }
@@ -275,25 +237,29 @@ export async function updateUserPassword(
   }
 
   // Update password
-  user.passwordHash = await hashPassword(newPassword);
-  user.updatedAt = new Date().toISOString();
-  await writeUsers(users);
-
-  return true;
+  const newPasswordHash = await hashPassword(newPassword);
+  const updated = await storage.updateUserPassword(userId, newPasswordHash);
+  
+  return !!updated;
 }
 
 /**
  * Get all users (admin only)
  */
 export async function getAllUsers(): Promise<Omit<User, 'passwordHash'>[]> {
-  const users = await readUsers();
-  return users.map(({ passwordHash, ...user }) => user);
+  const users = await storage.getAllUsers();
+  return users.map((user) => ({
+    id: user.id,
+    email: user.email,
+    isAdmin: user.isAdmin,
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString(),
+  }));
 }
 
 /**
  * Get user count
  */
 export async function getUserCount(): Promise<number> {
-  const users = await readUsers();
-  return users.length;
+  return storage.getUserCount();
 }
