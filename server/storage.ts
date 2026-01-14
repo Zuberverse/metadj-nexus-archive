@@ -15,6 +15,7 @@ import {
   conversations,
   messages,
   analyticsEvents,
+  emailVerificationTokens,
   type User,
   type NewUser,
   type Session,
@@ -27,6 +28,7 @@ import {
   type Message,
   type NewMessage,
   type AnalyticsEvent,
+  type EmailVerificationToken,
 } from '../shared/schema';
 
 /**
@@ -137,6 +139,168 @@ export async function updateUserPassword(id: string, passwordHash: string): Prom
     .returning();
   
   return updated || null;
+}
+
+/**
+ * Find a user by username (case-insensitive)
+ */
+export async function findUserByUsername(username: string): Promise<User | null> {
+  const normalizedUsername = username.toLowerCase().trim();
+  
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.username, normalizedUsername))
+    .limit(1);
+  
+  return user || null;
+}
+
+/**
+ * Check if a username is available
+ */
+export async function isUsernameAvailable(username: string, excludeUserId?: string): Promise<boolean> {
+  const normalizedUsername = username.toLowerCase().trim();
+  
+  const [existing] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(
+      excludeUserId
+        ? and(eq(users.username, normalizedUsername), sql`${users.id} != ${excludeUserId}`)
+        : eq(users.username, normalizedUsername)
+    )
+    .limit(1);
+  
+  return !existing;
+}
+
+/**
+ * Check if an email is available
+ */
+export async function isEmailAvailable(email: string, excludeUserId?: string): Promise<boolean> {
+  const normalizedEmail = email.toLowerCase().trim();
+  
+  const [existing] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(
+      excludeUserId
+        ? and(eq(users.email, normalizedEmail), sql`${users.id} != ${excludeUserId}`)
+        : eq(users.email, normalizedEmail)
+    )
+    .limit(1);
+  
+  return !existing;
+}
+
+/**
+ * Update user username
+ */
+export async function updateUserUsername(id: string, username: string): Promise<User | null> {
+  const normalizedUsername = username.toLowerCase().trim();
+  
+  const [updated] = await db
+    .update(users)
+    .set({
+      username: normalizedUsername,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, id))
+    .returning();
+  
+  return updated || null;
+}
+
+/**
+ * Update user email verification status
+ */
+export async function updateUserEmailVerified(id: string, verified: boolean): Promise<User | null> {
+  const [updated] = await db
+    .update(users)
+    .set({
+      emailVerified: verified,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, id))
+    .returning();
+  
+  return updated || null;
+}
+
+// ============================================================================
+// Email Verification Token Operations
+// ============================================================================
+
+/**
+ * Create an email verification token
+ */
+export async function createEmailVerificationToken(
+  userId: string,
+  email: string,
+  tokenHash: string,
+  expiresAt: Date
+): Promise<EmailVerificationToken> {
+  const id = generateId('evt');
+  
+  await db
+    .delete(emailVerificationTokens)
+    .where(eq(emailVerificationTokens.userId, userId));
+  
+  const [token] = await db
+    .insert(emailVerificationTokens)
+    .values({
+      id,
+      userId,
+      email: email.toLowerCase().trim(),
+      tokenHash,
+      expiresAt,
+      createdAt: new Date(),
+    })
+    .returning();
+  
+  return token;
+}
+
+/**
+ * Find a valid email verification token by user ID
+ */
+export async function findEmailVerificationToken(userId: string): Promise<EmailVerificationToken | null> {
+  const [token] = await db
+    .select()
+    .from(emailVerificationTokens)
+    .where(
+      and(
+        eq(emailVerificationTokens.userId, userId),
+        isNull(emailVerificationTokens.usedAt),
+        gte(emailVerificationTokens.expiresAt, new Date())
+      )
+    )
+    .limit(1);
+  
+  return token || null;
+}
+
+/**
+ * Mark an email verification token as used
+ */
+export async function consumeEmailVerificationToken(tokenId: string): Promise<EmailVerificationToken | null> {
+  const [updated] = await db
+    .update(emailVerificationTokens)
+    .set({ usedAt: new Date() })
+    .where(eq(emailVerificationTokens.id, tokenId))
+    .returning();
+  
+  return updated || null;
+}
+
+/**
+ * Delete all verification tokens for a user
+ */
+export async function deleteVerificationTokensForUser(userId: string): Promise<void> {
+  await db
+    .delete(emailVerificationTokens)
+    .where(eq(emailVerificationTokens.userId, userId));
 }
 
 /**

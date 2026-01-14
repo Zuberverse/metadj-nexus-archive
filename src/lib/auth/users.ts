@@ -25,8 +25,10 @@ function createAdminUser(): User {
   return {
     id: 'admin',
     email: 'admin',
+    username: 'admin',
     passwordHash: '',
     isAdmin: true,
+    emailVerified: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -55,8 +57,10 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   return {
     id: user.id,
     email: user.email,
+    username: user.username,
     passwordHash: user.passwordHash,
     isAdmin: user.isAdmin,
+    emailVerified: user.emailVerified,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };
@@ -76,8 +80,10 @@ export async function findUserById(id: string): Promise<User | null> {
   return {
     id: user.id,
     email: user.email,
+    username: user.username,
     passwordHash: user.passwordHash,
     isAdmin: user.isAdmin,
+    emailVerified: user.emailVerified,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };
@@ -103,7 +109,9 @@ export async function authenticateUser(
       return {
         id: 'admin',
         email: 'admin',
+        username: 'admin',
         isAdmin: true,
+        emailVerified: true,
       };
     }
     return null;
@@ -118,8 +126,37 @@ export async function authenticateUser(
   return {
     id: user.id,
     email: user.email,
+    username: user.username,
     isAdmin: user.isAdmin,
+    emailVerified: user.emailVerified,
   };
+}
+
+/**
+ * Validate username format (lowercase alphanumeric and underscores, 3-20 chars)
+ */
+function validateUsername(username: string): { valid: boolean; error?: string } {
+  const normalized = username.toLowerCase().trim();
+  
+  if (normalized.length < 3) {
+    return { valid: false, error: 'Username must be at least 3 characters' };
+  }
+  if (normalized.length > 20) {
+    return { valid: false, error: 'Username must be 20 characters or less' };
+  }
+  if (!/^[a-z0-9_]+$/.test(normalized)) {
+    return { valid: false, error: 'Username can only contain lowercase letters, numbers, and underscores' };
+  }
+  if (/^[0-9]/.test(normalized)) {
+    return { valid: false, error: 'Username cannot start with a number' };
+  }
+  
+  const reserved = ['admin', 'root', 'system', 'metadj', 'metadjai', 'support', 'help', 'api', 'www'];
+  if (reserved.includes(normalized)) {
+    return { valid: false, error: 'This username is reserved' };
+  }
+  
+  return { valid: true };
 }
 
 /**
@@ -133,8 +170,9 @@ export async function registerUser(
     throw new Error('Registration is currently disabled');
   }
 
-  const { email, password } = credentials;
+  const { email, username, password } = credentials;
   const normalizedEmail = email.toLowerCase().trim();
+  const normalizedUsername = username.toLowerCase().trim();
 
   // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -142,18 +180,30 @@ export async function registerUser(
     throw new Error('Invalid email format');
   }
 
+  // Validate username format
+  const usernameValidation = validateUsername(username);
+  if (!usernameValidation.valid) {
+    throw new Error(usernameValidation.error);
+  }
+
   // Check password strength
   if (password.length < 8) {
     throw new Error('Password must be at least 8 characters');
   }
 
-  // Check if user already exists
-  const existingUser = await findUserByEmail(email);
-  if (existingUser) {
+  // Check if email already exists
+  const emailAvailable = await storage.isEmailAvailable(normalizedEmail);
+  if (!emailAvailable) {
     throw new Error('An account with this email already exists');
   }
 
-  // Reserved usernames
+  // Check if username already exists
+  const usernameAvailable = await storage.isUsernameAvailable(normalizedUsername);
+  if (!usernameAvailable) {
+    throw new Error('This username is already taken');
+  }
+
+  // Reserved admin email
   if (normalizedEmail === 'admin') {
     throw new Error('This email cannot be used for registration');
   }
@@ -163,14 +213,18 @@ export async function registerUser(
   const newUser = await storage.createUser({
     id: generateUserId(),
     email: normalizedEmail,
+    username: normalizedUsername,
     passwordHash,
     isAdmin: false,
+    emailVerified: false,
   });
 
   return {
     id: newUser.id,
     email: newUser.email,
+    username: newUser.username,
     isAdmin: newUser.isAdmin,
+    emailVerified: newUser.emailVerified,
   };
 }
 
@@ -205,8 +259,87 @@ export async function updateUserEmail(
   return {
     id: updated.id,
     email: updated.email,
+    username: updated.username,
     isAdmin: updated.isAdmin,
+    emailVerified: updated.emailVerified,
   };
+}
+
+/**
+ * Update user username
+ */
+export async function updateUserUsername(
+  userId: string,
+  newUsername: string
+): Promise<SessionUser | null> {
+  if (userId === 'admin') {
+    throw new Error('Admin username cannot be changed');
+  }
+
+  const normalizedUsername = newUsername.toLowerCase().trim();
+  
+  // Validate username format
+  const validation = validateUsername(newUsername);
+  if (!validation.valid) {
+    throw new Error(validation.error);
+  }
+
+  // Check if username is already taken
+  const usernameAvailable = await storage.isUsernameAvailable(normalizedUsername, userId);
+  if (!usernameAvailable) {
+    throw new Error('This username is already taken');
+  }
+
+  const updated = await storage.updateUserUsername(userId, normalizedUsername);
+  if (!updated) {
+    throw new Error('User not found');
+  }
+
+  return {
+    id: updated.id,
+    email: updated.email,
+    username: updated.username,
+    isAdmin: updated.isAdmin,
+    emailVerified: updated.emailVerified,
+  };
+}
+
+/**
+ * Check username availability
+ */
+export async function checkUsernameAvailability(
+  username: string,
+  excludeUserId?: string
+): Promise<{ available: boolean; error?: string }> {
+  const validation = validateUsername(username);
+  if (!validation.valid) {
+    return { available: false, error: validation.error };
+  }
+  
+  const available = await storage.isUsernameAvailable(username.toLowerCase().trim(), excludeUserId);
+  return { available };
+}
+
+/**
+ * Check email availability
+ */
+export async function checkEmailAvailability(
+  email: string,
+  excludeUserId?: string
+): Promise<{ available: boolean; error?: string }> {
+  const normalizedEmail = email.toLowerCase().trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if (!emailRegex.test(normalizedEmail)) {
+    return { available: false, error: 'Invalid email format' };
+  }
+  
+  if (normalizedEmail === 'admin') {
+    return { available: false, error: 'This email cannot be used' };
+  }
+  
+  const available = await storage.isEmailAvailable(normalizedEmail, excludeUserId);
+  return { available };
 }
 
 /**
@@ -251,7 +384,9 @@ export async function getAllUsers(): Promise<Omit<User, 'passwordHash'>[]> {
   return users.map((user) => ({
     id: user.id,
     email: user.email,
+    username: user.username,
     isAdmin: user.isAdmin,
+    emailVerified: user.emailVerified,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   }));

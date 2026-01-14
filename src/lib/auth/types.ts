@@ -7,8 +7,10 @@
 export interface User {
   id: string;
   email: string;
+  username: string | null;
   passwordHash: string;
   isAdmin: boolean;
+  emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +18,7 @@ export interface User {
 export interface Session {
   userId: string;
   email: string;
+  username: string | null;
   isAdmin: boolean;
   expiresAt: number;
 }
@@ -30,7 +33,9 @@ export interface AuthState {
 export interface SessionUser {
   id: string;
   email: string;
+  username: string | null;
   isAdmin: boolean;
+  emailVerified: boolean;
 }
 
 export interface LoginCredentials {
@@ -40,6 +45,7 @@ export interface LoginCredentials {
 
 export interface RegisterCredentials {
   email: string;
+  username: string;
   password: string;
 }
 
