@@ -203,7 +203,7 @@ export function CinemaSceneSelector({
           role="listbox"
           aria-label="Cinema scenes"
           aria-activedescendant={focusedIndex >= 0 ? `scene-option-${allScenes[focusedIndex]?.id}` : undefined}
-          className="absolute left-0 top-full mt-2 min-w-64 max-h-[60vh] overflow-y-auto overscroll-contain touch-pan-y rounded-2xl border border-(--border-elevated) bg-(--bg-surface-elevated)/95 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.75)] z-10 [-webkit-overflow-scrolling:touch]"
+          className="absolute left-0 top-full mt-2 min-w-64 max-h-[60vh] overflow-y-auto overscroll-contain touch-pan-y rounded-2xl border border-(--border-elevated) bg-(--bg-surface-elevated)/95 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.75)] z-50 [-webkit-overflow-scrolling:touch]"
         >
           {/* Visualizers Category (shown first) */}
           <div className="px-4 py-2.5 border-b border-(--border-standard) sticky top-0 bg-(--bg-surface-elevated)/95 backdrop-blur-xl" role="presentation">

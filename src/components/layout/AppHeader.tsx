@@ -338,7 +338,7 @@ export function AppHeader({
     <>
       <header
         ref={headerRef as React.RefObject<HTMLElement>}
-        className="hidden min-[1100px]:block fixed top-0 left-0 right-0 z-100 backdrop-blur-3xl overflow-hidden transition-all duration-300"
+        className="hidden min-[1100px]:block fixed top-0 left-0 right-0 z-100 backdrop-blur-3xl transition-all duration-300"
       >
         {/* Skip Link for Keyboard Navigation - Accessibility */}
         <a
@@ -512,7 +512,7 @@ export function AppHeader({
 
                 {isDropdownOpen && (
                   <div
-                    className="absolute top-full left-0 mt-2 w-48 rounded-2xl border border-white/15 bg-(--bg-surface-base)/95 backdrop-blur-xl shadow-xl shadow-black/50 overflow-hidden z-50"
+                    className="absolute top-full left-0 mt-2 w-48 rounded-2xl border border-white/15 bg-(--bg-surface-base)/95 backdrop-blur-xl shadow-xl shadow-black/50 overflow-hidden z-[110]"
                     role="listbox"
                     aria-label="Select view"
                   >
