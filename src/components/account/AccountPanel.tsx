@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X, User, Mail, Lock, LogOut, Shield, MessageSquare, Bug, Lightbulb, Sparkles, SendHorizonal, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
 import type { FeedbackType, FeedbackSeverity } from '@/lib/feedback';
 
 interface AccountPanelProps {
@@ -51,6 +52,9 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
   const [feedbackDescription, setFeedbackDescription] = useState('');
   const [feedbackSeverity, setFeedbackSeverity] = useState<FeedbackSeverity | undefined>(undefined);
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+
+  // Prevent background scrolling when panel is open (uses shared reference-counting system)
+  useBodyScrollLock(isOpen);
 
   const handleEmailUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,7 +158,7 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
     <>
       {/* Backdrop - click to close panel */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[110]"
         onClick={onClose}
         onKeyDown={(e) => e.key === 'Escape' && onClose()}
         role="button"
@@ -163,33 +167,33 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
       />
 
       {/* Panel */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-(--bg-surface-base)/95 backdrop-blur-3xl border-l border-white/15 z-50 overflow-hidden flex flex-col">
+      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-(--bg-surface-base)/95 backdrop-blur-3xl border-l border-white/15 z-[120] overflow-hidden flex flex-col">
         {/* Background Blobs - Matching Panel Style */}
         <div className="absolute -top-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
         <div className="absolute top-[40%] -right-[20%] w-[80%] h-[60%] bg-blue-600/5 blur-[80px] pointer-events-none" />
 
-        {/* Header */}
-        <div className="relative shrink-0 bg-(--bg-surface-base)/80 border-b border-white/15 p-4 flex items-center justify-between">
+        {/* Header - with safe area padding for mobile */}
+        <div className="relative shrink-0 bg-(--bg-surface-base)/80 border-b border-white/15 px-4 py-4 pt-[max(1rem,env(safe-area-inset-top))] flex items-center justify-between gap-3">
           {currentView !== 'main' ? (
             <button
               onClick={handleBack}
-              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors font-heading font-medium text-sm"
+              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors font-heading font-medium text-sm min-w-0"
             >
-              <ChevronLeft className="w-4 h-4" />
-              Back
+              <ChevronLeft className="w-5 h-5 shrink-0" />
+              <span>Back</span>
             </button>
           ) : (
-            <h2 className="text-lg font-heading font-bold text-white flex items-center gap-2">
-              <User className="w-5 h-5 text-purple-400" />
-              Account
+            <h2 className="text-lg font-heading font-bold text-white flex items-center gap-2 min-w-0">
+              <User className="w-5 h-5 text-purple-400 shrink-0" />
+              <span className="truncate">Account</span>
             </h2>
           )}
           <button
             onClick={onClose}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white/70 transition hover:bg-white/15 hover:text-white hover:border-white/30"
+            className="shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20 hover:text-white hover:border-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
             aria-label="Close account panel"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
