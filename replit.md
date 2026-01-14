@@ -37,8 +37,9 @@ MetaDJ Nexus is built on a modern web stack designed for performance and scalabi
 **Technical Implementations & Feature Specifications:**
 - **Media Streaming**: Supports HTTP 206 Partial Content for audio and video seeking and progressive loading.
 - **Caching Strategy**: Utilizes `Cache-Control: public, max-age=31536000, immutable` for media files, enabling long-lived caching. Filenames are versioned to bust cache.
-- **Data Storage**: Currently uses JSON data files (`src/data/music.json`, `src/data/collections.json`) versioned in Git. A Replit-managed database is planned for future implementation.
-- **Authentication**: Required for the application UI, but media streaming routes are public.
+- **Data Storage**: PostgreSQL database via Drizzle ORM for user data, preferences, and chat history. Content data uses JSON files (`src/data/music.json`, `src/data/collections.json`) versioned in Git.
+- **Database ORM**: Drizzle ORM with Neon serverless PostgreSQL driver.
+- **Authentication**: Cookie-based sessions with HMAC-signed tokens. User accounts stored in PostgreSQL with bcrypt password hashing. Admin user via ADMIN_PASSWORD environment variable.
 - **API Security**: Includes rate limiting, input validation, and non-disclosure of sensitive information in error messages.
 - **Deployment**: Automatic deployment on Replit with zero-downtime rolling updates. Supports manual and continuous deployment from Git.
 - **Monitoring**: Integration with Replit's dashboard metrics for CPU, memory, network, and request rates. External monitoring with UptimeRobot, Sentry, and Plausible is recommended.
@@ -58,8 +59,8 @@ The project relies on the following external services and integrations:
     -   **Optional Environment Variable**: `NEXT_PUBLIC_PLAUSIBLE_API_HOST` (for self-hosted instances).
 -   **UptimeRobot**: Recommended external service for uptime monitoring.
 -   **Sentry**: Recommended external service for error tracking.
--   **Managed Database (Planned)**: Future integration with a Replit-managed database.
-    -   **Required Environment Variable (once enabled)**: `DATABASE_URL`.
-    -   **Optional Environment Variables**: `DATABASE_SSL`, `DATABASE_POOL_SIZE`.
+-   **PostgreSQL Database**: Replit-managed PostgreSQL database (Neon-backed) for user accounts, sessions, preferences, and chat history.
+    -   **Required Environment Variable**: `DATABASE_URL` (auto-configured by Replit).
+    -   **Database Management**: Use `npm run db:push` to sync schema changes, `npm run db:studio` to inspect data.
 -   **Logging Webhook (Optional)**: For server-side logging.
     -   **Optional Environment Variables**: `LOGGING_WEBHOOK_URL`, `LOGGING_SHARED_SECRET`.
