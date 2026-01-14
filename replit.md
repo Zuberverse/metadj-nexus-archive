@@ -49,6 +49,13 @@ Key capabilities include:
 - **Admin Badge**: Persistent "Admin" badge in AppHeader (Shield icon, purple theme, only visible to admins)
 - **Keyboard Shortcut**: Ctrl/Cmd+Shift+A to toggle between /admin and /app views
 
+### Account Access
+- **User Account Button**: Added User icon button in desktop header (visible at 1100px+) for quick access to account settings panel
+
+### Footer Updates
+- All footer text now uses Cinzel font (`font-heading`) for consistent typography
+- Removed @axe-core/react debug tool (was causing debug box to appear at bottom of page)
+
 ## System Architecture
 
 MetaDJ Nexus is built on a modern web stack designed for performance and scalability on Replit.
