@@ -253,7 +253,7 @@ export function HubExperience({
                   <div className="absolute inset-0 gradient-4-soft opacity-60" />
 
                   <div className="relative z-10 flex flex-col gap-2 min-h-[110px]">
-                    <p className="text-[10px] uppercase tracking-wider text-cyan-100/80">
+                    <p className="text-[10px] uppercase tracking-wider text-cyan-100/80 font-mono">
                       Continue reading
                     </p>
                     <h3 className="text-base font-heading font-bold text-heading-solid line-clamp-2">
