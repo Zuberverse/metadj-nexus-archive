@@ -80,6 +80,7 @@ export function BrowseView({
           onResultsChange={onSearchResultsChange}
           className="w-full"
           inputId="metadj-left-panel-search-input"
+          placeholder="Search Music..."
         />
       </div>
 

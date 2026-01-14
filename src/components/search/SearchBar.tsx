@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent as ReactFocusEvent, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { Book, BookOpen, Search, X } from 'lucide-react';
 import { EmptyState } from '@/components/ui';
@@ -54,6 +55,8 @@ export interface SearchBarProps {
   disableDropdown?: boolean;
   /** Optional input id (avoid duplicate IDs when multiple SearchBars render) */
   inputId?: string;
+  /** Custom placeholder text for the search input */
+  placeholder?: string;
 }
 
 /**
@@ -85,6 +88,7 @@ export function SearchBar({
   hideIcon = false,
   disableDropdown = false,
   inputId,
+  placeholder = 'Search music, wisdom, journal...',
 }: SearchBarProps) {
   const [internalQuery, setInternalQuery] = useState('');
   // Search state management
@@ -100,6 +104,11 @@ export function SearchBar({
   const searchBlurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchResultRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const rafIdRef = useRef<number | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const updateQuery = useCallback(
     (next: string) => {
@@ -494,7 +503,7 @@ export function SearchBar({
         <input
           id={resolvedInputId}
           type="text"
-          placeholder="Search music, wisdom, journal..."
+          placeholder={placeholder}
           value={query}
           onChange={(e) => updateQuery(e.target.value)}
           onKeyDown={handleSearchInputKeyDown}
@@ -526,8 +535,8 @@ export function SearchBar({
         </button>
       )}
 
-      {/* Search View (dropdown container) */}
-      {!disableDropdown && query.trim().length >= 1 && isSearchFocused && (
+      {/* Search View (dropdown container) - rendered via portal to escape transform context */}
+      {!disableDropdown && query.trim().length >= 1 && isSearchFocused && isMounted && createPortal(
         <div
           id={resultsId}
           className="pointer-events-auto fixed"
@@ -725,7 +734,8 @@ export function SearchBar({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
