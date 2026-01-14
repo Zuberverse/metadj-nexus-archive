@@ -57,6 +57,7 @@ Key capabilities include:
 - **Hub Scrolling Fix**: Fixed unnecessary scrolling on large desktop Hub view by restructuring flex layout
   - DesktopShell outer container now uses `flex flex-col` layout
   - PanelLayout main element changed from `min-h-screen` to `flex-1` to properly fill available space without forcing extra height
+- **Dropdown Button Spacing**: Standardized padding for dropdown buttons with chevron icons to `px-4 py-2` across all navigation dropdowns (UserGuideOverlay, AdminDashboard) to match AppHeader pattern
 
 ### Authentication Forms
 - Added loading states: "Signing in..." / "Creating account..." with spinner during submission

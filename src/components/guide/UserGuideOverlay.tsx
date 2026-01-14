@@ -188,13 +188,13 @@ export function UserGuideOverlay({ onClose }: UserGuideOverlayProps) {
                 <button
                   type="button"
                   onClick={() => setIsNavDropdownOpen(!isNavDropdownOpen)}
-                  className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium bg-purple-500/20 text-purple-200 border border-purple-500/40 transition-all duration-200"
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium bg-purple-500/20 text-purple-200 border border-purple-500/40 transition-all duration-200"
                   aria-expanded={isNavDropdownOpen}
                   aria-haspopup="listbox"
                 >
                   {NAV_ICONS[activeSectionData.id]}
                   <span>{activeSectionData.title}</span>
-                  <ChevronDown className={clsx("h-3 w-3 transition-transform", isNavDropdownOpen && "rotate-180")} />
+                  <ChevronDown className={clsx("h-3.5 w-3.5 transition-transform", isNavDropdownOpen && "rotate-180")} />
                 </button>
 
                 {isNavDropdownOpen && (

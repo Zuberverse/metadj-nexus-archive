@@ -240,7 +240,7 @@ export function AdminDashboard() {
             <div className="relative ml-4">
               <button
                 onClick={() => setNavDropdownOpen(!navDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg text-purple-400 hover:bg-purple-500/30 transition-colors text-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg text-purple-400 hover:bg-purple-500/30 transition-colors text-sm"
               >
                 <Shield className="w-4 h-4" />
                 <span>Admin Dashboard</span>
