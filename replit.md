@@ -24,15 +24,14 @@ Key capabilities include:
 - **Logo Accessibility**: Added keyboard-accessible focus styles with purple ring indicators for improved accessibility
 - **Collection Details Spacing**: Increased bottom padding in About Collection container to prevent text from touching edges
 - **Simplified Header**: Removed admin badge and feedback button from header; both now accessible via Account panel
-- **Account Panel Enhancements**:
-  - Added "Submit Feedback" button for all users
-  - Added "Open Admin Dashboard" button for admins only
-  - Buttons close the panel when clicked for smooth navigation
-- **Feedback Modal Redesign**:
-  - Reordered feedback types: General Feedback (top-left), Feature Request (top-right), Creative Idea (bottom-left), Bug Report (bottom-right)
-  - Required field validation: Submit button disabled until both Title and Description are filled
-  - Cinzel font (`font-heading`) on submit button
-  - Enhanced responsive design for mobile and smaller screens
+- **Account Panel Redesign**:
+  - Cinzel font (`font-heading`) applied to all headers, buttons, and labels for consistency with Music/MetaDJai panels
+  - Background gradient blobs matching other panel styling
+  - Consistent button styling with borders (border-white/15), hover effects, and rounded corners
+  - View-based navigation: main > email update, password change, or feedback submission
+  - Feedback form integrated directly into panel (no longer a popup modal)
+  - Feedback types: General Feedback, Feature Request, Creative Idea, Bug Report with severity levels for bugs
+  - Required field validation: Submit button disabled until Title and Description are filled
 - **Header Cleanup**: Removed redundant info button (Guide accessible via footer)
 
 ### Responsive Navigation
