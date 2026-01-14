@@ -7,7 +7,7 @@
  */
 
 import { useState } from 'react';
-import { X, Bug, Lightbulb, MessageSquare, Sparkles, Send } from 'lucide-react';
+import { X, Bug, Lightbulb, MessageSquare, Sparkles, SendHorizonal } from 'lucide-react';
 import type { FeedbackType, FeedbackSeverity } from '@/lib/feedback';
 
 interface FeedbackModalProps {
@@ -16,10 +16,10 @@ interface FeedbackModalProps {
 }
 
 const feedbackTypes: { value: FeedbackType; label: string; icon: typeof Bug; description: string }[] = [
+  { value: 'feedback', label: 'General Feedback', icon: MessageSquare, description: 'Share comments or thoughts' },
+  { value: 'feature', label: 'Feature Request', icon: Sparkles, description: 'Request a specific capability' },
+  { value: 'idea', label: 'Creative Idea', icon: Lightbulb, description: 'Inspire with a vision or concept' },
   { value: 'bug', label: 'Bug Report', icon: Bug, description: 'Report an issue or error' },
-  { value: 'feature', label: 'Feature Request', icon: Sparkles, description: 'Suggest a new feature' },
-  { value: 'idea', label: 'Idea', icon: Lightbulb, description: 'Share an idea or suggestion' },
-  { value: 'feedback', label: 'General Feedback', icon: MessageSquare, description: 'General comments or thoughts' },
 ];
 
 const severityLevels: { value: FeedbackSeverity; label: string; color: string }[] = [
@@ -88,14 +88,14 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 flex items-center justify-center z-50 p-2 sm:p-4">
         <div
-          className="w-full max-w-lg bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+          className="w-full max-w-lg bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl shadow-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 p-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-white">Share Your Feedback</h2>
+          <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 p-3 sm:p-4 flex items-center justify-between">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">Share Your Feedback</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -104,29 +104,29 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Type Selection */}
             <div>
-              <label className="block text-sm font-medium text-white/70 mb-3">
+              <label className="block text-sm font-medium text-white/70 mb-2 sm:mb-3">
                 What type of feedback?
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {feedbackTypes.map((option) => (
                   <button
                     key={option.value}
                     type="button"
                     onClick={() => setType(option.value)}
-                    className={`p-3 rounded-xl border text-left transition-all ${
+                    className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl border text-left transition-all ${
                       type === option.value
                         ? 'bg-purple-500/20 border-purple-500 text-white'
                         : 'bg-white/5 border-white/10 text-white/70 hover:border-white/30'
                     }`}
                   >
-                    <option.icon className={`w-5 h-5 mb-2 ${
+                    <option.icon className={`w-4 h-4 sm:w-5 sm:h-5 mb-1.5 sm:mb-2 ${
                       type === option.value ? 'text-purple-400' : 'text-white/50'
                     }`} />
-                    <div className="font-medium text-sm">{option.label}</div>
-                    <div className="text-xs text-white/50 mt-1">{option.description}</div>
+                    <div className="font-medium text-xs sm:text-sm">{option.label}</div>
+                    <div className="text-[10px] sm:text-xs text-white/50 mt-0.5 sm:mt-1 line-clamp-2">{option.description}</div>
                   </button>
                 ))}
               </div>
@@ -214,14 +214,21 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             {/* Submit */}
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 brand-gradient text-white font-semibold rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              disabled={isSubmitting || !title.trim() || !description.trim()}
+              className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all flex items-center justify-center gap-2 font-heading font-semibold text-sm sm:text-base ${
+                title.trim() && description.trim()
+                  ? 'brand-gradient text-white hover:brightness-110'
+                  : 'bg-white/10 text-white/40 cursor-not-allowed'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <>
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Submitting...</span>
+                </>
               ) : (
                 <>
-                  <Send className="w-5 h-5" />
+                  <SendHorizonal className="w-4 h-4 sm:w-5 sm:h-5" />
                   Submit Feedback
                 </>
               )}

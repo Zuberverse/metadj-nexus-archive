@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react"
 import Image from "next/image"
 import clsx from "clsx"
-import { Settings, Play, Pause, SkipForward, SkipBack, Search, User, Menu, X, MonitorPlay, Sparkles, LayoutPanelLeft, Music, ChevronLeft, MessageCircle, ChevronDown, ChevronUp, Home, ListMusic, Book, Loader2, Info, MessageSquarePlus } from "lucide-react"
+import { Settings, Play, Pause, SkipForward, SkipBack, Search, User, Menu, X, MonitorPlay, Sparkles, LayoutPanelLeft, Music, ChevronLeft, MessageCircle, ChevronDown, ChevronUp, Home, ListMusic, Book, Loader2, MessageSquarePlus } from "lucide-react"
 import { BrandGradientIcon } from "@/components/icons/BrandGradientIcon"
 import { SearchBar } from "@/components/search/SearchBar"
 import { SearchResultItem } from "@/components/search/SearchResultItem"
@@ -673,26 +673,18 @@ export function AppHeader({
               </div>
             </div>
 
-            {/* RIGHT ZONE: Feedback, Info, MetaDJai Toggle */}
+            {/* RIGHT ZONE: Feedback, MetaDJai Toggle */}
             <div className="flex items-center gap-2 shrink-0">
               <button
                 id="tour-toggle-feedback"
                 type="button"
                 onClick={onFeedbackOpen}
-                className="inline-flex items-center justify-center h-9 w-9 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/70 hover:text-white hover:border-white/20 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation"
-                aria-label="Send Feedback"
-                title="Send Feedback"
+                className="inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/70 hover:text-white hover:border-purple-400/40 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation"
+                aria-label="Submit Feedback"
+                title="Submit Feedback"
               >
                 <MessageSquarePlus className="h-4 w-4" />
-              </button>
-              <button
-                id="tour-toggle-guide"
-                type="button"
-                onClick={onInfoOpen}
-                className="inline-flex items-center justify-center h-9 w-9 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/70 hover:text-white hover:border-white/20 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation"
-                aria-label="Open User Guide"
-              >
-                <Info className="h-4 w-4" />
+                <span className="text-xs font-medium hidden min-[1400px]:inline">Feedback</span>
               </button>
               {/* MetaDJai Pill Button - Hidden below 1100px (bottom nav handles it) */}
               <button
