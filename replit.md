@@ -46,6 +46,16 @@ Key capabilities include:
 - Hub dropdown z-index increased to `z-[110]` (above header's `z-100`)
 - CinemaSceneSelector dropdown z-index increased to `z-50`
 - All overlay/popup menus now render on top layer correctly
+- **Search Dropdown Portal**: Search results dropdown now renders via React portal to document.body, fixing clipping issues caused by LeftPanel's CSS transform context
+
+### Search Improvements
+- **Custom Placeholder**: SearchBar component now accepts customizable placeholder prop
+- **Browse Tab**: Search placeholder in Browse tab shows "Search Music..." for clearer context
+
+### Layout Fixes
+- **Hub Scrolling Fix**: Fixed unnecessary scrolling on large desktop Hub view by restructuring flex layout
+  - DesktopShell outer container now uses `flex flex-col` layout
+  - PanelLayout main element changed from `min-h-screen` to `flex-1` to properly fill available space without forcing extra height
 
 ### Authentication Forms
 - Added loading states: "Signing in..." / "Creating account..." with spinner during submission
