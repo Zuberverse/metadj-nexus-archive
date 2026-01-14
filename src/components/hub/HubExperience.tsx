@@ -172,7 +172,7 @@ export function HubExperience({
   }, [continueReading])
 
   return (
-    <div className="relative pb-2 min-[1100px]:pb-32 pt-0 space-y-6 container mx-auto">
+    <div className="relative pb-2 min-[1100px]:pb-6 pt-0 space-y-6 container mx-auto">
       {/* Hero Section - No container */}
       {/* Hero Section - No container */}
       <section className="relative px-6 lg:px-8 pb-2 pt-4 flex flex-col items-center justify-center gap-6 text-center min-h-[25vh]">
