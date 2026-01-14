@@ -107,6 +107,7 @@ export async function createSession(user: SessionUser): Promise<void> {
     email: user.email,
     username: user.username,
     isAdmin: user.isAdmin,
+    emailVerified: user.emailVerified,
     expiresAt: Date.now() + SESSION_DURATION * 1000,
   };
 
@@ -139,7 +140,7 @@ export async function getSession(): Promise<SessionUser | null> {
     email: session.email,
     username: session.username,
     isAdmin: session.isAdmin,
-    emailVerified: false,
+    emailVerified: session.emailVerified ?? false,
   };
 }
 

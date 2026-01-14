@@ -20,6 +20,7 @@ export interface Session {
   email: string;
   username: string | null;
   isAdmin: boolean;
+  emailVerified: boolean;
   expiresAt: number;
 }
 
