@@ -349,8 +349,11 @@ export function LandingPage() {
                       disabled={isSubmitting || authLoading || (mode === 'signup' && !agreedToTerms)}
                       className="w-full py-3 brand-gradient text-white font-heading font-semibold rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                      {isSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      {isSubmitting || authLoading ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <span>{mode === 'login' ? 'Signing in...' : 'Creating account...'}</span>
+                        </>
                       ) : (
                         <>
                           {mode === 'login' ? 'Enter Nexus' : 'Create Account'}
