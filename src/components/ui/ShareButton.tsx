@@ -8,13 +8,21 @@ import { useClickAway, useEscapeKey } from "@/hooks"
 import { useCspStyle } from "@/hooks/use-csp-style"
 import { trackEvent } from "@/lib/analytics"
 import { buildMusicDeepLinkPath, buildMusicDeepLinkUrl } from "@/lib/music"
+import { buildWisdomDeepLinkUrl, type WisdomSection } from "@/lib/wisdom"
 import type { Track, Collection } from "@/types"
 import type { Playlist } from "@/types/playlist.types"
+import type { ThoughtPost, Guide, Reflection } from "@/data/wisdom-content"
+
+export interface WisdomItem {
+  type: WisdomSection
+  item: ThoughtPost | Guide | Reflection
+}
 
 export interface ShareButtonProps {
   track?: Track
   collection?: Collection
   playlist?: Playlist
+  wisdom?: WisdomItem
   size?: "sm" | "md" | "lg" | "xs" | "xxs"
   variant?: "icon" | "button"
   className?: string
@@ -30,6 +38,7 @@ export function ShareButton({
   track,
   collection,
   playlist,
+  wisdom,
   size = "md",
   variant = "icon",
   className = ""
@@ -165,13 +174,26 @@ export function ShareButton({
       return { title, text, url, socialText }
     }
 
+    if (wisdom) {
+      const { type, item } = wisdom
+      const sectionLabel = type === "thoughts" ? "Thought" : type === "guides" ? "Guide" : "Reflection"
+      const title = `${item.title} — MetaDJ Wisdom`
+      const text = `Check out "${item.title}" — a ${sectionLabel.toLowerCase()} on MetaDJ Nexus`
+      const url = buildWisdomDeepLinkUrl(type, item.id, baseUrl)
+      
+      const hashtags = item.topics?.slice(0, 2).map(t => `#${t.replace(/\s+/g, '')}`).join(' ') || '#Wisdom'
+      const socialText = `📖 "${item.title}" — a ${sectionLabel} from MetaDJ Wisdom\n\nThoughts on AI-human collaboration & creativity. ${hashtags} #MetaDJ\n\n✨ Read on MetaDJ Nexus`
+
+      return { title, text, url, socialText }
+    }
+
     return {
       title: "MetaDJ Nexus",
       text: "Experience my AI-driven music on MetaDJ Nexus",
       url: baseUrl,
       socialText: "🎶 Listen to @metadjai on MetaDJ Nexus — where human vision meets AI-driven creation\n\nSounds you won't find anywhere else. #MetaDJ #AIMusic\n\n🎧 Experience it on MetaDJ Nexus"
     }
-  }, [track, collection, playlist])
+  }, [track, collection, playlist, wisdom])
 
   const handleCopyLink = async () => {
     const shareData = generateShareData()
@@ -179,10 +201,11 @@ export function ShareButton({
     // Track share initiated
     trackEvent('share_initiated', {
       platform: 'clipboard',
-      content_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : 'platform',
+      content_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : wisdom ? wisdom.type : 'platform',
       ...(track && { track_id: track.id, track_title: track.title }),
       ...(collection && { collection_id: collection.id, collection_title: collection.title }),
       ...(playlist && { playlist_id: playlist.id, playlist_title: playlist.name }),
+      ...(wisdom && { wisdom_type: wisdom.type, wisdom_id: wisdom.item.id, wisdom_title: wisdom.item.title }),
     })
 
     // Try modern Clipboard API first
@@ -200,10 +223,11 @@ export function ShareButton({
         trackPlaylistShare('link_copy')
         trackEvent('share_success', {
           share_method: 'clipboard',
-          item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : 'default',
+          item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : wisdom ? wisdom.type : 'default',
           ...(track && { track_id: track.id }),
           ...(collection && { collection_id: collection.id }),
           ...(playlist && { playlist_id: playlist.id }),
+          ...(wisdom && { wisdom_id: wisdom.item.id }),
         })
         return
       } catch (error) {
@@ -235,10 +259,11 @@ export function ShareButton({
         trackPlaylistShare('link_copy')
         trackEvent('share_success', {
           share_method: 'clipboard-fallback',
-          item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : 'default',
+          item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : wisdom ? wisdom.type : 'default',
           ...(track && { track_id: track.id }),
           ...(collection && { collection_id: collection.id }),
           ...(playlist && { playlist_id: playlist.id }),
+          ...(wisdom && { wisdom_id: wisdom.item.id }),
         })
       } else {
         throw new Error('execCommand failed')
@@ -256,6 +281,7 @@ export function ShareButton({
         ...(track && { track_id: track.id }),
         ...(collection && { collection_id: collection.id }),
         ...(playlist && { playlist_id: playlist.id }),
+        ...(wisdom && { wisdom_id: wisdom.item.id }),
       })
     }
   }
@@ -266,10 +292,11 @@ export function ShareButton({
     // Track share initiated
     trackEvent('share_initiated', {
       platform: 'x',
-      content_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : 'platform',
+      content_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : wisdom ? wisdom.type : 'platform',
       ...(track && { track_id: track.id, track_title: track.title }),
       ...(collection && { collection_id: collection.id, collection_title: collection.title }),
       ...(playlist && { playlist_id: playlist.id, playlist_title: playlist.name }),
+      ...(wisdom && { wisdom_type: wisdom.type, wisdom_id: wisdom.item.id, wisdom_title: wisdom.item.title }),
     })
 
     // Construct X (Twitter) share URL
@@ -291,10 +318,11 @@ export function ShareButton({
     trackPlaylistShare('share_button')
     trackEvent('share_success', {
       share_method: 'x-twitter',
-      item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : 'default',
+      item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : wisdom ? wisdom.type : 'default',
       ...(track && { track_id: track.id }),
       ...(collection && { collection_id: collection.id }),
       ...(playlist && { playlist_id: playlist.id }),
+      ...(wisdom && { wisdom_id: wisdom.item.id }),
     })
   }
 
@@ -317,10 +345,11 @@ export function ShareButton({
       trackPlaylistShare('share_button')
       trackEvent('share_success', {
         share_method: 'web-share',
-        item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : 'default',
+        item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : wisdom ? wisdom.type : 'default',
         ...(track && { track_id: track.id }),
         ...(collection && { collection_id: collection.id }),
         ...(playlist && { playlist_id: playlist.id }),
+        ...(wisdom && { wisdom_id: wisdom.item.id }),
       })
       return true
     } catch (error) {
@@ -332,16 +361,17 @@ export function ShareButton({
       // Native share failed - non-critical, allow fallback to menu
       return false
     }
-	  }, [generateShareData, track, collection, playlist, trackPlaylistShare])
+  }, [generateShareData, track, collection, playlist, wisdom, trackPlaylistShare])
 
   const handleButtonClick = async (event: React.MouseEvent) => {
     event.stopPropagation()
     
     trackEvent('share_button_clicked', {
-      item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : 'default',
+      item_type: track ? 'track' : collection ? 'collection' : playlist ? 'playlist' : wisdom ? wisdom.type : 'default',
       ...(track && { track_id: track.id, track_title: track.title }),
       ...(collection && { collection_id: collection.id, collection_title: collection.title }),
       ...(playlist && { playlist_id: playlist.id, playlist_title: playlist.name }),
+      ...(wisdom && { wisdom_type: wisdom.type, wisdom_id: wisdom.item.id, wisdom_title: wisdom.item.title }),
     })
 
     if (await tryNativeShare()) {
@@ -427,7 +457,7 @@ export function ShareButton({
             onPointerCancel={(e) => e.stopPropagation()}
             onKeyDown={(e) => handleMenuKeyDown(e, 0)}
             className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm text-white/80 hover:bg-white/10 hover:text-white transition duration-75 focus-ring"
-            aria-label={`Copy link to ${track ? `"${track.title}"` : collection ? collection.title : playlist ? playlist.name : 'MetaDJ Nexus'}`}
+            aria-label={`Copy link to ${track ? `"${track.title}"` : collection ? collection.title : playlist ? playlist.name : wisdom ? `"${wisdom.item.title}"` : 'MetaDJ Nexus'}`}
           >
             <Link2 className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>Copy Link</span>
@@ -444,7 +474,7 @@ export function ShareButton({
             onPointerCancel={(e) => e.stopPropagation()}
             onKeyDown={(e) => handleMenuKeyDown(e, 1)}
             className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm text-white/80 hover:bg-white/10 hover:text-white transition duration-75 focus-ring"
-            aria-label={`Share ${track ? `"${track.title}"` : collection ? collection.title : playlist ? playlist.name : 'MetaDJ Nexus'} to X`}
+            aria-label={`Share ${track ? `"${track.title}"` : collection ? collection.title : playlist ? playlist.name : wisdom ? `"${wisdom.item.title}"` : 'MetaDJ Nexus'} to X`}
           >
             <XIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>Share to X</span>
@@ -463,7 +493,7 @@ export function ShareButton({
           type="button"
           onClick={handleButtonClick}
           className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-white/20 text-white/80 transition hover:bg-white/10 hover:border-white/30 hover:text-white focus-ring-glow touch-manipulation ${sizeClasses[size]} ${className}`}
-          aria-label={track ? `Share ${track.title}` : collection ? `Share ${collection.title}` : playlist ? `Share ${playlist.name}` : "Share MetaDJ Nexus"}
+          aria-label={track ? `Share ${track.title}` : collection ? `Share ${collection.title}` : playlist ? `Share ${playlist.name}` : wisdom ? `Share ${wisdom.item.title}` : "Share MetaDJ Nexus"}
           aria-expanded={showMenu}
           aria-haspopup="menu"
         >
@@ -483,7 +513,7 @@ export function ShareButton({
         type="button"
         onClick={handleButtonClick}
         className={`inline-flex items-center justify-center rounded-full text-white/40 transition hover:bg-white/10 hover:text-white focus-ring-glow touch-manipulation ${sizeClasses[size]} ${className}`}
-        aria-label={track ? `Share ${track.title}` : collection ? `Share ${collection.title}` : playlist ? `Share ${playlist.name}` : "Share MetaDJ Nexus"}
+        aria-label={track ? `Share ${track.title}` : collection ? `Share ${collection.title}` : playlist ? `Share ${playlist.name}` : wisdom ? `Share ${wisdom.item.title}` : "Share MetaDJ Nexus"}
         aria-expanded={showMenu}
         aria-haspopup="menu"
       >

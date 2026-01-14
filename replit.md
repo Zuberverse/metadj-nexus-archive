@@ -65,6 +65,7 @@ Key capabilities include:
   - WisdomBreadcrumb: All navigation segments and buttons
 - **Layout Improvements**: Increased spacing in WisdomFilters, separated Length label from select input
 - **ReadingProgressBar Fix**: Removed negative margins (`-mx-6 sm:-mx-8 -mt-6 sm:-mt-8`) from Thoughts, Guides, and Reflections detail views to prevent progress bar from escaping card container on smaller viewports
+- **Share Button Unified**: Wisdom content (Thoughts, Guides, Reflections) now uses the same ShareButton component as music/playlists, providing a dropdown menu with "Copy Link" and "Share to X" options with wisdom-specific social text and analytics tracking
 
 ### Authentication Forms
 - Added loading states: "Signing in..." / "Creating account..." with spinner during submission

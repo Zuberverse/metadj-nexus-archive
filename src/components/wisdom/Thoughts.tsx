@@ -1,17 +1,17 @@
 "use client"
 
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Calendar, BookOpen, ChevronRight, Clock, Share2, Sparkles } from "lucide-react"
+import { Calendar, BookOpen, ChevronRight, Clock, Sparkles } from "lucide-react"
 import { useToast } from "@/contexts/ToastContext"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import {
-  buildWisdomDeepLinkUrl,
   estimateReadTime,
   formatReadTime,
   getReadTimeBucket,
   setContinueReading,
   stripSignoffParagraphs,
 } from "@/lib/wisdom"
+import { ShareButton } from "@/components/ui/ShareButton"
 import { ReadingProgressBar } from "./ReadingProgressBar"
 import { WisdomBreadcrumb, type BreadcrumbItem } from "./WisdomBreadcrumb"
 import { WisdomFilters, type ReadTimeFilter } from "./WisdomFilters"
@@ -234,29 +234,6 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
     })
   }
 
-  const handleShare = async () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : ""
-    const url = buildWisdomDeepLinkUrl("thoughts", selectedPost.id, origin)
-    const title = `${selectedPost.title} — MetaDJ Wisdom`
-    const text = `Wisdom Thought: ${selectedPost.title}`
-
-    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-      try {
-        await navigator.share({ title, text, url })
-        return
-      } catch {
-        // Fall back to clipboard (user may have canceled).
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(url)
-      showToast({ message: "Link copied", variant: "success", duration: 2000 })
-    } catch {
-      showToast({ message: "Unable to copy link", variant: "error" })
-    }
-  }
-
   return (
     <article className="space-y-6">
       {/* Breadcrumb navigation */}
@@ -289,14 +266,11 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
               </div>
             </div>
             <div className="flex items-center gap-2 min-[1100px]:ml-auto">
-              <button
-                type="button"
-                onClick={handleShare}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/80 hover:bg-white/10 hover:text-white transition"
-              >
-                <Share2 className="h-3.5 w-3.5" />
-                Share
-              </button>
+              <ShareButton
+                wisdom={{ type: "thoughts", item: selectedPost }}
+                variant="button"
+                size="xs"
+              />
               <button
                 type="button"
                 onClick={handleSummarizeWithMetaDjAi}
