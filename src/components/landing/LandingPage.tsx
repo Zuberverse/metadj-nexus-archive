@@ -60,14 +60,13 @@ export function LandingPage() {
     }
   };
 
-  const handleUsernameChange = (value: string) => {
+  const handleUsernameChange = (value: string): void => {
     const normalized = value.toLowerCase().replace(/[^a-z0-9_]/g, '');
     setUsername(normalized);
     setUsernameError('');
     
     if (normalized.length >= 3) {
-      const timeoutId = setTimeout(() => validateUsername(normalized), 500);
-      return () => clearTimeout(timeoutId);
+      setTimeout(() => validateUsername(normalized), 500);
     }
   };
 
@@ -181,27 +180,29 @@ export function LandingPage() {
               </p>
 
               {/* Feature Grid */}
-              <div className="grid grid-cols-2 gap-3 pt-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-3">
                 {features.map((feature) => (
                   <div
                     key={feature.title}
-                    className="group rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/50 transition-all duration-300 p-3 lg:p-4"
+                    className="group rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/50 transition-all duration-300 p-2.5 sm:p-3 lg:p-4"
                   >
-                    {feature.icon ? (
-                      <feature.icon className="w-8 h-8 text-purple-400 mb-3 group-hover:text-cyan-400 transition-colors" />
-                    ) : feature.customIcon ? (
-                      <div className="w-8 h-8 mb-3 rounded-full overflow-hidden border border-purple-400/50 group-hover:border-cyan-400/50 transition-colors shadow-[0_0_10px_rgba(168,85,247,0.3)] group-hover:shadow-[0_0_10px_rgba(34,211,238,0.3)]">
-                        <Image
-                          src={feature.customIcon}
-                          alt={feature.title}
-                          width={32}
-                          height={32}
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : null}
-                    <h3 className="font-heading font-semibold text-white mb-1">{feature.title}</h3>
-                    <p className="text-sm text-white/60">{feature.description}</p>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      {feature.icon ? (
+                        <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400 group-hover:text-cyan-400 transition-colors flex-shrink-0" />
+                      ) : feature.customIcon ? (
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden border border-purple-400/50 group-hover:border-cyan-400/50 transition-colors shadow-[0_0_10px_rgba(168,85,247,0.3)] group-hover:shadow-[0_0_10px_rgba(34,211,238,0.3)] flex-shrink-0">
+                          <Image
+                            src={feature.customIcon}
+                            alt={feature.title}
+                            width={24}
+                            height={24}
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : null}
+                      <h3 className="font-heading font-semibold text-white text-sm sm:text-base whitespace-nowrap">{feature.title}</h3>
+                    </div>
+                    <p className="text-xs sm:text-sm text-white/60 leading-snug">{feature.description}</p>
                   </div>
                 ))}
               </div>
