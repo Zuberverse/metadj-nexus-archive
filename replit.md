@@ -17,6 +17,34 @@ Key capabilities include:
 - Provide detailed explanations for complex concepts.
 - I prefer clear and concise communication.
 
+## Recent Changes (January 2026)
+
+### UI/UX Improvements
+- **Feedback Button**: Now displays "Feedback" text with Cinzel font instead of icon-only design
+- **Feedback Modal Redesign**:
+  - Reordered feedback types: General Feedback (top-left), Feature Request (top-right), Creative Idea (bottom-left), Bug Report (bottom-right)
+  - Improved type descriptions for clarity
+  - Required field validation: Submit button disabled until both Title and Description are filled
+  - Cinzel font (`font-heading`) on submit button
+  - Enhanced responsive design for mobile and smaller screens
+- **Header Cleanup**: Removed redundant info button (Guide accessible via footer)
+
+### Responsive Navigation
+- **Desktop breakpoints**:
+  - `<1100px`: Mobile bottom navigation
+  - `1100px-1299px`: Dropdown navigation menu (compact view)
+  - `1300px+`: Full horizontal navigation tabs
+- Prevents tab cutoff on smaller desktop windows
+
+### Z-Index & Overlay Fixes
+- Fixed dropdown menus being cut off within header by removing `overflow-hidden`
+- Hub dropdown z-index increased to `z-[110]` (above header's `z-100`)
+- CinemaSceneSelector dropdown z-index increased to `z-50`
+- All overlay/popup menus now render on top layer correctly
+
+### Authentication Forms
+- Added loading states: "Signing in..." / "Creating account..." with spinner during submission
+
 ## System Architecture
 
 MetaDJ Nexus is built on a modern web stack designed for performance and scalability on Replit.
@@ -33,6 +61,20 @@ MetaDJ Nexus is built on a modern web stack designed for performance and scalabi
 - The application focuses on delivering immersive audio and video experiences.
 - Media playback includes features like scrubbing, volume control, and full-screen cinema video.
 - Analytics are integrated to monitor user engagement.
+
+**Design System & Typography:**
+- **Heading Font**: Cinzel (`font-heading`) - Used for buttons, navigation labels, headings, and emphasis
+- **Body Font**: System default sans-serif
+- **Z-Index Hierarchy**:
+  - `z-100`: Header, main overlays (WelcomeOverlay, MetaDJai popovers)
+  - `z-[110]`: Header dropdowns (must appear above header)
+  - `z-[130]`: Search overlay
+  - `z-[200]`: Critical alerts (OfflineIndicator)
+  - `z-50`: Component-level dropdowns (CinemaSceneSelector, TrackOptionsMenu)
+- **Button Styling Conventions**:
+  - Text-only buttons use Cinzel font (`font-heading font-semibold`)
+  - Pill-shaped buttons: `rounded-full` with appropriate padding
+  - Interactive states: hover with `hover:bg-white/10` or gradient highlights
 
 **Technical Implementations & Feature Specifications:**
 - **Media Streaming**: Supports HTTP 206 Partial Content for audio and video seeking and progressive loading.

@@ -679,7 +679,7 @@ export function AppHeader({
                 id="tour-toggle-feedback"
                 type="button"
                 onClick={onFeedbackOpen}
-                className="inline-flex items-center justify-center h-9 px-4 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/80 hover:text-white hover:border-purple-400/40 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation text-sm font-medium"
+                className="inline-flex items-center justify-center h-9 px-4 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/80 hover:text-white hover:border-purple-400/40 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation text-sm font-heading font-semibold"
                 aria-label="Submit Feedback"
                 title="Submit Feedback"
               >
