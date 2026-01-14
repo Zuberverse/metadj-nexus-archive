@@ -88,13 +88,17 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 flex items-start justify-center z-50 px-2 sm:px-4 py-20 sm:py-24 overflow-y-auto">
+      <div className="fixed inset-0 flex items-center justify-center z-50 px-2 sm:px-4 py-20 sm:py-24">
         <div
-          className="w-full max-w-lg bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-lg bg-(--bg-surface-base)/95 backdrop-blur-3xl border border-white/10 rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-full flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Background Blobs - Matching Panel Style */}
+          <div className="absolute -top-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
+          <div className="absolute top-[40%] -right-[20%] w-[80%] h-[60%] bg-blue-600/5 blur-[80px] pointer-events-none" />
+          
           {/* Header */}
-          <div className="bg-[#0a0a0a] border-b border-white/10 p-3 sm:p-4 flex items-center justify-between">
+          <div className="relative shrink-0 bg-(--bg-surface-base)/80 border-b border-white/10 p-3 sm:p-4 flex items-center justify-between">
             <h2 className="text-lg sm:text-xl font-semibold text-white">Share Your Feedback</h2>
             <button
               onClick={onClose}
@@ -104,7 +108,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <form onSubmit={handleSubmit} className="relative flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Type Selection */}
             <div>
               <label className="block text-sm font-medium text-white/70 mb-2 sm:mb-3">
