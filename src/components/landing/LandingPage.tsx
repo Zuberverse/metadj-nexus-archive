@@ -114,7 +114,7 @@ export function LandingPage() {
           {/* Main Content */}
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-center flex-1 min-h-0">
             {/* Left: Hero Text */}
-            <div className="space-y-4">
+            <div className="space-y-4 text-center lg:text-left">
               <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-pop">
                 <span className="text-gradient-hero">
                   The Creative Hub
@@ -122,7 +122,7 @@ export function LandingPage() {
                 <br />
                 <span className="text-white/90">for MetaDJ</span>
               </h2>
-              <p className="text-lg lg:text-xl text-white/70 max-w-lg">
+              <p className="text-lg lg:text-xl text-white/70 max-w-lg mx-auto lg:mx-0">
                 Experience original electronic music, immersive visuals, and AI-driven exploration.
                 A living showcase of human vision amplified by AI.
               </p>
