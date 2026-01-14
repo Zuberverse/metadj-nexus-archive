@@ -385,11 +385,11 @@ export function PlaylistDetailView({
 
         {/* Actions */}
         {playlistTracks.length > 0 && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-visible">
             <button
               type="button"
               onClick={handlePlayAll}
-              className="flex h-11 items-center gap-2 rounded-lg gradient-4 px-6 font-heading text-sm font-semibold text-white shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
+              className="flex h-11 items-center gap-2 rounded-lg gradient-4 px-6 font-heading text-sm font-semibold text-white drop-shadow-[0_0_20px_rgba(95,108,255,0.4)] transition-all hover:drop-shadow-[0_0_30px_rgba(95,108,255,0.6)] focus-ring-glow"
             >
               <Play className="h-4 w-4" />
               Start

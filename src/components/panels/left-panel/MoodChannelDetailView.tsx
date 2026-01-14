@@ -84,11 +84,11 @@ export function MoodChannelDetailView({
       </div>
 
       {tracks.length > 0 && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 overflow-visible">
           <button
             type="button"
             onClick={handlePlayChannel}
-            className="inline-flex items-center gap-1.5 rounded-full gradient-4-soft px-4 py-2 text-xs font-heading font-semibold text-white shadow-[0_0_18px_rgba(95,108,255,0.35)] transition hover:shadow-[0_0_24px_rgba(95,108,255,0.55)] hover:brightness-110"
+            className="inline-flex items-center gap-1.5 rounded-full gradient-4-soft px-4 py-2 text-xs font-heading font-semibold text-white drop-shadow-[0_0_18px_rgba(95,108,255,0.45)] transition hover:drop-shadow-[0_0_24px_rgba(95,108,255,0.65)] hover:brightness-110"
             aria-label={`Play all tracks in ${channel.name}`}
           >
             <Play className="h-3.5 w-3.5" fill="currentColor" />

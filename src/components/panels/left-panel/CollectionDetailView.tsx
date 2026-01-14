@@ -115,12 +115,12 @@ export function CollectionDetailView({
         className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y space-y-2 pr-1 scrollbar-hide [-webkit-overflow-scrolling:touch]"
       >
         {(tracks.length > 0 || !isFeatured) && (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 overflow-visible">
             {!isFeatured && (
               <button
                 type="button"
                 onClick={() => setShowAbout((prev) => !prev)}
-                className="flex flex-1 min-w-0 items-center justify-between rounded-xl border border-white/20 bg-white/5 px-3 py-2 text-xs font-medium text-white/70 transition hover:bg-white/10 hover:text-white hover:border-white/30"
+                className="flex flex-1 min-w-0 items-center justify-between rounded-xl border border-white/20 bg-white/5 px-3 py-2 text-xs font-heading font-medium text-white/70 transition hover:bg-white/10 hover:text-white hover:border-white/30"
                 aria-expanded={showAbout}
                 aria-controls="collection-about"
               >
@@ -133,11 +133,11 @@ export function CollectionDetailView({
               </button>
             )}
             {tracks.length > 0 && (
-              <div className={`flex items-center gap-4 ${isFeatured ? 'w-full justify-center' : ''}`}>
+              <div className={`flex items-center gap-4 overflow-visible ${isFeatured ? 'w-full justify-center' : ''}`}>
                 <button
                   type="button"
                   onClick={handlePlayAll}
-                  className="inline-flex items-center gap-1.5 rounded-full gradient-4-soft px-4 py-2 text-xs font-heading font-semibold text-white shadow-[0_0_18px_rgba(95,108,255,0.35)] transition hover:shadow-[0_0_24px_rgba(95,108,255,0.55)] hover:brightness-110"
+                  className="inline-flex items-center gap-1.5 rounded-full gradient-4-soft px-4 py-2 text-xs font-heading font-semibold text-white drop-shadow-[0_0_18px_rgba(95,108,255,0.45)] transition hover:drop-shadow-[0_0_24px_rgba(95,108,255,0.65)] hover:brightness-110"
                   aria-label="Start playing from the beginning of collection"
                 >
                   <Play className="h-3.5 w-3.5" fill="currentColor" />
