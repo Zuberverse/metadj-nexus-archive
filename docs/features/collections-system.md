@@ -85,6 +85,28 @@ interface Track {
     - **Featured**: Indigo/Blue glow (`shadow-indigo-500/25`)
   - This applies to the Hub, Left Panel browsing, and Wisdom sections (mapped to collection themes).
 
+### Featured Collection
+
+The Featured collection is a special curated view alternating between Majestic Ascent and Metaverse Revelation tracks:
+
+**Configuration** (`src/lib/app.constants.ts`):
+- `FEATURED_TRACK_IDS`: Array of 20 track IDs alternating between collections
+- `HUB_HERO_TRACK_ID`: First featured track used for Hub's "Enter Cinema" button
+
+**Current Featured Order** (20 tracks):
+1. metadj-001 (Majestic Ascent)
+2. mr-001 (Metaverse Revelation - I Want to Believe)
+3. metadj-002 (Convergence)
+4. mr-003 (Metaverse Revelation)
+... (alternating pattern continues)
+
+### Collection Details Modal Enhancements
+
+The About Collection modal (`CollectionDetailsModal.tsx`) includes:
+- **Scroll Indicator**: Shows "Scroll for more" with bouncing chevron icon and gradient fade when track list exceeds container height
+- Indicator auto-hides when user scrolls to bottom
+- Uses `scrollContainerRef` with scroll event listener to track scroll position
+
 ### BrowseView Card Design (v0.9.47+)
 
 The Left Panel BrowseView cards prioritize quick scanning while preserving collection identity.

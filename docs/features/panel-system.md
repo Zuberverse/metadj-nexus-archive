@@ -356,6 +356,29 @@ style={{
 }}
 ```
 
+## Account Panel
+
+The Account Panel (`src/components/account/AccountPanel.tsx`) provides user settings and actions as a slide-out right-side panel.
+
+### Behavior
+- Opens via user icon button in desktop header (visible at 1100px+)
+- Click-away enabled: Clicking the backdrop closes the panel
+- Scroll lock: Background scrolling prevented using shared `useBodyScrollLock` hook
+- Z-index: Backdrop at `z-[110]`, panel at `z-[120]` (above header at `z-100`)
+
+### Views
+The panel uses view-based navigation with back buttons in sub-views:
+1. **Main View**: User info, actions (Submit Feedback, Admin Dashboard), account settings (Update Email, Change Password)
+2. **Email Update**: Form to change email address
+3. **Password Change**: Form to update password
+4. **Feedback Submission**: Integrated feedback form with type selection and severity for bugs
+
+### Styling
+- Matches Music and MetaDJai panel styling with gradient blobs
+- Cinzel font (`font-heading`) for all headers, buttons, and labels
+- Close button: `h-10 w-10` with visible contrast for all screen sizes
+- Safe-area padding for mobile devices
+
 ## Related Hooks
 
 | Hook | Purpose |

@@ -32,7 +32,11 @@ Key capabilities include:
   - Feedback form integrated directly into panel (no longer a popup modal)
   - Feedback types: General Feedback, Feature Request, Creative Idea, Bug Report with severity levels for bugs
   - Required field validation: Submit button disabled until Title and Description are filled
-  - **Panel Behavior**: Removed click-away/backdrop-close functionality to match MetaDJai panel behavior. Panel closes via X button or avatar button toggle only.
+  - Click-away/backdrop closing re-enabled for easier dismissal
+  - Close button made larger (h-10 w-10) with stronger contrast for visibility on smaller screens
+  - Added safe-area padding for mobile devices (respects notches and status bars)
+  - Uses shared `useBodyScrollLock` hook to prevent background scrolling (reference-counted for nested modals)
+- **Collection Details Scroll Indicator**: About Collection modal now shows "Scroll for more" with bouncing chevron and gradient fade when content overflows
 - **Header Cleanup**: Removed redundant info button (Guide accessible via footer)
 
 ### Responsive Navigation
@@ -103,7 +107,8 @@ MetaDJ Nexus is built on a modern web stack designed for performance and scalabi
 - **Body Font**: System default sans-serif
 - **Z-Index Hierarchy**:
   - `z-100`: Header, main overlays (WelcomeOverlay, MetaDJai popovers)
-  - `z-[110]`: Header dropdowns (must appear above header)
+  - `z-[110]`: Header dropdowns (must appear above header), Account Panel backdrop
+  - `z-[120]`: Account Panel content (above backdrop)
   - `z-[130]`: Search overlay
   - `z-[200]`: Critical alerts (OfflineIndicator)
   - `z-50`: Component-level dropdowns (CinemaSceneSelector, TrackOptionsMenu)
@@ -111,6 +116,15 @@ MetaDJ Nexus is built on a modern web stack designed for performance and scalabi
   - Text-only buttons use Cinzel font (`font-heading font-semibold`)
   - Pill-shaped buttons: `rounded-full` with appropriate padding
   - Interactive states: hover with `hover:bg-white/10` or gradient highlights
+  - Icon buttons: `h-8 w-8` for standard icon buttons, `h-10 w-10` for prominent close buttons
+  - Transparent backgrounds by default with `hover:bg-white/10` or `hover:bg-white/20`
+  - Text color transition: `text-white/40` to `text-white` on hover
+
+**Featured Tracks Configuration:**
+- 20 tracks total alternating between Majestic Ascent and Metaverse Revelation collections
+- Defined in `src/lib/app.constants.ts` as `FEATURED_TRACK_IDS`
+- First track (`metadj-001`) is the Hub hero track for "Enter Cinema" button
+- Order designed for variety: MA track, MR track, MA track, MR track...
 
 **Technical Implementations & Feature Specifications:**
 - **Media Streaming**: Supports HTTP 206 Partial Content for audio and video seeking and progressive loading.

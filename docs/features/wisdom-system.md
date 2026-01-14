@@ -157,7 +157,12 @@ Detail views include a sticky reading progress bar that tracks scroll position a
 ## Sharing
 
 - Wisdom browsing stays state-driven (no in-app route pushes), so tab switching is instant and session state is preserved.
-- Each item detail view includes a **Share** button (native share on mobile, clipboard fallback) that generates a deep link:
+- Each item detail view uses the unified **ShareButton** component (`src/components/ui/ShareButton.tsx`)
+- ShareButton provides a dropdown menu with "Copy Link" and "Share to X" options
+- Wisdom-specific social text and hashtags generated from topics array
+- Analytics tracking for wisdom content sharing (`share_click` events with wisdom metadata)
+- Same component used across music tracks, playlists, and wisdom content for consistency
+- ShareButton generates a deep link:
   - `/wisdom/thoughts/{id}`
   - `/wisdom/guides/{id}`
   - `/wisdom/reflections/{id}`
