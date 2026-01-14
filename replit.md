@@ -20,6 +20,9 @@ Key capabilities include:
 ## Recent Changes (January 2026)
 
 ### UI/UX Improvements
+- **Clickable Logo**: MetaDJ Nexus logo in header is now clickable, navigates to Hub view (both mobile and desktop variants)
+- **Logo Accessibility**: Added keyboard-accessible focus styles with purple ring indicators for improved accessibility
+- **Collection Details Spacing**: Increased bottom padding in About Collection container to prevent text from touching edges
 - **Simplified Header**: Removed admin badge and feedback button from header; both now accessible via Account panel
 - **Account Panel Enhancements**:
   - Added "Submit Feedback" button for all users
