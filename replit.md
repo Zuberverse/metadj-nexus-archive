@@ -2,11 +2,11 @@
 
 ## Overview
 
-MetaDJ Nexus is a platform hub connecting human vision with AI-driven execution for the Metaverse, optimized for deployment on Replit. It leverages Replit's managed infrastructure, Cloudflare R2 for media streaming (with Replit App Storage as a fallback), and a zero-configuration deployment workflow. The project aims to provide a creative and immersive experience without the complexities of server management.
+MetaDJ Nexus is a platform hub connecting human vision with AI-driven execution for the Metaverse, optimized for deployment on Replit. It leverages Replit's managed infrastructure and Cloudflare R2 for media streaming, with a zero-configuration deployment workflow. The project aims to provide a creative and immersive experience without the complexities of server management.
 
 Key capabilities include:
 - Managed infrastructure and zero-downtime deployments.
-- Primary media streaming from Cloudflare R2 with Replit App Storage fallback.
+- Media streaming exclusively from Cloudflare R2 (zero egress fees, S3-compatible).
 - Automatic HTTPS and SSL certificate management.
 - Integration with analytics and monitoring tools.
 
@@ -91,11 +91,9 @@ MetaDJ Nexus is built on a modern web stack designed for performance and scalabi
 
 The project relies on the following external services and integrations:
 
--   **Cloudflare R2**: Primary storage provider for media assets (audio and video files).
+-   **Cloudflare R2**: Exclusive storage provider for media assets (audio and video files). No fallback storage.
+    -   Bucket: `metadj-nexus-media` with `music/` and `visuals/` prefixes.
     -   **Required Environment Variables**: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`.
--   **Replit App Storage**: Fallback storage solution for media assets.
-    -   Uses two buckets: `music` for audio and `visuals` for video.
-    -   **Required Environment Variables (if used as fallback)**: `MUSIC_BUCKET_ID`, `VISUALS_BUCKET_ID`.
 -   **Plausible Analytics**: Optional, privacy-first analytics platform for tracking user engagement.
     -   **Required Environment Variable**: `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`.
     -   **Optional Environment Variable**: `NEXT_PUBLIC_PLAUSIBLE_API_HOST` (for self-hosted instances).
