@@ -25,6 +25,8 @@ import {
   MAX_MESSAGES_PER_REQUEST,
   MAX_PAGE_CONTEXT_DETAILS_LENGTH,
   MAX_PERSONALIZATION_LENGTH,
+  SPAM_CHECK_WINDOW,
+  SPAM_THRESHOLD_IDENTICAL_MESSAGES,
 } from '@/lib/ai/limits'
 import { formatZodErrorString } from '@/lib/validation/format'
 
@@ -187,22 +189,24 @@ export interface ValidationResult {
 /**
  * Check for spam patterns (duplicate messages)
  *
- * Detects when users send the same message repeatedly (3+ times),
- * which may indicate spam. Allows 2 identical messages to handle
- * legitimate retries and conversation continuations.
+ * Detects when users send the same message repeatedly, which may indicate
+ * spam or bot behavior. The thresholds are configured in limits.ts to
+ * balance spam prevention with allowing legitimate retries.
+ *
+ * Current settings (from limits.ts):
+ * - SPAM_THRESHOLD_IDENTICAL_MESSAGES: 3 (allows 2 identical messages)
+ * - SPAM_CHECK_WINDOW: 5 (checks last 5 user messages)
  */
 function checkSpamPatterns(messages: { role: string; content: string }[]): string | null {
   const userMessages = messages.filter((m) => m.role === 'user')
   const lastUserMessage = userMessages.at(-1)
 
   if (lastUserMessage) {
-    // Check the last 5 user messages for repeated content
     const recentIdentical = userMessages
-      .slice(-5)
+      .slice(-SPAM_CHECK_WINDOW)
       .filter((m) => m.content.trim() === lastUserMessage.content.trim())
 
-    // Only flag if 3+ identical messages (allows 1 retry)
-    if (recentIdentical.length >= 3) {
+    if (recentIdentical.length >= SPAM_THRESHOLD_IDENTICAL_MESSAGES) {
       return 'Please avoid sending duplicate messages'
     }
   }

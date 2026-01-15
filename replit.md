@@ -1,5 +1,7 @@
 # Replit Deployment Guide — MetaDJ Nexus
 
+**Last Updated**: 2026-01-15
+
 ## Overview
 
 MetaDJ Nexus is a platform connecting human vision with AI-driven execution for the Metaverse, optimized for deployment on Replit. It provides a creative and immersive experience without complex server management, leveraging Replit's managed infrastructure and Cloudflare R2 for media streaming. Key capabilities include zero-downtime deployments, S3-compatible media streaming with zero egress fees, automatic HTTPS, and integration with analytics and monitoring.
@@ -40,7 +42,81 @@ MetaDJ Nexus is built on a modern web stack for performance and scalability on R
 - **Deployment**: Automatic and continuous deployment on Replit with zero-downtime rolling updates.
 - **Monitoring**: Integration with Replit's dashboard metrics and internal health endpoints. Recommendations for external monitoring with UptimeRobot, Sentry, and Plausible.
 - **Backup & Recovery**: Code is Git-versioned; media on Cloudflare R2; JSON data files versioned with code.
-- **AI Integration (MetaDJai)**: Uses Vercel AI SDK best practices for tool-based catalog retrieval, reducing payload size and improving efficiency when users query music data.
+
+## AI Integration (MetaDJai)
+
+MetaDJai is the AI-powered creative companion built with the **Vercel AI SDK**. It follows best practices for tool-based data retrieval and multi-provider support.
+
+### Architecture
+
+```
+User Message → API Route → Provider Selection → AI Model → Tool Execution → Response Stream
+                              ↓
+                    OpenAI / Anthropic / Google / xAI
+```
+
+**Key Files:**
+- `src/lib/ai/limits.ts` - Centralized configuration for all limits
+- `src/lib/ai/validation.ts` - Request validation with Zod schemas
+- `src/lib/ai/tools/*.ts` - Individual tool implementations
+- `src/lib/ai/tools/provider.ts` - Tool registration and provider config
+- `src/lib/ai/meta-dj-ai-prompt.ts` - System prompt construction
+
+### Tool-Based Data Retrieval
+
+Following Vercel AI SDK best practices, the AI retrieves data **on-demand** via tools rather than receiving large payloads with every message:
+
+| Tool | Purpose | When Called |
+|------|---------|-------------|
+| `getCatalogSummary` | Full catalog overview | User asks about collections, recommendations, or music discovery |
+| `searchCatalog` | Find specific tracks/collections | User searches for specific music |
+| `getRecommendations` | Mood/energy-based suggestions | User asks "what should I listen to?" |
+| `getWisdomContent` | Retrieve Thoughts/Guides/Reflections | User asks about Wisdom content |
+| `getZuberantContext` | Knowledge base search | User asks about MetaDJ, Zuberant, or platform philosophy |
+| `getPlatformHelp` | Platform feature help | User asks how to use features |
+| `proposePlayback/Queue/Playlist` | Active control proposals | User requests playback actions |
+
+### Request Limits
+
+All limits are centralized in `src/lib/ai/limits.ts` with documented rationale:
+
+| Limit | Value | Rationale |
+|-------|-------|-----------|
+| `MAX_MESSAGES_PER_REQUEST` | 50 | Ample conversation context |
+| `MAX_MESSAGE_CONTENT_LENGTH` | 16,000 chars (~4k tokens) | Long questions, code snippets, pasted content |
+| `MAX_MESSAGE_HISTORY` | 12 | Client-side: 6 turns of context |
+| `MAX_PERSONALIZATION_LENGTH` | 500 chars | Custom AI behavior preferences |
+| `MAX_COLLECTION_DESCRIPTION_LENGTH` | 1,000 chars | Rich narrative descriptions |
+| `MAX_CATALOG_COLLECTIONS` | 30 | Balanced catalog overview |
+
+### Tool Result Limits
+
+Configured in `src/lib/ai/tools/utils.ts`:
+
+| Limit | Value | Rationale |
+|-------|-------|-----------|
+| `MAX_TOOL_RESULT_SIZE` | 24,000 chars (~6k tokens) | Comprehensive responses without runaway costs |
+| `MAX_SEARCH_RESULTS` | 10 | Variety without overwhelm |
+| `MAX_RECOMMENDATIONS` | 10 | Digestible suggestion lists |
+| `MAX_ACTIVE_CONTROL_TRACKS` | 50 | Substantial playlists |
+
+### Spam Detection
+
+Configurable thresholds prevent abuse while allowing legitimate retries:
+
+| Setting | Value | Behavior |
+|---------|-------|----------|
+| `SPAM_THRESHOLD_IDENTICAL_MESSAGES` | 3 | Triggers on 3+ identical messages |
+| `SPAM_CHECK_WINDOW` | 5 | Checks last 5 user messages |
+
+This allows users to retry a message once (network issues, accidental double-click) without triggering spam detection.
+
+### Security
+
+- **Input Sanitization**: All user inputs truncated to reasonable lengths
+- **Output Validation**: Tool results validated via `sanitizeAndValidateToolResult()`
+- **Injection Protection**: Patterns filtered to prevent prompt injection attacks
+- **Rate Limiting**: Per-user request limits via circuit breaker
 
 ## External Dependencies
 

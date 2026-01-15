@@ -9,6 +9,11 @@
  * - All tool results should be size-limited to prevent abuse
  * - Tool outputs are sanitized to prevent indirect prompt injection
  *
+ * DESIGN PRINCIPLES:
+ * - Generous limits for normal usage, strict limits for edge cases
+ * - Graceful degradation with truncation rather than hard failures
+ * - Clear metadata when results are modified
+ *
  * @module lib/ai/tools/utils
  */
 
@@ -20,27 +25,47 @@ import { logger } from "@/lib/logger"
 
 /**
  * Maximum size (in characters) for serialized tool results
- * Prevents excessive token consumption from oversized responses
+ *
+ * Rationale: 24,000 chars (~6,000 tokens) allows for:
+ * - Full catalog summary with 30 collections
+ * - Knowledge base search results with rich content
+ * - Recommendation lists with metadata
+ *
+ * This is generous enough for comprehensive responses while preventing
+ * runaway token consumption from malformed data.
  */
-export const MAX_TOOL_RESULT_SIZE = 24000 // ~6000 tokens at 4 chars/token
+export const MAX_TOOL_RESULT_SIZE = 24000
 
 /**
  * Maximum number of search results returned
+ *
+ * Rationale: 10 results provides enough variety for discovery while
+ * keeping response size manageable. Users can refine search queries
+ * for more specific results.
  */
 export const MAX_SEARCH_RESULTS = 10
 
 /**
  * Maximum number of recommendations returned
+ *
+ * Rationale: 10 recommendations balances variety with digestibility.
+ * More would overwhelm users; fewer might miss relevant suggestions.
  */
 export const MAX_RECOMMENDATIONS = 10
 
 /**
- * Maximum number of tracks for active control operations
+ * Maximum number of tracks for active control operations (queue, playlist)
+ *
+ * Rationale: 50 tracks is enough for substantial playlists while
+ * preventing abuse. Larger operations should be done incrementally.
  */
 export const MAX_ACTIVE_CONTROL_TRACKS = 50
 
 /**
  * Default limit for active control operations
+ *
+ * Rationale: 20 tracks is a sensible default for queue operations -
+ * enough for an hour+ of listening without overwhelming the queue.
  */
 export const DEFAULT_ACTIVE_CONTROL_LIMIT = 20
 
