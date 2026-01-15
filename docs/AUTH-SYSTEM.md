@@ -2,7 +2,7 @@
 
 > Comprehensive documentation for the auth system, feedback collection, and admin dashboard.
 
-**Last Modified**: 2026-01-15
+**Last Modified**: 2026-01-15 (Updated: Database-backed admin with username aliases)
 
 ## Table of Contents
 
@@ -24,10 +24,11 @@
 The MetaDJ Nexus authentication system provides:
 
 - **User authentication** via email/password registration and login
-- **Admin access** via special admin account (username: "admin")
+- **Admin access** via database-backed admin user (username: "admin" + aliases)
 - **Session management** using signed, HTTP-only cookies
 - **Feedback collection** for bugs, features, ideas, and general feedback
 - **Admin dashboard** for managing feedback and viewing analytics
+- **Username alias system** for admin users (permanent "admin" username with additional aliases)
 
 ### Current Implementation (PostgreSQL via Neon + Drizzle)
 
@@ -106,10 +107,12 @@ Auth, feedback, and admin data run on Neon PostgreSQL with Drizzle ORM.
 ### Login
 
 ```
-1. User submits email (or admin username) + password
+1. User submits email (or admin username/alias) + password
 2. POST /api/auth/login
-3. Server checks for admin username ("admin")
-   - If admin: validates against ADMIN_PASSWORD env var
+3. Server checks for admin username ("admin") or admin alias
+   - If "admin": first login bootstraps admin user (creates DB record), 
+     subsequent logins verify against stored password hash
+   - If admin alias: finds admin user and verifies password
    - If user: finds user in the database via `server/storage.ts`
 4. Server verifies password
 5. Server creates session cookie
@@ -354,8 +357,16 @@ Features:
 - Slide-out panel design
 - Email update form
 - Password update form
+- Username update form (for regular users: replaces username; for admin: adds alias)
+- Feedback submission section
 - Admin dashboard link (for admins)
 - Logout button
+
+**Admin-Specific UI:**
+- Button shows "Add Username Alias" instead of "Update Username"
+- Form shows "Primary Username" (locked) and "New Alias" field
+- Success message confirms alias was added
+- Explanation text about permanent "admin" username
 
 ### FeedbackModal
 
@@ -390,7 +401,35 @@ Auth, feedback, and admin data are stored in Neon PostgreSQL using Drizzle ORM.
 - `server/db.ts` — Neon connection + pooling (reads `DATABASE_URL`)
 - `shared/schema.ts` — Drizzle schema (users, sessions, preferences, analytics, conversations, feedback)
 - `server/storage.ts` — Typed CRUD operations for auth/admin/analytics/conversations/feedback
+- `src/lib/auth/users.ts` — User authentication logic (login, registration, username updates)
 - `drizzle.config.ts` — Drizzle Kit configuration
+
+### Users Table Schema
+
+Key fields in the `users` table:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | varchar(64) | Primary key |
+| `email` | varchar(255) | User email (unique) |
+| `username` | varchar(30) | Primary username (unique) |
+| `usernameAliases` | jsonb | Array of additional usernames (admin only) |
+| `passwordHash` | varchar(255) | PBKDF2 hashed password |
+| `isAdmin` | boolean | Admin flag (default: false) |
+| `termsVersion` | varchar(20) | Accepted terms version |
+| `termsAcceptedAt` | timestamp | When terms were accepted |
+
+### Admin Alias Storage Functions
+
+Located in `server/storage.ts`:
+
+| Function | Description |
+|----------|-------------|
+| `findAdminUser()` | Find first user with `isAdmin=true` |
+| `getAdminUsernameAliases()` | Get all aliases from admin's `usernameAliases` array |
+| `addUsernameAlias(userId, alias)` | Add an alias to admin's array |
+| `isAdminUsernameAlias(username)` | Check if username is "admin" or an active alias |
+| `findAdminByAlias(alias)` | Find admin user by any of their aliases |
 
 ### Setup
 
@@ -428,33 +467,45 @@ Auth, feedback, and admin data are stored in Neon PostgreSQL using Drizzle ORM.
 
 ### Admin Account Security
 
-The admin account uses environment variable credentials:
-- Password stored in `ADMIN_PASSWORD` env var
-- Cannot be changed via UI (security feature)
-- Rotate regularly in production
+The admin account is a **database-backed user** with special handling:
 
-### Virtual Admin User Handling
+**Bootstrap Process:**
+1. First login with username `admin` + `ADMIN_PASSWORD` creates the admin user in the database
+2. Admin user is created with `isAdmin: true`, email `admin@metadj.local`, username `admin`
+3. Password is hashed and stored in the database (not the env var)
+4. Subsequent logins verify against the stored password hash
 
-The admin user is a **virtual user** with no database record:
+**Admin Capabilities:**
+- Full platform access plus admin dashboard
+- Can edit email, password, and username via Account Panel
+- Username updates add **aliases** instead of replacing (see below)
+- Database `isAdmin` flag can be used to manually promote other users
 
-| Aspect | Behavior |
-|--------|----------|
-| User ID | Fixed as `'admin'` |
-| Database Record | None (virtual) |
-| Preferences API | Returns defaults, skips DB operations |
-| Recently Played API | Returns empty list, skips DB operations |
-| Client Storage | Uses localStorage for preferences |
+**Username Alias System:**
+The admin username "admin" is permanent and cannot be changed. When admin updates their username:
 
-**API Response Pattern:**
-```json
-{
-  "success": true,
-  "preferences": { /* defaults */ },
-  "isVirtualUser": true
-}
+| Action | Result |
+|--------|--------|
+| Update username to "djmaster" | Adds "djmaster" as an alias |
+| Login with "admin" | Works (primary username) |
+| Login with "djmaster" | Works (alias) |
+| Remove alias from DB | Alias becomes available for regular users |
+
+**Database Fields:**
+- `username`: Primary username (always "admin" for admin user)
+- `usernameAliases`: JSON array of additional usernames (e.g., `["djmaster", "creator"]`)
+
+**Reserved Username Logic:**
+- "admin" is always reserved
+- All active admin aliases are reserved
+- Regular users cannot register or change to reserved usernames
+- If an alias is manually removed from `usernameAliases` array, it becomes available
+
+**Manual Alias Removal:**
+To remove an alias, edit the admin user record in the database:
+```sql
+UPDATE users SET username_aliases = '["remaining_alias"]' WHERE username = 'admin';
 ```
-
-This design prevents database errors when admin accesses user-specific features while maintaining full platform access.
 
 ### Terms of Service Acceptance Flow
 
@@ -494,7 +545,9 @@ The platform tracks which version of Terms of Service each user has accepted:
 
 **"Invalid email or password" on login**
 - Verify email is correct (case-insensitive)
-- For admin: ensure `ADMIN_PASSWORD` is set in `.env.local`
+- For admin first login (bootstrap): ensure `ADMIN_PASSWORD` is set in `.env.local`
+- For admin subsequent logins: use actual email or username alias (not just "admin" if password was changed)
+- For admin alias login: verify the alias exists in the admin's `usernameAliases` array
 - Ensure `DATABASE_URL` is set and reachable
 
 **"DATABASE_URL environment variable is not set"**

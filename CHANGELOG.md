@@ -1,11 +1,32 @@
 # Changelog
 
-**Last Modified**: 2026-01-14 21:55 EST
+**Last Modified**: 2026-01-15 20:10 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-15
+
+**Auth**
+- Migrated admin user from virtual to database-backed with `isAdmin` flag for manual override capability.
+- Admin can now edit email, password, and username via Account Panel like regular users.
+- Added username alias system for admin: primary username "admin" is permanent, updates add aliases instead of replacing.
+- Added `usernameAliases` JSONB field to users table for storing admin aliases.
+- Admin can login with "admin" or any of their registered aliases.
+- Reserved username logic now blocks "admin" and all active admin aliases from being used by other users.
+- Added storage functions for alias management: `getAdminUsernameAliases`, `addUsernameAlias`, `isAdminUsernameAlias`, `findAdminByAlias`.
+- Aliases can be manually removed from database to make usernames available for regular users.
+
+**UI**
+- Updated AccountPanel to show "Add Username Alias" for admin users with explanation text.
+- Admin username form shows "Primary Username" (locked) and "New Alias" input field.
+- Added distinct success messages for alias additions vs username updates.
+
+**Documentation**
+- Updated AUTH-SYSTEM.md with database-backed admin, alias system, and new storage functions.
+- Updated replit.md to document admin alias behavior and reserved username logic.
 
 ### 2026-01-14
 
