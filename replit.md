@@ -1,6 +1,6 @@
 # Replit Deployment Guide — MetaDJ Nexus
 
-**Last Modified**: 2026-01-14 21:55 EST
+**Last Modified**: 2026-01-15 03:45 EST
 
 ## Overview
 
@@ -75,6 +75,9 @@ Key capabilities include:
 
 ### Authentication Forms
 - Added loading states: "Signing in..." / "Creating account..." with spinner during submission
+- **Cursor Position Fix**: All controlled input fields (sign in/signup, account settings, feedback, playlist creator) now position cursor at end of text when focused, preventing cursor jump to beginning on mode toggle
+- **Origin Validation**: API routes now properly allow requests from Replit development domains (`REPLIT_DEV_DOMAIN`, `REPLIT_DOMAINS`) and localhost ports (3000, 5000, 8100)
+- **Session Secret Fallback**: In development mode, `AUTH_SECRET` auto-generates if not configured, simplifying local development setup
 
 ### Admin Navigation
 - **Admin Access**: Admin dashboard accessible via Account panel "Open Admin Dashboard" button (admins only)
@@ -149,7 +152,10 @@ MetaDJ Nexus is built on a modern web stack designed for performance and scalabi
 - **Caching Strategy**: Utilizes `Cache-Control: public, max-age=31536000, immutable` for media files, enabling long-lived caching. Filenames are versioned to bust cache.
 - **Data Storage**: PostgreSQL database via Drizzle ORM for user data, preferences, and chat history. Content data uses JSON files (`src/data/music.json`, `src/data/collections.json`) versioned in Git.
 - **Database ORM**: Drizzle ORM with Neon serverless PostgreSQL driver.
-- **Authentication**: Cookie-based sessions with HMAC-signed tokens (requires `AUTH_SECRET` in all environments). User accounts stored in PostgreSQL with PBKDF2 password hashing (Web Crypto API). Admin user via `ADMIN_PASSWORD` environment variable. Registration + availability checks are rate-limited.
+- **Authentication**: Cookie-based sessions with HMAC-signed tokens. User accounts stored in PostgreSQL with PBKDF2 password hashing (Web Crypto API). Admin user via `ADMIN_PASSWORD` environment variable. Registration + availability checks are rate-limited.
+  - **Session Secrets**: `AUTH_SECRET` or `SESSION_SECRET` (32+ chars) for session signing. Auto-generates fallback in development mode.
+  - **Admin Login**: Username `admin` with password from `ADMIN_PASSWORD` secret. No database user required.
+  - **Origin Validation**: CSRF protection validates request origins against allowed hosts including `REPLIT_DEV_DOMAIN` and `REPLIT_DOMAINS` environment variables.
 - **API Security**: Includes rate limiting, input validation, and non-disclosure of sensitive information in error messages.
 - **Deployment**: Automatic deployment on Replit with zero-downtime rolling updates. Supports manual and continuous deployment from Git.
 - **Monitoring**: Integration with Replit's dashboard metrics for CPU, memory, network, and request rates. Internal health endpoints require `INTERNAL_API_SECRET`. External monitoring with UptimeRobot, Sentry, and Plausible is recommended.
@@ -172,7 +178,7 @@ The project relies on the following external services and integrations:
     -   **Database Management**: Use `npm run db:push` to sync schema changes, `npm run db:studio` to inspect data.
     -   **Database Schema** (10 tables): `users`, `sessions`, `user_preferences`, `conversations`, `messages`, `feedback`, `login_attempts`, `password_resets`, `analytics_events`, `email_verification_tokens`.
     -   **Admin Dashboard**: Available at `/admin` with 4 tabs: Overview (stats), Feedback (management), Users (SQL-paginated list), Analytics (event tracking). Requires `ADMIN_PASSWORD` secret.
-    -   **Auth Secrets**: `AUTH_SECRET` (session signing), `INTERNAL_API_SECRET` (internal health endpoints).
+    -   **Auth Secrets**: `AUTH_SECRET` or `SESSION_SECRET` (32+ chars, auto-generated in dev), `INTERNAL_API_SECRET` (internal health endpoints).
     -   **Conversation Archive**: MetaDJai conversations support archive/unarchive/permanent delete with `isArchived` and `archivedAt` columns on conversations table.
     -   **Username System**: Users can register with a unique username (3-20 chars, lowercase alphanumeric + underscores, cannot start with number). Reserved names blocked (admin, root, system, metadj, etc.). Username availability checked via `/api/auth/check-availability` endpoint. Users can update username in account settings.
 -   **Logging Webhook (Optional)**: For server-side logging.
