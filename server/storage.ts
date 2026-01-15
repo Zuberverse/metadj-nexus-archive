@@ -231,6 +231,46 @@ export async function updateUserEmailVerified(id: string, verified: boolean): Pr
   return updated || null;
 }
 
+/**
+ * Update user terms acceptance
+ */
+export async function updateUserTerms(userId: string, termsVersion: string): Promise<User | null> {
+  // Skip if userId is 'admin' (virtual user)
+  if (userId === 'admin') {
+    return null;
+  }
+
+  const [updated] = await db
+    .update(users)
+    .set({
+      termsVersion,
+      termsAcceptedAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, userId))
+    .returning();
+
+  return updated || null;
+}
+
+/**
+ * Get user terms version
+ */
+export async function getUserTermsVersion(userId: string): Promise<string | null> {
+  // Return null for admin or if user not found
+  if (userId === 'admin') {
+    return null;
+  }
+
+  const [user] = await db
+    .select({ termsVersion: users.termsVersion })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  return user?.termsVersion || null;
+}
+
 // ============================================================================
 // Email Verification Token Operations
 // ============================================================================

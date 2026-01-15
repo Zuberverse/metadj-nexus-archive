@@ -11,6 +11,7 @@ import { logger } from '@/lib/logger';
 import { hashPassword, verifyPassword } from './password';
 import * as storage from '../../../server/storage';
 import type { User, SessionUser, LoginCredentials, RegisterCredentials } from './types';
+import { TERMS_VERSION } from '@/lib/constants/terms';
 
 /**
  * Generate a unique user ID
@@ -30,6 +31,8 @@ function createAdminUser(): User {
     passwordHash: '',
     isAdmin: true,
     emailVerified: true,
+    termsVersion: null,
+    termsAcceptedAt: null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -62,6 +65,8 @@ export async function findUserByEmail(email: string): Promise<User | null> {
     passwordHash: user.passwordHash,
     isAdmin: user.isAdmin,
     emailVerified: user.emailVerified,
+    termsVersion: user.termsVersion ?? null,
+    termsAcceptedAt: user.termsAcceptedAt?.toISOString() ?? null,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };
@@ -85,6 +90,8 @@ export async function findUserById(id: string): Promise<User | null> {
     passwordHash: user.passwordHash,
     isAdmin: user.isAdmin,
     emailVerified: user.emailVerified,
+    termsVersion: user.termsVersion ?? null,
+    termsAcceptedAt: user.termsAcceptedAt?.toISOString() ?? null,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };
@@ -113,6 +120,7 @@ export async function authenticateUser(
         username: 'admin',
         isAdmin: true,
         emailVerified: true,
+        termsVersion: null,
       };
     }
     return null;
@@ -130,6 +138,7 @@ export async function authenticateUser(
     username: user.username,
     isAdmin: user.isAdmin,
     emailVerified: user.emailVerified,
+    termsVersion: user.termsVersion,
   };
 }
 
@@ -218,6 +227,8 @@ export async function registerUser(
     passwordHash,
     isAdmin: false,
     emailVerified: false,
+    termsVersion: TERMS_VERSION,
+    termsAcceptedAt: new Date(),
   });
 
   return {
@@ -226,6 +237,7 @@ export async function registerUser(
     username: newUser.username,
     isAdmin: newUser.isAdmin,
     emailVerified: newUser.emailVerified,
+    termsVersion: newUser.termsVersion,
   };
 }
 
@@ -263,6 +275,7 @@ export async function updateUserEmail(
     username: updated.username,
     isAdmin: updated.isAdmin,
     emailVerified: updated.emailVerified,
+    termsVersion: updated.termsVersion ?? null,
   };
 }
 
@@ -302,6 +315,7 @@ export async function updateUserUsername(
     username: updated.username,
     isAdmin: updated.isAdmin,
     emailVerified: updated.emailVerified,
+    termsVersion: updated.termsVersion ?? null,
   };
 }
 
@@ -388,6 +402,8 @@ export async function getAllUsers(): Promise<Omit<User, 'passwordHash'>[]> {
     username: user.username,
     isAdmin: user.isAdmin,
     emailVerified: user.emailVerified,
+    termsVersion: user.termsVersion ?? null,
+    termsAcceptedAt: user.termsAcceptedAt?.toISOString() ?? null,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   }));
@@ -398,4 +414,31 @@ export async function getAllUsers(): Promise<Omit<User, 'passwordHash'>[]> {
  */
 export async function getUserCount(): Promise<number> {
   return storage.getUserCount();
+}
+
+/**
+ * Update user terms acceptance
+ */
+export async function updateUserTerms(
+  userId: string,
+  termsVersion: string
+): Promise<SessionUser | null> {
+  if (userId === 'admin') {
+    // Return null for admin (no-op, admin doesn't have DB terms)
+    return null;
+  }
+
+  const updated = await storage.updateUserTerms(userId, termsVersion);
+  if (!updated) {
+    return null;
+  }
+
+  return {
+    id: updated.id,
+    email: updated.email,
+    username: updated.username,
+    isAdmin: updated.isAdmin,
+    emailVerified: updated.emailVerified,
+    termsVersion: updated.termsVersion ?? null,
+  };
 }

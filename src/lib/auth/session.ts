@@ -116,6 +116,7 @@ export async function createSession(user: SessionUser): Promise<void> {
     username: user.username,
     isAdmin: user.isAdmin,
     emailVerified: user.emailVerified,
+    termsVersion: user.termsVersion ?? null,
     expiresAt: Date.now() + SESSION_DURATION * 1000,
   };
 
@@ -149,6 +150,7 @@ export async function getSession(): Promise<SessionUser | null> {
     username: session.username,
     isAdmin: session.isAdmin,
     emailVerified: session.emailVerified ?? false,
+    termsVersion: session.termsVersion,
   };
 }
 

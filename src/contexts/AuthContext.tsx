@@ -17,6 +17,8 @@ import {
 } from 'react';
 import { logger } from '@/lib/logger';
 import { clearSessionStorage } from '@/lib/storage';
+import { TERMS_VERSION } from '@/lib/constants/terms';
+import { TermsUpdateModal } from '@/components/modals';
 
 interface User {
   id: string;
@@ -24,6 +26,7 @@ interface User {
   username: string | null;
   isAdmin: boolean;
   emailVerified: boolean;
+  termsVersion?: string | null;
 }
 
 interface AuthContextValue {
@@ -237,7 +240,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [user, isLoading, login, register, logout, updateEmail, updateUsername, updatePassword, checkAvailability, refreshSession]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const needsTermsAcceptance = useMemo(() => {
+    if (!user || isLoading) return false;
+    if (user.isAdmin) return false;
+    return user.termsVersion !== TERMS_VERSION;
+  }, [user, isLoading]);
+
+  const handleTermsAccepted = useCallback(() => {
+    refreshSession();
+  }, [refreshSession]);
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      {needsTermsAcceptance && <TermsUpdateModal onAccepted={handleTermsAccepted} />}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

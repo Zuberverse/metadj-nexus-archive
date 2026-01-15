@@ -28,6 +28,7 @@ export async function GET() {
         username: session.username,
         isAdmin: session.isAdmin,
         emailVerified: session.emailVerified,
+        termsVersion: session.termsVersion,
       },
     });
   } catch (error) {

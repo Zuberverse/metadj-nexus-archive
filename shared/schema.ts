@@ -31,6 +31,8 @@ export const users = pgTable(
     isAdmin: boolean('is_admin').default(false).notNull(),
     status: varchar('status', { length: 20 }).default('active').notNull(),
     emailVerified: boolean('email_verified').default(false).notNull(),
+    termsVersion: varchar('terms_version', { length: 20 }),
+    termsAcceptedAt: timestamp('terms_accepted_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     deletedAt: timestamp('deleted_at'),

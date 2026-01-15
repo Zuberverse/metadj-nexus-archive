@@ -11,6 +11,8 @@ export interface User {
   passwordHash: string;
   isAdmin: boolean;
   emailVerified: boolean;
+  termsVersion: string | null;
+  termsAcceptedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -21,6 +23,7 @@ export interface Session {
   username: string | null;
   isAdmin: boolean;
   emailVerified: boolean;
+  termsVersion: string | null;
   expiresAt: number;
 }
 
@@ -37,6 +40,7 @@ export interface SessionUser {
   username: string | null;
   isAdmin: boolean;
   emailVerified: boolean;
+  termsVersion?: string | null;
 }
 
 export interface LoginCredentials {
