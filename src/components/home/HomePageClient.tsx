@@ -788,7 +788,13 @@ export function HomePageClient({
     isLoading: player.isLoading,
     onPlayStateChange: player.setShouldPlay,
     onShouldPlayChange: player.setShouldPlay,
-    onPlayPause: () => player.setShouldPlay(!player.shouldPlay),
+    onPlayPause: () => {
+      if (!player.currentTrack) {
+        handlePlayWithNoTrack()
+      } else {
+        player.setShouldPlay(!player.shouldPlay)
+      }
+    },
     onSeekTo: player.seek,
     onNext: queue.queue.length > 1 ? handleNext : undefined,
     onPrevious: queue.queue.length > 1 ? handlePrevious : undefined,
@@ -821,6 +827,7 @@ export function HomePageClient({
     handlePrevious,
     handleShuffleToggle,
     handleShowTrackDetails,
+    handlePlayWithNoTrack,
   ])
 
 
