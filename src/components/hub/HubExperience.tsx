@@ -338,14 +338,11 @@ export function HubExperience({
                 </ul>
               ) : (
                 <div className="flex flex-col gap-2">
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-semibold text-white/80">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-heading font-semibold text-white/80">
                     Feature in Development
                   </span>
                   <p className="text-xs text-white/70 leading-relaxed">
                     News updates stay quiet while the core experience is refined.
-                  </p>
-                  <p className="text-xs text-white/60 leading-relaxed">
-                    Check Platform Pulse for the latest platform notes.
                   </p>
                 </div>
               )}
@@ -385,7 +382,7 @@ export function HubExperience({
                 </ul>
               ) : (
                 <div className="flex flex-col gap-2">
-                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-semibold text-white/80">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-heading font-semibold text-white/80">
                     Feature in Development
                   </span>
                   <p className="text-xs text-white/70 leading-relaxed">
@@ -413,7 +410,7 @@ export function HubExperience({
               className="lg:h-full p-4 flex flex-col gap-2 border border-white/5 bg-white/5 opacity-80"
             >
               <div className="flex flex-col gap-1.5">
-                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-semibold text-white/80">
+                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-heading font-semibold text-white/80">
                   Public Preview
                 </span>
                 <p className="text-xs text-white/60 leading-relaxed line-clamp-2">
