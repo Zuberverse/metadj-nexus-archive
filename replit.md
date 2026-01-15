@@ -78,6 +78,7 @@ Key capabilities include:
 - **Cursor Position Fix**: All controlled input fields (sign in/signup, account settings, feedback, playlist creator) now position cursor at end of text when focused, preventing cursor jump to beginning on mode toggle
 - **Origin Validation**: API routes now properly allow requests from Replit development domains (`REPLIT_DEV_DOMAIN`, `REPLIT_DOMAINS`) and localhost ports (3000, 5000, 8100)
 - **Session Secret Fallback**: In development mode, `AUTH_SECRET` auto-generates if not configured, simplifying local development setup
+- **Clean Login State**: All modals/panels are automatically closed on successful login, ensuring a fresh start for users
 
 ### Admin Navigation
 - **Admin Access**: Admin dashboard accessible via Account panel "Open Admin Dashboard" button (admins only)

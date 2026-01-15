@@ -29,6 +29,7 @@ export interface ModalContextValue {
   setMetaDjAiOpen: (open: boolean) => void;
   setFeedbackOpen: (open: boolean) => void;
   setAccountOpen: (open: boolean) => void;
+  resetModals: () => void;
 }
 
 const ModalContext = createContext<ModalContextValue | null>(null);
@@ -98,6 +99,20 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     announce(open ? 'Account settings opened' : 'Account settings closed', { type: 'status', priority: 'polite' });
   }, []);
 
+  const resetModals = useCallback(() => {
+    setModals({
+      isInfoOpen: false,
+      isTrackDetailsOpen: false,
+      isCollectionDetailsOpen: false,
+      isQueueOpen: false,
+      isWisdomOpen: false,
+      isKeyboardShortcutsOpen: false,
+      isMetaDjAiOpen: false,
+      isFeedbackOpen: false,
+      isAccountOpen: false,
+    });
+  }, []);
+
   const value: ModalContextValue = useMemo(() => ({
     modals,
     setInfoOpen,
@@ -109,6 +124,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     setMetaDjAiOpen,
     setFeedbackOpen,
     setAccountOpen,
+    resetModals,
   }), [
     modals,
     setInfoOpen,
@@ -120,6 +136,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     setMetaDjAiOpen,
     setFeedbackOpen,
     setAccountOpen,
+    resetModals,
   ]);
 
   return (

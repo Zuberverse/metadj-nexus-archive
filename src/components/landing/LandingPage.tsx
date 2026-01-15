@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Music, Film, BookOpen, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useModal } from '@/contexts/ModalContext';
 
 /**
  * ARCHIVED ICON NOTE:
@@ -25,6 +26,7 @@ type AuthMode = 'login' | 'signup';
 export function LandingPage() {
   const router = useRouter();
   const { login, register, checkAvailability, isLoading: authLoading } = useAuth();
+  const { resetModals } = useModal();
   const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -94,6 +96,7 @@ export function LandingPage() {
         : await register(email, username, password, agreedToTerms);
 
       if (result.success) {
+        resetModals();
         router.push('/app');
       } else {
         setError(result.message || 'An error occurred');
