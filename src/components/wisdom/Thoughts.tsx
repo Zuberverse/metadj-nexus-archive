@@ -4,6 +4,7 @@ import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "reac
 import { Calendar, BookOpen, ChevronRight, Clock, Sparkles } from "lucide-react"
 import { ShareButton } from "@/components/ui/ShareButton"
 import { useToast } from "@/contexts/ToastContext"
+import { useTitleFit } from "@/hooks/wisdom/use-title-fit"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import {
   estimateReadTime,
@@ -29,6 +30,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
   const [selectedPost, setSelectedPost] = useState<ThoughtPost | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
+  const { ref: titleRef, titleClass } = useTitleFit()
 
   useEffect(() => {
     if (!deeplinkId) return
@@ -120,7 +122,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
 
         <header className="text-center">
           <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-3">
-            <span className="text-gradient-thoughts">Ideas & Inspiration</span>
+            <span className="text-gradient-hero">Ideas & Inspiration</span>
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
             Personal dispatches on music, AI, creativity, and the evolving MetaDJ work.
@@ -234,10 +236,13 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
       >
         <ReadingProgressBar
           targetRef={articleRef}
-          className="mb-6"
+          className="mb-3"
         />
-        <header className="mb-8 pb-6 border-b border-(--border-subtle)">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-gradient-hero mb-4 leading-tight text-pop">
+        <header className="mb-6 pb-6 border-b border-(--border-subtle)">
+          <h1
+            ref={titleRef as React.RefObject<HTMLHeadingElement>}
+            className={`${titleClass} font-heading font-bold text-gradient-hero mb-3 leading-tight text-pop`}
+          >
             {selectedPost.title}
           </h1>
           <div className="flex flex-col gap-3 min-[1100px]:flex-row min-[1100px]:items-center min-[1100px]:gap-4 text-sm text-white/70">

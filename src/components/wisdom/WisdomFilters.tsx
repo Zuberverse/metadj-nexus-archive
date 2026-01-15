@@ -17,11 +17,9 @@ export const WisdomFilters: FC<WisdomFiltersProps> = ({
   const topicOptions = ["all", ...topics]
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur-sm">
-      <div className="space-y-2">
-        <p className="text-xs font-heading font-semibold uppercase tracking-wider text-white/70">Topics</p>
-        <div className="flex flex-wrap gap-2">
-          {topicOptions.map((topic) => {
+    <div className="rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur-sm">
+      <div className="flex flex-wrap gap-2">
+        {topicOptions.map((topic) => {
             const isActive = selectedTopic === topic
             return (
               <button
@@ -39,8 +37,7 @@ export const WisdomFilters: FC<WisdomFiltersProps> = ({
                 {topic === "all" ? "All topics" : topic}
               </button>
             )
-          })}
-        </div>
+        })}
       </div>
     </div>
   )

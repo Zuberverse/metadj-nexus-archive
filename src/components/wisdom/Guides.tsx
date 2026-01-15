@@ -4,6 +4,7 @@ import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "reac
 import { Layers, ChevronRight, Clock, Sparkles } from "lucide-react"
 import { ShareButton } from "@/components/ui/ShareButton"
 import { useToast } from "@/contexts/ToastContext"
+import { useTitleFit } from "@/hooks/wisdom/use-title-fit"
 import { trackActivationFirstGuide, trackGuideOpened } from "@/lib/analytics"
 import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import {
@@ -31,6 +32,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
+  const { ref: titleRef, titleClass } = useTitleFit()
 
   useEffect(() => {
     if (!deeplinkId) return
@@ -120,7 +122,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
 
         <header className="text-center">
           <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-3">
-            <span className="text-gradient-guides">Knowledge & How-To</span>
+            <span className="text-gradient-hero">Knowledge & How-To</span>
           </h2>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
             In-depth guides for you—music production, DJing, AI tools, the Metaverse, and creative
@@ -238,10 +240,13 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
       >
         <ReadingProgressBar
           targetRef={articleRef}
-          className="mb-6"
+          className="mb-3"
         />
-        <header className="mb-8 pb-6 border-b border-white/10">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-gradient-hero mb-4 leading-tight text-pop">
+        <header className="mb-6 pb-6 border-b border-white/10">
+          <h1
+            ref={titleRef as React.RefObject<HTMLHeadingElement>}
+            className={`${titleClass} font-heading font-bold text-gradient-hero mb-3 leading-tight text-pop`}
+          >
             {selectedGuide.title}
           </h1>
           <p className="text-base sm:text-lg text-white/70 leading-relaxed mb-4">
