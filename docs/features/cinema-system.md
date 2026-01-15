@@ -435,7 +435,7 @@ Retro‑future portal drift: neon pixels orbit a glowing gateway, pulse with bas
 
 **File**: `src/components/cinema/visualizers/EightBitAdventure.tsx`
 
-8‑bit quest run: a MetaDJ-styled pixel hero stands on the ground of a neon world with step‑mountains and drifting clouds, collecting loot sparks, dodging tiny foes, and firing high‑triggered sword slashes.
+8‑bit quest run: a MetaDJ-styled pixel hero stands on the ground of a neon world with step‑mountains and drifting clouds, collecting loot sparks, dodging tiny foes, and firing high‑triggered sword slashes. Features enhanced cosmic sky elements with prominent audio-reactive effects.
 
 #### Visual Characteristics
 
@@ -453,13 +453,20 @@ Retro‑future portal drift: neon pixels orbit a glowing gateway, pulse with bas
 - Loot coins shimmer and burst into spark pixels when collected
 - Tiny enemies (slimes/bats) drift through the lane and pop on slash bursts
 
+#### Cosmic Sky Elements (Enhanced)
+
+- **Enhanced Star Twinkle**: Stars twinkle more dramatically with audio, including size pulsing on bass hits for prominent stars and dynamic color shifting
+- **Cosmic Sparkles**: Large glowing particles that float upward in the sky area with multi-layer rendering (core, glow, shimmer), spawn in bursts on high peaks
+- **Shooting Stars**: Occasional streaks across the sky triggered by bass or high peaks with gradient trails and motion blur effect (2.5-4s cooldown)
+- **Sky Glow Pulses**: Radial gradient breathing effect synced with bass, using purple/cyan colors for cosmic atmosphere
+
 #### Audio Response
 
 | Frequency | Effect |
 |-----------|--------|
-| Bass | Hero aura pulse, landing dust, subtle screen shake, road glow |
+| Bass | Hero aura pulse, landing dust, subtle screen shake, road glow, star size pulsing, shooting star trigger, sky glow pulses |
 | Mid | World scroll speed, prop drift, tower window flicker |
-| High | Hero glow intensity, star twinkles, coin shimmer, sword slash + spark bursts |
+| High | Hero glow intensity, star twinkles, coin shimmer, sword slash + spark bursts, cosmic sparkle bursts, shooting star trigger, enhanced star color shift |
 
 ### Synthwave Horizon Visualizer
 
@@ -501,6 +508,7 @@ Synthwave outrun horizon: neon sun + perspective grid on a cosmic sky, with twin
 Dream ships as an optional AI remix layer inside Cinema:
 - **Toggle-based**: Dream ON creates a stream, shows a 15s warm‑up countdown, then reveals the AI overlay. Status polling continues through a ~60s grace window plus a short post-poll buffer before surfacing a failure.
 - **WHIP startup retries**: Not-ready WHIP responses during warm-up (404/409/429/5xx) are retried with exponential backoff to avoid false errors on quick stop/start.
+- **Audio-reactive bounce animation**: When Dream is streaming and music is playing, the avatar iframe container performs subtle bounce animations triggered by bass peaks (threshold: 0.55, cooldown: 1.2s). The bounce translates the container up by 8-15px based on bass intensity and returns smoothly.
 - **Ingest source**: **Webcam only** — no fallbacks to visualizers or video scenes. If webcam is unavailable, Dream shows an error state.
 - **Camera pre-check**: Uses the Permissions API when available to skip a redundant getUserMedia pre-check if camera permission is already granted.
 - **Auto-hide behavior**: Cinema controls still fade after ~5s of inactivity during the Dream countdown; pointer/tap resets the timer.

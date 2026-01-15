@@ -14,6 +14,8 @@ import {
   type Slash,
   type Hero,
   type AdventureBackground,
+  type CosmicSparkle,
+  type ShootingStar,
   // Utilities
   seededRandom,
   lerp,
@@ -26,6 +28,9 @@ import {
   createProps,
   spawnDustBurst,
   spawnSparkBurst,
+  createCosmicSparkles,
+  spawnCosmicSparkleBurst,
+  spawnShootingStar,
   // Draw functions
   drawPixelDisc,
   drawTree,
@@ -39,6 +44,8 @@ import {
   drawCoin,
   drawSlash,
   drawPowerUp,
+  drawCosmicSparkle,
+  drawShootingStar,
 } from "@/lib/visualizers/eight-bit-helpers"
 
 interface EightBitAdventureProps {
@@ -73,11 +80,16 @@ function drawEightBitAdventure(
   powerUps: PowerUp[],
   slashes: Slash[],
   particles: Particle[],
+  cosmicSparkles: CosmicSparkle[],
+  shootingStars: ShootingStar[],
   lastBassRef: { current: number },
   lastHighRef: { current: number },
   lastJumpAtRef: { current: number },
   lastSlashAtRef: { current: number },
   lastSpawnAtRef: { current: number },
+  lastSparkleBurstRef: { current: number },
+  lastShootingStarRef: { current: number },
+  skyGlowPulseRef: { current: number },
   background: AdventureBackground | null,
   rng: () => number,
   performanceMode: boolean
@@ -237,6 +249,83 @@ function drawEightBitAdventure(
     particles.splice(0, particles.length - particleLimit)
   }
 
+  // Cosmic sparkle spawning - continuous upward floaters + bursts on high peaks
+  const sparkleLimit = performanceMode ? 12 : 24
+  const sparkleCap = Math.max(4, Math.round(sparkleLimit * (intensityMode === "hype" ? 1.2 : 1)))
+  
+  // Continuous sparkle spawning
+  if (cosmicSparkles.length < sparkleCap && rng() < (performanceMode ? 0.03 : 0.05)) {
+    const skyBottom = height * 0.42
+    cosmicSparkles.push({
+      x: rng() * width,
+      y: skyBottom + rng() * height * 0.1,
+      vy: -(8 + rng() * 12),
+      size: 3 + rng() * 4,
+      baseAlpha: 0.3 + rng() * 0.4,
+      phase: rng() * Math.PI * 2,
+      tintIdx: rng(),
+      age: 0,
+      duration: 4 + rng() * 6,
+    })
+  }
+
+  // Burst spawn on high peaks
+  const sparkleBurstCooldown = performanceMode ? 2.5 : 1.8
+  if (
+    safeHigh > 0.7 &&
+    safeHigh - lastHighRef.current > 0.12 &&
+    time - lastSparkleBurstRef.current > sparkleBurstCooldown
+  ) {
+    lastSparkleBurstRef.current = time
+    const burstCount = performanceMode ? 4 : 8
+    spawnCosmicSparkleBurst(cosmicSparkles, width, height, burstCount, rng, (time * 0.1 + safeHigh * 0.3) % 1)
+  }
+
+  // Update cosmic sparkles
+  for (let i = cosmicSparkles.length - 1; i >= 0; i--) {
+    const sparkle = cosmicSparkles[i]
+    sparkle.age += delta
+    sparkle.y += sparkle.vy * delta
+    
+    if (sparkle.age >= sparkle.duration || sparkle.y < -sparkle.size * 3) {
+      cosmicSparkles.splice(i, 1)
+    }
+  }
+
+  // Shooting star spawning - triggered on bass or high peaks with cooldown
+  const shootingStarCooldown = performanceMode ? 4.0 : 2.5
+  const shootingStarLimit = performanceMode ? 2 : 4
+  if (
+    shootingStars.length < shootingStarLimit &&
+    time - lastShootingStarRef.current > shootingStarCooldown
+  ) {
+    const shouldSpawn = (
+      (safeBass > 0.65 && bassRise > 0.1) ||
+      (safeHigh > 0.75 && safeHigh - lastHighRef.current > 0.1)
+    )
+    if (shouldSpawn) {
+      lastShootingStarRef.current = time
+      const audioIntensity = Math.max(safeBass, safeHigh)
+      spawnShootingStar(shootingStars, width, height, rng, (time * 0.05) % 1, audioIntensity)
+    }
+  }
+
+  // Update shooting stars
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
+    const star = shootingStars[i]
+    star.age += delta
+    star.x += star.vx * delta
+    star.y += star.vy * delta
+    
+    if (star.age >= star.duration || star.x > width * 1.5 || star.y > height) {
+      shootingStars.splice(i, 1)
+    }
+  }
+
+  // Update sky glow pulse - pulses with bass for "breathing" atmosphere
+  const targetGlow = safeBass * 0.8 + dropPulse * 0.4
+  skyGlowPulseRef.current = lerp(skyGlowPulseRef.current, targetGlow, 0.08)
+
   // Physics: hero gravity.
   const heroSize = pixel * 16
   const groundTop = groundY - heroSize
@@ -276,6 +365,24 @@ function drawEightBitAdventure(
     ctx.fillRect(0, 0, width, height)
   }
 
+  // Sky glow pulses - breathing cosmic atmosphere that pulses with bass
+  const glowIntensity = skyGlowPulseRef.current
+  if (glowIntensity > 0.02) {
+    const glowTint = samplePalette((time * 0.03 + safeBass * 0.2) % 1)
+    const glowAlpha = glowIntensity * (performanceMode ? 0.06 : 0.1)
+    
+    // Upper sky glow
+    const skyGlowGradient = ctx.createRadialGradient(
+      width * 0.5, height * 0.15, 0,
+      width * 0.5, height * 0.15, width * 0.6
+    )
+    skyGlowGradient.addColorStop(0, `rgba(${glowTint[0]}, ${glowTint[1]}, ${glowTint[2]}, ${glowAlpha * 1.5})`)
+    skyGlowGradient.addColorStop(0.5, `rgba(${glowTint[0]}, ${glowTint[1]}, ${glowTint[2]}, ${glowAlpha * 0.5})`)
+    skyGlowGradient.addColorStop(1, `rgba(0, 0, 0, 0)`)
+    ctx.fillStyle = skyGlowGradient
+    ctx.fillRect(0, 0, width, height * 0.5)
+  }
+
   const shakeBass = clamp01(safeBass + dropPulse * 0.15)
   const shakeMode = intensityMode === "focus" ? 0.4 : intensityMode === "hype" ? 0.8 : 0.6
   // Reduced shake: higher exponent = only strong bass causes shake, lower multiplier = less intense
@@ -287,17 +394,45 @@ function drawEightBitAdventure(
   ctx.save()
   ctx.translate(shakeX, shakeY)
 
-  // Stars
+  // Stars - enhanced audio-reactive twinkle
   ctx.globalCompositeOperation = "lighter"
-  const sparkleBoost = (0.75 + safeHigh * 0.65) * (0.86 + intensityBoost * 0.14)
+  const sparkleBoost = (0.75 + safeHigh * 0.85) * (0.86 + intensityBoost * 0.2)
+  const bassSizePulse = 1 + safeBass * 0.4 + dropPulse * 0.3
   for (const star of stars) {
-    const twinkle = Math.sin(time * star.twinkleSpeed + star.phase) * 0.5 + 0.5
-    const alpha = star.baseAlpha * (0.25 + twinkle * 0.9) * sparkleBoost
+    const twinkle = Math.sin(time * star.twinkleSpeed * (1 + safeHigh * 0.5) + star.phase) * 0.5 + 0.5
+    const dramaticTwinkle = Math.pow(twinkle, 0.7)
+    const alpha = star.baseAlpha * (0.3 + dramaticTwinkle * 1.1) * sparkleBoost
     if (alpha <= 0.004) continue
-    const tinted = mixRgb(samplePalette(star.tintIdx), [255, 255, 255], 0.62)
+    
+    // More noticeable color shift with music
+    const colorShift = (star.tintIdx + time * 0.06 + safeHigh * 0.25 + safeMid * 0.15) % 1
+    const tinted = mixRgb(samplePalette(colorShift), [255, 255, 255], 0.5 + safeHigh * 0.15)
+    
+    // Size pulsing on bass for prominent stars
+    const isProminent = star.size >= 2
+    const sizeMult = isProminent ? bassSizePulse : 1
+    const starSize = Math.max(pixel, Math.round(star.size * sizeMult / pixel) * pixel)
+    
     ctx.fillStyle = `rgba(${tinted[0]}, ${tinted[1]}, ${tinted[2]}, ${alpha})`
-    ctx.fillRect(snap(star.x), snap(star.y), Math.max(pixel, star.size), Math.max(pixel, star.size))
+    ctx.fillRect(snap(star.x), snap(star.y), starSize, starSize)
+    
+    // Add glow for very prominent stars on high audio
+    if (isProminent && safeHigh > 0.4 && alpha > 0.08) {
+      ctx.fillStyle = `rgba(${tinted[0]}, ${tinted[1]}, ${tinted[2]}, ${alpha * 0.25})`
+      ctx.fillRect(snap(star.x - pixel), snap(star.y - pixel), starSize + pixel * 2, starSize + pixel * 2)
+    }
   }
+
+  // Cosmic sparkles - larger, brighter floating particles
+  for (const sparkle of cosmicSparkles) {
+    drawCosmicSparkle(ctx, sparkle, pixel, time, safeHigh, safeBass)
+  }
+
+  // Shooting stars
+  for (const star of shootingStars) {
+    drawShootingStar(ctx, star, pixel, time)
+  }
+
   ctx.globalCompositeOperation = "source-over"
 
   // Pixel moon (breathes with bass)
@@ -629,6 +764,8 @@ export function EightBitAdventure({
   const powerUpsRef = useRef<PowerUp[]>([])
   const slashesRef = useRef<Slash[]>([])
   const particlesRef = useRef<Particle[]>([])
+  const cosmicSparklesRef = useRef<CosmicSparkle[]>([])
+  const shootingStarsRef = useRef<ShootingStar[]>([])
   const heroRef = useRef<Hero>({ y: 0, vy: 0, onGround: true, runPhase: 0 })
   const scrollRef = useRef(0)
   const lastBassRef = useRef(0)
@@ -636,6 +773,9 @@ export function EightBitAdventure({
   const lastJumpAtRef = useRef(0)
   const lastSlashAtRef = useRef(0)
   const lastSpawnAtRef = useRef(0)
+  const lastSparkleBurstRef = useRef(0)
+  const lastShootingStarRef = useRef(0)
+  const skyGlowPulseRef = useRef(0)
   const activeRef = useRef(active)
   const rafRef = useRef<number | null>(null)
   const loopRef = useRef<((now: number) => void) | null>(null)
@@ -731,6 +871,8 @@ export function EightBitAdventure({
       powerUpsRef.current = []
       slashesRef.current = []
       particlesRef.current = []
+      cosmicSparklesRef.current = []
+      shootingStarsRef.current = []
       heroRef.current = {
         y: rect.height * 0.78 - 16 * (performanceMode ? 3 : 2),
         vy: 0,
@@ -738,6 +880,9 @@ export function EightBitAdventure({
         runPhase: 0,
       }
       scrollRef.current = 0
+      lastSparkleBurstRef.current = 0
+      lastShootingStarRef.current = 0
+      skyGlowPulseRef.current = 0
     }
 
     resize()
@@ -848,11 +993,16 @@ export function EightBitAdventure({
           powerUpsRef.current,
           slashesRef.current,
           particlesRef.current,
+          cosmicSparklesRef.current,
+          shootingStarsRef.current,
           lastBassRef,
           lastHighRef,
           lastJumpAtRef,
           lastSlashAtRef,
           lastSpawnAtRef,
+          lastSparkleBurstRef,
+          lastShootingStarRef,
+          skyGlowPulseRef,
           backgroundRef.current,
           motionRandom,
           performanceMode

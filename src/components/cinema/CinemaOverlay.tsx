@@ -176,6 +176,11 @@ export function CinemaOverlay({
   const r3fCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const [visualizerCanvasEl, setVisualizerCanvasEl] = useState<HTMLCanvasElement | null>(null)
 
+  // Avatar bounce animation state - reacts to bass peaks
+  const [bounceOffset, setBounceOffset] = useState(0)
+  const lastBounceTimeRef = useRef(0)
+  const lastBassLevelRef = useRef(0)
+
   const isPerformanceMode = true
 
   // Dream state from props
@@ -325,10 +330,11 @@ export function CinemaOverlay({
   const videoSources = useMemo(() => buildVideoSources(currentScene), [currentScene])
   const hasVideoSource = videoSources.length > 0
 
-  // Audio analyzer for visualizers (only active when visualizer is selected)
+  // Audio analyzer for visualizers AND Dream bounce animation
+  // Enable when: (visualizer scene OR Dream streaming) AND playing music
   const analyzerData = useAudioAnalyzer({
     audioElement: playerAudioElement,
-    enabled: enabled && isVisualizerScene && shouldPlay,
+    enabled: enabled && (isVisualizerScene || isDreamActive) && shouldPlay,
     fftSize: 256,
     smoothingTimeConstant: 0.8,
   })
@@ -413,6 +419,48 @@ export function CinemaOverlay({
       setIsOverlayHidden(false)
     }
   }, [dreamStatus.status])
+
+  // Avatar bounce animation - react to bass peaks when streaming
+  useEffect(() => {
+    if (!shouldPlay || dreamStatus.status !== 'streaming') {
+      // Reset bounce when not streaming
+      if (bounceOffset !== 0) setBounceOffset(0)
+      lastBassLevelRef.current = 0
+      return
+    }
+
+    const bassLevel = analyzerData.bassLevel
+    const currentTime = performance.now()
+    const timeSinceLastBounce = currentTime - lastBounceTimeRef.current
+    const cooldownMs = 1200 // 1.2 second cooldown between bounces
+
+    // Detect bass peak: current level is high AND rising significantly
+    const bassRise = bassLevel - lastBassLevelRef.current
+    const bassThreshold = 0.55
+    const riseThreshold = 0.08
+
+    if (
+      bassLevel > bassThreshold &&
+      bassRise > riseThreshold &&
+      timeSinceLastBounce > cooldownMs
+    ) {
+      // Trigger bounce - intensity based on bass level
+      const bounceAmount = -8 - Math.min(7, bassLevel * 10) // -8px to -15px
+      setBounceOffset(bounceAmount)
+      lastBounceTimeRef.current = currentTime
+
+      // Return to rest position smoothly after a short delay
+      const returnTimeout = setTimeout(() => {
+        setBounceOffset(0)
+      }, 150)
+
+      // Cleanup timeout if component unmounts or effect re-runs
+      lastBassLevelRef.current = bassLevel
+      return () => clearTimeout(returnTimeout)
+    }
+
+    lastBassLevelRef.current = bassLevel
+  }, [analyzerData.bassLevel, shouldPlay, dreamStatus.status, bounceOffset])
 
   // Lifecycle debugging (webcam cleanup is handled by useWebcamCapture hook)
   useEffect(() => {
@@ -543,6 +591,12 @@ export function CinemaOverlay({
     paddingTop: `${headerHeight}px`,
   })
 
+  // Style for avatar bounce animation - smooth CSS transition for natural bounce feel
+  const bounceStyleId = useCspStyle({
+    transform: bounceOffset !== 0 ? `translateY(${bounceOffset}px)` : undefined,
+    transition: bounceOffset !== 0 ? 'transform 0.1s ease-out' : 'transform 0.25s ease-in-out',
+  })
+
   // Scene selection handler (wraps hook's handler with video retry and analytics)
   const handleSceneSelect = useCallback((scene: Scene) => {
     baseHandleSceneSelect(scene)
@@ -660,7 +714,9 @@ export function CinemaOverlay({
       {/* Dream overlay (Daydream output) - Only rendered when dream output is ready */}
       {dreamOverlayReady && dreamStatus.status !== 'idle' && (dreamStatus.playbackId || dreamStatus.playbackUrl) && (
         <div className={`absolute inset-0 z-30 transition-opacity duration-300 ${isOverlayHidden ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-none'}`}>
-          <div className={`absolute overflow-hidden transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) pointer-events-auto shadow-2xl ring-1 ring-black/30 rounded-2xl md:rounded-3xl bg-black shadow-[0_0_60px_10px_rgba(0,0,0,0.5),0_25px_50px_-12px_rgba(0,0,0,0.6)] ${
+          <div
+            data-csp-style={bounceStyleId}
+            className={`absolute overflow-hidden pointer-events-auto shadow-2xl ring-1 ring-black/30 rounded-2xl md:rounded-3xl bg-black shadow-[0_0_60px_10px_rgba(0,0,0,0.5),0_25px_50px_-12px_rgba(0,0,0,0.6)] ${
             // Mobile: square frame to match 512x512 stream (reduced 20% for crisper low-res output)
             // Position options: center (Middle), top, bottom
             !shouldUseSidePanels

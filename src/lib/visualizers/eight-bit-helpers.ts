@@ -112,6 +112,30 @@ export interface AdventureBackground {
   vignette: CanvasGradient | null
 }
 
+export interface CosmicSparkle {
+  x: number
+  y: number
+  vy: number
+  size: number
+  baseAlpha: number
+  phase: number
+  tintIdx: number
+  age: number
+  duration: number
+}
+
+export interface ShootingStar {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  length: number
+  age: number
+  duration: number
+  tintIdx: number
+  brightness: number
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Color Utilities
 // ─────────────────────────────────────────────────────────────────────────────
@@ -355,6 +379,169 @@ export function spawnSparkBurst(
       tintIdx: (tintBase + random() * 0.6) % 1,
       kind: "spark",
     })
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Cosmic Sparkle & Shooting Star Spawning
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function createCosmicSparkles(
+  width: number,
+  height: number,
+  count: number,
+  random: () => number
+): CosmicSparkle[] {
+  const sparkles: CosmicSparkle[] = []
+  const skyTop = 0
+  const skyBottom = height * 0.45
+  for (let i = 0; i < count; i++) {
+    sparkles.push({
+      x: random() * width,
+      y: skyTop + random() * (skyBottom - skyTop),
+      vy: -(8 + random() * 12),
+      size: 3 + random() * 4,
+      baseAlpha: 0.3 + random() * 0.4,
+      phase: random() * Math.PI * 2,
+      tintIdx: random(),
+      age: 0,
+      duration: 4 + random() * 6,
+    })
+  }
+  return sparkles
+}
+
+export function spawnCosmicSparkleBurst(
+  sparkles: CosmicSparkle[],
+  width: number,
+  height: number,
+  count: number,
+  random: () => number,
+  tintBase: number
+): void {
+  const skyTop = 0
+  const skyBottom = height * 0.4
+  for (let i = 0; i < count; i++) {
+    sparkles.push({
+      x: random() * width,
+      y: skyBottom - random() * (skyBottom - skyTop) * 0.3,
+      vy: -(15 + random() * 25),
+      size: 4 + random() * 5,
+      baseAlpha: 0.5 + random() * 0.4,
+      phase: random() * Math.PI * 2,
+      tintIdx: (tintBase + random() * 0.5) % 1,
+      age: 0,
+      duration: 2.5 + random() * 3,
+    })
+  }
+}
+
+export function spawnShootingStar(
+  shootingStars: ShootingStar[],
+  width: number,
+  height: number,
+  random: () => number,
+  tintBase: number,
+  audioIntensity: number
+): void {
+  const startX = random() * width * 0.6
+  const startY = random() * height * 0.25 + height * 0.05
+  const angle = Math.PI * 0.15 + random() * Math.PI * 0.15
+  const speed = 350 + random() * 250 + audioIntensity * 200
+  shootingStars.push({
+    x: startX,
+    y: startY,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    length: 25 + random() * 35 + audioIntensity * 20,
+    age: 0,
+    duration: 0.6 + random() * 0.4,
+    tintIdx: (tintBase + random() * 0.3) % 1,
+    brightness: 0.6 + audioIntensity * 0.4,
+  })
+}
+
+export function drawCosmicSparkle(
+  ctx: CanvasRenderingContext2D,
+  sparkle: CosmicSparkle,
+  pixel: number,
+  time: number,
+  highLevel: number,
+  bassLevel: number
+): void {
+  const t = sparkle.age / sparkle.duration
+  const fadeIn = Math.min(1, t * 4)
+  const fadeOut = Math.max(0, 1 - (t - 0.7) * 3.33)
+  const fade = fadeIn * fadeOut
+
+  const pulse = Math.sin(time * 4 + sparkle.phase) * 0.4 + 0.6
+  const audioPulse = 1 + highLevel * 0.5 + bassLevel * 0.3
+  const alpha = sparkle.baseAlpha * fade * pulse * audioPulse
+
+  if (alpha < 0.01) return
+
+  const tint = samplePalette((sparkle.tintIdx + time * 0.08 + highLevel * 0.15) % 1)
+  const size = Math.max(pixel * 2, Math.round((sparkle.size * audioPulse) / pixel) * pixel)
+
+  ctx.fillStyle = `rgba(${tint[0]}, ${tint[1]}, ${tint[2]}, ${alpha * 0.3})`
+  ctx.fillRect(
+    Math.round((sparkle.x - size) / pixel) * pixel,
+    Math.round((sparkle.y - size) / pixel) * pixel,
+    size * 3,
+    size * 3
+  )
+
+  ctx.fillStyle = `rgba(${tint[0]}, ${tint[1]}, ${tint[2]}, ${alpha * 0.7})`
+  ctx.fillRect(
+    Math.round((sparkle.x - size * 0.5) / pixel) * pixel,
+    Math.round((sparkle.y - size * 0.5) / pixel) * pixel,
+    size * 2,
+    size * 2
+  )
+
+  const coreBright = mixRgb(tint, [255, 255, 255], 0.6)
+  ctx.fillStyle = `rgba(${coreBright[0]}, ${coreBright[1]}, ${coreBright[2]}, ${alpha})`
+  ctx.fillRect(
+    Math.round(sparkle.x / pixel) * pixel,
+    Math.round(sparkle.y / pixel) * pixel,
+    size,
+    size
+  )
+}
+
+export function drawShootingStar(
+  ctx: CanvasRenderingContext2D,
+  star: ShootingStar,
+  pixel: number,
+  time: number
+): void {
+  const t = star.age / star.duration
+  const fade = t < 0.2 ? t * 5 : Math.max(0, 1 - (t - 0.2) * 1.25)
+
+  if (fade < 0.01) return
+
+  const tint = samplePalette((star.tintIdx + time * 0.1) % 1)
+  const bright = mixRgb(tint, [255, 255, 255], 0.7)
+
+  const speed = Math.sqrt(star.vx * star.vx + star.vy * star.vy)
+  const dirX = star.vx / speed
+  const dirY = star.vy / speed
+
+  const segments = Math.ceil(star.length / pixel)
+  for (let i = 0; i < segments; i++) {
+    const segFade = (1 - i / segments) * fade * star.brightness
+    if (segFade < 0.02) continue
+
+    const sx = Math.round((star.x - dirX * i * pixel) / pixel) * pixel
+    const sy = Math.round((star.y - dirY * i * pixel) / pixel) * pixel
+
+    if (i === 0) {
+      ctx.fillStyle = `rgba(${bright[0]}, ${bright[1]}, ${bright[2]}, ${segFade})`
+      ctx.fillRect(sx - pixel, sy - pixel, pixel * 3, pixel * 3)
+    } else {
+      ctx.fillStyle = `rgba(${tint[0]}, ${tint[1]}, ${tint[2]}, ${segFade * 0.7})`
+      ctx.fillRect(sx, sy, pixel * 2, pixel * 2)
+    }
   }
 }
 
