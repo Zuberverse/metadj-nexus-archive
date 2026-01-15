@@ -2,7 +2,7 @@
 
 import { type FC, type ClipboardEvent, type ChangeEvent, useEffect, useState, useRef, useCallback, useMemo } from "react"
 import clsx from "clsx"
-import { Book, Plus, Save, Trash2, Mic, Loader2, AlertTriangle, Bold, Italic, Underline, List, Quote, Link, Code, ListOrdered, Heading1, Heading2, Heading3, SeparatorHorizontal, Download, Upload, Search, X } from "lucide-react"
+import { Book, Plus, ArrowLeft, Trash2, Mic, Loader2, AlertTriangle, Bold, Italic, Underline, List, Quote, Link, Code, ListOrdered, Heading1, Heading2, Heading3, SeparatorHorizontal, Download, Upload, Search, X } from "lucide-react"
 import { marked } from "marked"
 import TurndownService from "turndown"
 import { useToast } from "@/contexts/ToastContext"
@@ -74,6 +74,12 @@ export const Journal: FC = () => {
     const maxDurationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const hasRestoredRef = useRef(false)
 
+    // Database persistence state
+    const [isLoading, setIsLoading] = useState(true)
+    const [isSaving, setIsSaving] = useState(false)
+    const autoSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const AUTOSAVE_DELAY_MS = 1500
+
     // Max recording duration (60 seconds)
     const MAX_RECORDING_DURATION_MS = 60_000
     const MIN_PASSPHRASE_LENGTH = 8
@@ -105,49 +111,79 @@ export const Journal: FC = () => {
         return ""
     }
 
-    // Load entries on mount
+    // Load entries on mount - fetch from API first, fallback to localStorage
     useEffect(() => {
-        let parsedEntries: JournalEntry[] = []
-        try {
-            const saved = getString(STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES, "[]")
-            parsedEntries = JSON.parse(saved)
-            setEntries(parsedEntries)
-        } catch (error) {
-            logger.error("Failed to load journal entries", { error })
-            setEntries([])
-        }
+        const loadEntries = async () => {
+            setIsLoading(true)
+            let parsedEntries: JournalEntry[] = []
+            
+            try {
+                const response = await fetch('/api/journal')
+                const data = await response.json()
+                
+                if (response.ok && data.success && Array.isArray(data.entries)) {
+                    parsedEntries = data.entries.map((entry: { id: string; userId?: string; title: string; content: string; createdAt: string | Date; updatedAt: string | Date }) => ({
+                        id: entry.id,
+                        title: entry.title,
+                        content: entry.content,
+                        createdAt: typeof entry.createdAt === 'string' ? entry.createdAt : new Date(entry.createdAt).toISOString(),
+                        updatedAt: typeof entry.updatedAt === 'string' ? entry.updatedAt : new Date(entry.updatedAt).toISOString(),
+                    }))
+                    setEntries(parsedEntries)
+                    setString(STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES, JSON.stringify(parsedEntries))
+                } else {
+                    const saved = getString(STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES, "[]")
+                    parsedEntries = JSON.parse(saved)
+                    setEntries(parsedEntries)
+                }
+            } catch (error) {
+                logger.error("Failed to load journal entries from API, falling back to localStorage", { error })
+                try {
+                    const saved = getString(STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES, "[]")
+                    parsedEntries = JSON.parse(saved)
+                    setEntries(parsedEntries)
+                } catch (localError) {
+                    logger.error("Failed to load journal entries from localStorage", { error: localError })
+                    setEntries([])
+                }
+            } finally {
+                setIsLoading(false)
+            }
 
-        const lastView = getString(STORAGE_KEYS.WISDOM_JOURNAL_LAST_VIEW, JOURNAL_VIEW_LIST)
-        const lastEntryId = getString(STORAGE_KEYS.WISDOM_JOURNAL_LAST_ENTRY_ID, "")
-        const draftEntryId = getString(STORAGE_KEYS.WISDOM_JOURNAL_DRAFT_ENTRY_ID, "")
-        const draftTitle = getString(STORAGE_KEYS.WISDOM_JOURNAL_DRAFT_TITLE, "")
-        const draftContent = getString(STORAGE_KEYS.WISDOM_JOURNAL_DRAFT_CONTENT, "")
+            const lastView = getString(STORAGE_KEYS.WISDOM_JOURNAL_LAST_VIEW, JOURNAL_VIEW_LIST)
+            const lastEntryId = getString(STORAGE_KEYS.WISDOM_JOURNAL_LAST_ENTRY_ID, "")
+            const draftEntryId = getString(STORAGE_KEYS.WISDOM_JOURNAL_DRAFT_ENTRY_ID, "")
+            const draftTitle = getString(STORAGE_KEYS.WISDOM_JOURNAL_DRAFT_TITLE, "")
+            const draftContent = getString(STORAGE_KEYS.WISDOM_JOURNAL_DRAFT_CONTENT, "")
 
-        if (lastView === JOURNAL_VIEW_EDITING) {
-            if (lastEntryId) {
-                const entry = parsedEntries.find((item) => item.id === lastEntryId)
-                if (entry) {
-                    const useDraft = draftEntryId === entry.id
-                    setCurrentEntry(entry)
-                    setTitle(useDraft ? draftTitle : entry.title)
-                    setContent(useDraft ? draftContent : entry.content)
+            if (lastView === JOURNAL_VIEW_EDITING) {
+                if (lastEntryId) {
+                    const entry = parsedEntries.find((item) => item.id === lastEntryId)
+                    if (entry) {
+                        const useDraft = draftEntryId === entry.id
+                        setCurrentEntry(entry)
+                        setTitle(useDraft ? draftTitle : entry.title)
+                        setContent(useDraft ? draftContent : entry.content)
+                        setIsEditing(true)
+                        hasRestoredRef.current = true
+                        return
+                    }
+                }
+
+                if (draftEntryId === JOURNAL_DRAFT_NEW_ID || draftTitle || draftContent) {
+                    setCurrentEntry(null)
+                    setTitle(draftTitle)
+                    setContent(draftContent)
                     setIsEditing(true)
                     hasRestoredRef.current = true
                     return
                 }
             }
 
-            if (draftEntryId === JOURNAL_DRAFT_NEW_ID || draftTitle || draftContent) {
-                setCurrentEntry(null)
-                setTitle(draftTitle)
-                setContent(draftContent)
-                setIsEditing(true)
-                hasRestoredRef.current = true
-                return
-            }
+            hasRestoredRef.current = true
         }
-
-        hasRestoredRef.current = true
+        
+        loadEntries()
     }, [])
 
     // Save entries whenever they change
@@ -192,6 +228,142 @@ export const Journal: FC = () => {
             }
         }
     }, [])
+
+    // Save entry to API
+    const saveEntryToApi = useCallback(async (entryId: string | null, entryTitle: string, entryContent: string) => {
+        const trimmedTitle = entryTitle.trim()
+        const trimmedContent = entryContent.trim()
+        
+        if (!trimmedTitle && !trimmedContent) {
+            if (entryId) {
+                try {
+                    await fetch(`/api/journal?id=${entryId}`, { method: 'DELETE' })
+                    setEntries(prev => prev.filter(e => e.id !== entryId))
+                    setString(STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES, JSON.stringify(entries.filter(e => e.id !== entryId)))
+                    showToast({ message: "Empty entry deleted", variant: "info" })
+                    setIsEditing(false)
+                    setCurrentEntry(null)
+                    clearDraftState()
+                } catch (error) {
+                    logger.error('[Journal] Failed to delete empty entry', { error })
+                }
+            }
+            return
+        }
+        
+        setIsSaving(true)
+        const now = new Date().toISOString()
+        
+        try {
+            const payload = {
+                id: entryId || crypto.randomUUID(),
+                title: trimmedTitle || "Untitled",
+                content: entryContent,
+            }
+            
+            const response = await fetch('/api/journal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            })
+            
+            const data = await response.json()
+            
+            if (response.ok && data.success && data.entry) {
+                const savedEntry: JournalEntry = {
+                    id: data.entry.id,
+                    title: data.entry.title,
+                    content: data.entry.content,
+                    createdAt: typeof data.entry.createdAt === 'string' ? data.entry.createdAt : new Date(data.entry.createdAt).toISOString(),
+                    updatedAt: typeof data.entry.updatedAt === 'string' ? data.entry.updatedAt : new Date(data.entry.updatedAt).toISOString(),
+                }
+                
+                setEntries(prev => {
+                    const exists = prev.some(e => e.id === savedEntry.id)
+                    if (exists) {
+                        return prev.map(e => e.id === savedEntry.id ? savedEntry : e)
+                    }
+                    return [savedEntry, ...prev]
+                })
+                
+                if (!currentEntry) {
+                    setCurrentEntry(savedEntry)
+                }
+            }
+        } catch (error) {
+            logger.error('[Journal] Failed to save entry to API', { error })
+            const localEntry: JournalEntry = {
+                id: entryId || crypto.randomUUID(),
+                title: trimmedTitle || "Untitled",
+                content: entryContent,
+                createdAt: currentEntry?.createdAt || now,
+                updatedAt: now,
+            }
+            setEntries(prev => {
+                const exists = prev.some(e => e.id === localEntry.id)
+                if (exists) {
+                    return prev.map(e => e.id === localEntry.id ? localEntry : e)
+                }
+                return [localEntry, ...prev]
+            })
+            if (!currentEntry) {
+                setCurrentEntry(localEntry)
+            }
+        } finally {
+            setIsSaving(false)
+        }
+    }, [currentEntry, entries, showToast])
+
+    // Auto-save effect with debouncing
+    useEffect(() => {
+        if (!isEditing || !hasRestoredRef.current) return
+        
+        if (autoSaveTimeoutRef.current) {
+            clearTimeout(autoSaveTimeoutRef.current)
+        }
+        
+        autoSaveTimeoutRef.current = setTimeout(() => {
+            saveEntryToApi(currentEntry?.id || null, title, content)
+        }, AUTOSAVE_DELAY_MS)
+        
+        return () => {
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current)
+            }
+        }
+    }, [title, content, isEditing, currentEntry?.id, saveEntryToApi, AUTOSAVE_DELAY_MS])
+
+    // Cleanup auto-save timeout and handle beforeunload
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current)
+            }
+            if (isEditing && (title.trim() || content.trim())) {
+                const entryId = currentEntry?.id || crypto.randomUUID()
+                const now = new Date().toISOString()
+                const localEntry: JournalEntry = {
+                    id: entryId,
+                    title: title.trim() || "Untitled",
+                    content,
+                    createdAt: currentEntry?.createdAt || now,
+                    updatedAt: now,
+                }
+                const updatedEntries = currentEntry
+                    ? entries.map(e => e.id === currentEntry.id ? localEntry : e)
+                    : [localEntry, ...entries]
+                setString(STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES, JSON.stringify(updatedEntries))
+            }
+        }
+        
+        window.addEventListener('beforeunload', handleBeforeUnload)
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload)
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current)
+            }
+        }
+    }, [isEditing, title, content, currentEntry, entries])
 
     const handleCreateNew = () => {
         setCurrentEntry(null)
@@ -332,6 +504,86 @@ export const Journal: FC = () => {
             })
             setIsImporting(false)
         }
+    }
+
+    const handleExportSingle = async (entryId: string, e: React.MouseEvent) => {
+        e.stopPropagation()
+        const entry = entries.find(item => item.id === entryId)
+        if (!entry) {
+            showToast({ message: "Entry not found", variant: "error" })
+            return
+        }
+        
+        try {
+            const payload = await createJournalExport([entry], { encrypt: false })
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" })
+            const url = window.URL.createObjectURL(blob)
+            const link = document.createElement("a")
+            const dateLabel = new Date().toISOString().slice(0, 10)
+            const safeTitle = entry.title.replace(/[^a-zA-Z0-9]/g, '-').slice(0, 30)
+            link.href = url
+            link.download = `metadj-journal-${safeTitle}-${dateLabel}.json`
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+            window.URL.revokeObjectURL(url)
+            showToast({ message: "Entry exported", variant: "success" })
+        } catch (error) {
+            showToast({
+                message: error instanceof Error ? error.message : "Unable to export entry",
+                variant: "error",
+            })
+        }
+    }
+
+    const handleExportCurrentEntry = async () => {
+        if (!currentEntry && !title.trim() && !content.trim()) {
+            showToast({ message: "No entry to export", variant: "info" })
+            return
+        }
+        
+        const entryToExport: JournalEntry = currentEntry 
+            ? { ...currentEntry, title, content, updatedAt: new Date().toISOString() }
+            : {
+                id: crypto.randomUUID(),
+                title: title.trim() || "Untitled",
+                content,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }
+        
+        try {
+            const payload = await createJournalExport([entryToExport], { encrypt: false })
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" })
+            const url = window.URL.createObjectURL(blob)
+            const link = document.createElement("a")
+            const dateLabel = new Date().toISOString().slice(0, 10)
+            const safeTitle = entryToExport.title.replace(/[^a-zA-Z0-9]/g, '-').slice(0, 30)
+            link.href = url
+            link.download = `metadj-journal-${safeTitle}-${dateLabel}.json`
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+            window.URL.revokeObjectURL(url)
+            showToast({ message: "Entry exported", variant: "success" })
+        } catch (error) {
+            showToast({
+                message: error instanceof Error ? error.message : "Unable to export entry",
+                variant: "error",
+            })
+        }
+    }
+
+    const handleBackToList = () => {
+        if (autoSaveTimeoutRef.current) {
+            clearTimeout(autoSaveTimeoutRef.current)
+        }
+        if (title.trim() || content.trim()) {
+            saveEntryToApi(currentEntry?.id || null, title, content)
+        }
+        setIsEditing(false)
+        setCurrentEntry(null)
+        clearDraftState()
     }
 
     const handleSave = () => {
@@ -859,12 +1111,20 @@ export const Journal: FC = () => {
 
                             <div className="flex items-center gap-2 ml-auto shrink-0">
                                 <button
-                                    onClick={handleSave}
-                                    className="flex items-center gap-1.5 px-6 py-2 rounded-full brand-gradient hover:scale-105 active:scale-95 text-white transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:brightness-110 font-heading font-bold uppercase tracking-widest text-[11px] group border border-white/20"
-                                    title="Save & Close"
+                                    onClick={handleExportCurrentEntry}
+                                    className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 text-white/80 hover:text-white transition-all text-[11px] font-heading font-bold uppercase tracking-widest"
+                                    title="Export this entry"
                                 >
-                                    <Save className="h-4 w-4 group-hover:animate-pulse" />
-                                    Save
+                                    <Download className="h-4 w-4" />
+                                    Export
+                                </button>
+                                <button
+                                    onClick={handleBackToList}
+                                    className="flex items-center gap-1.5 px-6 py-2 rounded-full brand-gradient hover:scale-105 active:scale-95 text-white transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:brightness-110 font-heading font-bold uppercase tracking-widest text-[11px] group border border-white/20"
+                                    title="Return to journal list"
+                                >
+                                    <ArrowLeft className="h-4 w-4 group-hover:animate-pulse" />
+                                    Back to Journal Log
                                 </button>
                             </div>
                         </div>
@@ -958,13 +1218,6 @@ export const Journal: FC = () => {
                         Import
                     </button>
                     <button
-                        onClick={handleExportOpen}
-                        className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-                    >
-                        <Download className="h-3.5 w-3.5 text-purple-200 group-hover:text-purple-100 transition-colors" />
-                        Export
-                    </button>
-                    <button
                         onClick={handleCreateNew}
                         className="group flex items-center gap-1.5 px-3 py-1.5 min-[1100px]:px-5 min-[1100px]:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-purple-400/30 hover:border-cyan-400/50 text-white backdrop-blur-md font-heading transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]"
                     >
@@ -1047,12 +1300,22 @@ export const Journal: FC = () => {
 
                             <div className="flex items-center justify-between pt-4 mt-4 border-t border-white/5 text-xs text-muted-accessible">
                                 <span>{formatDate(entry.updatedAt)}</span>
-                                <button
-                                    onClick={(e) => requestDelete(entry.id, e)}
-                                    className="p-2 -mr-2 rounded-full hover:bg-white/10 hover:text-red-400 transition-colors z-10"
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </button>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={(e) => handleExportSingle(entry.id, e)}
+                                        className="p-2 rounded-full hover:bg-white/10 hover:text-cyan-400 transition-colors z-10"
+                                        title="Export this entry"
+                                    >
+                                        <Download className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => requestDelete(entry.id, e)}
+                                        className="p-2 -mr-2 rounded-full hover:bg-white/10 hover:text-red-400 transition-colors z-10"
+                                        title="Delete this entry"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ))}
