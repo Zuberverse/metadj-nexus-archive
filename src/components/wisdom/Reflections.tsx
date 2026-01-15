@@ -8,14 +8,13 @@ import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import {
   estimateSectionedReadTime,
   formatReadTime,
-  getReadTimeBucket,
   setContinueReading,
   stripSignoffParagraphs,
 } from "@/lib/wisdom"
 import { ReadingProgressBar } from "./ReadingProgressBar"
 import { TableOfContents } from "./TableOfContents"
 import { WisdomBreadcrumb, type BreadcrumbItem } from "./WisdomBreadcrumb"
-import { WisdomFilters, type ReadTimeFilter } from "./WisdomFilters"
+import { WisdomFilters } from "./WisdomFilters"
 import { WisdomFooter } from "./WisdomFooter"
 import type { Reflection } from "@/data/wisdom-content"
 
@@ -30,7 +29,6 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
   const { showToast } = useToast()
   const [selectedReflection, setSelectedReflection] = useState<Reflection | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
-  const [selectedLength, setSelectedLength] = useState<ReadTimeFilter>("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -94,18 +92,9 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
 
   const filteredReflections = useMemo(() => {
     return reflectionsData.filter((reflection) => {
-      const matchesTopic =
-        selectedTopic === "all" || (reflection.topics ?? []).includes(selectedTopic)
-      const readTimeBucket = getReadTimeBucket(estimateSectionedReadTime(reflection.sections))
-      const matchesLength = selectedLength === "all" || readTimeBucket === selectedLength
-      return matchesTopic && matchesLength
+      return selectedTopic === "all" || (reflection.topics ?? []).includes(selectedTopic)
     })
-  }, [reflectionsData, selectedTopic, selectedLength])
-
-  const resetFilters = useCallback(() => {
-    setSelectedTopic("all")
-    setSelectedLength("all")
-  }, [])
+  }, [reflectionsData, selectedTopic])
 
   // List view - show all reflections
   if (!selectedReflection) {
@@ -129,10 +118,7 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
           <WisdomFilters
             topics={topics}
             selectedTopic={selectedTopic}
-            selectedLength={selectedLength}
             onTopicChange={setSelectedTopic}
-            onLengthChange={setSelectedLength}
-            onReset={resetFilters}
           />
 
           {filteredReflections.length === 0 ? (
@@ -140,7 +126,7 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
               <p>No Reflections match those filters yet.</p>
               <button
                 type="button"
-                onClick={resetFilters}
+                onClick={() => setSelectedTopic("all")}
                 className="mt-3 inline-flex items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100 hover:border-cyan-300/70 hover:bg-cyan-500/20 transition"
               >
                 Reset filters
@@ -283,12 +269,10 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
               .replace(/\s+/g, "-")
             return (
               <section key={sectionIndex} id={sectionId} className="space-y-4 scroll-mt-24">
-                <h2
-                  className="text-xl sm:text-2xl font-heading font-semibold border-l-4 border-teal-400 pl-4"
-                >
+                <h2 className="text-xl sm:text-2xl font-heading font-semibold">
                   <span className="text-heading-solid">{section.heading}</span>
                 </h2>
-                <div className="space-y-4 pl-6">
+                <div className="space-y-4">
                   {stripSignoffParagraphs(section.paragraphs).map((paragraph, paragraphIndex) => (
                     <p
                       key={paragraphIndex}

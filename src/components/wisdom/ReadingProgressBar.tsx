@@ -40,7 +40,7 @@ export function ReadingProgressBar({
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={progressPercent}
-        className="relative h-1.5 w-full overflow-hidden border-y border-white/10 bg-white/5 backdrop-blur-xl rounded-t-2xl"
+        className="relative h-1.5 w-full overflow-hidden bg-white/5 backdrop-blur-xl rounded-t-2xl"
       >
         <span className="sr-only">{`${label}: ${progressPercent}%`}</span>
         <div

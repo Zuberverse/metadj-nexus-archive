@@ -8,13 +8,12 @@ import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import {
   estimateReadTime,
   formatReadTime,
-  getReadTimeBucket,
   setContinueReading,
   stripSignoffParagraphs,
 } from "@/lib/wisdom"
 import { ReadingProgressBar } from "./ReadingProgressBar"
 import { WisdomBreadcrumb, type BreadcrumbItem } from "./WisdomBreadcrumb"
-import { WisdomFilters, type ReadTimeFilter } from "./WisdomFilters"
+import { WisdomFilters } from "./WisdomFilters"
 import { WisdomFooter } from "./WisdomFooter"
 import type { ThoughtPost } from "@/data/wisdom-content"
 
@@ -29,7 +28,6 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
   const { showToast } = useToast()
   const [selectedPost, setSelectedPost] = useState<ThoughtPost | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
-  const [selectedLength, setSelectedLength] = useState<ReadTimeFilter>("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -63,18 +61,9 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
 
   const filteredThoughts = useMemo(() => {
     return sortedThoughts.filter((post) => {
-      const matchesTopic =
-        selectedTopic === "all" || (post.topics ?? []).includes(selectedTopic)
-      const readTimeBucket = getReadTimeBucket(estimateReadTime(post.content))
-      const matchesLength = selectedLength === "all" || readTimeBucket === selectedLength
-      return matchesTopic && matchesLength
+      return selectedTopic === "all" || (post.topics ?? []).includes(selectedTopic)
     })
-  }, [sortedThoughts, selectedTopic, selectedLength])
-
-  const resetFilters = useCallback(() => {
-    setSelectedTopic("all")
-    setSelectedLength("all")
-  }, [])
+  }, [sortedThoughts, selectedTopic])
 
   const returnToList = useCallback(() => {
     setSelectedPost(null)
@@ -144,10 +133,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
           <WisdomFilters
             topics={topics}
             selectedTopic={selectedTopic}
-            selectedLength={selectedLength}
             onTopicChange={setSelectedTopic}
-            onLengthChange={setSelectedLength}
-            onReset={resetFilters}
           />
 
           {filteredThoughts.length === 0 ? (
@@ -155,7 +141,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
               <p>No Thoughts match those filters yet.</p>
               <button
                 type="button"
-                onClick={resetFilters}
+                onClick={() => setSelectedTopic("all")}
                 className="mt-3 inline-flex items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100 hover:border-cyan-300/70 hover:bg-cyan-500/20 transition"
               >
                 Reset filters

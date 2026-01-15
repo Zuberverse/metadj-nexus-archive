@@ -1,7 +1,7 @@
 "use client"
 
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { BookOpen, Layers, ChevronRight, Clock, Sparkles } from "lucide-react"
+import { Layers, ChevronRight, Clock, Sparkles } from "lucide-react"
 import { ShareButton } from "@/components/ui/ShareButton"
 import { useToast } from "@/contexts/ToastContext"
 import { trackActivationFirstGuide, trackGuideOpened } from "@/lib/analytics"
@@ -9,14 +9,13 @@ import { dispatchMetaDjAiPrompt } from "@/lib/metadjai/external-prompts"
 import {
   estimateSectionedReadTime,
   formatReadTime,
-  getReadTimeBucket,
   setContinueReading,
   stripSignoffParagraphs,
 } from "@/lib/wisdom"
 import { ReadingProgressBar } from "./ReadingProgressBar"
 import { TableOfContents } from "./TableOfContents"
 import { WisdomBreadcrumb, type BreadcrumbItem } from "./WisdomBreadcrumb"
-import { WisdomFilters, type ReadTimeFilter } from "./WisdomFilters"
+import { WisdomFilters } from "./WisdomFilters"
 import { WisdomFooter } from "./WisdomFooter"
 import type { Guide } from "@/data/wisdom-content"
 
@@ -31,7 +30,6 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
   const { showToast } = useToast()
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
-  const [selectedLength, setSelectedLength] = useState<ReadTimeFilter>("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -107,18 +105,9 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
 
   const filteredGuides = useMemo(() => {
     return guides.filter((guide) => {
-      const matchesTopic =
-        selectedTopic === "all" || (guide.topics ?? []).includes(selectedTopic)
-      const readTimeBucket = getReadTimeBucket(estimateSectionedReadTime(guide.sections))
-      const matchesLength = selectedLength === "all" || readTimeBucket === selectedLength
-      return matchesTopic && matchesLength
+      return selectedTopic === "all" || (guide.topics ?? []).includes(selectedTopic)
     })
-  }, [guides, selectedTopic, selectedLength])
-
-  const resetFilters = useCallback(() => {
-    setSelectedTopic("all")
-    setSelectedLength("all")
-  }, [])
+  }, [guides, selectedTopic])
 
   // List view - show all guides
   if (!selectedGuide) {
@@ -144,10 +133,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
           <WisdomFilters
             topics={topics}
             selectedTopic={selectedTopic}
-            selectedLength={selectedLength}
             onTopicChange={setSelectedTopic}
-            onLengthChange={setSelectedLength}
-            onReset={resetFilters}
           />
 
           {filteredGuides.length === 0 ? (
@@ -155,7 +141,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
               <p>No Guides match those filters yet.</p>
               <button
                 type="button"
-                onClick={resetFilters}
+                onClick={() => setSelectedTopic("all")}
                 className="mt-3 inline-flex items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100 hover:border-cyan-300/70 hover:bg-cyan-500/20 transition"
               >
                 Reset filters
@@ -255,12 +241,6 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
           className="mb-6"
         />
         <header className="mb-8 pb-6 border-b border-white/10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 mb-4">
-            <BookOpen className="h-4 w-4 text-cyan-400" />
-            <span className="text-xs font-heading font-semibold uppercase tracking-wider text-cyan-200">
-              {selectedGuide.category}
-            </span>
-          </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-gradient-hero mb-4 leading-tight text-pop">
             {selectedGuide.title}
           </h1>
@@ -308,12 +288,10 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
               .replace(/\s+/g, "-")
             return (
               <section key={sectionIndex} id={sectionId} className="space-y-4 scroll-mt-24">
-                <h2
-                  className="text-xl sm:text-2xl font-heading font-semibold border-l-4 border-cyan-400 pl-4"
-                >
+                <h2 className="text-xl sm:text-2xl font-heading font-semibold">
                   <span className="text-heading-solid">{section.heading}</span>
                 </h2>
-                <div className="space-y-4 pl-6">
+                <div className="space-y-4">
                   {stripSignoffParagraphs(section.paragraphs).map((paragraph, paragraphIndex) => (
                     <p
                       key={paragraphIndex}
