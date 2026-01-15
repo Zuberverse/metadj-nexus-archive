@@ -7,7 +7,7 @@
  */
 
 import { openai } from '@ai-sdk/openai'
-import { searchCatalog } from '@/lib/ai/tools/catalog'
+import { searchCatalog, getCatalogSummary } from '@/lib/ai/tools/catalog'
 import { openFeedback } from '@/lib/ai/tools/feedback'
 import { getZuberantContext } from '@/lib/ai/tools/knowledge'
 import { getMcpTools } from '@/lib/ai/tools/mcp'
@@ -73,6 +73,7 @@ export async function getTools(
   // Wrapped with error handling for graceful degradation
   const baseTools = wrapToolsWithErrorHandling({
     searchCatalog,
+    getCatalogSummary,
     getPlatformHelp,
     getWisdomContent,
     getRecommendations,

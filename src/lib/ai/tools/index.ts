@@ -43,7 +43,7 @@ export {
 // TOOLS
 // ─────────────────────────────────────────────────────────────────────────────
 
-export { searchCatalog } from "./catalog"
+export { searchCatalog, getCatalogSummary } from "./catalog"
 export { openFeedback, OPEN_FEEDBACK_EVENT, type OpenFeedbackEventDetail } from "./feedback"
 export { getPlatformHelp } from "./platform-help"
 export { getRecommendations } from "./recommendations"

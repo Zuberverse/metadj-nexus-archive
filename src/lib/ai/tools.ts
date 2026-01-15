@@ -30,6 +30,7 @@ export {
   resolveTracksForProposal,
   // Tools
   searchCatalog,
+  getCatalogSummary,
   getPlatformHelp,
   getRecommendations,
   getZuberantContext,

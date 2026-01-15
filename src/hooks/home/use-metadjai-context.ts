@@ -207,6 +207,11 @@ export function useMetaDjAiContext({
 
   /**
    * Full session context for the MetaDJai hook
+   *
+   * NOTE: catalogSummary is intentionally NOT included here.
+   * The AI retrieves catalog data on-demand via the getCatalogSummary tool
+   * when users ask about collections, recommendations, or music discovery.
+   * This follows Vercel AI SDK best practices for tool-based data retrieval.
    */
   const metaDjAiSessionContext = useMemo(
     () => ({
@@ -219,7 +224,7 @@ export function useMetaDjAiContext({
       dreamActive,
       pageContext: metaDjAiPageContext,
       contentContext: metaDjAiContentContext,
-      catalogSummary: metaDjAiCatalogSummary,
+      // catalogSummary removed - AI uses getCatalogSummary tool on-demand
     }),
     [
       player.currentTrack?.title,
@@ -232,7 +237,6 @@ export function useMetaDjAiContext({
       dreamActive,
       metaDjAiPageContext,
       metaDjAiContentContext,
-      metaDjAiCatalogSummary,
     ]
   )
 

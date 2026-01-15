@@ -88,13 +88,11 @@ export function MetaDjAiChatInput({
   const isSubmitReady = Boolean(value.trim()) && !isRateLimited && !isStreaming
   const statusMessage = isRateLimited
     ? "Rate limit active - try again in a moment."
-    : isStreaming
-      ? "MetaDJai is responding..."
-      : isTranscribing
-        ? "Transcribing audio..."
-        : isRecording
-          ? "Recording... tap to stop."
-          : null
+    : isTranscribing
+      ? "Transcribing audio..."
+      : isRecording
+        ? "Recording... tap to stop."
+        : null
 
   // Auto-resize textarea based on content
   // Properly handles both expansion and contraction
