@@ -451,6 +451,91 @@ export async function findAdminUser(): Promise<User | null> {
   return user || null;
 }
 
+/**
+ * Get admin user's username aliases
+ */
+export async function getAdminUsernameAliases(): Promise<string[]> {
+  const admin = await findAdminUser();
+  if (!admin) return [];
+  
+  const aliases = admin.usernameAliases as string[] | null;
+  return aliases || [];
+}
+
+/**
+ * Add a username alias to an admin user
+ */
+export async function addUsernameAlias(userId: string, alias: string): Promise<User | null> {
+  const normalizedAlias = alias.toLowerCase().trim();
+  
+  const user = await findUserById(userId);
+  if (!user || !user.isAdmin) return null;
+  
+  const currentAliases = (user.usernameAliases as string[] | null) || [];
+  
+  if (currentAliases.includes(normalizedAlias)) {
+    return user;
+  }
+  
+  const newAliases = [...currentAliases, normalizedAlias];
+  
+  const [updated] = await db
+    .update(users)
+    .set({
+      usernameAliases: newAliases,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, userId))
+    .returning();
+  
+  return updated || null;
+}
+
+/**
+ * Check if a username is an active admin alias
+ */
+export async function isAdminUsernameAlias(username: string): Promise<boolean> {
+  const normalizedUsername = username.toLowerCase().trim();
+  
+  if (normalizedUsername === 'admin') {
+    return true;
+  }
+  
+  const aliases = await getAdminUsernameAliases();
+  return aliases.includes(normalizedUsername);
+}
+
+/**
+ * Find admin user by username alias
+ */
+export async function findAdminByAlias(alias: string): Promise<User | null> {
+  const normalizedAlias = alias.toLowerCase().trim();
+  
+  if (normalizedAlias === 'admin') {
+    const [admin] = await db
+      .select()
+      .from(users)
+      .where(and(eq(users.isAdmin, true), eq(users.username, 'admin')))
+      .limit(1);
+    return admin || null;
+  }
+  
+  const [admin] = await db
+    .select()
+    .from(users)
+    .where(eq(users.isAdmin, true))
+    .limit(1);
+  
+  if (!admin) return null;
+  
+  const aliases = (admin.usernameAliases as string[] | null) || [];
+  if (aliases.includes(normalizedAlias)) {
+    return admin;
+  }
+  
+  return null;
+}
+
 // ============================================================================
 // User Preferences Operations
 // ============================================================================
