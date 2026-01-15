@@ -88,19 +88,10 @@ export const POST = withOriginValidation(async (request: NextRequest) => {
 
     const { id, title, content } = bodyResult.data ?? {};
 
-    if (!title || typeof title !== 'string') {
-      return NextResponse.json(
-        { success: false, message: 'title is required' },
-        { status: 400 }
-      );
-    }
+    const titleStr = typeof title === 'string' ? title : '';
+    const contentStr = typeof content === 'string' ? content : '';
 
-    if (!content || typeof content !== 'string') {
-      return NextResponse.json(
-        { success: false, message: 'content is required' },
-        { status: 400 }
-      );
-    }
+    const finalTitle = titleStr.trim() || 'Untitled';
 
     const now = new Date();
 
@@ -114,7 +105,7 @@ export const POST = withOriginValidation(async (request: NextRequest) => {
       if (existing.length > 0) {
         await db
           .update(journalEntries)
-          .set({ title, content, updatedAt: now })
+          .set({ title: finalTitle, content: contentStr, updatedAt: now })
           .where(eq(journalEntries.id, id));
 
         const updated = await db
@@ -134,8 +125,8 @@ export const POST = withOriginValidation(async (request: NextRequest) => {
     await db.insert(journalEntries).values({
       id: newId,
       userId: session.id,
-      title,
-      content,
+      title: finalTitle,
+      content: contentStr,
       createdAt: now,
       updatedAt: now,
     });
