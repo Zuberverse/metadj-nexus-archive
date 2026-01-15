@@ -196,7 +196,7 @@ export function HubExperience({
         </div>
       </section>
 
-      <div className="px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+      <div className="px-3 sm:px-6 lg:px-8 pb-8 space-y-6 sm:space-y-8">
         <OnboardingChecklist
           className="min-[1100px]:hidden"
           heroTrack={heroTrack}

@@ -17,6 +17,7 @@
   - [Track Title Display](#track-title-display)
   - [Playback Controls](#playback-controls)
 - [Smart Track Back Logic](#smart-track-back-logic-spotify-style)
+- [Crossfade](#crossfade)
 - [Volume Control System](#volume-control-system)
 - [Queue Management System](#queue-management-system)
 - [Track List Interaction Pattern](#track-list-interaction-pattern)
@@ -255,6 +256,43 @@ This pattern prevents accidental track skips when users simply want to replay a 
 - Natural interaction pattern familiar from Spotify
 - Prevents frustration from accidental back-skips
 - Works gracefully with single-track playlists
+
+## Crossfade
+
+Crossfade provides seamless audio transitions between tracks by overlapping the end of the current track with the beginning of the next.
+
+### Quick Reference
+
+| Setting | Value | Notes |
+|---------|-------|-------|
+| Duration | 3 seconds | Hardcoded (configurable duration planned) |
+| Trigger | `timeRemaining <= 3s` | When next track is available |
+| Volume curve | Sine/cosine easing | Equal-power crossfade |
+| Default state | Disabled | Opt-in via Audio Settings |
+
+### How to Enable
+
+1. Open the **Audio Settings** modal (cog icon in Now Playing section)
+2. Toggle **Crossfade** on
+3. Settings sync across devices for logged-in users
+
+### Technical Overview
+
+The crossfade system uses dual `<audio>` elements:
+- **Primary element**: Plays current track, fades out during transition
+- **Secondary element**: Pre-loads next track, fades in during transition
+
+Volume easing uses trigonometric curves for perceptually smooth transitions:
+- Fade out: `cos(progress * π/2)` — current track 1.0 → 0.0
+- Fade in: `sin(progress * π/2)` — next track 0.0 → 1.0
+
+### Edge Cases
+
+- **No next track**: Simple fade-out of current track
+- **Repeat track mode**: Loops without crossfade
+- **Manual skip during crossfade**: Immediate transition, crossfade cancelled
+
+**See also**: [Crossfade Feature Documentation](./crossfade.md) for complete implementation details and architecture.
 
 ## Volume Control System
 
