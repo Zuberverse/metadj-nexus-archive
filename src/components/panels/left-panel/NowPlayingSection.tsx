@@ -18,8 +18,10 @@
 import { memo, useCallback, useMemo, useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import clsx from "clsx"
-import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1, Info } from "lucide-react"
+import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1, Info, Settings } from "lucide-react"
 import { ShareButton } from "@/components/ui"
+import { AudioSettingsModal } from "@/components/player/AudioSettingsModal"
+import { useAudioSettings } from "@/hooks/audio/use-audio-settings"
 import { usePlaybackTime } from "@/contexts/PlayerContext"
 import { useCspStyle } from "@/hooks/use-csp-style"
 import { DEFAULT_ARTWORK_SRC } from "@/lib/app.constants"
@@ -83,6 +85,9 @@ function NowPlayingSectionComponent({
   const currentTime = externalCurrentTime ?? playbackTime.currentTime
   const duration = externalDuration ?? playbackTime.duration
   const isLoading = externalIsLoading
+
+  const [showAudioSettings, setShowAudioSettings] = useState(false)
+  const { crossfadeEnabled, setCrossfadeEnabled } = useAudioSettings()
 
   // Scrubber state for drag handling
   const [isScrubbing, setIsScrubbing] = useState(false)
@@ -394,6 +399,14 @@ function NowPlayingSectionComponent({
                     <Info className="h-5 w-5" />
                   </button>
                 )}
+                <button
+                  type="button"
+                  onClick={() => setShowAudioSettings(true)}
+                  className="h-9 w-9 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-muted-accessible hover:text-white/80 transition focus-ring-glow touch-manipulation"
+                  aria-label="Audio settings"
+                >
+                  <Settings className="h-5 w-5" />
+                </button>
               </div>
             </div>
           ) : (
@@ -405,9 +418,23 @@ function NowPlayingSectionComponent({
                 <p className="text-sm font-heading font-bold text-heading-solid">Choose a track</p>
                 <p className="text-[11px] text-muted-accessible">Browse or search</p>
               </div>
+              <button
+                type="button"
+                onClick={() => setShowAudioSettings(true)}
+                className="h-9 w-9 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-muted-accessible hover:text-white/80 transition focus-ring-glow touch-manipulation"
+                aria-label="Audio settings"
+              >
+                <Settings className="h-5 w-5" />
+              </button>
             </div>
           )}
         </div>
+        <AudioSettingsModal
+          isOpen={showAudioSettings}
+          onClose={() => setShowAudioSettings(false)}
+          crossfadeEnabled={crossfadeEnabled}
+          onCrossfadeChange={setCrossfadeEnabled}
+        />
       </div>
     )
   }
@@ -455,6 +482,14 @@ function NowPlayingSectionComponent({
                     <Info className="h-5 w-5" />
                   </button>
                 )}
+                <button
+                  type="button"
+                  onClick={() => setShowAudioSettings(true)}
+                  className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-white/60 transition hover:text-white hover:bg-white/10 focus-ring-glow touch-manipulation"
+                  aria-label="Audio settings"
+                >
+                  <Settings className="h-5 w-5" />
+                </button>
               </div>
             </div>
 
@@ -579,9 +614,23 @@ function NowPlayingSectionComponent({
               <p className="text-sm font-heading font-bold tracking-wide text-heading-solid opacity-80">Choose a track to start listening</p>
               <p className="text-[11px] text-muted-accessible">Browse collections or search the catalog.</p>
             </div>
+            <button
+              type="button"
+              onClick={() => setShowAudioSettings(true)}
+              className="h-8 w-8 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-white/40 hover:text-white/70 hover:bg-white/10 transition focus-ring-glow touch-manipulation"
+              aria-label="Audio settings"
+            >
+              <Settings className="h-4 w-4" />
+            </button>
           </div>
         )}
 
+        <AudioSettingsModal
+          isOpen={showAudioSettings}
+          onClose={() => setShowAudioSettings(false)}
+          crossfadeEnabled={crossfadeEnabled}
+          onCrossfadeChange={setCrossfadeEnabled}
+        />
       </div>
     </div>
   )
