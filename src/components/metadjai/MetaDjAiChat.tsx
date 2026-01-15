@@ -1171,7 +1171,7 @@ export function MetaDjAiChat({
                     setShowPulse(false)
                   }}
                   className={clsx(
-                    "inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border transition-all duration-300 focus-ring-glow touch-manipulation -ml-0.5",
+                    "inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border transition-[background-color,color,transform,opacity] duration-300 focus-ring-glow touch-manipulation -ml-0.5",
                     isActionsOpen
                       ? "border-cyan-400/60 bg-cyan-500/15 text-cyan-100 shadow-[0_0_18px_rgba(6,182,212,0.25)]"
                       : "border-white/15 bg-white/5 text-white/60 hover:border-cyan-400/40 hover:bg-white/10 hover:text-cyan-100",

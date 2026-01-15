@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import clsx from "clsx"
 import { SendHorizontal, Square, RotateCcw, Mic, Loader2 } from "lucide-react"
+import { usePlayer } from "@/contexts/PlayerContext"
 import { useToast } from "@/contexts/ToastContext"
 import { useCspStyle } from "@/hooks/use-csp-style"
 import { logger } from "@/lib/logger"
@@ -53,7 +54,9 @@ export function MetaDjAiChatInput({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<BlobPart[]>([])
   const maxDurationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const wasPlayingBeforeRecordingRef = useRef(false)
   const { showToast } = useToast()
+  const { shouldPlay, setShouldPlay } = usePlayer()
 
   // Max recording duration in milliseconds (60 seconds to prevent excessive API usage)
   const MAX_RECORDING_DURATION_MS = 60_000
@@ -161,6 +164,13 @@ export function MetaDjAiChatInput({
         showToast({ message: "Microphone access isn't available here", variant: "error" })
         return
       }
+
+      // Pause music during recording to avoid audio conflicts
+      wasPlayingBeforeRecordingRef.current = shouldPlay
+      if (shouldPlay) {
+        setShouldPlay(false)
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
       // Determine best supported mime type
@@ -189,6 +199,11 @@ export function MetaDjAiChatInput({
 
         if (chunksRef.current.length === 0) {
           setIsRecording(false)
+          // Resume playback if music was playing before recording (cancelled/empty recording)
+          if (wasPlayingBeforeRecordingRef.current) {
+            setShouldPlay(true)
+            wasPlayingBeforeRecordingRef.current = false
+          }
           return
         }
 
@@ -230,6 +245,11 @@ export function MetaDjAiChatInput({
           showToast({ message: "Failed to transcribe audio", variant: "error" })
         } finally {
           setIsTranscribing(false)
+          // Resume playback if music was playing before recording
+          if (wasPlayingBeforeRecordingRef.current) {
+            setShouldPlay(true)
+            wasPlayingBeforeRecordingRef.current = false
+          }
         }
       }
 
@@ -247,7 +267,7 @@ export function MetaDjAiChatInput({
       logger.error('[MetaDJai] Microphone access error', { error: String(error) })
       showToast({ message: "Could not access microphone", variant: "error" })
     }
-  }, [onChange, value, showToast, MAX_RECORDING_DURATION_MS])
+  }, [onChange, value, showToast, MAX_RECORDING_DURATION_MS, shouldPlay, setShouldPlay])
 
   const stopRecording = useCallback(() => {
     // Clear max duration timeout when manually stopped
