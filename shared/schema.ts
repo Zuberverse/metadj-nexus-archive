@@ -260,6 +260,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   feedback: many(feedback),
   analyticsEvents: many(analyticsEvents),
   recentlyPlayed: many(recentlyPlayed),
+  journalEntries: many(journalEntries),
 }));
 
 export const recentlyPlayedRelations = relations(recentlyPlayed, ({ one }) => ({
@@ -350,6 +351,35 @@ export const analyticsEventsRelations = relations(analyticsEvents, ({ one }) => 
 }));
 
 /**
+ * Journal Entries - User private journal notes
+ */
+export const journalEntries = pgTable(
+  'journal_entries',
+  {
+    id: varchar('id', { length: 64 }).primaryKey(),
+    userId: varchar('user_id', { length: 64 })
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    title: varchar('title', { length: 255 }).notNull(),
+    content: text('content').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => [
+    index('journal_entries_user_id_idx').on(table.userId),
+    index('journal_entries_created_at_idx').on(table.createdAt),
+    index('journal_entries_updated_at_idx').on(table.updatedAt),
+  ]
+);
+
+export const journalEntriesRelations = relations(journalEntries, ({ one }) => ({
+  user: one(users, {
+    fields: [journalEntries.userId],
+    references: [users.id],
+  }),
+}));
+
+/**
  * Type exports for use throughout the application
  */
 export type User = typeof users.$inferSelect;
@@ -374,3 +404,5 @@ export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect
 export type NewEmailVerificationToken = typeof emailVerificationTokens.$inferInsert;
 export type RecentlyPlayed = typeof recentlyPlayed.$inferSelect;
 export type NewRecentlyPlayed = typeof recentlyPlayed.$inferInsert;
+export type JournalEntryRecord = typeof journalEntries.$inferSelect;
+export type NewJournalEntryRecord = typeof journalEntries.$inferInsert;
