@@ -175,17 +175,20 @@ export const MAX_COLLECTION_PRIMARY_GENRES = 10;
 /**
  * Number of identical messages required to trigger spam detection
  *
- * Rationale: 3 identical messages in recent history indicates
- * potential spam while allowing legitimate retries (user clicking
- * send twice, network issues causing resends).
+ * Rationale: 5 identical messages is very permissive to accommodate
+ * legitimate retries (network issues, accidental double-clicks,
+ * re-asking when AI doesn't respond as expected). Users can retry up
+ * to 4 times before triggering spam detection. Combined with rate
+ * limiting, this provides sufficient abuse protection.
  */
-export const SPAM_THRESHOLD_IDENTICAL_MESSAGES = 3;
+export const SPAM_THRESHOLD_IDENTICAL_MESSAGES = 5;
 
 /**
  * Window size for checking duplicate messages
  *
- * Rationale: Check last 5 user messages - recent enough to catch
- * spam but not so far back that legitimate repeated questions
- * (e.g., asking "hello" at the start of sessions) trigger it.
+ * Rationale: Check last 8 user messages - wide enough window to catch
+ * sustained spam patterns, but requires 5+ duplicates within this window.
+ * This balances spam detection with allowing legitimate repeated questions
+ * (e.g., asking "hello" at the start of sessions, retrying after errors).
  */
-export const SPAM_CHECK_WINDOW = 5;
+export const SPAM_CHECK_WINDOW = 8;

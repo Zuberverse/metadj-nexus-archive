@@ -106,10 +106,10 @@ Configurable thresholds prevent abuse while allowing legitimate retries:
 
 | Setting | Value | Behavior |
 |---------|-------|----------|
-| `SPAM_THRESHOLD_IDENTICAL_MESSAGES` | 3 | Triggers on 3+ identical messages |
-| `SPAM_CHECK_WINDOW` | 5 | Checks last 5 user messages |
+| `SPAM_THRESHOLD_IDENTICAL_MESSAGES` | 5 | Triggers on 5+ identical messages |
+| `SPAM_CHECK_WINDOW` | 8 | Checks last 8 user messages |
 
-This allows users to retry a message once (network issues, accidental double-click) without triggering spam detection.
+This allows users to retry a message up to 4 times (network issues, accidental double-clicks, re-asking after unexpected responses) without triggering spam detection. Combined with rate limiting, this provides sufficient abuse protection.
 
 ### Security
 
