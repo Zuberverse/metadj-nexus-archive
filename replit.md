@@ -45,16 +45,28 @@ MetaDJ Nexus is built on a modern web stack for performance and scalability on R
 
 ## Audio Settings & Crossfade
 
-The player includes an Audio Settings modal accessible via the cog icon in the Now Playing section. Settings are persisted to localStorage for guests.
+The player includes an Audio Settings modal accessible via the cog icon in the Now Playing section.
+
+### Preferences Storage
+
+Audio settings are stored in the database for logged-in users (cross-device sync) with localStorage fallback for guests.
+
+**Key Files:**
+- `src/components/player/AudioSettingsModal.tsx` - Settings modal with crossfade toggle
+- `src/hooks/audio/use-audio-settings.ts` - Settings persistence hook with DB sync
+- `src/hooks/audio/use-audio-playback.ts` - Crossfade logic with dual audio elements
+- `src/lib/preferences.ts` - Server-side preferences management
+- `src/app/api/auth/preferences/route.ts` - GET/PATCH API for preferences
+
+**Storage Behavior:**
+| User Type | Primary Storage | Fallback |
+|-----------|-----------------|----------|
+| Logged In | PostgreSQL (`userPreferences.audioPreferences`) | localStorage on API failure |
+| Guest | localStorage | None |
 
 ### Crossfade Feature
 
 When enabled, provides a 3-second seamless transition between tracks using dual audio elements.
-
-**Key Files:**
-- `src/components/player/AudioSettingsModal.tsx` - Settings modal with crossfade toggle
-- `src/hooks/audio/use-audio-settings.ts` - Settings persistence hook
-- `src/hooks/audio/use-audio-playback.ts` - Crossfade logic with dual audio elements
 
 **Implementation:**
 - Uses two `<audio>` elements: primary for current track, secondary for next track preload
@@ -63,15 +75,30 @@ When enabled, provides a 3-second seamless transition between tracks using dual 
 - Falls back to simple fade-out when no next track (end of queue with repeat off)
 
 **Settings:**
-| Setting | Storage Key | Default |
-|---------|-------------|---------|
-| Crossfade Enabled | `metadj-audio-settings.crossfadeEnabled` | `false` |
+| Setting | DB Field | Default |
+|---------|----------|---------|
+| Crossfade Enabled | `audioPreferences.crossfadeEnabled` | `false` |
 | Duration | Hardcoded | 3000ms |
 
 **Known Limitations (Future Improvements):**
 - Secondary audio bypasses useAudioSource URL resolution
 - Volume/mute changes during crossfade not synced to secondary element
 - Secondary audio not tracked in PlayerContext during overlap
+
+### Future Settings Migration
+
+Other localStorage settings that could be migrated to database for cross-device sync:
+
+| Setting | Current Storage | Suggested DB Field |
+|---------|-----------------|-------------------|
+| Volume | `VOLUME` localStorage | `audioPreferences.volume` |
+| Muted | `MUTED` localStorage | `audioPreferences.muted` |
+| Repeat Mode | `REPEAT_MODE` localStorage | `playerPreferences.repeatMode` |
+| Shuffle | `SHUFFLE_ENABLED` localStorage | `playerPreferences.shuffleEnabled` |
+| Cinema Scene | `CINEMA_SCENE` localStorage | `videoPreferences.scene` |
+| Poster Only | `CINEMA_POSTER_ONLY` localStorage | `videoPreferences.posterOnly` |
+| AI Provider | `METADJAI_PROVIDER` localStorage | `metadjaiPreferences.provider` |
+| AI Personalization | `METADJAI_PERSONALIZATION` localStorage | `metadjaiPreferences.personalization` |
 
 ## AI Integration (MetaDJai)
 
