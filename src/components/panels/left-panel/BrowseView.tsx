@@ -7,7 +7,6 @@ import { SearchBar } from "@/components/search/SearchBar"
 import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import { RECENTLY_PLAYED_COLLECTION_ID } from "@/lib/app.constants"
 import { getCollectionHoverStyles } from "@/lib/collection-theme"
-import type { JournalSearchEntry, WisdomSearchEntry } from "@/lib/search/search-results"
 import type { Collection, Track } from "@/types"
 
 interface BrowseViewProps {
@@ -22,8 +21,6 @@ interface BrowseViewProps {
   currentTrack: Track | null
   onSearchSelect: (track: Track) => void
   onSearchQueueAdd: (track: Track) => void
-  onWisdomSelect?: (entry: WisdomSearchEntry) => void
-  onJournalSelect?: (entry: JournalSearchEntry) => void
   /** Ref to container element for search dropdown alignment */
   searchContainerRef?: React.RefObject<HTMLElement | null>
 }
@@ -44,8 +41,6 @@ export function BrowseView({
   currentTrack,
   onSearchSelect,
   onSearchQueueAdd,
-  onWisdomSelect,
-  onJournalSelect,
   searchContainerRef,
 }: BrowseViewProps) {
   const recentlyPlayedCount = recentlyPlayed.length
@@ -64,22 +59,12 @@ export function BrowseView({
             onSearchQueryChange("")
             onSearchResultsChange([])
           }}
-          onWisdomSelect={(entry) => {
-            onWisdomSelect?.(entry)
-            onSearchQueryChange("")
-            onSearchResultsChange([])
-          }}
-          onJournalSelect={(entry) => {
-            onJournalSelect?.(entry)
-            onSearchQueryChange("")
-            onSearchResultsChange([])
-          }}
           value={searchQuery}
           onValueChange={onSearchQueryChange}
           onResultsChange={onSearchResultsChange}
           className="w-full"
           inputId="metadj-left-panel-search-input"
-          placeholder="Search Music..."
+          placeholder="Search music, collections, playlists..."
           containerRef={searchContainerRef}
         />
       </div>

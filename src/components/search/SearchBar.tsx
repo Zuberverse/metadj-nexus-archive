@@ -90,7 +90,7 @@ export function SearchBar({
   hideIcon = false,
   disableDropdown = false,
   inputId,
-  placeholder = 'Search music, wisdom, journal...',
+  placeholder = 'Search music, collections, playlists...',
   containerRef,
 }: SearchBarProps) {
   const [internalQuery, setInternalQuery] = useState('');

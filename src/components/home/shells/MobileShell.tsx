@@ -19,7 +19,6 @@ import { WisdomExperience } from "@/components/wisdom/WisdomExperience"
 import { useUI } from "@/contexts/UIContext"
 import { useFocusTrap } from "@/hooks/use-focus-trap"
 import { useSwipeGesture } from "@/hooks/use-swipe-gesture"
-import type { JournalSearchEntry, WisdomSearchEntry } from "@/lib/search/search-results"
 import type { WisdomDeepLink } from "@/lib/wisdom"
 import type { ActiveView, Track, Collection, RepeatMode, CinemaState, ModalState } from "@/types"
 import type { AudioPlayerProps } from "@/types/audio-player.types"
@@ -75,8 +74,6 @@ export interface MobileShellProps {
   isLeftPanelOpen: boolean
   onSearchQueryChange: (query: string) => void
   onSearchResultsChange: (results: Track[]) => void
-  onSearchWisdomSelect: (entry: WisdomSearchEntry) => void
-  onSearchJournalSelect: (entry: JournalSearchEntry) => void
   onTrackSelect: (track: Track, tracks?: Track[]) => void
   onCollectionSelect: (collection: Collection) => void
   onTrackQueueAdd: (track: Track) => void
@@ -129,8 +126,6 @@ function MobileShell({
   isLeftPanelOpen,
   onSearchQueryChange,
   onSearchResultsChange,
-  onSearchWisdomSelect,
-  onSearchJournalSelect,
   onTrackSelect,
   onCollectionSelect,
   onTrackQueueAdd,
@@ -236,8 +231,6 @@ function MobileShell({
         onSearchQueryChange={onSearchQueryChange}
         searchResults={searchResults}
         onSearchResultsChange={onSearchResultsChange}
-        onWisdomSelect={onSearchWisdomSelect}
-        onJournalSelect={onSearchJournalSelect}
         tracks={tracks}
         collections={collections}
         currentTrack={currentTrack}
@@ -286,8 +279,6 @@ function MobileShell({
                 onSearchSelect={onTrackSelect}
                 onTrackPlay={onTrackSelect}
                 onSearchQueueAdd={onTrackQueueAdd}
-                onSearchWisdomSelect={onSearchWisdomSelect}
-                onSearchJournalSelect={onSearchJournalSelect}
                 shuffle={isShuffleEnabled}
                 repeatMode={repeatMode}
                 onShuffleToggle={onShuffleToggle}

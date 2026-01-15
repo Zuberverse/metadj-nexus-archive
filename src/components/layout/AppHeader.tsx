@@ -14,7 +14,7 @@ import { useUI } from "@/contexts/UIContext"
 import { useClickAway, useEscapeKey, useFocusTrap } from "@/hooks"
 import { useCspStyle } from "@/hooks/use-csp-style"
 import type { Track, Collection } from "@/lib/music"
-import type { JournalSearchEntry, SearchContentResults, WisdomSearchEntry } from "@/lib/search/search-results"
+import type { SearchContentResults } from "@/lib/search/search-results"
 import type { ActiveView, LeftPanelTab } from "@/types"
 import type { RefObject } from "react"
 
@@ -41,8 +41,6 @@ interface AppHeaderProps {
   onSearchQueryChange: (value: string) => void
   searchResults: Track[]
   onSearchResultsChange: (results: Track[]) => void
-  onWisdomSelect?: (entry: WisdomSearchEntry) => void
-  onJournalSelect?: (entry: JournalSearchEntry) => void
   tracks: Track[]
   collections: Collection[]
   currentTrack: Track | null
@@ -75,8 +73,6 @@ export function AppHeader({
   onSearchQueryChange,
   searchResults,
   onSearchResultsChange,
-  onWisdomSelect,
-  onJournalSelect,
   tracks,
   collections,
   currentTrack,
@@ -263,21 +259,6 @@ export function AppHeader({
     totalCount: searchResults.length,
   }
 
-  const formatWisdomLabel = (entry: WisdomSearchEntry) => {
-    if (entry.section === "guides") {
-      return entry.category ? `Guide - ${entry.category}` : "Guide"
-    }
-    if (entry.section === "thoughts") return "Thought"
-    return "Reflection"
-  }
-
-  const formatJournalDate = (value: string) => {
-    if (!value) return "Saved entry"
-    const date = new Date(value)
-    if (Number.isNaN(date.valueOf())) return "Saved entry"
-    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
-  }
-
   const handleOverlayTrackSelect = useCallback((track: Track) => {
     onTrackSelect(track)
     closeSearchOverlay()
@@ -288,21 +269,11 @@ export function AppHeader({
     closeSearchOverlay()
   }, [onCollectionSelect, closeSearchOverlay])
 
-  const handleOverlayWisdomSelect = useCallback((entry: WisdomSearchEntry) => {
-    onWisdomSelect?.(entry)
-    closeSearchOverlay()
-  }, [onWisdomSelect, closeSearchOverlay])
-
-  const handleOverlayJournalSelect = useCallback((entry: JournalSearchEntry) => {
-    onJournalSelect?.(entry)
-    closeSearchOverlay()
-  }, [onJournalSelect, closeSearchOverlay])
-
   const handleOverlayResultKeyDown = useCallback((
     event: React.KeyboardEvent<HTMLButtonElement>,
     index: number,
-    type: 'track' | 'collection' | 'wisdom' | 'journal',
-    item: Track | Collection | WisdomSearchEntry | JournalSearchEntry
+    type: 'track' | 'collection',
+    item: Track | Collection
   ) => {
     const refs = searchOverlayRefs.current
 
@@ -329,10 +300,6 @@ export function AppHeader({
         handleOverlayTrackSelect(item as Track)
       } else if (type === "collection") {
         handleOverlayCollectionSelect(item as Collection)
-      } else if (type === "wisdom") {
-        handleOverlayWisdomSelect(item as WisdomSearchEntry)
-      } else {
-        handleOverlayJournalSelect(item as JournalSearchEntry)
       }
       return
     }
@@ -344,8 +311,6 @@ export function AppHeader({
   }, [
     handleOverlayTrackSelect,
     handleOverlayCollectionSelect,
-    handleOverlayWisdomSelect,
-    handleOverlayJournalSelect,
     closeSearchOverlay,
     searchInputId
   ])
@@ -768,7 +733,7 @@ export function AppHeader({
                 </span>
                 <div className="leading-tight">
                   <p id="search-overlay-title" className="text-[0.65rem] uppercase tracking-[0.32em] text-(--text-muted)">Search</p>
-                  <p id="search-overlay-description" className="text-sm font-heading font-semibold text-white">Type to explore the catalog</p>
+                  <p id="search-overlay-description" className="text-sm font-heading font-semibold text-white">Music, collections, playlists</p>
                 </div>
               </div>
               <button
@@ -794,14 +759,6 @@ export function AppHeader({
                   onCollectionSelect(collection)
                   closeSearchOverlay()
                 }}
-                onWisdomSelect={(entry) => {
-                  onWisdomSelect?.(entry)
-                  closeSearchOverlay()
-                }}
-                onJournalSelect={(entry) => {
-                  onJournalSelect?.(entry)
-                  closeSearchOverlay()
-                }}
                 value={searchQuery}
                 onValueChange={onSearchQueryChange}
                 onResultsChange={onSearchResultsChange}
@@ -810,24 +767,22 @@ export function AppHeader({
                 hideIcon={false}
                 disableDropdown={true}
                 inputId={searchInputId}
+                placeholder="Search music, collections, playlists..."
               />
             </div>
 
-            {/* Inline Search Results */}
+            {/* Inline Search Results - Music only (collections, tracks) */}
             {searchQuery.trim().length >= 1 && (
               <div className="border-t border-white/10 max-h-[60vh] overflow-y-auto">
                 {(() => {
-                  const { collections: collectionResults, tracks: trackResults, wisdom: wisdomResults, journal: journalResults, totalCount } = resolvedSearchContentResults
+                  const { collections: collectionResults, tracks: trackResults } = resolvedSearchContentResults
                   const visibleCollections = collectionResults.slice(0, 3)
                   const visibleTracks = trackResults.slice(0, 8)
-                  const visibleWisdom = wisdomResults.slice(0, 4)
-                  const visibleJournal = journalResults.slice(0, 4)
                   const collectionOffset = 0
                   const trackOffset = collectionOffset + visibleCollections.length
-                  const wisdomOffset = trackOffset + visibleTracks.length
-                  const journalOffset = wisdomOffset + visibleWisdom.length
+                  const musicTotalCount = collectionResults.length + trackResults.length
 
-                  if (totalCount === 0) {
+                  if (musicTotalCount === 0) {
                     return (
                       <div className="text-center py-8">
                         <Search className="h-8 w-8 text-white/30 mx-auto mb-2" />
@@ -906,82 +861,6 @@ export function AppHeader({
                                   searchOverlayRefs.current[actualIndex] = element
                                 }}
                               />
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {visibleWisdom.length > 0 && (
-                        <div className="px-4 py-3">
-                          <p className="text-xs uppercase tracking-wider text-(--text-muted) mb-2">Wisdom</p>
-                          <div className="space-y-1">
-                            {visibleWisdom.map((entry, index) => {
-                              const actualIndex = wisdomOffset + index
-                              return (
-                              <button
-                                key={`wisdom-${entry.section}-${entry.id}`}
-                                type="button"
-                                onClick={() => handleOverlayWisdomSelect(entry)}
-                                onKeyDown={(event) => handleOverlayResultKeyDown(event, actualIndex, "wisdom", entry)}
-                                onMouseEnter={() => setSearchOverlayHoveredIndex(actualIndex)}
-                                onMouseLeave={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
-                                onFocus={() => setSearchOverlayHoveredIndex(actualIndex)}
-                                onBlur={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
-                                ref={(element) => {
-                                  searchOverlayRefs.current[actualIndex] = element
-                                }}
-                                className={clsx(
-                                  "w-full flex items-start gap-3 px-3 py-2 rounded-lg transition-colors text-left focus-ring-glow",
-                                  searchOverlayHoveredIndex === actualIndex ? "bg-white/10" : "hover:bg-white/5"
-                                )}
-                              >
-                                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-cyan-200 shrink-0">
-                                  <Sparkles className="h-4 w-4" />
-                                </span>
-                                <div className="min-w-0">
-                                  <p className="text-sm font-medium text-white truncate">{entry.title}</p>
-                                  <p className="text-xs text-(--text-muted)">{formatWisdomLabel(entry)}</p>
-                                </div>
-                              </button>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {visibleJournal.length > 0 && (
-                        <div className="px-4 py-3">
-                          <p className="text-xs uppercase tracking-wider text-(--text-muted) mb-2">Journal</p>
-                          <div className="space-y-1">
-                            {visibleJournal.map((entry, index) => {
-                              const actualIndex = journalOffset + index
-                              return (
-                              <button
-                                key={`journal-${entry.id}`}
-                                type="button"
-                                onClick={() => handleOverlayJournalSelect(entry)}
-                                onKeyDown={(event) => handleOverlayResultKeyDown(event, actualIndex, "journal", entry)}
-                                onMouseEnter={() => setSearchOverlayHoveredIndex(actualIndex)}
-                                onMouseLeave={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
-                                onFocus={() => setSearchOverlayHoveredIndex(actualIndex)}
-                                onBlur={() => setSearchOverlayHoveredIndex((current) => (current === actualIndex ? null : current))}
-                                ref={(element) => {
-                                  searchOverlayRefs.current[actualIndex] = element
-                                }}
-                                className={clsx(
-                                  "w-full flex items-start gap-3 px-3 py-2 rounded-lg transition-colors text-left focus-ring-glow",
-                                  searchOverlayHoveredIndex === actualIndex ? "bg-white/10" : "hover:bg-white/5"
-                                )}
-                              >
-                                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-purple-200 shrink-0">
-                                  <Book className="h-4 w-4" />
-                                </span>
-                                <div className="min-w-0">
-                                  <p className="text-sm font-medium text-white truncate">{entry.title}</p>
-                                  <p className="text-xs text-(--text-muted)">Updated {formatJournalDate(entry.updatedAt)}</p>
-                                </div>
-                              </button>
                               )
                             })}
                           </div>

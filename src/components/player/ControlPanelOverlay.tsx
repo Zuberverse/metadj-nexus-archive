@@ -17,7 +17,7 @@ import { QueueList } from "./QueueList"
 import { SearchResultsOverlay } from "./SearchResultsOverlay"
 import { TrackInsight } from "./TrackInsight"
 import { VolumeControl } from "./VolumeControl"
-import type { JournalSearchEntry, SearchContentResults, WisdomSearchEntry } from "@/lib/search/search-results"
+import type { SearchContentResults } from "@/lib/search/search-results"
 import type { Track, RepeatMode } from "@/types"
 
 interface ControlPanelOverlayProps {
@@ -50,8 +50,6 @@ interface ControlPanelOverlayProps {
   onQueueTrackSelect?: (trackId: string) => void
   onSearchTrackSelect?: (track: Track) => void // Play track from search
   onSearchTrackQueueAdd?: (track: Track) => void // Add track to queue from search
-  onSearchWisdomSelect?: (entry: WisdomSearchEntry) => void
-  onSearchJournalSelect?: (entry: JournalSearchEntry) => void
 
   // Volume controls
   volume?: number
@@ -97,8 +95,6 @@ export function ControlPanelOverlay({
   onQueueTrackSelect,
   onSearchTrackSelect,
   onSearchTrackQueueAdd,
-  onSearchWisdomSelect,
-  onSearchJournalSelect,
   volume,
   isMuted,
   onVolumeChange,
@@ -243,14 +239,6 @@ export function ControlPanelOverlay({
                       onTrackQueueAdd={(selectedTrack) => {
                         onSearchTrackQueueAdd?.(selectedTrack)
                       }}
-                      onWisdomSelect={(entry) => {
-                        onSearchWisdomSelect?.(entry)
-                        setSearchQuery("")
-                      }}
-                      onJournalSelect={(entry) => {
-                        onSearchJournalSelect?.(entry)
-                        setSearchQuery("")
-                      }}
                       value={searchQuery}
                       onValueChange={setSearchQuery}
                       onContentResultsChange={setSearchContentResults}
@@ -270,14 +258,6 @@ export function ControlPanelOverlay({
                       }}
                       onQueueAdd={(selectedTrack) => {
                         onSearchTrackQueueAdd?.(selectedTrack)
-                      }}
-                      onWisdomSelect={(entry) => {
-                        onSearchWisdomSelect?.(entry)
-                        setSearchQuery("")
-                      }}
-                      onJournalSelect={(entry) => {
-                        onSearchJournalSelect?.(entry)
-                        setSearchQuery("")
                       }}
                     />
                   )}

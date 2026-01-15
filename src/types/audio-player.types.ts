@@ -7,7 +7,6 @@
  */
 
 import type { RepeatMode, Track } from './index';
-import type { JournalSearchEntry, WisdomSearchEntry } from '@/lib/search/search-results';
 
 /**
  * Playback control callbacks
@@ -54,8 +53,6 @@ export interface SearchControls {
   allTracks?: Track[];
   onTrackSelect?: (track: Track) => void;
   onTrackQueueAdd?: (track: Track) => void;
-  onWisdomSelect?: (entry: WisdomSearchEntry) => void;
-  onJournalSelect?: (entry: JournalSearchEntry) => void;
 }
 
 /**
