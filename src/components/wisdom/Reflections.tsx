@@ -31,7 +31,7 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
   const [selectedReflection, setSelectedReflection] = useState<Reflection | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
-  const { ref: titleRef, titleClass } = useTitleFit()
+  const { ref: titleRef, titleClass } = useTitleFit({ watch: selectedReflection?.title })
 
   useEffect(() => {
     if (!deeplinkId) return

@@ -32,7 +32,7 @@ export const Guides: FC<GuidesProps> = ({ onBack, guides, deeplinkId, onDeeplink
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
-  const { ref: titleRef, titleClass } = useTitleFit()
+  const { ref: titleRef, titleClass } = useTitleFit({ watch: selectedGuide?.title })
 
   useEffect(() => {
     if (!deeplinkId) return

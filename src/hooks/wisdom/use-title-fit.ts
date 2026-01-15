@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useState, useRef, useCallback, type RefObject } from "react"
+import { useEffect, useState, useRef, useCallback, useLayoutEffect, type RefObject } from "react"
 
 interface UseTitleFitOptions {
   defaultClass?: string
   shrinkClass?: string
+  watch?: string
 }
 
 export function useTitleFit(
@@ -16,34 +17,35 @@ export function useTitleFit(
   const {
     defaultClass = "text-3xl sm:text-4xl md:text-5xl",
     shrinkClass = "text-2xl sm:text-3xl md:text-4xl",
+    watch,
   } = options
 
   const ref = useRef<HTMLElement | null>(null)
   const [shouldShrink, setShouldShrink] = useState(false)
-  const measurementRef = useRef<boolean>(false)
 
   const checkWrap = useCallback(() => {
     const el = ref.current
     if (!el) return
 
-    if (measurementRef.current) return
-    measurementRef.current = true
-
     requestAnimationFrame(() => {
-      if (!el) {
-        measurementRef.current = false
-        return
-      }
+      requestAnimationFrame(() => {
+        if (!el) return
 
-      const range = document.createRange()
-      range.selectNodeContents(el)
-      const rects = range.getClientRects()
-      const isMultiLine = rects.length > 1
+        const computedStyle = getComputedStyle(el)
+        const lineHeight = parseFloat(computedStyle.lineHeight)
+        const fontSize = parseFloat(computedStyle.fontSize)
+        const effectiveLineHeight = isNaN(lineHeight) ? fontSize * 1.2 : lineHeight
 
-      setShouldShrink(isMultiLine)
-      measurementRef.current = false
+        const isMultiLine = el.scrollHeight > effectiveLineHeight * 1.3
+
+        setShouldShrink(isMultiLine)
+      })
     })
   }, [])
+
+  useLayoutEffect(() => {
+    checkWrap()
+  }, [watch, checkWrap])
 
   useEffect(() => {
     const el = ref.current
@@ -55,8 +57,6 @@ export function useTitleFit(
 
     if (document.fonts?.ready) {
       document.fonts.ready.then(handleFontsLoaded)
-    } else {
-      checkWrap()
     }
 
     const resizeObserver = new ResizeObserver(() => {

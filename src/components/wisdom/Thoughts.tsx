@@ -30,7 +30,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
   const [selectedPost, setSelectedPost] = useState<ThoughtPost | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
   const articleRef = useRef<HTMLDivElement | null>(null)
-  const { ref: titleRef, titleClass } = useTitleFit()
+  const { ref: titleRef, titleClass } = useTitleFit({ watch: selectedPost?.title })
 
   useEffect(() => {
     if (!deeplinkId) return
