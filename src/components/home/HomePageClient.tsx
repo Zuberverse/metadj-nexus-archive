@@ -497,13 +497,15 @@ export function HomePageClient({
   })
 
   // Fallback handler: When play is pressed with no track loaded, play default track (MetaDJ Revolution)
+  // Uses handleTrackClick to properly build the queue from all tracks, enabling auto-advance
   const handlePlayWithNoTrack = useCallback(() => {
     const fallbackTrack = getTrackById(DEFAULT_FALLBACK_TRACK_ID, tracks)
     if (fallbackTrack) {
-      player.setCurrentTrack(fallbackTrack)
-      player.setShouldPlay(true)
+      // Use handleTrackClick to build queue properly (not just set single track)
+      // Pass all tracks so the queue includes the full collection for auto-advance
+      handleTrackClick(fallbackTrack, tracks)
     }
-  }, [tracks, player])
+  }, [tracks, handleTrackClick])
 
   // Open MetaDJai when requested from /guide without polluting the URL.
   useEffect(() => {
