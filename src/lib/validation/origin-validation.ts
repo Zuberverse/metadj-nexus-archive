@@ -58,6 +58,23 @@ function getAllowedHosts(request: NextRequest): Set<string> {
     }
   }
 
+  // Add Replit development domain if configured
+  const replitDevDomain = process.env.REPLIT_DEV_DOMAIN
+  if (replitDevDomain) {
+    allowedHosts.add(replitDevDomain)
+  }
+
+  // Add Replit domains (comma-separated list)
+  const replitDomains = process.env.REPLIT_DOMAINS
+  if (replitDomains) {
+    replitDomains.split(',').forEach(domain => {
+      const trimmed = domain.trim()
+      if (trimmed) {
+        allowedHosts.add(trimmed)
+      }
+    })
+  }
+
   // Add the current request host (handles edge cases like Replit)
   if (request.nextUrl?.host) {
     allowedHosts.add(request.nextUrl.host)
