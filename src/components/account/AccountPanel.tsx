@@ -299,6 +299,10 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
                     type="email"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
+                    onFocus={(e) => {
+                      const len = e.target.value.length;
+                      e.target.setSelectionRange(len, len);
+                    }}
                     placeholder="Enter new email"
                     className="w-full px-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 transition-all"
                     required
@@ -344,6 +348,10 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
                     type="password"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
+                    onFocus={(e) => {
+                      const len = e.target.value.length;
+                      e.target.setSelectionRange(len, len);
+                    }}
                     placeholder="Enter current password"
                     className="w-full px-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 transition-all"
                     required
@@ -358,6 +366,10 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
+                    onFocus={(e) => {
+                      const len = e.target.value.length;
+                      e.target.setSelectionRange(len, len);
+                    }}
                     placeholder="Enter new password"
                     className="w-full px-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 transition-all"
                     required
@@ -373,6 +385,10 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    onFocus={(e) => {
+                      const len = e.target.value.length;
+                      e.target.setSelectionRange(len, len);
+                    }}
                     placeholder="Confirm new password"
                     className="w-full px-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 transition-all"
                     required
@@ -474,6 +490,10 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
                     type="text"
                     value={feedbackTitle}
                     onChange={(e) => setFeedbackTitle(e.target.value)}
+                    onFocus={(e) => {
+                      const len = e.target.value.length;
+                      e.target.setSelectionRange(len, len);
+                    }}
                     placeholder="Brief summary of your feedback"
                     className="w-full px-4 py-3 bg-white/5 border border-white/15 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 transition-all"
                     required
@@ -490,6 +510,10 @@ export function AccountPanel({ isOpen, onClose }: AccountPanelProps) {
                     id="feedback-description"
                     value={feedbackDescription}
                     onChange={(e) => setFeedbackDescription(e.target.value)}
+                    onFocus={(e) => {
+                      const len = e.target.value.length;
+                      e.target.setSelectionRange(len, len);
+                    }}
                     placeholder={feedbackType === 'bug'
                       ? 'Please describe the issue, steps to reproduce, and expected behavior...'
                       : 'Tell us more about your feedback...'

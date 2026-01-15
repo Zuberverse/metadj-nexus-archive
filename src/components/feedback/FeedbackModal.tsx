@@ -175,6 +175,10 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                onFocus={(e) => {
+                  const len = e.target.value.length;
+                  e.target.setSelectionRange(len, len);
+                }}
                 placeholder="Brief summary of your feedback"
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 transition-all"
                 required
@@ -191,6 +195,10 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 id="feedback-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                onFocus={(e) => {
+                  const len = e.target.value.length;
+                  e.target.setSelectionRange(len, len);
+                }}
                 placeholder={type === 'bug'
                   ? 'Please describe the issue, steps to reproduce, and expected behavior...'
                   : 'Tell us more about your feedback...'

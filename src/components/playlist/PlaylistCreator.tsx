@@ -140,6 +140,10 @@ export function PlaylistCreator({
             value={name}
             onChange={handleNameChange}
             onKeyDown={handleKeyDown}
+            onFocus={(e) => {
+              const len = e.target.value.length;
+              e.target.setSelectionRange(len, len);
+            }}
             placeholder="Enter playlist name"
             maxLength={100}
             autoFocus
