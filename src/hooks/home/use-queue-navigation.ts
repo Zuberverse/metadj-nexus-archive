@@ -158,6 +158,7 @@ export function useQueueNavigation({
   /**
    * Skip to the next track in the queue.
    * Respects repeat mode settings.
+   * Always continues playback when advancing to next track (for seamless auto-advance).
    */
   const handleNext = useCallback(() => {
     if (queue.queue.length === 0) return;
@@ -178,15 +179,15 @@ export function useQueueNavigation({
 
     player.setCurrentTrack(nextTrack);
     player.setCurrentIndex(nextIndex);
-    // Continue playback if already playing (explicit user action)
-    if (player.shouldPlay) {
-      player.setShouldPlay(true);
-    }
+    // Always continue playback when advancing to next track
+    // This handles both manual next clicks and auto-advance when track ends
+    player.setShouldPlay(true);
   }, [queue, player]);
 
   /**
    * Go to the previous track in the queue.
    * Wraps around to the end if at the beginning.
+   * Always continues playback when going to previous track.
    */
   const handlePrevious = useCallback(() => {
     if (queue.queue.length === 0) return;
@@ -201,10 +202,8 @@ export function useQueueNavigation({
 
     player.setCurrentTrack(previousTrack);
     player.setCurrentIndex(previousIndex);
-    // Continue playback if already playing (explicit user action)
-    if (player.shouldPlay) {
-      player.setShouldPlay(true);
-    }
+    // Always continue playback when going to previous track
+    player.setShouldPlay(true);
   }, [queue, player]);
 
   /**
