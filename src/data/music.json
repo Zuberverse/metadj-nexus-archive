@@ -159,66 +159,18 @@
   },
   {
     "id": "mr-004",
-    "title": "We Unite the Nation with the Metaverse",
+    "title": "Cosmic Journey",
     "artist": "MetaDJ",
     "collection": "Metaverse Revelation",
-    "duration": 204,
+    "duration": 396,
     "releaseDate": "2026-01-15",
-    "audioUrl": "/api/audio/metaverse-revelation/04 - We Unite the Nation with the Metaverse (v0) - Mastered.mp3",
+    "audioUrl": "/api/audio/metaverse-revelation/10 - Cosmic Journey (v0) - Mastered.mp3",
     "artworkUrl": "/images/metaverse-revelation-collection.svg",
-    "genres": ["EDM", "Techno"],
-    "description": "Anthemic call for digital unity across borders and boundaries."
+    "genres": ["Euphoric Progressive House", "EDM"],
+    "description": "Closing epic—a 6+ minute odyssey through digital cosmos."
   },
   {
     "id": "mr-005",
-    "title": "We're the Dreamers",
-    "artist": "MetaDJ",
-    "collection": "Metaverse Revelation",
-    "duration": 203,
-    "releaseDate": "2026-01-15",
-    "audioUrl": "/api/audio/metaverse-revelation/05 - We're the Dreamers (v0) - Mastered.mp3",
-    "artworkUrl": "/images/metaverse-revelation-collection.svg",
-    "genres": ["Epic Techno", "Nu Disco"],
-    "description": "Tribute to the visionaries building tomorrow's virtual experiences."
-  },
-  {
-    "id": "mr-006",
-    "title": "In the Metaverse",
-    "artist": "MetaDJ",
-    "collection": "Metaverse Revelation",
-    "duration": 175,
-    "releaseDate": "2026-01-15",
-    "audioUrl": "/api/audio/metaverse-revelation/06 - In the Metaverse (v0) - Mastered.mp3",
-    "artworkUrl": "/images/metaverse-revelation-collection.svg",
-    "genres": ["Epic Techno", "Nu Disco"],
-    "description": "Compact nu disco journey through digital landscapes."
-  },
-  {
-    "id": "mr-007",
-    "title": "MetaDJ Revolution",
-    "artist": "MetaDJ",
-    "collection": "Metaverse Revelation",
-    "duration": 169,
-    "releaseDate": "2026-01-15",
-    "audioUrl": "/api/audio/metaverse-revelation/07 - MetaDJ Revolution (v0) - Mastered.mp3",
-    "artworkUrl": "/images/metaverse-revelation-collection.svg",
-    "genres": ["Electronic Dance", "Synthwave"],
-    "description": "Synthwave-tinged declaration of AI-driven creative revolution."
-  },
-  {
-    "id": "mr-008",
-    "title": "Welcome to the Zuberverse",
-    "artist": "MetaDJ",
-    "collection": "Metaverse Revelation",
-    "duration": 224,
-    "releaseDate": "2026-01-15",
-    "audioUrl": "/api/audio/metaverse-revelation/08 - Welcome to the Zuberverse (v0) - Mastered.mp3",
-    "artworkUrl": "/images/metaverse-revelation-collection.svg",
-    "genres": ["Epic Techno", "Nu Disco"],
-    "description": "Invitation to the Zuberant ecosystem's virtual spaces."
-  },
-  {
-    "id": "mr-009",
     "title": "Pioneers",
     "artist": "MetaDJ",
     "collection": "Metaverse Revelation",
@@ -230,15 +182,63 @@
     "description": "Epic progressive house journey honoring those who venture first."
   },
   {
-    "id": "mr-010",
-    "title": "Cosmic Journey",
+    "id": "mr-006",
+    "title": "We Unite the Nation with the Metaverse",
     "artist": "MetaDJ",
     "collection": "Metaverse Revelation",
-    "duration": 396,
+    "duration": 204,
     "releaseDate": "2026-01-15",
-    "audioUrl": "/api/audio/metaverse-revelation/10 - Cosmic Journey (v0) - Mastered.mp3",
+    "audioUrl": "/api/audio/metaverse-revelation/04 - We Unite the Nation with the Metaverse (v0) - Mastered.mp3",
     "artworkUrl": "/images/metaverse-revelation-collection.svg",
-    "genres": ["Euphoric Progressive House", "EDM"],
-    "description": "Closing epic—a 6+ minute odyssey through digital cosmos."
+    "genres": ["EDM", "Techno"],
+    "description": "Anthemic call for digital unity across borders and boundaries."
+  },
+  {
+    "id": "mr-007",
+    "title": "We're the Dreamers",
+    "artist": "MetaDJ",
+    "collection": "Metaverse Revelation",
+    "duration": 203,
+    "releaseDate": "2026-01-15",
+    "audioUrl": "/api/audio/metaverse-revelation/05 - We're the Dreamers (v0) - Mastered.mp3",
+    "artworkUrl": "/images/metaverse-revelation-collection.svg",
+    "genres": ["Epic Techno", "Nu Disco"],
+    "description": "Tribute to the visionaries building tomorrow's virtual experiences."
+  },
+  {
+    "id": "mr-008",
+    "title": "MetaDJ Revolution",
+    "artist": "MetaDJ",
+    "collection": "Metaverse Revelation",
+    "duration": 169,
+    "releaseDate": "2026-01-15",
+    "audioUrl": "/api/audio/metaverse-revelation/07 - MetaDJ Revolution (v0) - Mastered.mp3",
+    "artworkUrl": "/images/metaverse-revelation-collection.svg",
+    "genres": ["Electronic Dance", "Synthwave"],
+    "description": "Synthwave-tinged declaration of AI-driven creative revolution."
+  },
+  {
+    "id": "mr-009",
+    "title": "Welcome to the Zuberverse",
+    "artist": "MetaDJ",
+    "collection": "Metaverse Revelation",
+    "duration": 224,
+    "releaseDate": "2026-01-15",
+    "audioUrl": "/api/audio/metaverse-revelation/08 - Welcome to the Zuberverse (v0) - Mastered.mp3",
+    "artworkUrl": "/images/metaverse-revelation-collection.svg",
+    "genres": ["Epic Techno", "Nu Disco"],
+    "description": "Invitation to the Zuberant ecosystem's virtual spaces."
+  },
+  {
+    "id": "mr-010",
+    "title": "In the Metaverse",
+    "artist": "MetaDJ",
+    "collection": "Metaverse Revelation",
+    "duration": 175,
+    "releaseDate": "2026-01-15",
+    "audioUrl": "/api/audio/metaverse-revelation/06 - In the Metaverse (v0) - Mastered.mp3",
+    "artworkUrl": "/images/metaverse-revelation-collection.svg",
+    "genres": ["Epic Techno", "Nu Disco"],
+    "description": "Compact nu disco journey through digital landscapes."
   }
 ]
