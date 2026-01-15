@@ -1,7 +1,7 @@
 "use client"
 
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { User, Layers, ChevronRight, Clock, Sparkles } from "lucide-react"
+import { User, Layers, ChevronRight, Clock, Search, Sparkles, X } from "lucide-react"
 import { ShareButton } from "@/components/ui/ShareButton"
 import { useToast } from "@/contexts/ToastContext"
 import { useTitleFit } from "@/hooks/wisdom/use-title-fit"
@@ -30,6 +30,7 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
   const { showToast } = useToast()
   const [selectedReflection, setSelectedReflection] = useState<Reflection | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("")
   const articleRef = useRef<HTMLDivElement | null>(null)
   const { ref: titleRef, titleClass } = useTitleFit({ watch: selectedReflection?.title })
 
@@ -93,10 +94,18 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
   }, [reflectionsData])
 
   const filteredReflections = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
     return reflectionsData.filter((reflection) => {
-      return selectedTopic === "all" || (reflection.topics ?? []).includes(selectedTopic)
+      const matchesTopic = selectedTopic === "all" || (reflection.topics ?? []).includes(selectedTopic)
+      if (!matchesTopic) return false
+      if (!query) return true
+      return (
+        reflection.title.toLowerCase().includes(query) ||
+        reflection.excerpt.toLowerCase().includes(query) ||
+        (reflection.topics ?? []).some(t => t.toLowerCase().includes(query))
+      )
     })
-  }, [reflectionsData, selectedTopic])
+  }, [reflectionsData, selectedTopic, searchQuery])
 
   // List view - show all reflections
   if (!selectedReflection) {
@@ -117,6 +126,35 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
 
         {/* Reflections list */}
         <div className="space-y-4">
+          {/* Search bar */}
+          <div className="max-w-md w-full">
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white/70 transition-colors" />
+              <input
+                type="text"
+                placeholder="Search reflections..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/5 border border-white/15 rounded-xl py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/8 transition-all"
+                aria-label="Search reflections"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-white/10 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4 text-white/60" />
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <p className="mt-2 text-xs text-white/60">
+                {filteredReflections.length} {filteredReflections.length === 1 ? "reflection" : "reflections"} found
+              </p>
+            )}
+          </div>
+
           <WisdomFilters
             topics={topics}
             selectedTopic={selectedTopic}
@@ -125,10 +163,10 @@ export const Reflections: FC<ReflectionsProps> = ({ onBack, reflectionsData, dee
 
           {filteredReflections.length === 0 ? (
             <div className="rounded-2xl border border-white/10 bg-black/30 p-6 text-center text-sm text-white/70">
-              <p>No Reflections match those filters yet.</p>
+              <p>{searchQuery ? "No reflections match your search." : "No Reflections match those filters yet."}</p>
               <button
                 type="button"
-                onClick={() => setSelectedTopic("all")}
+                onClick={() => { setSelectedTopic("all"); setSearchQuery(""); }}
                 className="mt-3 inline-flex items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100 hover:border-cyan-300/70 hover:bg-cyan-500/20 transition"
               >
                 Reset filters

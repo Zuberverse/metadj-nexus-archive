@@ -1,7 +1,7 @@
 "use client"
 
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Calendar, BookOpen, ChevronRight, Clock, Sparkles } from "lucide-react"
+import { Calendar, BookOpen, ChevronRight, Clock, Search, Sparkles, X } from "lucide-react"
 import { ShareButton } from "@/components/ui/ShareButton"
 import { useToast } from "@/contexts/ToastContext"
 import { useTitleFit } from "@/hooks/wisdom/use-title-fit"
@@ -29,6 +29,7 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
   const { showToast } = useToast()
   const [selectedPost, setSelectedPost] = useState<ThoughtPost | null>(null)
   const [selectedTopic, setSelectedTopic] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("")
   const articleRef = useRef<HTMLDivElement | null>(null)
   const { ref: titleRef, titleClass } = useTitleFit({ watch: selectedPost?.title })
 
@@ -62,10 +63,18 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
   }, [thoughts])
 
   const filteredThoughts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
     return sortedThoughts.filter((post) => {
-      return selectedTopic === "all" || (post.topics ?? []).includes(selectedTopic)
+      const matchesTopic = selectedTopic === "all" || (post.topics ?? []).includes(selectedTopic)
+      if (!matchesTopic) return false
+      if (!query) return true
+      return (
+        post.title.toLowerCase().includes(query) ||
+        post.excerpt.toLowerCase().includes(query) ||
+        (post.topics ?? []).some(t => t.toLowerCase().includes(query))
+      )
     })
-  }, [sortedThoughts, selectedTopic])
+  }, [sortedThoughts, selectedTopic, searchQuery])
 
   const returnToList = useCallback(() => {
     setSelectedPost(null)
@@ -132,6 +141,35 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
 
         {/* Blog post list */}
         <div className="space-y-4">
+          {/* Search bar */}
+          <div className="max-w-md w-full">
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white/70 transition-colors" />
+              <input
+                type="text"
+                placeholder="Search thoughts..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/5 border border-white/15 rounded-xl py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/8 transition-all"
+                aria-label="Search thoughts"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-white/10 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4 text-white/60" />
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <p className="mt-2 text-xs text-white/60">
+                {filteredThoughts.length} {filteredThoughts.length === 1 ? "thought" : "thoughts"} found
+              </p>
+            )}
+          </div>
+
           <WisdomFilters
             topics={topics}
             selectedTopic={selectedTopic}
@@ -140,10 +178,10 @@ export const Thoughts: FC<ThoughtsProps> = ({ onBack, thoughts, deeplinkId, onDe
 
           {filteredThoughts.length === 0 ? (
             <div className="rounded-2xl border border-white/10 bg-black/30 p-6 text-center text-sm text-white/70">
-              <p>No Thoughts match those filters yet.</p>
+              <p>{searchQuery ? "No thoughts match your search." : "No Thoughts match those filters yet."}</p>
               <button
                 type="button"
-                onClick={() => setSelectedTopic("all")}
+                onClick={() => { setSelectedTopic("all"); setSearchQuery(""); }}
                 className="mt-3 inline-flex items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100 hover:border-cyan-300/70 hover:bg-cyan-500/20 transition"
               >
                 Reset filters
