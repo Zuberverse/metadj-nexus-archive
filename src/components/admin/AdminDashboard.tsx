@@ -73,6 +73,13 @@ const userStatusColors: Record<string, string> = {
 const toErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
 
+const formatEventName = (name: string): string => {
+  return name
+    .replace(/_/g, ' ')
+    .replace(/\./g, ' › ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export function AdminDashboard() {
   const router = useRouter();
   const { logout } = useAuth();
@@ -776,7 +783,7 @@ export function AdminDashboard() {
               </label>
             </div>
             {/* Analytics Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-purple-500/20 rounded-lg">
@@ -785,7 +792,7 @@ export function AdminDashboard() {
                   <span className="text-white/60 text-sm">Total Events</span>
                 </div>
                 <p className="text-3xl font-bold text-white">
-                  {analyticsLoading ? '...' : (analytics?.totalEvents ?? 0)}
+                  {analyticsLoading ? '...' : (analytics?.totalEvents ?? 0).toLocaleString()}
                 </p>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
@@ -796,7 +803,29 @@ export function AdminDashboard() {
                   <span className="text-white/60 text-sm">Unique Users</span>
                 </div>
                 <p className="text-3xl font-bold text-white">
-                  {analyticsLoading ? '...' : (analytics?.uniqueUsers ?? 0)}
+                  {analyticsLoading ? '...' : (analytics?.uniqueUsers ?? 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-green-500/20 rounded-lg">
+                    <Clock className="w-5 h-5 text-green-400" />
+                  </div>
+                  <span className="text-white/60 text-sm">Events/Day</span>
+                </div>
+                <p className="text-3xl font-bold text-white">
+                  {analyticsLoading ? '...' : Math.round((analytics?.totalEvents ?? 0) / analyticsDays).toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-yellow-500/20 rounded-lg">
+                    <Sparkles className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <span className="text-white/60 text-sm">Event Types</span>
+                </div>
+                <p className="text-3xl font-bold text-white">
+                  {analyticsLoading ? '...' : Object.keys(analytics?.eventCounts ?? {}).length}
                 </p>
               </div>
             </div>
@@ -809,18 +838,36 @@ export function AdminDashboard() {
               ) : !analytics || Object.keys(analytics.eventCounts).length === 0 ? (
                 <div className="text-center py-8 text-white/50">No analytics data yet</div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {Object.entries(analytics.eventCounts).map(([eventName, count]) => (
-                    <div key={eventName} className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                      <div className="p-1.5 bg-purple-500/20 rounded">
-                        <BarChart3 className="w-4 h-4 text-purple-400" />
-                      </div>
-                      <div>
-                        <p className="text-white font-medium text-sm">{eventName}</p>
-                        <p className="text-white/50 text-xs">{count} events</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="space-y-3">
+                  {Object.entries(analytics.eventCounts)
+                    .sort(([, a], [, b]) => b - a)
+                    .map(([eventName, count]) => {
+                      const percentage = analytics.totalEvents > 0 
+                        ? Math.round((count / analytics.totalEvents) * 100) 
+                        : 0;
+                      return (
+                        <div key={eventName} className="p-3 bg-white/5 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className="p-1.5 bg-purple-500/20 rounded">
+                                <BarChart3 className="w-3.5 h-3.5 text-purple-400" />
+                              </div>
+                              <span className="text-white font-medium text-sm">{formatEventName(eventName)}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm">
+                              <span className="text-white/50">{count.toLocaleString()} events</span>
+                              <span className="text-purple-400 font-medium w-12 text-right">{percentage}%</span>
+                            </div>
+                          </div>
+                          <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-purple-500 to-purple-400 rounded-full transition-all duration-300"
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </div>
@@ -833,21 +880,26 @@ export function AdminDashboard() {
               ) : !analytics || analytics.recentEvents.length === 0 ? (
                 <div className="text-center py-8 text-white/50">No analytics data yet</div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {analytics.recentEvents.map((event, index) => (
                     <div
                       key={`${event.eventName}-${event.createdAt}-${index}`}
-                      className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <BarChart3 className="w-4 h-4 text-white/50" />
+                        <div className="p-1.5 bg-purple-500/20 rounded">
+                          <BarChart3 className="w-3.5 h-3.5 text-purple-400" />
+                        </div>
                         <div>
-                          <p className="text-white text-sm font-medium">{event.eventName}</p>
+                          <p className="text-white text-sm font-medium">{formatEventName(event.eventName)}</p>
                           <p className="text-white/50 text-xs">
-                            {event.userId ? `User: ${event.userId.slice(0, 8)}...` : 'Anonymous'} • {new Date(event.createdAt).toLocaleString()}
+                            {event.userId ? `User: ${event.userId.slice(0, 8)}...` : 'Anonymous'}
                           </p>
                         </div>
                       </div>
+                      <span className="text-white/40 text-xs">
+                        {new Date(event.createdAt).toLocaleString()}
+                      </span>
                     </div>
                   ))}
                 </div>
