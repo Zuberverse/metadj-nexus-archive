@@ -161,7 +161,7 @@ export function MetaDjAiPersonalizePopover({
           className="h-full overflow-y-auto pr-1 scrollbar-on-hover"
         >
           <div className="grid gap-2 sm:grid-cols-2">
-            {PERSONALIZATION_PROFILES.map((profile) => {
+            {PERSONALIZATION_PROFILES.filter((p) => p.id !== "custom").map((profile) => {
               const isActive = profile.id === personalization.profileId
               return (
                 <button
@@ -184,6 +184,49 @@ export function MetaDjAiPersonalizePopover({
                 </button>
               )
             })}
+          </div>
+
+          {/* Custom Option - Expandable with text input */}
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={() => onPersonalizationUpdate({ profileId: "custom" })}
+              aria-pressed={personalization.profileId === "custom"}
+              aria-expanded={personalization.profileId === "custom"}
+              className={clsx(
+                "group flex w-full flex-col gap-1.5 rounded-2xl border px-4 py-3 text-left transition-all",
+                personalization.profileId === "custom"
+                  ? "border-cyan-400/60 bg-cyan-500/10 text-white"
+                  : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
+              )}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Custom</span>
+                {personalization.profileId === "custom" && <span className="text-[10px] text-cyan-200/80">Active</span>}
+              </div>
+              <span className="text-[11px] text-white/60 group-hover:text-white/80">Your own guidance.</span>
+            </button>
+
+            {personalization.profileId === "custom" && (
+              <div className="mt-2 rounded-2xl border border-cyan-400/30 bg-cyan-500/5 p-3">
+                <label htmlFor="metadjai-custom-instructions" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+                  Custom instructions
+                </label>
+                <textarea
+                  id="metadjai-custom-instructions"
+                  value={personalization.customInstructions}
+                  onChange={(event) => onPersonalizationUpdate({ customInstructions: event.target.value })}
+                  rows={3}
+                  maxLength={MAX_PERSONALIZATION_LENGTH}
+                  placeholder="Tell MetaDJai how to respond. Example: Be concise. Focus on actionable steps. Ask clarifying questions when needed."
+                  className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
+                  onClick={(event) => event.stopPropagation()}
+                />
+                <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
+                  <span>{personalization.customInstructions.length}/{MAX_PERSONALIZATION_LENGTH}</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
