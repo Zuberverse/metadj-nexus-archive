@@ -8,7 +8,6 @@ import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist
 import { Button, Card } from "@/components/ui"
 import { useToast } from "@/contexts/ToastContext"
 import { HUB_EVENT_ITEMS, HUB_NEWS_ITEMS } from "@/data/hubHighlights"
-import { PLATFORM_UPDATES, type PlatformUpdate } from "@/data/platformUpdates"
 import { HUB_HERO_TRACK_ID } from "@/lib/app.constants"
 import { GUIDE_WELCOME } from "@/lib/content/meta-dj-nexus-guide-copy"
 import { formatReadTime, type WisdomSection } from "@/lib/wisdom"
@@ -43,7 +42,6 @@ interface HubExperienceProps {
   onOpenWisdom: (section?: WisdomSection, slug?: string) => void
   onOpenMetaDjAi: () => void
   wisdomSpotlight?: WisdomSpotlightData
-  platformUpdates?: PlatformUpdate[]
   currentTrack?: Track | null
   isPlaying?: boolean
   isMetaDjAiOpen?: boolean
@@ -59,7 +57,6 @@ export function HubExperience({
   onOpenWisdom,
   onOpenMetaDjAi,
   wisdomSpotlight,
-  platformUpdates,
   currentTrack,
   isPlaying = false,
   isMetaDjAiOpen = false,
@@ -98,7 +95,6 @@ export function HubExperience({
     onOpenMetaDjAi()
   }
 
-  const updates = platformUpdates ?? PLATFORM_UPDATES
   const newsItems = HUB_NEWS_ITEMS
   const eventItems = HUB_EVENT_ITEMS
 
@@ -358,24 +354,10 @@ export function HubExperience({
                 <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-heading font-semibold text-white/80">
                   Public Preview
                 </span>
-                <p className="text-xs text-white/60 leading-relaxed line-clamp-2">
+                <p className="text-xs text-white/60 leading-relaxed">
                   {GUIDE_WELCOME.previewNotice}
                 </p>
               </div>
-
-              {updates.length > 0 && (
-                <ul className="space-y-1.5">
-                  {updates.slice(0, 2).map((update) => (
-                    <li key={update.id} className="text-sm text-white/70 flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />
-                      <div className="flex flex-col gap-0">
-                        <span className="font-heading font-semibold text-heading-solid leading-tight text-sm">{update.title}</span>
-                        <span className="text-[11px] text-white/60 line-clamp-1 leading-relaxed">{update.summary}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </Card>
           </section>
         </div>
