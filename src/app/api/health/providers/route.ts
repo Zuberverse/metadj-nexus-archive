@@ -26,19 +26,17 @@ export const dynamic = 'force-dynamic' // Always execute, never cache
  * In production, this should be replaced with proper authentication
  */
 function isAuthorized(request: NextRequest): boolean {
-  // Check for internal header (can be set by load balancer or internal services)
+  if (process.env.NODE_ENV === 'test') {
+    return true
+  }
+
+  const secret = process.env.INTERNAL_API_SECRET
+  if (!secret) {
+    return false
+  }
+
   const internalHeader = request.headers.get('x-internal-request')
-  if (internalHeader === process.env.INTERNAL_API_SECRET) {
-    return true
-  }
-
-  // In development, allow all requests
-  if (process.env.NODE_ENV !== 'production') {
-    return true
-  }
-
-  // In production without proper auth header, deny access
-  return false
+  return internalHeader === secret
 }
 
 interface ProviderHealthResponse {

@@ -1,6 +1,6 @@
 # Gradient System — MetaDJ Nexus
 
-**Last Modified**: 2026-01-14 20:48 EST
+**Last Modified**: 2026-01-14 21:23 EST
 
 MetaDJ Nexus now uses a tokenized gradient stack so every surface—code, docs, and future agents—pulls from the same source of truth. The system lives in `src/app/globals.css` and exposes:
 

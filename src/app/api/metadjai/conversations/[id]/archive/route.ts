@@ -5,14 +5,15 @@
  * Archives a conversation for the authenticated user
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
+import { withOriginValidation } from '@/lib/validation/origin-validation';
 import { archiveConversation } from '../../../../../../../server/storage';
 
-export async function POST(
-  request: Request,
+export const POST = withOriginValidation(async (
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const session = await getSession();
 
@@ -52,4 +53,4 @@ export async function POST(
       { status: 500 }
     );
   }
-}
+});

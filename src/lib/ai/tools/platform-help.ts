@@ -21,6 +21,7 @@ const PLATFORM_FEATURES = {
       'Enter Cinema launches the hero track + visuals',
       'Wisdom Spotlight surfaces the latest Thought, Guide, and Reflection',
       'Platform Pulse tracks recent updates',
+      'Quick Start checklist appears on mobile to track warmup steps',
     ],
   },
   music: {
@@ -98,7 +99,7 @@ const PLATFORM_FEATURES = {
   },
   search: {
     title: 'Search',
-    description: 'Find any track instantly by title, collection, or genre.',
+    description: 'Find tracks, collections, Wisdom entries, and Journal notes from anywhere.',
     howToUse:
       'Press Ctrl/Cmd + / to focus search. Type to see real-time results. Play or queue directly from results.',
     tips: [
@@ -116,6 +117,19 @@ const PLATFORM_FEATURES = {
       "I'm context-aware of what you're listening to",
       'Try Quick Actions for structured prompts',
       'Ask for playback or queue changes when you want music-first help',
+      'Use Personalize to tune tone, length, and format',
+    ],
+  },
+  account: {
+    title: 'Account & Feedback',
+    description:
+      'Manage account settings, sign out, and send feedback to the team.',
+    howToUse:
+      'Open the Account panel from the user icon in the header (desktop). You can also ask MetaDJai to open the feedback form from any device.',
+    tips: [
+      'Update email or change password in the Account panel',
+      'Feedback supports bugs, feature requests, ideas, and general notes',
+      'Bug reports include severity from low to critical',
     ],
   },
   shortcuts: {
@@ -145,6 +159,7 @@ const platformHelpSchema = z.object({
       'queue',
       'search',
       'metadjai',
+      'account',
       'shortcuts',
       'overview',
     ])
@@ -171,7 +186,7 @@ export const getPlatformHelp = {
       result = {
         title: 'MetaDJ Nexus Overview',
         description:
-          "Your platform hub for MetaDJ's evolving ecosystem—Hub, Music, Cinema, Wisdom, Journal, and MetaDJai as your creative companion. Note: MetaDJ Nexus is currently free to use.",
+          "Your platform hub for MetaDJ's evolving ecosystem—Hub, Music, Cinema, Wisdom, Journal, MetaDJai, and account tools. The landing page is public; the full experience requires a free account.",
         surfaces: Object.entries(PLATFORM_FEATURES).map(([key, info]) => ({
           key,
           title: info.title,

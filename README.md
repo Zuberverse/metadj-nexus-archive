@@ -202,6 +202,7 @@ Before any public MVP launch, follow the checklist in:
 | `DATABASE_URL` | Neon/Postgres connection string (auth/admin/feedback/conversations) |
 | `AUTH_SECRET` | Session signing secret (min 32 chars) |
 | `ADMIN_PASSWORD` | Admin login password |
+| `INTERNAL_API_SECRET` | Required for internal health endpoints (`/api/health/ai`, `/api/health/providers`) |
 | `AUTH_SESSION_DURATION` | Session TTL in seconds (default: 604800) |
 | `AUTH_REGISTRATION_ENABLED` | Enable/disable registration (default: true) |
 | `R2_ACCOUNT_ID` | Cloudflare R2 account ID |

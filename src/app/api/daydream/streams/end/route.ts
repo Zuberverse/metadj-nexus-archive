@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { getClientIdentifier, endStream } from "@/lib/daydream/stream-limiter"
+import { getMaxRequestSize, readRequestBodyWithLimit } from "@/lib/validation/request-size"
 import type { NextRequest } from "next/server"
 
 export const runtime = "nodejs"
@@ -17,7 +18,14 @@ export async function POST(request: NextRequest) {
     // Parse body - supports both JSON and text/plain (from sendBeacon)
     let streamId: string | undefined
     try {
-      const text = await request.text()
+      const bodyResult = await readRequestBodyWithLimit(
+        request,
+        getMaxRequestSize(request.nextUrl.pathname)
+      )
+      if (!bodyResult.ok) {
+        return bodyResult.response
+      }
+      const text = bodyResult.body
       if (text) {
         const body = JSON.parse(text)
         streamId = body.streamId

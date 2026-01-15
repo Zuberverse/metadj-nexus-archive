@@ -2,7 +2,7 @@
 
 > **Specifications for modal dialogs, overlays, and floating UI elements in MetaDJ Nexus**
 
-**Last Modified**: 2026-01-14 20:48 EST
+**Last Modified**: 2026-01-14 21:23 EST
 
 ## Overview
 

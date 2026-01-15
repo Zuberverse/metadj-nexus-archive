@@ -26,16 +26,17 @@ export const dynamic = 'force-dynamic' // Always execute, never cache
  * Simple authorization check for internal endpoints
  */
 function isAuthorized(request: NextRequest): boolean {
+  if (process.env.NODE_ENV === 'test') {
+    return true
+  }
+
+  const secret = process.env.INTERNAL_API_SECRET
+  if (!secret) {
+    return false
+  }
+
   const internalHeader = request.headers.get('x-internal-request')
-  if (internalHeader === process.env.INTERNAL_API_SECRET) {
-    return true
-  }
-
-  if (process.env.NODE_ENV !== 'production') {
-    return true
-  }
-
-  return false
+  return internalHeader === secret
 }
 
 interface AIHealthResponse {

@@ -17,9 +17,8 @@ const SESSION_DURATION = parseInt(process.env.AUTH_SESSION_DURATION || '604800',
 function getAuthSecret(): string {
   const secret = process.env.AUTH_SECRET;
   if (!secret || secret.length < 32) {
-    // In development, use a default secret
-    if (process.env.NODE_ENV === 'development') {
-      return 'development-secret-key-min-32-chars!!';
+    if (process.env.NODE_ENV === 'test') {
+      return 'test-secret-key-min-32-chars-override!';
     }
     throw new Error('AUTH_SECRET must be at least 32 characters');
   }

@@ -1,6 +1,6 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2026-01-14 20:08 EST
+**Last Modified**: 2026-01-14 21:55 EST
 > Pragmatic security approach for a music showcasing MVP
 
 *Last Reviewed: 2026-01-14*
@@ -36,7 +36,7 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | **Cookie Path Isolation** | MetaDJai rate-limit cookie scoped to `/api/metadjai` | Prevents AI session cookies from leaking to unrelated routes |
 | **Body Size Limits** | 1MB limit on server actions | Prevents DoS via large payloads |
 | **Generic Error Messages** | Internal details logged server-side only | Prevents information disclosure |
-| **Internal Monitoring** | `/api/health/ai` + `/api/health/providers` require `x-internal-request` header in production (`INTERNAL_API_SECRET`) | Prevents public access to operational telemetry |
+| **Internal Monitoring** | `/api/health/ai` + `/api/health/providers` require `x-internal-request` header in all environments (`INTERNAL_API_SECRET`) | Prevents public access to operational telemetry |
 
 **Implementation**: `src/proxy.ts` (security headers + rate limiting; re-exported by `middleware.ts`) + `next.config.js` (static headers for assets)
 
@@ -320,11 +320,15 @@ Rate limiting protects against abuse and controls API costs. In-memory by defaul
 - **MetaDJai Transcription**: 5 requests per 5 minutes, 2s minimum interval
 - **Wisdom API**: 60 requests per minute
 - **Daydream Streams**: 1 concurrent stream, 30s cooldown between streams
+- **Auth Registration**: 5 requests per 10 minutes per client
+- **Auth Availability Checks**: 30 requests per 10 minutes per client
 
 **Implementation Files**:
 - `src/lib/ai/rate-limiter.ts` — MetaDJai rate limiting
 - `src/lib/rate-limiting/wisdom-rate-limiter.ts` — Wisdom API rate limiting
 - `src/lib/daydream/stream-limiter.ts` — Daydream stream limiting
+- `src/app/api/auth/register/route.ts` — Auth registration rate limiting
+- `src/app/api/auth/check-availability/route.ts` — Availability rate limiting
 
 ### AI Spending Alerts
 
@@ -344,7 +348,7 @@ Spending alerts monitor AI API costs and optionally block requests when limits a
 - **Alert**: Logged when spending exceeds limit
 - **Blocking** (optional): When `AI_SPENDING_BLOCK_ON_LIMIT=true`, returns 503 to clients
 
-**Monitoring Endpoint**: `GET /api/health/ai` (requires `x-internal-request` header in production)
+**Monitoring Endpoint**: `GET /api/health/ai` (requires `x-internal-request` header in all environments)
 
 **Implementation**: `src/lib/ai/spending-alerts.ts`
 
@@ -364,7 +368,7 @@ AI_SPENDING_BLOCK_ON_LIMIT=true
 # Fail-closed for production
 RATE_LIMIT_FAIL_CLOSED=true
 
-# Internal monitoring
+# Internal monitoring (required for health endpoints)
 INTERNAL_API_SECRET=your-secret-for-health-endpoints
 ```
 
@@ -391,6 +395,7 @@ A: Yes, for a public music player. You're not storing passwords or processing pa
 
 ## Updates
 
+- **2026-01-14**: Enforced internal health endpoint auth in all environments; added auth rate limiting for registration + availability checks
 - **2026-01-12**: Added Deployment Configuration section with rate limiting and spending alert environment variables
 - **2026-01-10**: Added pre-request spending enforcement, HEAD request rate limiting on media routes, warmup bypass for video route
 - **2025-12-14**: Added comprehensive CSP in proxy.ts, health endpoint information disclosure fix, dev endpoint authentication, AI provider circuit breaker for resilience

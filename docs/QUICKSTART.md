@@ -2,7 +2,7 @@
 
 > **Get up and running with MetaDJ Nexus in 5 minutes**
 
-**Last Modified**: 2026-01-14 20:55 EST
+**Last Modified**: 2026-01-14 21:55 EST
 
 ## Prerequisites
 
@@ -49,7 +49,7 @@ R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
 R2_BUCKET=metadj-nexus-media
 ```
 
-**Authentication (required in production, optional in dev)**:
+**Authentication (required in all environments)**:
 
 ```env
 AUTH_SECRET=your-auth-secret-min-32-chars-here
@@ -58,7 +58,7 @@ AUTH_SESSION_DURATION=604800
 AUTH_REGISTRATION_ENABLED=true
 ```
 
-In development, MetaDJ Nexus uses a default local auth secret if `AUTH_SECRET` is unset. Set `ADMIN_PASSWORD` to access `/admin`. After setting `DATABASE_URL`, run `npm run db:push` to apply the schema.
+Set `ADMIN_PASSWORD` to access `/admin`. After setting `DATABASE_URL`, run `npm run db:push` to apply the schema.
 
 **Optional**:
 

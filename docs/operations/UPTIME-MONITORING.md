@@ -2,7 +2,7 @@
 
 > **Get alerted when MetaDJ Nexus goes down before users notice**
 
-**Last Modified**: 2026-01-14 19:59 EST
+**Last Modified**: 2026-01-14 21:55 EST
 **Version**: 0.8.0
 **Status**: Ready to implement (Set up after launch when domain is finalized)
 
@@ -244,7 +244,7 @@ MetaDJ Nexus also ships internal-only health endpoints:
 - `/api/health/ai` — AI spending + rate limiting status
 - `/api/health/providers` — provider health + cache metrics
 
-**Production auth**: send `x-internal-request: <INTERNAL_API_SECRET>`. In development, these endpoints allow all requests.
+**Auth**: send `x-internal-request: <INTERNAL_API_SECRET>` for all environments.
 
 ---
 

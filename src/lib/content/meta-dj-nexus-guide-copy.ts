@@ -60,7 +60,7 @@ export const GUIDE_WELCOME = {
   tagline: "Where music, visuals, and creative guidance converge",
   intro: "MetaDJ Nexus is my living studio and stage: original music, Cinema visuals, Wisdom, a private Journal, and MetaDJai as your creative companion. The full experience unlocks after you create a free account and accept the Terms & Conditions. The Hub is mission control for launching a cinematic listen and catching the latest updates, while the Music panel holds Browse, Playlists, and Queue.",
   previewNotice:
-    "Public Preview is open while the core experience is refined. Account access is required for the full experience. Playlists, queue state, Journal entries, and MetaDJai history stay local on this device for now.",
+    "Public Preview is open while the core experience is refined. Playlists, queue state, Journal entries, and MetaDJai history stay local on this device for now.",
   askAiPrompt: "Questions? Ask MetaDJai for a walkthrough, creative guidance, or a listening flow.",
 }
 

@@ -1,6 +1,6 @@
 # Changelog
 
-**Last Modified**: 2026-01-14 20:41 EST
+**Last Modified**: 2026-01-14 21:55 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
@@ -13,6 +13,10 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 - Replaced Hub News and Events placeholders with preview-ready cards and curated notes.
 - Added Mood Channels readiness messaging in the Music Browse view.
 - Added MetaDJai input status messaging (rate limit, recording, streaming).
+- Retired the Welcome overlay (archived) now that signup is required; User Guide overlay remains the primary onboarding surface.
+
+**Auth**
+- Require Terms & Conditions acceptance during registration (client + API validation).
 
 **Data**
 - Added `hubHighlights` data module for Hub News and Events.
@@ -20,11 +24,14 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 **Documentation**
 - Updated Hub, mood channel, and data architecture docs for current preview state and catalog counts.
 - Synced data sync protocol and storage validation notes with the two-collection catalog.
+- Refreshed User Guide content (account access, onboarding checklist, MetaDJai personalization) and guide system docs.
+- Updated Terms & Conditions copy plus auth and platform-feature references to reflect the signup flow and feedback access.
 
 **AI Integration**
 - Added provider/model metadata on MetaDJai responses + streaming headers, with fallback indicators in the chat UI.
 - Enabled tool chaining up to `AI_MAX_TOOL_STEPS` and aligned personalization prompt length with the UI/validation limit.
 - Added semantic-search auto gating and provider-specific cache keys to reduce embedding calls and prevent cross-provider cache collisions.
+- Updated platform-help responses to cover account access, feedback, and personalization details.
 
 **Data**
 - Migrated feedback storage to Neon PostgreSQL (Drizzle) for preview launch readiness.
@@ -37,11 +44,17 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 - Added login attempt throttling (email + IP) and in-memory feedback rate limiting (5 / 10 min).
 - Re-exported `src/proxy.ts` through `middleware.ts` so CSP + rate limiting run in Next.js runtime.
 - Hardened PBKDF2 verification with timing-safe hash comparison.
+- Added auth registration + availability rate limiting with Retry-After responses.
+- Required `INTERNAL_API_SECRET` for internal health endpoints in all environments.
+- Removed development fallback for `AUTH_SECRET` and enforced minimum length in all environments.
+- Added origin validation for conversation unarchive endpoint.
+- Added request size guard for Daydream stream end notifications.
 
 **Maintenance**
 - Replaced console logging in admin/auth/conversation API routes with structured `logger`.
 - Marked feedback storage module as server-only to prevent client bundling.
 - Swapped client/admin error logs to structured `logger` for consistent reporting.
+- Added a storage migration to clear legacy Welcome overlay keys.
 
 **Testing**
 - Added password hashing tests for PBKDF2 utilities.
@@ -54,6 +67,7 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 - Aligned storage and deployment docs with R2-only media hosting and current Replit platform strategy.
 - Documented MetaDJai response headers, semantic search modes, and tool-step settings.
 - Updated `replit.md` to reflect PBKDF2 hashing and R2 backup guidance.
+- Documented auth rate limiting, internal health endpoint auth requirements, and preview launch secrets.
 
 ### 2026-01-13
 

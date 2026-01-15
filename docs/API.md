@@ -1,6 +1,6 @@
 # MetaDJ Nexus API Documentation
 
-**Last Modified**: 2026-01-14 20:55 EST
+**Last Modified**: 2026-01-14 21:55 EST
 
 ## Overview
 
@@ -135,6 +135,7 @@ Creates a new account and sets the session cookie. Registration can be disabled 
 **Status Codes**:
 - `200 OK` — Registered
 - `400 Bad Request` — Validation error or registration disabled
+- `429 Too Many Requests` — Rate limit exceeded
 
 #### `POST /api/auth/logout`
 
@@ -188,7 +189,7 @@ Updates email or password for the current user.
 - `401 Unauthorized` — Not authenticated
 
 **Environment**:
-- `AUTH_SECRET` (min 32 chars; required in production)
+- `AUTH_SECRET` (min 32 chars; required in all environments)
 - `ADMIN_PASSWORD` (required for admin login)
 - `AUTH_REGISTRATION_ENABLED` (set `false` to disable registration)
 
@@ -209,14 +210,14 @@ Checks whether a username or email is available.
 ```json
 {
   "success": true,
-  "available": true,
-  "error": null
+  "available": true
 }
 ```
 
 **Status Codes**:
 - `200 OK` — Availability check completed
 - `400 Bad Request` — Missing fields or invalid type
+- `429 Too Many Requests` — Rate limit exceeded
 - `500 Internal Server Error` — Unexpected error
 
 ---
@@ -1195,11 +1196,10 @@ Returns minimal system health status for external monitoring. Detailed diagnosti
 
 #### `GET /api/health/ai`
 
-Internal monitoring endpoint for AI spending, rate limiting mode, and token budget thresholds. **Not a public endpoint** — protected in production.
+Internal monitoring endpoint for AI spending, rate limiting mode, and token budget thresholds. **Not a public endpoint** — protected in all environments.
 
 **Authorization**:
 - Header: `x-internal-request` must match `INTERNAL_API_SECRET` environment variable
-- In development mode (`NODE_ENV !== 'production'`), all requests are allowed
 
 **Response** (TypeScript Interface):
 ```typescript
@@ -1243,11 +1243,10 @@ interface AIHealthResponse {
 
 #### `GET /api/health/providers`
 
-Internal monitoring endpoint for AI provider health, circuit breaker state, and cache performance. **Not a public endpoint** — should be protected in production by authentication or internal network access only.
+Internal monitoring endpoint for AI provider health, circuit breaker state, and cache performance. **Not a public endpoint** — protected in all environments.
 
 **Authorization**:
 - Header: `x-internal-request` must match `INTERNAL_API_SECRET` environment variable
-- In development mode (`NODE_ENV !== 'production'`), all requests are allowed
 
 **Response** (TypeScript Interface):
 ```typescript
@@ -1813,7 +1812,7 @@ Required for API functionality:
 | `R2_BUCKET` | No | R2 bucket name (default: `metadj-nexus-media`) |
 | `LOGGING_WEBHOOK_URL` | No | External logging endpoint |
 | `LOGGING_SHARED_SECRET` | No | Logging authentication |
-| `INTERNAL_API_SECRET` | No | Auth for internal health endpoints (`/api/health/ai`, `/api/health/providers`) |
+| `INTERNAL_API_SECRET` | Yes (health endpoints) | Auth for internal health endpoints (`/api/health/ai`, `/api/health/providers`) |
 | `AI_REQUEST_TIMEOUT_MS` | No | Global AI request timeout in ms (default: 30000) |
 | `AI_TIMEOUT_STREAM` | No | Streaming route timeout in ms (default: 60000) |
 | `AI_TIMEOUT_CHAT` | No | Chat route timeout in ms (default: 30000) |

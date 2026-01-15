@@ -2,7 +2,7 @@
 
 > Comprehensive documentation for the auth system, feedback collection, and admin dashboard.
 
-**Last Modified**: 2026-01-14 20:55 EST
+**Last Modified**: 2026-01-14 21:55 EST
 
 ## Table of Contents
 
@@ -152,8 +152,8 @@ Add these to your `.env.local` file:
 ```bash
 # Required
 DATABASE_URL=postgresql://user:password@host:5432/db?sslmode=require
-AUTH_SECRET=your-auth-secret-min-32-chars-here  # Session signing (min 32 chars)
-ADMIN_PASSWORD=nexusadmin0357                   # Admin account password
+AUTH_SECRET=your-auth-secret-min-32-chars-here  # Session signing (min 32 chars; required in all envs)
+ADMIN_PASSWORD=your-admin-password-here         # Admin account password
 
 # Optional
 AUTH_SESSION_DURATION=604800                     # Session duration in seconds (default: 7 days)
@@ -239,6 +239,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 }
 ```
 
+**Rate Limit**: 429 with `Retry-After` header when too many registration attempts are made.
+
 #### PATCH /api/auth/account
 
 ```json
@@ -277,10 +279,11 @@ Checks whether a username or email is available.
 // Response
 {
   "success": true,
-  "available": true,
-  "error": null
+  "available": true
 }
 ```
+
+**Rate Limit**: 429 with `Retry-After` header when too many checks are made.
 
 ### Feedback
 

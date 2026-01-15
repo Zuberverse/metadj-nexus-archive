@@ -148,7 +148,7 @@ export default function TermsPage() {
               </h2>
               <p className="text-white/80 leading-relaxed text-sm">
                 We store account details (email, username, password hash) to operate the service.
-                Playlists, queue state, and Journal entries are local to your device during Public Preview.
+                Playlists, queue state, Journal entries, and MetaDJai history are local to your device during Public Preview.
                 We may collect basic analytics to understand usage and improve the platform.
               </p>
             </div>

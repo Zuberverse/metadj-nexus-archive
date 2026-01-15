@@ -6,15 +6,16 @@
  * Only works on conversations that are already archived
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { withOriginValidation } from '@/lib/validation/origin-validation';
 import { hardDeleteArchivedConversation } from '../../../../../../server/storage';
 
-export async function DELETE(
-  request: Request,
+export const DELETE = withOriginValidation(async (
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const session = await getSession();
 
@@ -55,4 +56,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+});

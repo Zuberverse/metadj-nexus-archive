@@ -1,6 +1,6 @@
 # MetaDJ Nexus - Build & Deployment Guide
 
-**Last Modified**: 2026-01-14 20:55 EST
+**Last Modified**: 2026-01-14 21:55 EST
 
 ---
 
@@ -27,8 +27,8 @@ Run these before any public MVP launch:
 5. **DB schema**: run `npm run db:push` against the Neon database
 6. **Health checks**:
    - `GET /api/health`
-   - `GET /api/health/ai` (internal header required in prod)
-   - `GET /api/health/providers` (internal header required in prod)
+   - `GET /api/health/ai` (internal header required)
+   - `GET /api/health/providers` (internal header required)
 7. **Media verification**: validate `/api/audio/...` and `/api/video/...` responses
 8. **Analytics**: confirm Plausible events appear for a test session
 9. **Manual QA**:
@@ -220,6 +220,7 @@ DATABASE_URL=postgresql://user:password@host:5432/db?sslmode=require
 # Authentication (Required)
 AUTH_SECRET=your-auth-secret-min-32-chars-here
 ADMIN_PASSWORD=your-admin-password
+INTERNAL_API_SECRET=your-internal-health-secret
 
 # Media Storage (Required for audio/video)
 R2_ACCOUNT_ID=your_cloudflare_account_id
@@ -266,6 +267,9 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 # Generate AUTH_SECRET (32+ chars)
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# Generate INTERNAL_API_SECRET (32+ chars)
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 

@@ -1,6 +1,6 @@
 # Replit Deployment Guide — MetaDJ Nexus
 
-**Last Modified**: 2026-01-14 20:37 EST
+**Last Modified**: 2026-01-14 21:55 EST
 
 ## Overview
 
@@ -149,10 +149,10 @@ MetaDJ Nexus is built on a modern web stack designed for performance and scalabi
 - **Caching Strategy**: Utilizes `Cache-Control: public, max-age=31536000, immutable` for media files, enabling long-lived caching. Filenames are versioned to bust cache.
 - **Data Storage**: PostgreSQL database via Drizzle ORM for user data, preferences, and chat history. Content data uses JSON files (`src/data/music.json`, `src/data/collections.json`) versioned in Git.
 - **Database ORM**: Drizzle ORM with Neon serverless PostgreSQL driver.
-- **Authentication**: Cookie-based sessions with HMAC-signed tokens. User accounts stored in PostgreSQL with PBKDF2 password hashing (Web Crypto API). Admin user via ADMIN_PASSWORD environment variable. Registration requires email, username, and password with real-time availability checking.
+- **Authentication**: Cookie-based sessions with HMAC-signed tokens (requires `AUTH_SECRET` in all environments). User accounts stored in PostgreSQL with PBKDF2 password hashing (Web Crypto API). Admin user via `ADMIN_PASSWORD` environment variable. Registration + availability checks are rate-limited.
 - **API Security**: Includes rate limiting, input validation, and non-disclosure of sensitive information in error messages.
 - **Deployment**: Automatic deployment on Replit with zero-downtime rolling updates. Supports manual and continuous deployment from Git.
-- **Monitoring**: Integration with Replit's dashboard metrics for CPU, memory, network, and request rates. External monitoring with UptimeRobot, Sentry, and Plausible is recommended.
+- **Monitoring**: Integration with Replit's dashboard metrics for CPU, memory, network, and request rates. Internal health endpoints require `INTERNAL_API_SECRET`. External monitoring with UptimeRobot, Sentry, and Plausible is recommended.
 - **Backup & Recovery**: Code is backed up via Git. Media files live in Cloudflare R2 (use rclone or R2 lifecycle rules for backups). JSON data files are versioned with code.
 
 ## External Dependencies
@@ -172,6 +172,7 @@ The project relies on the following external services and integrations:
     -   **Database Management**: Use `npm run db:push` to sync schema changes, `npm run db:studio` to inspect data.
     -   **Database Schema** (10 tables): `users`, `sessions`, `user_preferences`, `conversations`, `messages`, `feedback`, `login_attempts`, `password_resets`, `analytics_events`, `email_verification_tokens`.
     -   **Admin Dashboard**: Available at `/admin` with 4 tabs: Overview (stats), Feedback (management), Users (SQL-paginated list), Analytics (event tracking). Requires `ADMIN_PASSWORD` secret.
+    -   **Auth Secrets**: `AUTH_SECRET` (session signing), `INTERNAL_API_SECRET` (internal health endpoints).
     -   **Conversation Archive**: MetaDJai conversations support archive/unarchive/permanent delete with `isArchived` and `archivedAt` columns on conversations table.
     -   **Username System**: Users can register with a unique username (3-20 chars, lowercase alphanumeric + underscores, cannot start with number). Reserved names blocked (admin, root, system, metadj, etc.). Username availability checked via `/api/auth/check-availability` endpoint. Users can update username in account settings.
 -   **Logging Webhook (Optional)**: For server-side logging.
