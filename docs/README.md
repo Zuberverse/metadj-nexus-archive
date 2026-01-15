@@ -2,7 +2,7 @@
 
 > **Complete reference for developing, deploying, and understanding MetaDJ Nexus**
 
-**Last Modified**: 2026-01-14 20:48 EST
+**Last Modified**: 2026-01-15
 **Version**: 0.9.46
 
 ## Quick Start
@@ -69,6 +69,7 @@ See [features/README.md](features/README.md) for the complete feature documentat
 | Document | Feature | Description |
 |----------|---------|-------------|
 | [features/audio-player-standards.md](features/audio-player-standards.md) | Audio Player | Playback controls, keyboard shortcuts, states |
+| [features/crossfade.md](features/crossfade.md) | Crossfade | Seamless audio transitions between tracks |
 | [features/cinema-system.md](features/cinema-system.md) | Cinema System | Visual experiences, visualizers, video scenes |
 | [features/hub-system.md](features/hub-system.md) | Hub System | Platform home surface (Hero, Wisdom Spotlight, Platform Pulse) |
 | [features/panel-system.md](features/panel-system.md) | Panel System | Desktop side panels, layout orchestration |

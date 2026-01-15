@@ -1,6 +1,6 @@
 # Feature Documentation Index
 
-**Last Modified**: 2026-01-14 20:48 EST
+**Last Modified**: 2026-01-15
 
 Quick reference for all feature documentation in MetaDJ Nexus.
 
@@ -21,6 +21,7 @@ Quick reference for all feature documentation in MetaDJ Nexus.
 | Feature | Document | Description |
 |---------|----------|-------------|
 | Audio Player | [audio-player-standards.md](./audio-player-standards.md) | Playback controls, Action Bar, and media patterns |
+| Crossfade | [crossfade.md](./crossfade.md) | Seamless audio transitions between tracks |
 | Collections | [collections-system.md](./collections-system.md) | Collections and singles organization system |
 | Playlist System | [playlist-system.md](./playlist-system.md) | User-created playlist management (Phase 2 live) |
 | Queue Persistence | [queue-persistence.md](./queue-persistence.md) | localStorage-based queue state management |

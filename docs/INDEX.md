@@ -2,7 +2,7 @@
 
 > Quick navigation to all project documentation
 
-**Last Modified**: 2026-01-13 14:10 EST
+**Last Modified**: 2026-01-15
 
 ---
 
@@ -52,6 +52,7 @@
 | [features/keyboard-navigation](./features/keyboard-navigation.md) | Keyboard navigation |
 | [features/queue-persistence](./features/queue-persistence.md) | Queue state persistence |
 | [features/audio-player-standards](./features/audio-player-standards.md) | Audio player specs |
+| [features/crossfade](./features/crossfade.md) | Seamless audio transitions |
 | [features/hub-system](./features/hub-system.md) | Hub home surface |
 | [features/journal-feature](./features/journal-feature.md) | Local-first journal |
 
