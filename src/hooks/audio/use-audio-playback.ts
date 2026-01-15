@@ -562,10 +562,14 @@ export function useAudioPlayback({
 
     // Only update source if it's different
     if (audio.src !== audioSrc) {
-      const wasPlaying = !audio.paused
+      // Check if track has already ended - skip pause to avoid glitch
+      // When audio.ended is true, pausing can cause a brief restart artifact
+      const hasEnded = audio.ended
+      const wasPlaying = !audio.paused && !hasEnded
       
       // Set transition flag BEFORE pausing to prevent onShouldPlayChange(false)
       // Only needed if audio is currently playing (pause event will fire)
+      // Skip if already ended to prevent glitch
       if (wasPlaying) {
         isTransitioningRef.current = true
         audio.pause()
