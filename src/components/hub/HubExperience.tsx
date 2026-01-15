@@ -400,9 +400,6 @@ export function HubExperience({
                   <p className="text-xs text-white/70 leading-relaxed">
                     Upcoming MetaDJ Live moments will appear here when scheduled.
                   </p>
-                  <p className="text-xs text-white/60 leading-relaxed">
-                    Platform Pulse and MetaDJai keep the latest notices.
-                  </p>
                 </div>
               )}
             </Card>
