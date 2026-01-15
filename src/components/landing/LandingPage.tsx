@@ -388,8 +388,15 @@ export function LandingPage() {
       </div>
 
       {/* Footer - matching app footer */}
-      <footer className="relative mt-auto w-full backdrop-blur-3xl border-t border-white/5">
+      <footer className="relative mt-auto w-full backdrop-blur-3xl">
         <div className="absolute inset-0 bg-(--bg-surface-base)/90 pointer-events-none" />
+        
+        {/* Gradient blobs matching Header */}
+        <div className="absolute -bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
+        <div className="absolute -bottom-[20%] -right-[20%] w-[80%] h-[60%] bg-blue-600/5 blur-[80px] pointer-events-none" />
+        
+        {/* Top gradient line matching Header's bottom line */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
         <div className="relative z-10 container mx-auto px-4 py-1.5 sm:px-6">
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between sm:gap-4">
             <p className="hidden md:block text-[10px] lg:text-[11px] font-heading font-bold text-muted-accessible leading-relaxed hover:text-white/80 transition-colors duration-300 text-left flex-1 truncate">
