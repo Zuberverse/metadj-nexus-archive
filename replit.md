@@ -101,6 +101,13 @@ Key capabilities include:
 - **Error Messaging**: Distinguishes session expiration from provider authentication errors - prevents misclassifying API key issues as session expiry
 - **Chat Input Auto-Resize**: Textarea properly shrinks when text is deleted, clamped between 44-128px height
 - **Scrollbar Styling**: Visible scrollbar (`.scrollbar-thin` utility) for overflow indication in chat input
+- **Status Text Cleanup**: Removed "MetaDJai is responding..." subtext from prompt bar
+- **Tool-Based Catalog Retrieval (Vercel AI SDK Best Practice)**:
+  - Added `getCatalogSummary` tool - AI retrieves catalog data on-demand when users ask about collections, recommendations, or music discovery
+  - Catalog data is no longer sent with every message (reduces payload size, avoids validation issues)
+  - System prompt updated to instruct AI to call `getCatalogSummary` first when catalog context is needed
+  - Follows Vercel AI SDK v4+ best practices for intelligent tool-based data retrieval
+  - Tool returns: collection titles, descriptions (truncated to 300 chars), track counts, sample tracks, and primary genres
 
 ### Search UX
 - **Dropdown Alignment**: Search results dropdown aligns with main content container edges (not full panel width)

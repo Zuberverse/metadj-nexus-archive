@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react"
 import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
 import { DEFAULT_SCENE_ID } from "@/data/scenes"
-import { MAX_CATALOG_COLLECTIONS, MAX_CATALOG_TITLES, MAX_COLLECTION_DESCRIPTION_LENGTH } from "@/lib/ai/limits"
+import { MAX_CATALOG_COLLECTIONS, MAX_CATALOG_TITLES } from "@/lib/ai/limits"
 import { STORAGE_KEYS, getString } from "@/lib/storage/persistence"
 import type { usePlayer } from "@/contexts/PlayerContext"
 import type { useQueue } from "@/contexts/QueueContext"
@@ -27,8 +27,12 @@ interface UseMetaDjAiContextProps {
  * Generates rich context for AI conversations including:
  * - Current playback state
  * - Active view/surface information
- * - Catalog summary with collection details
  * - Page-specific context (search, queue, etc.)
+ *
+ * NOTE: Catalog data is NOT included in context by default.
+ * The AI retrieves catalog information on-demand via the getCatalogSummary tool
+ * when users ask about collections, recommendations, or music discovery.
+ * This follows Vercel AI SDK best practices for tool-based data retrieval.
  */
 export function useMetaDjAiContext({
   player,
@@ -143,6 +147,10 @@ export function useMetaDjAiContext({
 
   /**
    * Catalog summary - comprehensive overview of available music
+   *
+   * NOTE: This is used for local UI display (e.g., welcome screen) only.
+   * It is NOT sent to the AI in context - the AI retrieves catalog data
+   * on-demand via the getCatalogSummary tool when users ask about collections.
    */
   const metaDjAiCatalogSummary = useMemo(() => {
     const cappedCollections = collections.slice(0, MAX_CATALOG_COLLECTIONS)
@@ -168,16 +176,10 @@ export function useMetaDjAiContext({
           .slice(0, 2)
           .map(([genre]) => genre)
 
-        // Truncate description to stay within validation limits
-        const fullDescription = narrative.paragraphs.join(" ")
-        const description = fullDescription.length > MAX_COLLECTION_DESCRIPTION_LENGTH
-          ? fullDescription.slice(0, MAX_COLLECTION_DESCRIPTION_LENGTH - 3) + "..."
-          : fullDescription
-
         return {
           id: collection.id,
           title: collection.title,
-          description,
+          description: narrative.paragraphs.join(" "),
           trackCount: collectionTrackList.length,
           sampleTracks: collectionTrackList.slice(0, 3).map((track) => track.title),
           primaryGenres,
