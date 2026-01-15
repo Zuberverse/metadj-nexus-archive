@@ -161,6 +161,25 @@ export function useAudioPlayback({
     const nextUrl = getNextTrackUrl?.()
     const hasNextTrack = nextAudio && nextUrl
 
+    // Helper to complete crossfade and advance queue
+    const completeCrossfade = () => {
+      clearCrossfade()
+      currentAudio.pause()
+      currentAudio.volume = startVolume
+      
+      // Pause secondary audio before advancing queue to prevent dual playback
+      if (nextAudio) {
+        nextAudio.pause()
+        nextAudio.src = ''
+      }
+      
+      // Advance queue after crossfade completes
+      if (onNext) {
+        isTransitioningRef.current = true
+        onNext()
+      }
+    }
+
     if (hasNextTrack) {
       nextAudio.src = nextUrl
       nextAudio.volume = 0
@@ -183,10 +202,7 @@ export function useAudioPlayback({
           nextAudio.volume = startVolume * fadeIn
 
           if (step >= steps) {
-            clearCrossfade()
-            currentAudio.pause()
-            currentAudio.volume = startVolume
-            isCrossfadingRef.current = false
+            completeCrossfade()
           }
         }, stepDuration)
       }
@@ -203,9 +219,7 @@ export function useAudioPlayback({
             currentAudio.volume = newVolume
 
             if (step >= steps) {
-              clearCrossfade()
-              currentAudio.pause()
-              currentAudio.volume = startVolume
+              completeCrossfade()
             }
           }, stepDuration)
         }
@@ -219,15 +233,13 @@ export function useAudioPlayback({
         currentAudio.volume = newVolume
 
         if (step >= steps) {
-          clearCrossfade()
-          currentAudio.pause()
-          currentAudio.volume = startVolume
+          completeCrossfade()
         }
       }, stepDuration)
     }
 
     return true
-  }, [crossfadeEnabled, crossfadeDuration, clearCrossfade, nextAudioRef, getNextTrackUrl, externalVolume])
+  }, [crossfadeEnabled, crossfadeDuration, clearCrossfade, nextAudioRef, getNextTrackUrl, externalVolume, onNext])
 
   /**
    * Single unified play function - ALL play attempts go through here
@@ -341,6 +353,12 @@ export function useAudioPlayback({
           if (shouldPlayRef.current) {
             safePlay('ended-repeat-track')
           }
+          return
+        }
+
+        // If crossfade is active, skip onNext - crossfade already handles the transition
+        // This prevents the glitch where ended event triggers a duplicate track change
+        if (isCrossfadingRef.current) {
           return
         }
 
