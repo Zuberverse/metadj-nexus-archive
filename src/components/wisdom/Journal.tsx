@@ -2,7 +2,7 @@
 
 import { type FC, type ClipboardEvent, type ChangeEvent, useEffect, useState, useRef, useCallback, useMemo } from "react"
 import clsx from "clsx"
-import { Book, Plus, Save, Trash2, Mic, Loader2, AlertTriangle, Bold, Italic, Underline, List, Quote, Link, Code, ListOrdered, Heading1, Heading2, Heading3, SeparatorHorizontal, Download, Upload } from "lucide-react"
+import { Book, Plus, Save, Trash2, Mic, Loader2, AlertTriangle, Bold, Italic, Underline, List, Quote, Link, Code, ListOrdered, Heading1, Heading2, Heading3, SeparatorHorizontal, Download, Upload, Search, X } from "lucide-react"
 import { marked } from "marked"
 import TurndownService from "turndown"
 import { useToast } from "@/contexts/ToastContext"
@@ -40,6 +40,20 @@ export const Journal: FC = () => {
 
     // Delete Confirmation State
     const [entryToDelete, setEntryToDelete] = useState<string | null>(null)
+
+    // Search State
+    const [searchQuery, setSearchQuery] = useState("")
+
+    // Filtered entries based on search
+    const filteredEntries = useMemo(() => {
+        const query = searchQuery.trim().toLowerCase()
+        if (!query) return entries
+        return entries.filter(
+            (entry) =>
+                entry.title.toLowerCase().includes(query) ||
+                entry.content.toLowerCase().includes(query)
+        )
+    }, [entries, searchQuery])
 
     // Export / Import State
     const [isExportOpen, setIsExportOpen] = useState(false)
@@ -960,6 +974,37 @@ export const Journal: FC = () => {
                 </div>
             </header>
 
+            {/* Search bar */}
+            {entries.length > 0 && (
+                <div className="max-w-md w-full">
+                    <div className="relative group">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white/70 transition-colors" />
+                        <input
+                            type="text"
+                            placeholder="Search journal..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-white/5 border border-white/15 rounded-xl py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/8 transition-all"
+                            aria-label="Search journal entries"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery("")}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-white/10 transition-colors"
+                                aria-label="Clear search"
+                            >
+                                <X className="h-4 w-4 text-white/60" />
+                            </button>
+                        )}
+                    </div>
+                    {searchQuery && (
+                        <p className="mt-2 text-xs text-white/60">
+                            {filteredEntries.length} {filteredEntries.length === 1 ? "entry" : "entries"} found
+                        </p>
+                    )}
+                </div>
+            )}
+
             {entries.length === 0 ? (
                 <div className="text-center py-20 rounded-2xl border border-white/5 bg-white/3">
                     <Book className="h-12 w-12 text-white/20 mx-auto mb-4" />
@@ -975,9 +1020,17 @@ export const Journal: FC = () => {
                         <span className="text-heading-solid font-semibold">Start Writing</span>
                     </button>
                 </div>
+            ) : filteredEntries.length === 0 && searchQuery ? (
+                <div className="text-center py-12 rounded-2xl border border-white/5 bg-white/3">
+                    <Search className="h-10 w-10 text-white/20 mx-auto mb-3" />
+                    <h3 className="text-lg font-heading font-semibold text-heading-solid mb-1">No matches found</h3>
+                    <p className="text-sm text-muted-accessible">
+                        Try a different search term
+                    </p>
+                </div>
             ) : (
                 <div className="grid gap-4 min-[1100px]:grid-cols-3">
-                    {entries.map((entry) => (
+                    {filteredEntries.map((entry) => (
                         <div
                             key={entry.id}
                             onClick={() => handleEdit(entry)}
