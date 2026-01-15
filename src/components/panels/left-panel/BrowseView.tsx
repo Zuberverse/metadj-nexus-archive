@@ -3,11 +3,9 @@
 import Image from "next/image"
 import { clsx } from "clsx"
 import { ChevronRight } from "lucide-react"
-import { getMoodChannelIcon } from "@/components/mood/MoodChannelIcons"
 import { SearchBar } from "@/components/search/SearchBar"
 import { COLLECTION_NARRATIVES } from "@/data/collection-narratives"
-import { MOOD_CHANNELS, MOOD_CHANNEL_MIN_CATALOG_TRACKS, getTracksForMoodChannel, getMoodChannelHoverStyles } from "@/data/moodChannels"
-import { FEATURE_MOOD_CHANNELS, RECENTLY_PLAYED_COLLECTION_ID } from "@/lib/app.constants"
+import { RECENTLY_PLAYED_COLLECTION_ID } from "@/lib/app.constants"
 import { getCollectionHoverStyles } from "@/lib/collection-theme"
 import type { JournalSearchEntry, WisdomSearchEntry } from "@/lib/search/search-results"
 import type { Collection, Track } from "@/types"
@@ -17,7 +15,6 @@ interface BrowseViewProps {
   recentlyPlayed: Track[]
   allTracks: Track[]
   onCollectionSelect: (collectionId: string) => void
-  onMoodChannelSelect: (channelId: string) => void
   getCollectionArtwork: (collectionId: string) => string
   searchQuery: string
   onSearchQueryChange: (value: string) => void
@@ -40,7 +37,6 @@ export function BrowseView({
   recentlyPlayed,
   allTracks,
   onCollectionSelect,
-  onMoodChannelSelect,
   getCollectionArtwork,
   searchQuery,
   onSearchQueryChange,
@@ -53,7 +49,6 @@ export function BrowseView({
   searchContainerRef,
 }: BrowseViewProps) {
   const recentlyPlayedCount = recentlyPlayed.length
-  const totalTrackCount = allTracks.length
 
   return (
     <div className="flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto pr-1 pb-1.5 scrollbar-on-hover">
@@ -180,68 +175,10 @@ export function BrowseView({
         </div>
       </div>
 
-      {/* Mood Channels - Temporarily disabled (FEATURE_MOOD_CHANNELS) */}
-      {FEATURE_MOOD_CHANNELS && (
-        <div className="space-y-2">
-          <h3 className="text-xs font-bold text-heading-solid uppercase tracking-widest px-1">Mood Channels</h3>
-          <div className="space-y-2">
-            {MOOD_CHANNELS.map((channel) => {
-              const matchingIds = getTracksForMoodChannel(channel, allTracks)
-              const trackCount = matchingIds.length
-              return (
-                <button
-                  key={channel.id}
-                  type="button"
-                  onClick={() => trackCount > 0 && onMoodChannelSelect(channel.id)}
-                  disabled={trackCount === 0}
-                  className={clsx(
-                    "group flex w-full items-center gap-3 rounded-xl border px-2 py-2 transition-all duration-200 text-left focus-ring-glow",
-                    trackCount === 0
-                      ? "border-(--border-subtle) bg-white/2 opacity-50 cursor-not-allowed"
-                      : clsx("border-(--border-standard) bg-white/3", getMoodChannelHoverStyles(channel.id))
-                  )}
-                  aria-label={`Open mood channel ${channel.name}`}
-                >
-                  <div className={clsx(
-                    "h-12 w-12 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform bg-gradient-to-br",
-                    channel.gradient
-                  )}>
-                    {(() => {
-                      const IconComponent = getMoodChannelIcon(channel.id)
-                      return IconComponent ? (
-                        <IconComponent size={24} className="text-white drop-shadow-lg" />
-                      ) : null
-                    })()}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-heading font-bold text-heading-solid truncate opacity-80 group-hover:opacity-100">
-                      {channel.name}
-                    </p>
-                    <p className="text-xs text-white/70 truncate group-hover:text-white/85">
-                      {trackCount} tracks - Energy {channel.energyLevel}/10
-                    </p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-white/20 group-hover:text-white/60 transition-colors" />
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {!FEATURE_MOOD_CHANNELS && (
-        <div className="space-y-2">
-          <h3 className="text-xs font-bold text-heading-solid uppercase tracking-widest px-1">Mood Channels</h3>
-          <div className="rounded-xl border border-(--border-subtle) bg-white/3 px-3 py-2">
-            <p className="text-xs text-white/70 leading-relaxed">
-              Unlocks when the catalog reaches {MOOD_CHANNEL_MIN_CATALOG_TRACKS} tracks. Current count: {totalTrackCount}.
-            </p>
-            <p className="text-[11px] text-white/55 leading-relaxed">
-              For now, explore Collections, Playlists, and Recently Played.
-            </p>
-          </div>
-        </div>
-      )}
+      {/* Mood Channels - Hidden until catalog reaches threshold
+          Font size aligned with Collections header (text-sm) for when re-enabled.
+          See FEATURE_MOOD_CHANNELS in app.constants.ts for re-enablement criteria.
+      */}
     </div>
   )
 }

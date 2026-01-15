@@ -34,7 +34,7 @@ import { useRecentlyPlayed } from "@/hooks/use-recently-played"
 import { useResponsivePanels } from "@/hooks/use-responsive-panels"
 import { useTrackDetails } from "@/hooks/use-track-details"
 import { OPEN_FEEDBACK_EVENT } from "@/lib/ai/tools/feedback"
-import { FEATURED_TRACK_IDS, DEFAULT_COLLECTION_ID, FEATURES, RECENTLY_PLAYED_MAX_ITEMS } from "@/lib/app.constants"
+import { FEATURED_TRACK_IDS, DEFAULT_COLLECTION_ID, FEATURES, RECENTLY_PLAYED_MAX_ITEMS, DEFAULT_FALLBACK_TRACK_ID } from "@/lib/app.constants"
 import { META_DJAI_PROMPT_EVENT, type MetaDjAiExternalPromptDetail } from "@/lib/metadjai/external-prompts"
 import {
   getCollectionById,
@@ -496,6 +496,15 @@ export function HomePageClient({
     toggleRightPanel,
   })
 
+  // Fallback handler: When play is pressed with no track loaded, play default track (MetaDJ Revolution)
+  const handlePlayWithNoTrack = useCallback(() => {
+    const fallbackTrack = getTrackById(DEFAULT_FALLBACK_TRACK_ID, tracks)
+    if (fallbackTrack) {
+      player.setCurrentTrack(fallbackTrack)
+      player.setShouldPlay(true)
+    }
+  }, [tracks, player])
+
   // Open MetaDJai when requested from /guide without polluting the URL.
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -633,6 +642,7 @@ export function HomePageClient({
     selectedCollectionTitle,
     cinemaEnabled,
     handleMetaDjAiToggle,
+    handlePlayWithNoTrack,
   })
 
   // Memoize MetaDJai chat props to prevent unnecessary re-renders of chat component

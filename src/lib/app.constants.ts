@@ -236,6 +236,9 @@ export const FEATURED_TRACK_IDS = [
 /** Hub hero track ID for "Enter Cinema" button and Odyssey journey */
 export const HUB_HERO_TRACK_ID = FEATURED_TRACK_IDS[0];
 
+/** Default track ID to play when user presses play with no track loaded */
+export const DEFAULT_FALLBACK_TRACK_ID = "mr-007"; // MetaDJ Revolution
+
 /** Default collection ID */
 export const DEFAULT_COLLECTION_ID = "featured";
 

@@ -50,6 +50,9 @@ interface UseAudioPlayerPropsParams {
 
   // Feature handlers
   handleMetaDjAiToggle: () => void
+  
+  /** Called when play is pressed but no track is loaded - load default track */
+  handlePlayWithNoTrack: () => void
 }
 
 /**
@@ -84,6 +87,7 @@ export function useAudioPlayerProps({
   selectedCollectionTitle,
   cinemaEnabled,
   handleMetaDjAiToggle,
+  handlePlayWithNoTrack,
 }: UseAudioPlayerPropsParams): AudioPlayerProps {
   return useMemo(
     () => ({
@@ -94,6 +98,7 @@ export function useAudioPlayerProps({
         onShouldPlayChange: setShouldPlay,
         onNext: queue.length > 1 ? handleNext : undefined,
         onPrevious: queue.length > 1 ? handlePrevious : undefined,
+        onPlayWithNoTrack: handlePlayWithNoTrack,
       },
       volume: {
         level: volume,
@@ -155,6 +160,7 @@ export function useAudioPlayerProps({
       selectedCollectionTitle,
       cinemaEnabled,
       handleMetaDjAiToggle,
+      handlePlayWithNoTrack,
     ]
   )
 }

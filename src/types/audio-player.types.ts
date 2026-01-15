@@ -17,6 +17,8 @@ export interface PlaybackControls {
   onShouldPlayChange?: (shouldPlay: boolean) => void;
   onNext?: () => void;
   onPrevious?: () => void;
+  /** Called when play is pressed but no track is loaded - load default track */
+  onPlayWithNoTrack?: () => void;
 }
 
 /**

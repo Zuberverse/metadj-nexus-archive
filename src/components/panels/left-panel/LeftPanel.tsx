@@ -417,7 +417,6 @@ export function LeftPanel({
                           recentlyPlayed={recentlyPlayed}
                           allTracks={allTracks}
                           onCollectionSelect={setActiveCollectionId}
-                          onMoodChannelSelect={handleMoodChannelChange}
                           getCollectionArtwork={getCollectionArtwork}
                           searchQuery={searchQuery}
                           onSearchQueryChange={setSearchQuery}

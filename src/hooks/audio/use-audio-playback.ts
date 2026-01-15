@@ -36,6 +36,8 @@ interface UseAudioPlaybackOptions {
   onMuteChange?: (muted: boolean) => void
   repeatMode?: RepeatMode
   autoSkipOnError?: boolean
+  /** Called when play is pressed but no track is loaded - load default track */
+  onPlayWithNoTrack?: () => void
 }
 
 export function useAudioPlayback({
@@ -51,6 +53,7 @@ export function useAudioPlayback({
   onMuteChange,
   repeatMode = 'none',
   autoSkipOnError = true,
+  onPlayWithNoTrack,
 }: UseAudioPlaybackOptions) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -450,7 +453,14 @@ export function useAudioPlayback({
   // Playback controls
   const togglePlayback = useCallback(() => {
     const audio = audioRef.current
-    if (!audio || !track) return
+    
+    // If no track is loaded, trigger fallback to load default track
+    if (!track) {
+      onPlayWithNoTrack?.()
+      return
+    }
+    
+    if (!audio) return
 
     if (audio.paused) {
       setHasError(false)
@@ -469,7 +479,7 @@ export function useAudioPlayback({
       audio.pause()
       analytics.onPlaybackControl('pause')
     }
-  }, [track, onShouldPlayChange, analytics, safePlay])
+  }, [track, onShouldPlayChange, analytics, safePlay, onPlayWithNoTrack])
 
   // Seek function
   const seekTo = useCallback((time: number) => {

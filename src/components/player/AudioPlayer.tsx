@@ -36,6 +36,7 @@ function AudioPlayer({
   const onShouldPlayChange = playback?.onShouldPlayChange
   const onNext = playback?.onNext
   const onPrevious = playback?.onPrevious
+  const onPlayWithNoTrack = playback?.onPlayWithNoTrack
 
   const externalVolume = volume?.level
   const onVolumeChange = volume?.onChange
@@ -114,6 +115,7 @@ function AudioPlayer({
     onMuteChange,
     repeatMode,
     autoSkipOnError: true,
+    onPlayWithNoTrack,
   })
 
   // Keep the shared PlayerContext audioRef in sync so analyzers/panels can access the active element
