@@ -121,7 +121,7 @@ function PlaylistListComponent({
             onClick={() => setShowCreator(true)}
             variant="primary"
             leftIcon={<Plus className="h-4 w-4" />}
-            className="h-11 shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
+            className="h-11 font-heading shadow-[0_0_20px_rgba(95,108,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(95,108,255,0.5)] focus-ring-glow"
           >
             Create Playlist
           </Button>
@@ -165,7 +165,7 @@ function PlaylistListComponent({
           onClick={() => setShowCreator(true)}
           variant="secondary"
           size="sm"
-          className="w-full border-dashed border-(--border-standard) text-white/60 hover:text-white/80 hover:bg-white/5"
+          className="w-full font-heading border-dashed border-(--border-standard) text-white/60 hover:text-white/80 hover:bg-white/5"
           leftIcon={<Plus className="h-3.5 w-3.5" />}
         >
           Create Playlist
