@@ -27,6 +27,7 @@ export const users = pgTable(
     id: varchar('id', { length: 64 }).primaryKey(),
     email: varchar('email', { length: 255 }).notNull(),
     username: varchar('username', { length: 30 }),
+    usernameAliases: jsonb('username_aliases').default(sql`'[]'::jsonb`),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     isAdmin: boolean('is_admin').default(false).notNull(),
     status: varchar('status', { length: 20 }).default('active').notNull(),
