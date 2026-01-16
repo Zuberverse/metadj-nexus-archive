@@ -101,11 +101,11 @@ export function MoodChannelRail({ tracks, onPlayChannel, className }: MoodChanne
                     {channel.description}
                   </p>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-wider text-white/60 font-medium">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-accessible font-medium">
                       {trackCount} tracks
                     </span>
                     <span className="text-muted-accessible">•</span>
-                    <span className="text-[10px] uppercase tracking-wider text-white/60 font-medium">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-accessible font-medium">
                       Energy {channel.energyLevel}/10
                     </span>
                   </div>

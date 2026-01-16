@@ -287,7 +287,7 @@ function WaveformVisualizer({
           className="absolute inset-y-0 left-0 bg-linear-to-r from-metadj-cyan/40 to-metadj-purple/40 transition-all duration-300"
           data-csp-style={fallbackProgressStyleId}
         />
-        <div className="absolute inset-0 flex items-center justify-center text-white/60 text-sm">
+        <div className="absolute inset-0 flex items-center justify-center text-muted-accessible text-sm">
           Audio visualization not supported
         </div>
       </div>

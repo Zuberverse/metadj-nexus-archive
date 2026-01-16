@@ -43,7 +43,7 @@ export function AudioSettingsModal({
           <button
             type="button"
             onClick={onClose}
-            className="h-8 w-8 flex items-center justify-center rounded-full text-white/60 hover:text-white hover:bg-white/10 transition focus-ring-glow"
+            className="h-8 w-8 flex items-center justify-center rounded-full text-muted-accessible hover:text-white hover:bg-white/10 transition focus-ring-glow"
             aria-label="Close settings"
           >
             <X className="h-5 w-5" />
@@ -54,7 +54,7 @@ export function AudioSettingsModal({
           <div className="flex items-center justify-between py-3 border-b border-white/10">
             <div className="space-y-0.5">
               <p className="text-sm font-medium text-white">Crossfade</p>
-              <p className="text-xs text-white/60">Smooth 3-second transitions between tracks</p>
+              <p className="text-xs text-muted-accessible">Smooth 3-second transitions between tracks</p>
             </div>
             <button
               type="button"

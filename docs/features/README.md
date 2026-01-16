@@ -1,6 +1,6 @@
 # Feature Documentation Index
 
-**Last Modified**: 2026-01-15
+**Last Modified**: 2026-01-16
 
 Quick reference for all feature documentation in MetaDJ Nexus.
 
@@ -58,6 +58,12 @@ Quick reference for all feature documentation in MetaDJ Nexus.
 | Feature | Document | Description |
 |---------|----------|-------------|
 | Stripe Integration | [stripe-integration-spec.md](./stripe-integration-spec.md) | Payment integration specification (pending) |
+
+## Authentication & Security
+
+| Feature | Document | Description |
+|---------|----------|-------------|
+| Auth System | [AUTH-SYSTEM.md](../AUTH-SYSTEM.md) | Complete authentication architecture: admin auth, security middleware, rate limiting |
 
 ## Reference & Content
 

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AudioPlayer } from '@/components/player/AudioPlayer';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { ModalProvider } from '@/contexts/ModalContext';
 import { PlayerProvider } from '@/contexts/PlayerContext';
 import { QueueProvider } from '@/contexts/QueueContext';
@@ -68,17 +69,19 @@ function mockPlayback(overrides: Partial<typeof defaultPlaybackState> = {}) {
 
 function renderWithProviders(ui: React.ReactNode) {
   return render(
-    <ToastProvider>
-      <ModalProvider>
-        <UIProvider>
-          <QueueProvider>
-            <PlayerProvider>
-              {ui}
-            </PlayerProvider>
-          </QueueProvider>
-        </UIProvider>
-      </ModalProvider>
-    </ToastProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <ModalProvider>
+          <UIProvider>
+            <QueueProvider>
+              <PlayerProvider>
+                {ui}
+              </PlayerProvider>
+            </QueueProvider>
+          </UIProvider>
+        </ModalProvider>
+      </ToastProvider>
+    </AuthProvider>
   );
 }
 

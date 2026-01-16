@@ -347,6 +347,17 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 /**
+ * Escape SQL LIKE wildcards to prevent unexpected pattern matching
+ * Escapes: % (any chars), _ (single char), \ (escape char)
+ */
+function escapeSqlLikeWildcards(str: string): string {
+  return str
+    .replace(/\\/g, '\\\\')  // Escape backslash first
+    .replace(/%/g, '\\%')    // Escape percent
+    .replace(/_/g, '\\_');   // Escape underscore
+}
+
+/**
  * Get paginated users with optional search (SQL-level filtering)
  */
 export async function getPaginatedUsers(options: {
@@ -357,11 +368,13 @@ export async function getPaginatedUsers(options: {
   const page = Math.max(1, options.page || 1);
   const limit = Math.min(100, Math.max(1, options.limit || 20));
   const offset = (page - 1) * limit;
-  const search = options.search?.toLowerCase().trim();
+  const rawSearch = options.search?.toLowerCase().trim();
+  // Escape LIKE wildcards to prevent pattern injection
+  const search = rawSearch ? escapeSqlLikeWildcards(rawSearch) : undefined;
 
   const baseCondition = sql`${users.deletedAt} IS NULL`;
   const searchCondition = search
-    ? and(baseCondition, sql`LOWER(${users.email}) LIKE ${`%${search}%`}`)
+    ? and(baseCondition, sql`LOWER(${users.email}) LIKE ${`%${search}%`} ESCAPE '\\'`)
     : baseCondition;
 
   const [countResult] = await db

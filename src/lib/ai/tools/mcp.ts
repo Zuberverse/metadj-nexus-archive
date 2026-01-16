@@ -12,8 +12,11 @@ import { logger } from '@/lib/logger'
 
 const MCP_TOOL_PREFIX = 'mcp_'
 
- 
-type ToolSet = Record<string, any>
+/**
+ * MCP tool structure - aligns with Vercel AI SDK tool pattern
+ * Using 'unknown' for type safety while preserving flexibility for MCP server responses
+ */
+type ToolSet = Record<string, unknown>
 
 let cachedToolsPromise: Promise<ToolSet> | null = null
 

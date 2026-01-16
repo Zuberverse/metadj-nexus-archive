@@ -56,7 +56,7 @@ export interface TrackListItemProps {
   dataQueueItem?: string;
 }
 
-export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
+export const TrackListItem = forwardRef<HTMLButtonElement, TrackListItemProps>(
   (
     {
       track,
@@ -106,24 +106,16 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
       ? getCollectionHoverStyles(track.collection)
       : 'hover:bg-white/8 hover:border-white/20';
 
-    const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onPlay?.();
-      }
-      if (onKeyDown) {
-        onKeyDown(e as unknown as KeyboardEvent<HTMLButtonElement>);
-      }
-    };
-
     return (
-      <div
+      <button
         ref={ref}
-        role={role}
-        tabIndex={0}
+        type="button"
+        role={role === 'option' ? 'option' : undefined}
         onClick={onPlay}
-        onKeyDown={handleKeyDown}
+        onKeyDown={onKeyDown}
+        aria-label={`Play ${track.title} by ${track.collection || 'Unknown Collection'}`}
         aria-selected={role === 'option' ? isCurrent : undefined}
+        aria-current={role === 'button' && isCurrent ? 'true' : undefined}
         data-queue-item={dataQueueItem}
         className={cn(
           'group relative w-full flex items-center rounded-xl border text-left cursor-pointer',
@@ -190,7 +182,7 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
             <span className="truncate">{track.collection || 'Unknown Collection'}</span>
             {showDuration && track.duration && (
               <>
-                <span className="text-white/60">-</span>
+                <span className="text-muted-accessible">-</span>
                 <span className="tabular-nums shrink-0">
                   {formatDuration(track.duration)}
                 </span>
@@ -212,7 +204,7 @@ export const TrackListItem = forwardRef<HTMLDivElement, TrackListItemProps>(
             <TrackOptionsMenu track={track} onQueueAdd={onQueueAdd} />
           </div>
         )}
-      </div>
+      </button>
     );
   }
 );

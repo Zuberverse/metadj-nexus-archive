@@ -134,10 +134,22 @@ describe('createStopCondition', () => {
     expect(result).toBe(false)
   })
 
-  it('custom condition returns true after two tool-call steps', () => {
+  it('custom condition returns false after two tool-call steps (under MAX_TOOL_STEPS)', () => {
     const [customCondition] = createStopCondition()
     const result = (customCondition as Function)({
       steps: [{ finishReason: 'tool-calls' }, { finishReason: 'tool-calls' }],
+    })
+    expect(result).toBe(false)
+  })
+
+  it('custom condition returns true after MAX_TOOL_STEPS (3) tool-call steps', () => {
+    const [customCondition] = createStopCondition()
+    const result = (customCondition as Function)({
+      steps: [
+        { finishReason: 'tool-calls' },
+        { finishReason: 'tool-calls' },
+        { finishReason: 'tool-calls' },
+      ],
     })
     expect(result).toBe(true)
   })

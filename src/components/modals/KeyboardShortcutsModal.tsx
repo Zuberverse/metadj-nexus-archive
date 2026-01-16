@@ -94,12 +94,12 @@ export function KeyboardShortcutsModal({ onClose }: KeyboardShortcutsModalProps)
 
         {/* Footer note */}
         <div className="mt-6 space-y-2 text-center">
-          {/* WCAG: text-white/70 for 4.5:1 contrast on informational text */}
-          <p className="text-xs sm:text-sm text-white/70">
+          {/* WCAG: text-muted-accessible for 5.2:1 contrast on informational text */}
+          <p className="text-xs sm:text-sm text-muted-accessible">
             Most shortcuts require <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white/80">{mod}</kbd> modifier (WCAG 2.1.4 compliant)
           </p>
-          {/* Secondary note - decorative/supplementary, 3:1 minimum met */}
-          <p className="text-xs text-white/60">
+          {/* Secondary note - using accessible muted color for WCAG compliance */}
+          <p className="text-xs text-muted-accessible">
             Shortcuts disabled when typing in search or input fields
           </p>
         </div>

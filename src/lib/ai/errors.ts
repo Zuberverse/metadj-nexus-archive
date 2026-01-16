@@ -78,8 +78,9 @@ const ERROR_MAPPINGS: ErrorMapping[] = [
   
   // Generic unauthorized/forbidden (our own auth responses)
   // These are simple responses from our auth endpoints, not provider errors
+  // Matches "Unauthorized", "401 Unauthorized", "403 Forbidden" formats
   {
-    pattern: /^unauthorized$/i,
+    pattern: /^(401\s+)?unauthorized$|^(403\s+)?forbidden$/i,
     userMessage: "Session expired. Refresh the page to continue chatting.",
   },
 
