@@ -5,7 +5,7 @@
 > The primary creative hub for MetaDJ — where human vision meets AI-driven execution to uplift and inspire as you pioneer the Metaverse
 
 *Version: 0.9.46*
-**Last Modified**: 2026-01-14 20:55 EST
+**Last Modified**: 2026-01-16 22:18 EST
 **Platform:** MetaDJ Nexus at **metadjnexus.ai**
 **Social:** **@metadjai**
 
@@ -31,7 +31,7 @@ The platform demonstrates what a determined creator can build with AI collaborat
 | **Music** | Hub + Library with collections, queue, playlists, and Recently Played | [Audio Player](docs/features/audio-player-standards.md), [Collections](docs/features/collections-system.md) |
 | **Cinema** | Fullscreen visualizers (3D audio-reactive), video scenes, Dream AI overlay | [Cinema System](docs/features/cinema-system.md) |
 | **Wisdom** | Knowledge hub with Guides, essays, and State of Mind dispatches | [Wisdom System](docs/features/wisdom-system.md) |
-| **Journal** | Local-first space for ideas with speech-to-text dictation | [Journal](docs/features/journal-feature.md) |
+| **Journal** | Local-first journal with cross-device sync for authenticated users | [Journal](docs/features/journal-feature.md) |
 
 **See [Feature Documentation Index](docs/features/README.md) for complete feature specifications.**
 
@@ -152,7 +152,7 @@ npm install
 
 # Copy environment template
 cp .env.example .env.local
-# Edit .env.local with your API keys (at minimum OPENAI_API_KEY)
+# Edit .env.local with your API keys (at minimum OPENAI_API_KEY) and AUTH_SECRET
 
 # Verify the setup
 npm run type-check && npm run lint

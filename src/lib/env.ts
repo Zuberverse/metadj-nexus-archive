@@ -24,7 +24,7 @@ const serverEnvSchema = z.object({
   DATABASE_URL: z.string().url().optional(),
 
   // Authentication
-  AUTH_SECRET: z.string().min(32, { message: 'AUTH_SECRET must be at least 32 characters' }).optional(),
+  AUTH_SECRET: z.string().min(32, { message: 'AUTH_SECRET must be at least 32 characters' }),
   ADMIN_PASSWORD: z.string().min(8, { message: 'ADMIN_PASSWORD must be at least 8 characters' }).optional(),
   AUTH_SESSION_DURATION: z.string().regex(/^\d+$/).optional(),
   AUTH_REGISTRATION_ENABLED: z.enum(['true', 'false']).optional(),
@@ -144,13 +144,6 @@ const envSchema = serverEnvSchema.merge(clientEnvSchema)
   }, {
     message: 'DATABASE_URL is required in production',
     path: ['DATABASE_URL'],
-  })
-  .refine((data) => {
-    if (data.NODE_ENV !== 'production') return true;
-    return Boolean(data.AUTH_SECRET);
-  }, {
-    message: 'AUTH_SECRET is required in production',
-    path: ['AUTH_SECRET'],
   })
   .refine((data) => {
     const anyR2 =

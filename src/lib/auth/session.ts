@@ -12,26 +12,20 @@ const SESSION_COOKIE_NAME = 'nexus_session';
 const SESSION_DURATION = parseInt(process.env.AUTH_SESSION_DURATION || '604800', 10); // 7 days default
 
 /**
- * Development fallback secret (only used when AUTH_SECRET is not set in dev)
- */
-const DEV_FALLBACK_SECRET = 'dev-only-fallback-secret-key-32chars!';
-
-/**
  * Get the auth secret for signing sessions
  */
 function getAuthSecret(): string {
-  const secret = process.env.AUTH_SECRET || process.env.SESSION_SECRET;
-  
-  if (secret && secret.length >= 32) {
-    return secret;
+  const secret = process.env.AUTH_SECRET;
+
+  if (!secret) {
+    throw new Error('AUTH_SECRET is required and must be at least 32 characters');
   }
-  
-  // In development/test, use a fallback
-  if (process.env.NODE_ENV !== 'production') {
-    return DEV_FALLBACK_SECRET;
+
+  if (secret.length < 32) {
+    throw new Error('AUTH_SECRET must be at least 32 characters');
   }
-  
-  throw new Error('AUTH_SECRET must be at least 32 characters in production');
+
+  return secret;
 }
 
 /**

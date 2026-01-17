@@ -1,6 +1,6 @@
 # Testing Guide — MetaDJ Nexus
 
-**Last Modified**: 2026-01-10 16:05 EST
+**Last Modified**: 2026-01-16 22:18 EST
 
 ## Overview
 
@@ -435,7 +435,7 @@ npm run test -- --reporter=verbose
 
 ## E2E Testing
 
-Playwright coverage includes home load + `/api/health`, search → queue add, MetaDJai panel open/close, and cinema view toggle across Chromium/Firefox/WebKit + mobile. Deeper flows (playback, AI responses) still need coverage. CI does not run browsers yet.
+Playwright coverage includes home load + `/api/health`, search → queue add, MetaDJai panel open/close, and cinema view toggle across Chromium/Firefox/WebKit + mobile. Deeper flows (playback, AI responses) still need coverage. CI runs the Playwright suite via `npm run test:e2e`.
 
 ## Future Testing Plans
 

@@ -53,14 +53,6 @@ export const POST = withOriginValidation(async (request: NextRequest) => {
       );
     }
 
-    // If user is admin, return success with no-op
-    if (session.id === 'admin') {
-      return NextResponse.json({
-        success: true,
-        termsVersion: TERMS_VERSION,
-      });
-    }
-
     // Update user terms
     const updatedUser = await updateUserTerms(session.id, TERMS_VERSION);
 

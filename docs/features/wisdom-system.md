@@ -1,6 +1,6 @@
 # Wisdom System
 
-**Last Modified**: 2026-01-13 14:10 EST
+**Last Modified**: 2026-01-16 22:18 EST
 
 **Feature**: Wisdom Dashboard and Content System
 **Status**: Active (v0.60+)
@@ -15,7 +15,7 @@ The Wisdom is MetaDJ Nexus's content and knowledge center—a dedicated space fo
 - **Thoughts**: Personal dispatches on music, AI, creativity, and the MetaDJ journey. Six published essays.
 - **Guides**: In-depth educational content on AI identity systems, the Digital Jockey framework, and music for state change. Three published guides.
 - **Reflections**: Personal narratives from MetaDJ—origin stories, milestones, and the lived journey behind the platform. Two published reflections.
-- **Journal**: Private personal space for session logs and reflections with voice-to-text transcription (separate top-level tab). User-created entries stored locally.
+- **Journal**: Private personal space for session logs and reflections with voice-to-text transcription (separate top-level tab). Authenticated entries persist to Postgres with localStorage fallback.
 
 ## Architecture
 
@@ -102,7 +102,7 @@ interface JournalEntry {
 }
 ```
 
-**Journal Storage**: Journal entries are stored in `localStorage` under `STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES` as a JSON array. Unlike other Wisdom content, Journal is private and user-created—no server-side persistence.
+**Journal Storage**: Journal entries are stored in PostgreSQL via `/api/journal` for authenticated users, with `localStorage` (`STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES`) as a local backup for offline resilience.
 
 ### Utility Functions
 
@@ -142,7 +142,7 @@ Wisdom remembers where a user last was:
 - The 3 most recently opened items are stored under `metadj_wisdom_continue_reading` for Hub "Continue reading" section, showing a grid of recently viewed content.
 - `WisdomExperience` initializes from that key, so returning visitors drop back into the last section without in-app URL changes.
 - In-app item selection (which specific post/guide/reflection is open) is internal component state, not route-driven navigation.
-- Journal entries are also persisted in `localStorage` under `STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES`.
+- Journal entries are also persisted in `localStorage` under `STORAGE_KEYS.WISDOM_JOURNAL_ENTRIES` as a backup.
 - Journal view/draft persistence is managed separately via dedicated journal storage keys (see `docs/features/journal-feature.md`).
 
 ### Filters
@@ -189,7 +189,7 @@ Detail views include a sticky reading progress bar that tracks scroll position a
 - `activeView === "wisdom"` controls visibility; `WisdomExperience` is activated via the `active` prop from the home shells to delay fetching until Wisdom is actually opened.
 - Valid sections are `thoughts`, `guides`, `reflections`, and `journal`; unknown values are ignored.
 - Opening Wisdom automatically closes Cinema and MetaDJai.
-- Journal is private—no deep linking or sharing. Content stays in localStorage only (exports are local files).
+- Journal is private—no deep linking or sharing. Content persists server-side for authenticated users with localStorage backup; exports remain local files.
 
 ## Content Sections
 
@@ -280,7 +280,7 @@ Detail views include a sticky reading progress bar that tracks scroll position a
 - **Always-styled editor**: Markdown is hydrated to formatted HTML on load (no preview toggle)
 - **Writing Surface**: Full-height editor with fixed container, internal scrolling, and clean edge styling
 - **Delete Confirmation**: Modal confirmation before permanent deletion
-- **Local Persistence**: Entries stored in `localStorage` (no server sync)
+- **Persistence**: Entries stored in Postgres via `/api/journal` for authenticated users with localStorage backup
 - **Export/Import**: Optional local JSON export/import with passphrase encryption
 - **Empty State**: Friendly prompt with "Start Writing" CTA when no entries exist
 
@@ -295,15 +295,15 @@ Detail views include a sticky reading progress bar that tracks scroll position a
 
 **Entry Structure**:
 - **Title**: Optional, defaults to "Untitled" if left empty
-- **Content**: Markdown (GFM) stored locally; rendered as styled HTML in the editor
+- **Content**: Markdown (GFM) stored server-side for authenticated users with localStorage backup; rendered as styled HTML in the editor
 - **Timestamps**: Created and updated dates displayed in list view
 - **Cards**: Show title, markdown-stripped content preview (6 lines), and last updated date
 
 **Privacy Model**:
 - Journal is entirely private—no sharing, no deep links
-- Data stays in browser `localStorage`
-- No server-side persistence or backup
-- Clearing browser data deletes all entries
+- Data persists server-side for authenticated users with localStorage backup
+- No sharing or public exposure
+- Clearing browser data removes local drafts and backup; server entries remain for authenticated users
 
 ## Shared Components
 

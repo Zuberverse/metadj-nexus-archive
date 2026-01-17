@@ -26,14 +26,6 @@ export async function GET() {
       );
     }
 
-    if (session.id === 'admin') {
-      return NextResponse.json({
-        success: true,
-        entries: [],
-        isVirtualUser: true,
-      });
-    }
-
     const entries = await db
       .select()
       .from(journalEntries)
@@ -70,14 +62,6 @@ export const POST = withOriginValidation(async (request: NextRequest) => {
         { success: false, message: 'Not authenticated' },
         { status: 401 }
       );
-    }
-
-    if (session.id === 'admin') {
-      return NextResponse.json({
-        success: true,
-        message: 'Admin journal entries should be stored locally',
-        isVirtualUser: true,
-      });
     }
 
     const bodyResult = await readJsonBodyWithLimit<JournalPayload>(
@@ -163,10 +147,6 @@ export const DELETE = withOriginValidation(async (request: NextRequest) => {
         { success: false, message: 'Not authenticated' },
         { status: 401 }
       );
-    }
-
-    if (session.id === 'admin') {
-      return NextResponse.json({ success: true, isVirtualUser: true });
     }
 
     let entryId: string | null = null;

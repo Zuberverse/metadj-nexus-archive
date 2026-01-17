@@ -1,9 +1,9 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2026-01-14 21:55 EST
+**Last Modified**: 2026-01-16 22:18 EST
 > Pragmatic security approach for a music showcasing MVP
 
-*Last Reviewed: 2026-01-14*
+*Last Reviewed: 2026-01-16*
 *Status: ✅ Beta MVP Ready*
 
 ---
@@ -292,11 +292,11 @@ npm audit --omit=dev
 - Impact: Low (CDN caching helps)
 - Response: Add rate limiting if occurs
 
-### Unrealistic Threats
+### Low Probability Threats
 
-**Data Breach** - No user data to breach
+**Data Breach** - Limited user data (email + password hash) exists; risk is low but real
 **Account Takeover** - Low (beta scale; mitigated by PBKDF2 + httpOnly cookies)
-**SQL Injection** - No database
+**SQL Injection** - Low risk with Drizzle parameterized queries + input validation
 **Payment Fraud** - No payments
 
 ---

@@ -2,7 +2,7 @@
 
 > **Platform‑level home surface for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-14 20:48 EST
+**Last Modified**: 2026-01-16 22:18 EST
 **Status**: Active (Hero + Wisdom Spotlight + Platform Pulse).
 
 ## Overview
@@ -91,12 +91,13 @@ Recently Played moved out of the Hub and into the Music panel Library as a pinne
 - **Detail view**: `src/components/panels/left-panel/LeftPanel.tsx` + `CollectionDetailView`
 - **ID**: `RECENTLY_PLAYED_COLLECTION_ID` (`recently-played`)
 - **Max items**: 50 (`RECENTLY_PLAYED_MAX_ITEMS`)
-- **Storage**: `STORAGE_KEYS.RECENTLY_PLAYED` (localStorage)
+- **Storage**: PostgreSQL via `/api/auth/recently-played` with localStorage fallback
 
 ### Data Flow
 
 ```
-currentTrack changes → useRecentlyPlayed hook → localStorage update
+currentTrack changes → useRecentlyPlayed hook → /api/auth/recently-played sync (if authenticated)
+                                              → localStorage backup
                                               → Music panel (BrowseView + CollectionDetailView)
 ```
 

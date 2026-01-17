@@ -1,6 +1,6 @@
 # Journal Feature
 
-**Last Modified**: 2026-01-15 EST
+**Last Modified**: 2026-01-16 22:18 EST
 
 Added in v0.9.46
 
@@ -12,7 +12,7 @@ The **Journal** is a private space for users to capture ideas, dreams, and refle
 - **Database Storage**: For authenticated users, journal entries are stored in the PostgreSQL database (`journal_entries` table) for cross-device persistence.
 - **API Integration**: CRUD operations via `/api/journal` endpoint with authentication.
 - **Local Backup**: localStorage is maintained as a draft backup during editing and as fallback for offline scenarios.
-- **Admin Handling**: Virtual admin user (via ADMIN_PASSWORD) uses localStorage only for journal entries.
+- **Admin Handling**: Admin accounts follow the same database + localStorage backup flow as standard users.
 
 ### 2. Auto-Save & Management
 - **Auto-Save**: Entries are automatically saved 1.5 seconds after any title or content change. No manual save required.

@@ -1,11 +1,25 @@
 # Changelog
 
-**Last Modified**: 2026-01-15 20:10 EST
+**Last Modified**: 2026-01-16 22:18 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-16
+
+**Security**
+- Enforced AUTH_SECRET in all environments (removed dev fallback).
+
+**Auth**
+- Removed virtual-admin shortcuts in preferences/recently-played/journal/accept-terms APIs; admin uses DB-backed flows.
+
+**Testing**
+- CI E2E now installs all Playwright browsers to match multi-browser config.
+
+**Documentation**
+- Updated testing, security, and sync docs to reflect CI E2E and journal persistence.
 
 ### 2026-01-15
 

@@ -3,6 +3,10 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
+if (!process.env.AUTH_SECRET) {
+  process.env.AUTH_SECRET = 'test-auth-secret-32-characters-minimum';
+}
+
 // Mock sessionStorage for consistent access in jsdom
 const mockSessionStorage = (() => {
   let store: Record<string, string> = {};
