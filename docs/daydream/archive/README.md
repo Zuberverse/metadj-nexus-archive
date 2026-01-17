@@ -17,4 +17,4 @@ Preserve historical Daydream payload notes and snapshots for MetaDJ All Access d
 - Add new dated snapshots when superseding active Daydream documentation.
 
 ## Maintenance
-Follow `1-system/3-docs/standards/archive/archive-master-guide.md` for retention and naming.
+Follow `1-system/3-docs/standards/archive/archive-guide.md` for retention and naming.
