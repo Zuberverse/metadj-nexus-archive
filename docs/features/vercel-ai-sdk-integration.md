@@ -2,7 +2,7 @@
 
 > **Complete reference for Vercel AI SDK implementation in MetaDJ Nexus**
 
-**Last Modified**: 2026-01-14 20:34 EST
+**Last Modified**: 2026-01-24 01:00 EST
 
 ## Overview
 
@@ -58,7 +58,7 @@ AI SDK 6.0 (released Dec 22, 2025) introduces major enhancements:
 
 **Agents**:
 - **ToolLoopAgent**: Production-ready agent class for multi-step tool execution loops
-- Replaces `Experimental_Agent` with `system` → `instructions` rename
+- Renames `Experimental_Agent` to `system` → `instructions`
 - Default `stopWhen: stepCountIs(20)` for agent loops
 - Type-safe UI streaming with `InferAgentUIMessage`
 
@@ -80,7 +80,7 @@ AI SDK 6.0 (released Dec 22, 2025) introduces major enhancements:
 - Inspect input/output, token usage, timing, raw requests
 
 **Structured Output**:
-- `generateObject`/`streamObject` deprecated → use `generateText` with `Output.object()`
+- Use `generateText` with `Output.object()`; `generateObject`/`streamObject` are legacy
 - Unified structured output with tool calling in single request
 - `Output.object()`, `Output.array()`, `Output.choice()`, `Output.json()`, `Output.text()`
 
@@ -274,7 +274,7 @@ Streaming enables real-time chat experiences with progressive token delivery.
 **AI SDK 6.x Notes**:
 - `/api/metadjai` uses `ToolLoopAgent` for multi-step tool loops; streaming stays on `streamText`
 - For direct `streamText` calls, use custom `stopWhen` to control tool execution steps
-- `convertToModelMessages()` is async if you use it (replaces deprecated `convertToCoreMessages`)
+- `convertToModelMessages()` is async if you use it (older `convertToCoreMessages`)
 - MetaDJai uses `Output.object()` for structured reply parsing on the non-streaming endpoint
 
 ```typescript
@@ -471,7 +471,7 @@ export function getTools(provider: 'openai' | 'anthropic' | 'google' | 'xai', op
 - **proposePlaylist**: Interactive tool for playlist creation with user confirmation (and optional queueing)
 - **proposeSurface**: Interactive tool for UI navigation (Wisdom, Queue, Search, Music panel) with user confirmation
 - **web_search** (OpenAI + direct `OPENAI_API_KEY` only): Native OpenAI web search for real-time information about current events, recent news, or topics beyond training data
-- **Multi-Step Reasoning**: Controlled via `stopWhen: stepCountIs()` in the streaming route (replaces deprecated `maxSteps`)
+- **Multi-Step Reasoning**: Controlled via `stopWhen: stepCountIs()` in the streaming route (`maxSteps` is legacy)
 
 ### 4. Model Configuration
 

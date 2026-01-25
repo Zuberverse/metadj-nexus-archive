@@ -9,8 +9,6 @@ import { neon, neonConfig, Pool } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as schema from '../shared/schema';
 
-neonConfig.fetchConnectionCache = true;
-
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {

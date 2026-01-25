@@ -71,7 +71,7 @@ export function onMotionPreferenceChange(callback: (reducedMotion: boolean) => v
   }
 
   // Older browsers (Safari < 14, older Chrome/Firefox)
-  // Note: addListener/removeListener are deprecated but included in DOM lib types
+  // Note: addListener/removeListener are legacy but included in DOM lib types
   if (mediaQuery.addListener) {
     mediaQuery.addListener(handler);
     return () => mediaQuery.removeListener(handler);

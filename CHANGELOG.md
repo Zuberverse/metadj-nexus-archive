@@ -1,11 +1,16 @@
 # Changelog
 
-**Last Modified**: 2026-01-16 22:18 EST
+**Last Modified**: 2026-01-25 13:04 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-25
+
+**Performance**
+- Added adaptive Cinema performance mode that auto-enables on low-end device signals or sustained low FPS.
 
 ### 2026-01-16
 

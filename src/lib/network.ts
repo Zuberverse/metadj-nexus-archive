@@ -12,7 +12,7 @@ import type { NextRequest } from "next/server";
  * Resolve client IP address and fingerprint for rate limiting
  *
  * Extracts client IP from proxy headers (x-real-ip, x-forwarded-for)
- * since Next.js 15+ removed the deprecated request.ip property.
+ * since Next.js 15+ removed the legacy request.ip property.
  * Creates a SHA-256 fingerprint for privacy-preserving rate limiting.
  *
  * @param request - Next.js request object

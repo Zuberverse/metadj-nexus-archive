@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-10 13:36 EST
+**Last Modified**: 2026-01-25 13:24 EST
 
 ## Overview
 
@@ -22,6 +22,15 @@ Cinema is one of the heaviest surfaces (WebGL + shaders + post‑processing). To
 
 - **3D visualizers**: React Three Fiber `Canvas` switches to `frameloop="never"` when Cinema is not visible.
 - **2D visualizers**: requestAnimationFrame loops stop when Cinema is not visible.
+
+### Adaptive Performance Mode
+
+Cinema now auto‑enables performance mode when it detects low‑end device signals or sustained low FPS in 3D scenes. When performance mode is active:
+
+- **Auto triggers**: <= 4 CPU cores, <= 4GB device memory, Save-Data enabled, or low FPS in 3D scenes.
+- **Quality dials down**: lower visualizer complexity is used via `performanceMode=true`.
+- **Post‑processing disabled**: bloom/aberration are turned off to preserve frame rate.
+- **Sticky for session**: once activated, it remains on to avoid oscillation.
 
 ### View Transition Fade
 

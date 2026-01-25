@@ -39,7 +39,7 @@ interface CircuitState {
   failures: number
   /** Timestamp of last failure */
   lastFailure: number
-  /** Whether the circuit is open (blocking requests) - deprecated, use state instead */
+  /** Whether the circuit is open (blocking requests) - legacy, use state instead */
   isOpen: boolean
   /** Total failures (for metrics) */
   totalFailures: number

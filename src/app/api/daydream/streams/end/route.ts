@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { getClientIdentifier, endStream } from "@/lib/daydream/stream-limiter"
+import { withOriginValidation } from "@/lib/validation/origin-validation"
 import { getMaxRequestSize, readRequestBodyWithLimit } from "@/lib/validation/request-size"
 import type { NextRequest } from "next/server"
 
@@ -11,7 +12,7 @@ export const dynamic = "force-dynamic"
  * This releases the single-stream lock so they can create a new one
  * Supports both regular JSON requests and sendBeacon (text/plain)
  */
-export async function POST(request: NextRequest) {
+export const POST = withOriginValidation(async (request: NextRequest) => {
   try {
     const { id: clientId } = getClientIdentifier(request)
 
@@ -48,4 +49,4 @@ export async function POST(request: NextRequest) {
     const message = error instanceof Error ? error.message : "Unexpected error"
     return NextResponse.json({ error: message }, { status: 500 })
   }
-}
+})

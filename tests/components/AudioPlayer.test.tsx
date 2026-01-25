@@ -22,6 +22,24 @@ vi.mock('@/hooks/use-swipe-gesture', () => ({
   useSwipeGesture: vi.fn(),
 }));
 
+vi.mock('@/contexts/AuthContext', () => ({
+  AuthProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useAuth: () => ({
+    user: null,
+    isLoading: false,
+    isAuthenticated: false,
+    isAdmin: false,
+    login: vi.fn(),
+    register: vi.fn(),
+    logout: vi.fn(),
+    updateEmail: vi.fn(),
+    updateUsername: vi.fn(),
+    updatePassword: vi.fn(),
+    checkAvailability: vi.fn(),
+    refreshSession: vi.fn(),
+  }),
+}));
+
 const mockTrack: Track = {
   id: 'test-001',
   title: 'Test Track',
@@ -96,17 +114,11 @@ describe('AudioPlayer', () => {
       value: mediaSessionStub,
       configurable: true,
     });
-    (global as any).MediaMetadata = class {
-      constructor(init: Record<string, unknown>) {
-        Object.assign(this, init);
-      }
-    };
   });
 
   afterEach(() => {
     vi.clearAllMocks();
     delete (navigator as any).mediaSession;
-    delete (global as any).MediaMetadata;
   });
 
   it('renders an audio element with the playback source', () => {

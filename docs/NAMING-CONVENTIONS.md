@@ -2,7 +2,7 @@
 
 > **Canonical naming standards for consistent code organization**
 
-**Last Modified**: 2026-01-13 14:10 EST
+**Last Modified**: 2026-01-24 01:00 EST
 **Status**: Authoritative Standard
 
 ## Overview
@@ -11,7 +11,7 @@ This document establishes definitive naming conventions for MetaDJ Nexus. All ne
 
 ## Critical Terminology Change
 
-**"Modules" terminology is DEPRECATED**. Replace with context-appropriate alternatives:
+**"Modules" terminology is retired**. Use context-appropriate alternatives:
 
 | Old Term | New Term | Usage Context |
 |----------|----------|---------------|

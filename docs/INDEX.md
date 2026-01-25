@@ -2,7 +2,7 @@
 
 > Quick navigation to all project documentation
 
-**Last Modified**: 2026-01-15
+**Last Modified**: 2026-01-24 01:00 EST
 
 ---
 
@@ -119,7 +119,7 @@
 
 ## Archive
 
-- [archive/](./archive/) — Historical implementation decisions and deprecated docs
+- [archive/](./archive/) — Historical implementation decisions and archived docs
 
 ---
 

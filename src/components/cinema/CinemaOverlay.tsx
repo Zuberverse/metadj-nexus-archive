@@ -181,7 +181,35 @@ export function CinemaOverlay({
   const lastBounceTimeRef = useRef(0)
   const lastBassLevelRef = useRef(0)
 
-  const isPerformanceMode = true
+  const [autoPerformanceMode, setAutoPerformanceMode] = useState(false)
+  const performanceModeActivatedRef = useRef(false)
+
+  const enablePerformanceMode = useCallback((reason: string, details?: Record<string, unknown>) => {
+    if (performanceModeActivatedRef.current) return
+    performanceModeActivatedRef.current = true
+    setAutoPerformanceMode(true)
+    logger.info("[Cinema] Performance mode enabled", { reason, ...(details ?? {}) })
+  }, [logger])
+
+  useEffect(() => {
+    if (autoPerformanceMode || typeof navigator === "undefined") return
+    const browser = navigator as Navigator & {
+      deviceMemory?: number
+      connection?: { saveData?: boolean }
+    }
+    const cores = browser.hardwareConcurrency ?? 8
+    const memory = browser.deviceMemory ?? 8
+    const saveData = browser.connection?.saveData ?? false
+    if (cores <= 4 || memory <= 4 || saveData) {
+      enablePerformanceMode("low-end-device", { cores, memory, saveData })
+    }
+  }, [autoPerformanceMode, enablePerformanceMode])
+
+  const handlePerformanceModeRecommended = useCallback(() => {
+    enablePerformanceMode("low-fps-detected")
+  }, [enablePerformanceMode])
+
+  const isPerformanceMode = !shouldUseSidePanels || autoPerformanceMode
 
   // Dream state from props
   const {
@@ -329,6 +357,8 @@ export function CinemaOverlay({
   const isVisualizerScene = isVisualizer(currentScene)
   const videoSources = useMemo(() => buildVideoSources(currentScene), [currentScene])
   const hasVideoSource = videoSources.length > 0
+  const is3DVisualizerScene = isVisualizerScene && currentScene.visualizerStyle?.renderer === "3d"
+  const shouldMonitorPerformance = enabled && is3DVisualizerScene && !autoPerformanceMode
 
   // Audio analyzer for visualizers AND Dream bounce animation
   // Enable when: (visualizer scene OR Dream streaming) AND playing music
@@ -688,8 +718,16 @@ export function CinemaOverlay({
             style={currentScene.visualizerStyle}
             seed={combineSeeds(currentTrack?.id ?? "no-track", currentScene.id)}
             performanceMode={isPerformanceMode}
-            postProcessing={isPerformanceMode ? (shouldUseSidePanels ? "lite" : "off") : "full"}
+            postProcessing={
+              autoPerformanceMode
+                ? "off"
+                : isPerformanceMode
+                  ? (shouldUseSidePanels ? "lite" : "off")
+                  : "full"
+            }
             onCanvasReady={handleVisualizerCanvasReady}
+            enablePerformanceMonitoring={shouldMonitorPerformance}
+            onPerformanceModeRecommended={handlePerformanceModeRecommended}
           />
         </div>
       )}

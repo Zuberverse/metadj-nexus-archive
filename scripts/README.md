@@ -1,6 +1,6 @@
 # MetaDJ Nexus Scripts
 
-**Last Modified**: 2025-12-22 14:03 EST
+**Last Modified**: 2026-01-24 01:00 EST
 
 Automation utilities for audio encoding, video conversion, and data validation.
 
@@ -24,7 +24,7 @@ Automation utilities for audio encoding, video conversion, and data validation.
 
 **`validate-music.js`**
 - Validates track metadata in `src/data/music.json`
-- Checks: unique IDs, valid collection refs, 2 genre tags, required fields, valid URLs, collection track counts, deprecated tags
+- Checks: unique IDs, valid collection refs, 2 genre tags, required fields, valid URLs, collection track counts, retired tags
 - Usage: `node scripts/validate-music.js`
 
 ### Knowledge Base Validation

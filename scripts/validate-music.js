@@ -123,10 +123,10 @@ collections.forEach((collection) => {
 });
 
 // Validation 5: No "Cinematic" as genre tag
-log.info('Checking for deprecated "Cinematic" tag...');
+log.info('Checking for retired "Cinematic" tag...');
 tracks.forEach((track) => {
   if (track.genres && track.genres.includes('Cinematic')) {
-    log.warn(`${track.id}: Uses deprecated "Cinematic" tag`);
+    log.warn(`${track.id}: Uses retired "Cinematic" tag`);
     warnings++;
   }
 });

@@ -19,23 +19,6 @@ import { processVercelAIBuffer, handleVercelAIChunk } from '@/hooks/metadjai/use
 import { mapErrorToUserMessage } from '@/lib/ai';
 import type { MetaDjAiMessage } from '@/types/metadjai.types';
 
-// Mock sessionStorage
-const mockSessionStorage = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value;
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
-
 // Mock localStorage (used by rate limit)
 const mockLocalStorage = (() => {
   let store: Record<string, string> = {};

@@ -8,8 +8,9 @@
 import { NextResponse } from 'next/server';
 import { clearSession } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { withOriginValidation } from '@/lib/validation/origin-validation';
 
-export async function POST() {
+export const POST = withOriginValidation(async () => {
   try {
     await clearSession();
     return NextResponse.json({ success: true });
@@ -22,4 +23,4 @@ export async function POST() {
       { status: 500 }
     );
   }
-}
+});

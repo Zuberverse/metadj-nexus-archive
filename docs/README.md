@@ -2,7 +2,7 @@
 
 > **Complete reference for developing, deploying, and understanding MetaDJ Nexus**
 
-**Last Modified**: 2026-01-15
+**Last Modified**: 2026-01-24 01:00 EST
 **Version**: 0.9.46
 
 ## Quick Start
@@ -147,7 +147,7 @@ metadj-nexus/
 
 ### Terminology & Standards
 - **Naming Conventions**: [NAMING-CONVENTIONS.md](NAMING-CONVENTIONS.md)
-- **Important**: "Features" replaces "Modules" - see naming conventions for details
+- **Important**: Use "Features" terminology; avoid "Modules" (see naming conventions)
 
 ### Media & Streaming
 - **Media Storage**: [MEDIA-STORAGE.md](MEDIA-STORAGE.md)

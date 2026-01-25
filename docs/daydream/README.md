@@ -7,7 +7,7 @@ Central reference point for bringing Daydream StreamDiffusion into MetaDJ Nexus.
 ## Core References
 - [StreamDiffusion Reference](streamdiffusion-reference.md) — payload shape, defaults, constraints
 - [MetaDJ Nexus Dream MVP](metadj-nexus-dream-mvp.md) — scope, UX rules, cinema/data flow
-- External references hub: `1-system/3-docs/external/ai/daydream/` — canonical platform docs and official links
+- External references hub: `1-system/3-docs/external-tools/ai/daydream/` — canonical platform docs and official links
 
 ## API Surface (Upstream)
 Daydream exposes a minimal set of routes:
