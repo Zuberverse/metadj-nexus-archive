@@ -14,12 +14,12 @@ const PLATFORM_FEATURES = {
   hub: {
     title: 'Hub',
     description:
-      'Mission control for MetaDJ Nexus—launch cinematic listening, catch updates, and jump into key surfaces.',
+      'Mission control for MetaDJ Nexus—launch cinematic listening, catch updates, and jump into key sections.',
     howToUse:
       'Start in the Hub to launch the hero track into Cinema, browse spotlight updates, or open Music, Wisdom, Journal, or MetaDJai.',
     tips: [
       'Enter Cinema launches the hero track + visuals',
-      'Wisdom Spotlight surfaces the latest Thought, Guide, and Reflection',
+      'Wisdom Spotlight highlights the latest Thought, Guide, and Reflection',
       'Platform Pulse tracks recent updates',
       'Quick Start checklist appears on mobile to track warmup steps',
     ],
@@ -31,7 +31,7 @@ const PLATFORM_FEATURES = {
     howToUse:
       'Open the Music panel and use the Library tab to browse Featured and collections. Select a collection to see its track list (Start Here / Shuffle) and use "About Collection" for the story.',
     tips: [
-      'Featured surfaces 10 rotating tracks for quick discovery',
+      'Featured highlights 10 rotating tracks for quick discovery',
       'Recently Played keeps your last 50 plays on this device',
       'Track options (•••) include Add to Queue and Add to Playlist',
     ],
@@ -76,11 +76,11 @@ const PLATFORM_FEATURES = {
   journal: {
     title: 'Journal',
     description:
-      'Private, local-first space for ideas, drafts, and reflections.',
+      'Private, account-synced space for ideas, drafts, and reflections.',
     howToUse:
       'Open Journal from the navigation, then add entries with the editor or voice dictation.',
     tips: [
-      'Entries stay local in your browser',
+      'Entries sync to your account when signed in',
       'Rich-text formatting toolbar is built in',
       'Voice dictation caps at 60 seconds',
     ],
@@ -117,6 +117,7 @@ const PLATFORM_FEATURES = {
       "I'm context-aware of what you're listening to",
       'Try Quick Actions for structured prompts',
       'Ask for playback or queue changes when you want music-first help',
+      'History syncs to your account when signed in',
       'Use Personalize to tune tone, length, and format',
     ],
   },
@@ -187,7 +188,7 @@ export const getPlatformHelp = {
         title: 'MetaDJ Nexus Overview',
         description:
           "Your platform hub for MetaDJ's evolving ecosystem—Hub, Music, Cinema, Wisdom, Journal, MetaDJai, and account tools. The landing page is public; the full experience requires a free account.",
-        surfaces: Object.entries(PLATFORM_FEATURES).map(([key, info]) => ({
+        sections: Object.entries(PLATFORM_FEATURES).map(([key, info]) => ({
           key,
           title: info.title,
           description: info.description,

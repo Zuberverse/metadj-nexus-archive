@@ -26,6 +26,7 @@
     "prebuild": "npm run lint && npm run type-check && npm test",
     "prebuild:ci": "npm run test:ci",
     "build": "cross-env NODE_ENV=production next build",
+    "build:replit": "cross-env NODE_ENV=production next build",
     "build:ci": "cross-env NODE_ENV=production next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-8100}",
     "start:replit": "next start -H 0.0.0.0 -p 5000",

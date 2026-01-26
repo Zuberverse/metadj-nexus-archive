@@ -1,6 +1,6 @@
 # Transformer Collection — Preview Documentation
 
-**Last Modified**: 2025-12-19 17:08 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 ## Status: Preview / Placeholder
 
@@ -168,7 +168,7 @@ When tracks are live:
 
 - **Collection System**: `3-projects/5-software/metadj-nexus/docs/features/collections-system.md`
 - **Upload Guide**: `docs/MEDIA-STORAGE.md`
-- **Tab System**: `3-projects/5-software/metadj-nexus/docs/features/tab-content-reference.md`
+- **Tab System**: `../archive/2026-01-05-tab-content-reference.md`
 - **Data Architecture**: `3-projects/5-software/metadj-nexus/docs/architecture/data-architecture.md`
 
 ---

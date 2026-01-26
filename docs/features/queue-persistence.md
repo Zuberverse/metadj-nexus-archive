@@ -2,7 +2,7 @@
 
 > **localStorage-based queue state persistence for seamless listening continuity**
 
-**Last Modified**: 2026-01-15 10:00 EST
+**Last Modified**: 2026-01-26 00:00 EST
 **Status**: ✅ Implemented
 
 ## Overview
@@ -458,7 +458,7 @@ If seeing quota errors in console:
 ## Related Documentation
 
 - **Analytics Integration**: `3-projects/5-software/metadj-nexus/docs/features/analytics-implementation.md`
-- **Queue Management**: `docs/features/queue-system.md` (if exists)
+- **Queue Management**: `queue-persistence.md`
 - **localStorage Best Practices**: MDN Web Docs
 
 ## Support

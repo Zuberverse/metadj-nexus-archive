@@ -2,7 +2,7 @@
 
 > **Complete reference for Vercel AI SDK implementation in MetaDJ Nexus**
 
-**Last Modified**: 2026-01-24 01:00 EST
+**Last Modified**: 2026-01-26 13:00 EST
 
 ## Overview
 
@@ -694,7 +694,7 @@ const result = await generateText({
 
 **User Personalization Layer** (planned):
 - Opt‑in user profiles that let listeners share context about themselves (goals, tastes, current projects, constraints, preferred collaboration style).
-- Stored locally first, with a clear “what MetaDJai knows about me” surface and granular toggles.
+- Stored server-side for authenticated users, with a clear “what MetaDJai knows about me” panel and granular toggles.
 - Injected into the MetaDJai system instructions to enable deeper, more personal collaboration without breaking transparency or control.
 
 **Agentic Multi‑Step Tool Calling** (active):
@@ -1043,7 +1043,7 @@ MetaDJ Nexus uses a customized Markdown rendering engine to ensure AI outputs ma
 - Strict Tailwind utility usage for consistent design tokens (colors, spacing, shadows).
 
 ### Related Documentation
-- **Changelog**: `CHANGELOG.md` (v0.9.20+ AI enhancements)
+- **Changelog**: `../../CHANGELOG.md` (v0.9.20+ AI enhancements)
 - **Deployment**: `docs/operations/BUILD-DEPLOYMENT-GUIDE.md` (environment setup)
 - **User Guide Update Standard**: `docs/standards/user-guide-update-standard.md`
 - **MCP + DevTools Plan**: `docs/architecture/MCP-DEVTOOLS-PLAN.md`

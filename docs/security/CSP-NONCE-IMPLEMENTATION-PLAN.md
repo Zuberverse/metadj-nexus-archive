@@ -1,6 +1,6 @@
 # CSP Nonce Implementation Plan
 
-**Last Modified**: 2026-01-08 11:56 EST
+**Last Modified**: 2026-01-26 00:00 EST
 **Status**: Partially implemented (nonce CSP live; inline style hardening deferred)
 **Priority**: Medium
 **Estimated Effort**: In progress
@@ -498,8 +498,8 @@ No new environment variables required. Existing variables used:
 ### Related Files
 
 - Current CSP: `/next.config.js`
-- Security Overview: `/docs/SECURITY.md`
-- Security Improvements: `/docs/SECURITY-IMPROVEMENTS-2025-12-04.md`
+- Security Overview: `../SECURITY.md`
+- Security Improvements: (retired; no longer present in docs archive)
 
 ---
 

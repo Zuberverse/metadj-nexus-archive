@@ -2,7 +2,7 @@
 
 > **Complete reference for developing, deploying, and understanding MetaDJ Nexus**
 
-**Last Modified**: 2026-01-24 01:00 EST
+**Last Modified**: 2026-01-26 13:00 EST
 **Version**: 0.9.46
 
 ## Quick Start
@@ -73,7 +73,7 @@ See [features/README.md](features/README.md) for the complete feature documentat
 | [features/cinema-system.md](features/cinema-system.md) | Cinema System | Visual experiences, visualizers, video scenes |
 | [features/hub-system.md](features/hub-system.md) | Hub System | Platform home surface (Hero, Wisdom Spotlight, Platform Pulse) |
 | [features/panel-system.md](features/panel-system.md) | Panel System | Desktop side panels, layout orchestration |
-| [features/collections-system.md](features/collections-system.md) | Collections | Collections/singles organization, tabs, filtering |
+| [features/collections-system.md](features/collections-system.md) | Collections | Collection organization, tabs, filtering |
 | [features/ui-visual-system.md](features/ui-visual-system.md) | Design System | OKLCH colors, gradients, typography, effects |
 | [features/wisdom-system.md](features/wisdom-system.md) | Wisdom System | Content dashboard, blog integration |
 | [features/queue-persistence.md](features/queue-persistence.md) | Queue Persistence | Queue state management, localStorage |

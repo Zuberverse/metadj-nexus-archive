@@ -1,6 +1,6 @@
 # StreamDiffusion Reference (Daydream)
 
-**Last Modified**: 2025-12-19 14:50 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 Quick reference for the Daydream StreamDiffusion API as used by MetaDJ Nexus. Focused on defaults that keep latency low while producing on-brand visuals.
 
@@ -147,4 +147,4 @@ Example: `androgynous cartoon magical dj blue sparkle`
 ## Archived Configurations
 
 Previous configurations are preserved in `docs/daydream/archive/`:
-- `sdxl-turbo-payload-2025-12-09.md` - SDXL Turbo config (not currently used)
+- `archive/sdxl-turbo-payload-2025-12-09.md` - SDXL Turbo config (not currently used)

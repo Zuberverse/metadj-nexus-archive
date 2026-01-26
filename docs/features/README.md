@@ -1,6 +1,6 @@
 # Feature Documentation Index
 
-**Last Modified**: 2026-01-16
+**Last Modified**: 2026-01-26
 
 Quick reference for all feature documentation in MetaDJ Nexus.
 
@@ -12,7 +12,7 @@ Quick reference for all feature documentation in MetaDJ Nexus.
 | Cinema | [cinema-system.md](./cinema-system.md) | Visual experience layer with 3D/2D visualizers and video scenes |
 | Dream (Daydream) | [../daydream/README.md](../daydream/README.md) | Real-time StreamDiffusion overlay for Cinema |
 | Wisdom | [wisdom-system.md](./wisdom-system.md) | Knowledge hub with Thoughts, Guides, and Reflections |
-| Journal | [journal-feature.md](./journal-feature.md) | Local-first journal for ideas and reflections |
+| Journal | [journal-feature.md](./journal-feature.md) | Private journal synced to your account with local backup |
 | MetaDJai | [vercel-ai-sdk-integration.md](./vercel-ai-sdk-integration.md) | AI companion integration via Vercel AI SDK |
 | MetaDJai Knowledge | [metadjai-knowledge-base.md](./metadjai-knowledge-base.md) | Knowledge base architecture for grounded responses |
 
@@ -22,7 +22,7 @@ Quick reference for all feature documentation in MetaDJ Nexus.
 |---------|----------|-------------|
 | Audio Player | [audio-player-standards.md](./audio-player-standards.md) | Playback controls, Action Bar, and media patterns |
 | Crossfade | [crossfade.md](./crossfade.md) | Seamless audio transitions between tracks |
-| Collections | [collections-system.md](./collections-system.md) | Collections and singles organization system |
+| Collections | [collections-system.md](./collections-system.md) | Collection organization system |
 | Playlist System | [playlist-system.md](./playlist-system.md) | User-created playlist management (Phase 2 live) |
 | Queue Persistence | [queue-persistence.md](./queue-persistence.md) | localStorage-based queue state management |
 | Mood Channels | [mood-channels.md](./mood-channels.md) | Curated listening by mood/activity (gated) |

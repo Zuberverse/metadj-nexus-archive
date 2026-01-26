@@ -34,6 +34,8 @@ const DEV_ORIGINS = new Set([
   'https://0.0.0.0:8100',
 ])
 
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+
 /**
  * Build the set of allowed hosts for origin validation
  */
@@ -83,6 +85,37 @@ function getAllowedHosts(request: NextRequest): Set<string> {
   return allowedHosts
 }
 
+function isInternalRequest(request: NextRequest): boolean {
+  const secret = process.env.INTERNAL_API_SECRET
+  if (!secret) return false
+  const internalHeader = request.headers.get('x-internal-request')
+  return internalHeader === secret
+}
+
+function isAllowedOrigin(origin: string, request: NextRequest): boolean {
+  if (DEV_ORIGINS.has(origin)) {
+    return true
+  }
+
+  const allowedHosts = getAllowedHosts(request)
+  try {
+    const originHost = new URL(origin).host
+    return allowedHosts.has(originHost)
+  } catch {
+    return false
+  }
+}
+
+function isAllowedReferer(referer: string, request: NextRequest): boolean {
+  const allowedHosts = getAllowedHosts(request)
+  try {
+    const refererHost = new URL(referer).host
+    return allowedHosts.has(refererHost)
+  } catch {
+    return false
+  }
+}
+
 /**
  * Validate that a request originates from an allowed source
  *
@@ -90,32 +123,35 @@ function getAllowedHosts(request: NextRequest): Set<string> {
  * @returns Object indicating if the origin is allowed
  */
 export function validateOrigin(request: NextRequest): { allowed: boolean; origin: string | null } {
+  if (isInternalRequest(request)) {
+    return { allowed: true, origin: request.headers.get('origin') }
+  }
+
   const origin = request.headers.get('origin')
+  const method = request.method?.toUpperCase() ?? 'GET'
+  const requiresOrigin = !SAFE_METHODS.has(method)
 
   // No origin header - could be same-origin or server-to-server
-  // Allow for now but log for monitoring
+  // Allow only for safe methods; unsafe methods must present origin or referer
   if (!origin) {
-    return { allowed: true, origin: null }
-  }
-
-  // Check development origins
-  if (DEV_ORIGINS.has(origin)) {
-    return { allowed: true, origin }
-  }
-
-  // Check production origins
-  const allowedHosts = getAllowedHosts(request)
-  try {
-    const originHost = new URL(origin).host
-    if (allowedHosts.has(originHost)) {
-      return { allowed: true, origin }
+    if (!requiresOrigin) {
+      return { allowed: true, origin: null }
     }
-  } catch {
-    // Invalid origin URL
+
+    const referer = request.headers.get('referer')
+    if (!referer) {
+      return { allowed: false, origin: null }
+    }
+
+    return { allowed: isAllowedReferer(referer, request), origin: null }
+  }
+
+  if (origin === 'null') {
     return { allowed: false, origin }
   }
 
-  return { allowed: false, origin }
+  // Check development origins
+  return { allowed: isAllowedOrigin(origin, request), origin }
 }
 
 /**

@@ -1,6 +1,6 @@
 # MetaDJ Nexus - Build & Deployment Guide
 
-**Last Modified**: 2026-01-14 21:55 EST
+**Last Modified**: 2026-01-26 14:25 EST
 
 ---
 
@@ -12,7 +12,7 @@ For the fastest, most reliable deployment on the target platform:
 2. Click **Deploy** in the Replit UI (Deployments).
 3. Verify `/api/health` and `/api/audio/...` after deploy.
 
-See `docs/REPLIT.md` for the full Replit deployment flow.
+See `docs/replit.md` for the full Replit deployment flow.
 
 ---
 
@@ -23,7 +23,7 @@ Run these before any public MVP launch:
 1. **Quality gate**: `npm run lint && npm run type-check && npm run test`
 2. **E2E smoke**: `npm run test:e2e` (Chromium + WebKit + Mobile)
 3. **Build validation**: run `npm run build` on a non-Replit runner (CI or local)
-4. **Env sanity**: confirm required keys in `.env.local` and Replit Secrets
+4. **Env sanity**: confirm required keys in Replit Secrets (use `.env.local` only for local dev)
 5. **DB schema**: run `npm run db:push` against the Neon database
 6. **Health checks**:
    - `GET /api/health`
@@ -61,15 +61,13 @@ npm run build
 - ✅ **Development**: Zero impact - dev server runs perfectly
 - ✅ **Functionality**: App works flawlessly
 - ⚠️ **Local builds**: Cannot complete in Replit environment
-- ✅ **Deployment builds**: Replit Deployments work fine (Vercel available for future scaling)
+- ✅ **Deployment builds**: Replit Deployments work fine (see `docs/replit.md`)
 
 ---
 
-## Deployment Options
+## Deployment (Replit Only)
 
-### Option 1: Replit Deployments (Primary) ⭐
-
-**Best for**: Production on the Replit-first target platform
+MetaDJ Nexus ships on Replit for the MVP. Other deployment paths are intentionally out of scope until after launch.
 
 **Steps**:
 1. Configure secrets in Replit (OPENAI_API_KEY, optional ANTHROPIC_API_KEY/GOOGLE_API_KEY/XAI_API_KEY, R2 credentials, logging keys)
@@ -79,124 +77,10 @@ npm run build
 **Notes**:
 - Uses Replit’s managed build + zero-downtime rollout
 - Keeps storage, secrets, and hosting in one place
-- Full walkthrough: `docs/REPLIT.md`
+- Build command uses `npm run build:replit`
+- Full walkthrough: `docs/replit.md`
 
----
-
-### Option 2: Vercel (Roadmap Only)
-
-**Status**: Not currently used. Documented for potential future scaling/multi-region needs.
-
-**Best for**: Future scaling scenario requiring global CDN, edge functions, or multi-instance deployment
-
-```bash
-# One-time setup
-npm install -g vercel
-
-# Deploy
-npx vercel --prod
-```
-
-**When to Consider**:
-- Global latency requirements
-- Enterprise-level uptime SLAs
-- Multi-tenant growth requiring edge deployment
-- Need for preview deployments per PR
-
-**Pros:**
-- ✅ Automatic Next.js optimization
-- ✅ Global CDN included
-- ✅ Preview deployments for each commit
-- ✅ Edge functions support
-
-**Cons:**
-- ⚠️ External platform dependency (vs. Replit ecosystem)
-- ⚠️ Requires Cloudflare R2 CORS configuration
-- ⚠️ Adds complexity vs. single-platform approach
-
-**Note**: Currently using Vercel AI SDK for AI streaming, but deployment remains Replit-first.
-
----
-
-### Option 3: Replit Static Export (Not Recommended)
-
-**Best for**: Simple deployments within Replit ecosystem
-
-**Steps:**
-
-1. Enable static export in `next.config.js`:
-
-```javascript
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: 'export', // Add this line
-  // ... rest of config
-}
-```
-
-2. Build locally on a different machine:
-
-```bash
-npm run build
-```
-
-3. Upload `.next` directory to Replit
-
-4. Configure deployment:
-
-```bash
-# In Replit deployment settings
-# Build Command: (leave empty)
-# Run Command: npx serve .next
-```
-
-**Pros:**
-- ✅ Stays within Replit ecosystem
-- ✅ Simple static hosting
-
-**Cons:**
-- ❌ **LOSES ALL API ROUTES** (MetaDJai, streaming, logging)
-- ❌ **LOSES SERVER-SIDE FEATURES**
-- ❌ Not recommended for this app
-
----
-
-### Option 4: Docker Deployment (Roadmap Only)
-
-**Best for**: Custom infrastructure, full control
-
-```dockerfile
-FROM node:20-alpine AS base
-
-# Dependencies
-FROM base AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-
-# Builder
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm run build
-
-# Runner
-FROM base AS runner
-WORKDIR /app
-ENV NODE_ENV production
-
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-
-EXPOSE 3000
-CMD ["node", "server.js"]
-```
-
-**Note**: Requires `output: 'standalone'` in `next.config.js`
-
----
+**Future considerations** (not MVP scope): archived deployment alternatives live in `docs/archive/2026-01-26-deployment-options-roadmap.md`.
 
 ## Environment Variables Setup
 
@@ -229,6 +113,8 @@ R2_SECRET_ACCESS_KEY=your_r2_secret_access_key
 R2_BUCKET=metadj-nexus-media
 ```
 
+> **TLS note**: Production enforces `sslmode=require` (or `ssl=true`) for `DATABASE_URL`.
+
 ### Optional
 
 ```env
@@ -255,6 +141,9 @@ OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe-2025-12-15
 # Auth tuning (Optional)
 AUTH_SESSION_DURATION=604800
 AUTH_REGISTRATION_ENABLED=true
+
+# Trusted proxy IP headers (Optional)
+TRUSTED_IP_HEADERS=x-vercel-ip,cf-connecting-ip,x-real-ip,x-forwarded-for
 ```
 
 ### Generating Secure Keys

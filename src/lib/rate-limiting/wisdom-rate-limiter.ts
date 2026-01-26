@@ -14,6 +14,7 @@
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 import { logger } from "@/lib/logger"
+import { resolveClientAddress } from "@/lib/network"
 import { BoundedMap, DEFAULT_MAX_ENTRIES } from "./bounded-map"
 import type { NextRequest } from "next/server"
 
@@ -143,19 +144,11 @@ function getUpstashWisdomRatelimit(): Ratelimit | null {
  * Uses IP-based identification for anonymous static content requests
  */
 export function getWisdomClientId(request: NextRequest): string {
-  const forwarded = request.headers.get("x-forwarded-for")
-  if (forwarded) {
-    return `wisdom-${forwarded.split(",")[0].trim()}`
+  const { ip, fingerprint } = resolveClientAddress(request)
+  if (ip !== "unknown") {
+    return `wisdom-${ip}`
   }
-
-  const realIp = request.headers.get("x-real-ip")
-  if (realIp) {
-    return `wisdom-${realIp}`
-  }
-
-  const ua = request.headers.get("user-agent") || "unknown"
-  const lang = request.headers.get("accept-language") || "unknown"
-  return `wisdom-anon-${Buffer.from(`${ua}|${lang}`).toString("base64").slice(0, 16)}`
+  return `wisdom-${fingerprint.slice(0, 16)}`
 }
 
 /**

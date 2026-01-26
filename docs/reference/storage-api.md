@@ -2,7 +2,7 @@
 
 > Unified persistence layer for MetaDJ Nexus client-side state management.
 
-**Last Modified**: 2026-01-14 20:48 EST
+**Last Modified**: 2026-01-26 15:00 EST
 ## Overview
 
 The storage layer provides type-safe localStorage management with:
@@ -12,7 +12,7 @@ The storage layer provides type-safe localStorage management with:
 - Storage availability detection
 - Schema versioning for migrations
 - Cross-tab synchronization support
-- Specialized storage for MetaDJai chat sessions
+- Legacy storage for MetaDJai chat sessions (migration only)
 
 **Architecture**:
 ```
@@ -317,11 +317,13 @@ return () => unsubscribe();
 
 ---
 
-## MetaDJai Chat History Storage
+## MetaDJai Chat History Storage (Legacy)
 
 **Location**: `src/lib/storage/metadjai-history-storage.ts`
 
-Manages persistent chat session history across browser sessions.
+Legacy localStorage support for MetaDJai history. As of the current MVP, chat history is persisted server-side (Postgres) and local storage is only used to:
+- migrate older sessions on first load, and
+- remember the active session id between reloads.
 
 ### Storage Keys
 
@@ -335,8 +337,7 @@ const STORAGE_KEYS = {
 ### Limits
 
 ```typescript
-const MAX_SESSIONS = 20;              // Maximum stored sessions
-const MAX_MESSAGES_PER_SESSION = 80;  // Messages per session
+const MAX_MESSAGES_PER_SESSION = 80;  // Messages per session (legacy local cache)
 ```
 
 ### Types
@@ -364,7 +365,7 @@ const sessions = metadjAiHistoryStorage.loadSessions();
 - Validates each session structure
 - Filters invalid sessions
 - Sorts by `updatedAt` descending
-- Limits to `MAX_SESSIONS`
+- Does not cap session count (server history is authoritative; local is best-effort)
 
 #### `metadjAiHistoryStorage.saveSessions(sessions: MetaDjAiChatSession[]): void`
 Save chat sessions to storage.
@@ -374,7 +375,6 @@ metadjAiHistoryStorage.saveSessions(sessions);
 ```
 
 **Behavior**:
-- Limits to `MAX_SESSIONS`
 - Truncates messages to `MAX_MESSAGES_PER_SESSION` per session
 - Silently fails on storage errors (non-blocking)
 
@@ -589,7 +589,7 @@ function useChatHistory() {
 
   const createSession = useCallback(() => {
     const newSession = metadjAiHistoryStorage.createSession();
-    const updated = [newSession, ...sessions].slice(0, 20);
+    const updated = [newSession, ...sessions];
     setSessions(updated);
     metadjAiHistoryStorage.saveSessions(updated);
     return newSession;

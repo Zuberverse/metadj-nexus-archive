@@ -21,7 +21,7 @@ import type { Track } from '@/types';
 interface Collection {
   id: string;
   title: string;
-  type: 'collection' | 'singles';
+  type: 'collection';
   description?: string;
   artworkUrl?: string;
   trackCount?: number;

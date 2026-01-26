@@ -2,7 +2,7 @@
 
 > **Canonical naming standards for consistent code organization**
 
-**Last Modified**: 2026-01-24 01:00 EST
+**Last Modified**: 2026-01-26 00:00 EST
 **Status**: Authoritative Standard
 
 ## Overview
@@ -226,10 +226,10 @@ const autoPlay = true;
 **Root canonical docs** use UPPERCASE filenames for fast scanning and stable external links:
 - `README.md`, `QUICKSTART.md`, `API.md`, `SECURITY.md`, `TESTING.md`, `KEYBOARD-SHORTCUTS.md`
 
-**Category docs** use `kebab-case.md` inside their domain folders:
+**Category docs** use kebab-case filenames inside their domain folders:
 - `docs/architecture/`, `docs/features/`, `docs/operations/`, `docs/security/`, `docs/testing/`, `docs/reference/`, `docs/daydream/`
 
-**Dated workflow logs** (roadmaps, audits, one‑off status updates) should not live in the repo long‑term. Capture learnings in active docs or `CHANGELOG.md`, then delete the log.
+**Dated workflow logs** (roadmaps, audits, one‑off status updates) should not live in the repo long‑term. Capture learnings in active docs or `../CHANGELOG.md`, then delete the log.
 
 **Archive policy**: `docs/archive/` stays minimal and only holds long‑term reference material that is no longer maintained.
 

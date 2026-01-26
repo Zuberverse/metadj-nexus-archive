@@ -18,6 +18,7 @@ import { SYSTEM_PROMPT_TOKEN_BUDGET } from '@/lib/ai/meta-dj-ai-prompt'
 import { getRateLimitMode } from '@/lib/ai/rate-limiter'
 import { getSpendingStatus } from '@/lib/ai/spending-alerts'
 import { logger } from '@/lib/logger'
+import { resolveClientAddress } from '@/lib/network'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic' // Always execute, never cache
@@ -87,7 +88,7 @@ export async function GET(request: NextRequest) {
   // Authorization check
   if (!isAuthorized(request)) {
     logger.warn('Unauthorized access attempt to /api/health/ai', {
-      ip: request.headers.get('x-forwarded-for') || 'unknown',
+      ip: resolveClientAddress(request).ip,
     })
     return NextResponse.json(
       { error: 'Unauthorized' },

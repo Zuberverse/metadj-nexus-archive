@@ -57,7 +57,7 @@ describe('getClientIp', () => {
     const result1 = getClientIp(request1)
     const result2 = getClientIp(request2)
 
-    expect(result1).toMatch(/^anon-[a-f0-9]{16}$/)
+    expect(result1).toMatch(/^[a-f0-9]{64}$/)
     expect(result1).toBe(result2)
   })
 

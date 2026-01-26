@@ -1,9 +1,9 @@
 # Security Overview — MetaDJ Nexus
 
-**Last Modified**: 2026-01-16 22:18 EST
+**Last Modified**: 2026-01-26 12:00 EST
 > Pragmatic security approach for a music showcasing MVP
 
-*Last Reviewed: 2026-01-16*
+*Last Reviewed: 2026-01-26*
 *Status: ✅ Beta MVP Ready*
 
 ---
@@ -35,6 +35,10 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | **Authentication & Sessions** | Email/password auth with signed, HTTP-only session cookies (`nexus_session`) for `/app` and `/admin` access | Restricts authenticated surfaces |
 | **Cookie Path Isolation** | MetaDJai rate-limit cookie scoped to `/api/metadjai` | Prevents AI session cookies from leaking to unrelated routes |
 | **Body Size Limits** | 1MB limit on server actions | Prevents DoS via large payloads |
+| **CSRF Origin/Referer Validation** | `src/lib/validation/origin-validation.ts` + `withOriginValidation` on mutating endpoints | Blocks cross-site POST/PATCH/DELETE without trusted origin or referer |
+| **Trusted Proxy IP Headers** | `TRUSTED_IP_HEADERS` allowlist (defaults: `x-vercel-ip`, `cf-connecting-ip`, `x-real-ip`, `x-forwarded-for`) | Prevents spoofed IPs in rate limiting and logging |
+| **No-Store for Sensitive APIs** | `src/proxy.ts` sets `Cache-Control: no-store` for `/api/*` except media/wisdom | Prevents caching of authenticated or sensitive responses |
+| **Database TLS Enforcement** | `src/lib/env.ts` + `server/db.ts` | Enforces TLS for production DB connections (`sslmode=require` or `ssl=true`) |
 | **Generic Error Messages** | Internal details logged server-side only | Prevents information disclosure |
 | **Internal Monitoring** | `/api/health/ai` + `/api/health/providers` require `x-internal-request` header in all environments (`INTERNAL_API_SECRET`) | Prevents public access to operational telemetry |
 
@@ -47,13 +51,14 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 **Prompt injection resistance**
 - Playback/context fields interpolated into prompts are sanitized (`src/lib/ai/meta-dj-ai-prompt.ts`).
 - Raw user input is never concatenated into system instruction sections.
+- Tool outputs are normalized (Unicode + zero-width stripping), code-fence neutralized, and scrubbed for injection patterns before returning to the model (`src/lib/ai/tools/utils.ts`).
 
 **Rate limiting + session isolation**
 - All MetaDJai endpoints (`/api/metadjai`, `/api/metadjai/stream`, `/api/metadjai/transcribe`) share a session‑cookie + fingerprint rate limiter (`src/lib/ai/rate-limiter.ts`).
 - Session cookie is scoped to `/api/metadjai` to prevent leakage to unrelated routes.
 
 **Tool safety**
-- All tool results are sanitized for injection patterns and size‑capped (~8k chars) (`src/lib/ai/tools.ts`).
+- All tool results are sanitized for injection patterns and size‑capped (~8k chars) (`src/lib/ai/tools/utils.ts`).
 - **Active Control** tools (`proposePlayback`, `proposeQueueSet`, `proposePlaylist`, `proposeSurface`) only return proposals; the UI requires explicit user confirmation before executing any playback or navigation action.
 - Tool outputs (including web search) are treated as information; any instruction‑like or suspicious content is ignored to prevent prompt‑injection attacks.
 
@@ -72,7 +77,7 @@ MetaDJ Nexus is a public music player showcasing MetaDJ originals. The security 
 | **Account Hardening** | No MFA or email verification | Acceptable for beta; add before broader launch |
 | **Download Prevention** | None | Technical prevention doesn't work; legal protection sufficient |
 | **DRM** | None | Overkill for indie music showcasing |
-| **CSRF Tokens** | Not implemented | Relies on SameSite cookies + JSON APIs; add before public form expansion |
+| **CSRF Tokens** | Not implemented | Relies on SameSite cookies + origin/referer validation; add before public form expansion |
 
 ---
 
@@ -92,6 +97,8 @@ Strict-Transport-Security: max-age=31536000
 - `script-src` uses per-request nonces; inline scripts must include the nonce.
 - Dev mode still allows `unsafe-eval` for HMR/overlays.
 - `style-src` uses per-request nonces; `style-src-attr 'unsafe-inline'` remains enabled for motion-driven inline transforms. Prefer `useCspStyle` + `data-csp-style` for layout-critical inline styles.
+- `script-src-attr 'none'` blocks inline event handlers; use React handlers instead.
+- `worker-src 'self' blob:` allows web workers without widening to external origins.
 
 **Removed** (unnecessary complexity):
 - Cross-Origin-Resource-Policy (breaks CDN caching)

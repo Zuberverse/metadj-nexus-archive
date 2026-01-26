@@ -1,6 +1,6 @@
 # MetaDJ Nexus Component Architecture
 
-**Last Modified**: 2026-01-14 20:48 EST
+**Last Modified**: 2026-01-26 00:00 EST
 **Version**: 0.9.46
 
 ## Overview
@@ -497,7 +497,7 @@ describe('HomePage Integration', () => {
 ## Related Documentation
 
 - **Component Organization**: See CLAUDE.md Project Structure section
-- **Testing Guide**: `tests/README.md`
+- **Testing Guide**: `../../tests/README.md`
 - **Code Quality**: Follow lint/type-check/test gates in CI (coverage is informational for now)
 
 ---

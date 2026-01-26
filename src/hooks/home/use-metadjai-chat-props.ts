@@ -6,7 +6,6 @@
  */
 
 import { useMemo } from "react"
-import type { MetaDjAiChatSession } from "@/lib/storage/metadjai-history-storage"
 import type { Track } from "@/types"
 import type {
   MetaDjAiChatSessionSummary,
@@ -42,10 +41,11 @@ interface MetaDjAiSession {
   personalization: MetaDjAiPersonalizationState
   togglePersonalization: (enabled: boolean) => void
   updatePersonalization: (next: Partial<MetaDjAiPersonalizationState>) => void
-  sessions: MetaDjAiChatSession[]
+  sessions: MetaDjAiChatSessionSummary[]
   activeSessionId: string
   switchSession: (sessionId: string) => void
   deleteSession: (sessionId: string) => void
+  refreshSessions: () => void
 }
 
 interface UseMetaDjAiChatPropsParams {
@@ -77,16 +77,11 @@ export function useMetaDjAiChatProps({
       onStop: metaDjAiSession.stopStreaming,
       onRefresh: metaDjAiSession.resetConversation,
       onNewSession: () => metaDjAiSession.startNewSession(),
-      sessions: metaDjAiSession.sessions.map<MetaDjAiChatSessionSummary>((session) => ({
-        id: session.id,
-        title: session.title,
-        createdAt: session.createdAt,
-        updatedAt: session.updatedAt,
-        messageCount: session.messages.length,
-      })),
+      sessions: metaDjAiSession.sessions,
       activeSessionId: metaDjAiSession.activeSessionId,
       onSelectSession: metaDjAiSession.switchSession,
       onDeleteSession: metaDjAiSession.deleteSession,
+      onRefreshSessions: metaDjAiSession.refreshSessions,
       onRegenerate: metaDjAiSession.regenerateLastResponse,
       onSwitchVersion: metaDjAiSession.switchMessageVersion,
       onRetry: metaDjAiSession.retryLastMessage,

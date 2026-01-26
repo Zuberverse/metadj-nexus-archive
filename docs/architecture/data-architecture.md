@@ -2,7 +2,7 @@
 
 > How MetaDJ Nexus loads music metadata today and how relational data lives in Neon.
 
-**Last Modified**: 2026-01-14 20:55 EST
+**Last Modified**: 2026-01-26 13:00 EST
 ## Current Snapshot
 
 - `src/data/collections.json` — canonical collection records (name, release date, internal part notes).
@@ -24,7 +24,7 @@
 
 ### Integrity Snapshot (2025-12-11)
 - Validation gates: Zod schemas at load (`src/lib/validation/schemas.ts`) + `scripts/validate-music.js` (pretest).
-- Constraints enforced: unique track IDs, valid collection references, 2 genres per track, no `"Cinematic"`, `/api/audio/` URLs, `collection.type` in `collection|singles`, ISO dates, positive durations/counts.
+- Constraints enforced: unique track IDs, valid collection references, 2 genres per track, no `"Cinematic"`, `/api/audio/` URLs, `collection.type` = `collection`, ISO dates, positive durations/counts.
 - Current data: 20 tracks, 2 collections, all validations passing.
 
 

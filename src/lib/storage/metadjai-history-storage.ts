@@ -13,7 +13,6 @@ const STORAGE_KEYS = {
   activeSessionId: "metadj-nexus.metadjai.activeSessionId",
 } as const
 
-const MAX_SESSIONS = 20
 const MAX_MESSAGES_PER_SESSION = 80
 
 const getStorage = () => {
@@ -71,7 +70,6 @@ export const metadjAiHistoryStorage = {
         .map(normalizeSession)
         .filter((s): s is MetaDjAiChatSession => Boolean(s))
         .sort((a, b) => b.updatedAt - a.updatedAt)
-        .slice(0, MAX_SESSIONS)
     } catch {
       return []
     }
@@ -82,12 +80,10 @@ export const metadjAiHistoryStorage = {
     if (!storage) return
 
     try {
-      const payload = sessions
-        .slice(0, MAX_SESSIONS)
-        .map((s) => ({
-          ...s,
-          messages: s.messages.slice(-MAX_MESSAGES_PER_SESSION),
-        }))
+      const payload = sessions.map((s) => ({
+        ...s,
+        messages: s.messages.slice(-MAX_MESSAGES_PER_SESSION),
+      }))
       storage.setItem(STORAGE_KEYS.sessions, JSON.stringify(payload))
     } catch {
       // ignore
@@ -112,6 +108,31 @@ export const metadjAiHistoryStorage = {
     } catch {
       // ignore
     }
+  },
+
+  clearSessions(): void {
+    const storage = getStorage()
+    if (!storage) return
+    try {
+      storage.removeItem(STORAGE_KEYS.sessions)
+    } catch {
+      // ignore
+    }
+  },
+
+  clearActiveSessionId(): void {
+    const storage = getStorage()
+    if (!storage) return
+    try {
+      storage.removeItem(STORAGE_KEYS.activeSessionId)
+    } catch {
+      // ignore
+    }
+  },
+
+  clearAll(): void {
+    this.clearSessions()
+    this.clearActiveSessionId()
   },
 
   createSession(seedMessages: MetaDjAiMessage[] = []): MetaDjAiChatSession {

@@ -1,6 +1,6 @@
 # Next.js Upgrade Notes
 
-**Last Modified**: 2025-12-17 13:02 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 This document tracks configuration changes needed when upgrading Next.js versions.
 
@@ -29,7 +29,7 @@ When upgrading to the Next.js version that requires this configuration, add to `
 const nextConfig = {
   // ... existing config ...
   
-  // Allow Replit development domains and local ports (keep in sync with docs/REPLIT.md)
+  // Allow Replit development domains and local ports (keep in sync with docs/replit.md)
   allowedDevOrigins: [
     process.env.REPLIT_DEV_DOMAIN,
     'localhost:8100',

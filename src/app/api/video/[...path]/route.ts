@@ -28,6 +28,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
 import { sanitizePathSegments, streamBucketFile } from "@/lib/media/streaming";
 import { getVideoBucket } from "@/lib/media-storage";
+import { resolveClientAddress } from "@/lib/network";
 import {
   checkMediaRateLimit,
   buildRateLimitHeaders,
@@ -59,7 +60,7 @@ function sanitizeVideoPath(pathSegments: string[], request: NextRequest): string
   if (!sanitized) {
     logger.warn("Invalid path attempt blocked", {
       requestedPath: pathSegments.join("/"),
-      ip: request.headers.get("x-forwarded-for") || "unknown",
+      ip: resolveClientAddress(request).ip,
     });
   }
   return sanitized;
@@ -101,7 +102,7 @@ export async function GET(
   if (!rateLimitResult.allowed) {
     const { error, retryAfter } = buildMediaRateLimitResponse(rateLimitResult.remainingMs ?? 60000);
     logger.warn("Video rate limit exceeded", {
-      ip: request.headers.get("x-forwarded-for") || "unknown",
+      ip: resolveClientAddress(request).ip,
       retryAfter,
     });
     return NextResponse.json(

@@ -1,6 +1,6 @@
 # Design Tokens Reference
 
-**Last Modified**: 2026-01-14 20:38 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 ## Overview
 
@@ -285,5 +285,5 @@ border="border-(--metadj-amber)/30"
 
 - **Visual Identity Standards**: `1-system/1-context/1-knowledge/9-visual-assets/visual-identity-context-standards.md`
 - **UI Components Reference**: `docs/reference/components-ui-reference.md`
-- **Visual Design Audit**: `docs/audits/visual-design-audit-2025-12-14.md`
+- **Visual Design Audit**: `docs/reports/UX-AUDIT-MVP-READINESS.md` (latest UI/UX audit)
 - **Source File**: `src/app/globals.css`

@@ -2,7 +2,7 @@
 
 > **Complete reference for all custom React hooks in MetaDJ Nexus**
 
-**Last Modified**: 2025-12-28 13:48 EST
+**Last Modified**: 2026-01-26 13:00 EST
 ## Overview
 
 MetaDJ Nexus uses 48 custom React hooks organized by domain. Hooks can be imported directly from their files or via the `@/hooks` barrel export.
@@ -204,13 +204,13 @@ MetaDJai adapts to user intent automatically (creative companion by default, mus
 
 If a model change is requested while a response is streaming, the selection is queued and applied after the current response completes (the in-flight response is not interrupted).
 
-`startNewSession()` creates a new empty chat session and makes it active. `sessions`, `activeSessionId`, `switchSession()`, and `deleteSession()` support multi‑chat history persisted to localStorage and surfaced in the chat toolbar. The UI shows a confirmation modal before calling `deleteSession()` from the history popover.
+`startNewSession()` creates a new empty chat session and makes it active. `sessions`, `activeSessionId`, `switchSession()`, and `deleteSession()` support multi‑chat history stored server-side (Postgres) and surfaced in the chat toolbar. The UI shows a confirmation modal before calling `deleteSession()` from the history popover.
 
 ### useMetaDjAiMessages
 
 **File**: `src/hooks/use-metadjai-messages.ts`
 
-Message state management and persistence. As of v0.8.1, messages are grouped into chat sessions with localStorage history.
+Message state management and persistence. Chat history is stored server-side, with localStorage used only for legacy migration and active session caching.
 
 **Exports**:
 - `useMetaDjAiMessages` — Message state hook

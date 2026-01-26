@@ -912,28 +912,35 @@ export async function getFeedbackStats(): Promise<{
 /**
  * Create a new conversation
  */
-export async function createConversation(userId: string, title?: string): Promise<Conversation> {
+export async function createConversation(
+  userId: string,
+  title?: string,
+  options?: { id?: string; createdAt?: Date; updatedAt?: Date }
+): Promise<Conversation> {
   const now = new Date();
-  
+  const createdAt = options?.createdAt ?? now;
+  const updatedAt = options?.updatedAt ?? now;
+  const id = options?.id || generateId('conv');
+
   const [conversation] = await db
     .insert(conversations)
     .values({
-      id: generateId('conv'),
+      id,
       userId,
       title: title || 'New conversation',
       totalTokens: 0,
       messageCount: 0,
       isArchived: false,
-      createdAt: now,
-      updatedAt: now,
+      createdAt,
+      updatedAt,
     })
     .returning();
-  
+
   return conversation;
 }
 
 /**
- * Get all conversations for a user (not deleted, sorted by most recent)
+ * Get all active conversations for a user (not deleted, not archived, sorted by most recent)
  */
 export async function getUserConversations(
   userId: string,
@@ -945,6 +952,7 @@ export async function getUserConversations(
     .where(
       and(
         eq(conversations.userId, userId),
+        eq(conversations.isArchived, false),
         isNull(conversations.deletedAt)
       )
     )
@@ -1019,36 +1027,55 @@ export async function hardDeleteConversation(id: string): Promise<boolean> {
  * Add a message to a conversation
  */
 export async function addMessage(data: {
+  id?: string;
   conversationId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   tokensUsed?: number;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown> | null;
+  createdAt?: Date;
 }): Promise<Message> {
-  const [message] = await db
+  const messageId = data.id || generateId('msg');
+  const createdAt = data.createdAt ?? new Date();
+
+  const inserted = await db
     .insert(messages)
     .values({
-      id: generateId('msg'),
+      id: messageId,
       conversationId: data.conversationId,
       role: data.role,
       content: data.content,
       tokensUsed: data.tokensUsed || 0,
       metadata: data.metadata || null,
-      createdAt: new Date(),
+      createdAt,
     })
+    .onConflictDoNothing()
     .returning();
-  
-  // Update conversation message count and tokens
-  await db
-    .update(conversations)
-    .set({
-      messageCount: sql`${conversations.messageCount} + 1`,
-      totalTokens: sql`${conversations.totalTokens} + ${data.tokensUsed || 0}`,
-      updatedAt: new Date(),
-    })
-    .where(eq(conversations.id, data.conversationId));
-  
-  return message;
+
+  const message = inserted[0];
+  if (message) {
+    await db
+      .update(conversations)
+      .set({
+        messageCount: sql`${conversations.messageCount} + 1`,
+        totalTokens: sql`${conversations.totalTokens} + ${data.tokensUsed || 0}`,
+        updatedAt: new Date(),
+      })
+      .where(eq(conversations.id, data.conversationId));
+    return message;
+  }
+
+  const [existing] = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.id, messageId))
+    .limit(1);
+
+  if (!existing) {
+    throw new Error('Message insertion failed');
+  }
+
+  return existing;
 }
 
 /**
@@ -1092,8 +1119,48 @@ export async function deleteConversationMessages(conversationId: string): Promis
     .delete(messages)
     .where(eq(messages.conversationId, conversationId))
     .returning();
-  
+
+  await db
+    .update(conversations)
+    .set({
+      messageCount: 0,
+      totalTokens: 0,
+      updatedAt: new Date(),
+    })
+    .where(eq(conversations.id, conversationId));
+
   return deleted.length;
+}
+
+/**
+ * Get a message by ID
+ */
+export async function getMessageById(id: string): Promise<Message | null> {
+  const [message] = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.id, id))
+    .limit(1);
+
+  return message || null;
+}
+
+/**
+ * Update a message content or metadata
+ */
+export async function updateMessage(
+  id: string,
+  data: Partial<Pick<Message, 'content' | 'metadata'>>
+): Promise<Message | null> {
+  const [updated] = await db
+    .update(messages)
+    .set({
+      ...data,
+    })
+    .where(eq(messages.id, id))
+    .returning();
+
+  return updated || null;
 }
 
 // ============================================================================

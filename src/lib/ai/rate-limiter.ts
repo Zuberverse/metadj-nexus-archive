@@ -432,6 +432,18 @@ export interface RateLimitResult {
   remainingMs?: number
 }
 
+function sanitizeMessageContent(content: string): string {
+  return content
+    .normalize('NFKC')
+    .replace(/[\u200b-\u200f\u2028-\u202f\ufeff]/g, '')
+    .replace(/^\s*(system|assistant|developer|user|human|ai)\s*:/gmi, '')
+    .replace(/^\s*role\s*:\s*(system|assistant|developer|user|human|ai)\s*$/gmi, '')
+    .replace(/\b(begin|end)\s+(system|developer|assistant|prompt)\b/gi, '')
+    .replace(/<<\s*(system|developer|assistant|user)\s*>>/gi, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/```[\s\S]*?```/g, '[code block]')
+}
+
 // Re-export ClientIdentifier type
 export type { ClientIdentifier }
 
@@ -470,7 +482,7 @@ export function sanitizeMessages(messages: MetaDjAiApiMessage[]): MetaDjAiApiMes
     .slice(-MAX_HISTORY)
     .map((message) => ({
       role: message.role === 'assistant' ? 'assistant' : 'user',
-      content: message.content.slice(0, MAX_CONTENT_LENGTH).replace(/<[^>]*>/g, ''),
+      content: sanitizeMessageContent(message.content.slice(0, MAX_CONTENT_LENGTH)),
     }))
 }
 

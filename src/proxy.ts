@@ -16,6 +16,28 @@ const RATE_LIMITS = {
   api: { maxRequests: 200, windowMs: 60_000, windowUpstash: "1 m" as const },
 };
 
+const DEFAULT_TRUSTED_IP_HEADERS = [
+  "x-vercel-ip",
+  "cf-connecting-ip",
+  "x-real-ip",
+  "x-forwarded-for",
+  "forwarded",
+] as const;
+
+const TRUSTED_IP_HEADERS = (() => {
+  const configured = process.env.TRUSTED_IP_HEADERS;
+  if (!configured) {
+    return [...DEFAULT_TRUSTED_IP_HEADERS];
+  }
+  const headers = configured
+    .split(",")
+    .map((header) => header.trim().toLowerCase())
+    .filter(Boolean);
+  return headers.length > 0 ? headers : [...DEFAULT_TRUSTED_IP_HEADERS];
+})();
+
+const NO_STORE_API_EXCLUDE_PREFIXES = ["/api/audio", "/api/video", "/api/wisdom"];
+
 // Types for local fallback
 interface RateLimitRecord {
   count: number;
@@ -142,6 +164,80 @@ async function buildHeaderFingerprint(request: NextRequest): Promise<string> {
   return `anon-${hash.slice(0, 16)}`;
 }
 
+function stripIpPort(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.startsWith("[")) {
+    const closing = trimmed.indexOf("]");
+    if (closing > -1) {
+      return trimmed.slice(1, closing);
+    }
+  }
+
+  const colonCount = (trimmed.match(/:/g) || []).length;
+  if (colonCount === 1 && trimmed.includes(".")) {
+    return trimmed.split(":")[0];
+  }
+
+  return trimmed;
+}
+
+function normalizeIpCandidate(value: string): string {
+  const withoutZone = value.includes("%") ? value.split("%")[0] : value;
+  return stripIpPort(withoutZone).replace(/^"+|"+$/g, "");
+}
+
+function isValidIpv4(value: string): boolean {
+  const parts = value.split(".");
+  if (parts.length !== 4) return false;
+  return parts.every((part) => {
+    if (!/^\d{1,3}$/.test(part)) return false;
+    const num = Number(part);
+    return num >= 0 && num <= 255;
+  });
+}
+
+function isValidIpv6(value: string): boolean {
+  if (!value.includes(":")) return false;
+  return /^[0-9a-fA-F:]+$/.test(value);
+}
+
+function isValidIp(value: string): boolean {
+  return isValidIpv4(value) || isValidIpv6(value);
+}
+
+function parseForwardedHeader(value: string): string | null {
+  const match = value.match(/for=(?:"?)([^;,"]+)/i);
+  if (!match) return null;
+  const candidate = normalizeIpCandidate(match[1]);
+  return isValidIp(candidate) ? candidate : null;
+}
+
+function extractIpFromHeader(header: string, value: string | null): string | null {
+  if (!value) return null;
+  const headerName = header.toLowerCase();
+
+  if (headerName === "forwarded") {
+    return parseForwardedHeader(value);
+  }
+
+  const candidate = headerName === "x-forwarded-for"
+    ? value.split(",")[0]?.trim()
+    : value.trim();
+
+  if (!candidate) return null;
+  const normalized = normalizeIpCandidate(candidate);
+  return isValidIp(normalized) ? normalized : null;
+}
+
+function getTrustedClientIp(request: NextRequest): string | null {
+  for (const header of TRUSTED_IP_HEADERS) {
+    const value = request.headers.get(header);
+    const parsed = extractIpFromHeader(header, value);
+    if (parsed) return parsed;
+  }
+  return null;
+}
+
 // ============================================================================
 // Middleware Handler
 // ============================================================================
@@ -175,13 +271,8 @@ export default async function proxy(request: NextRequest) {
     }
 
     // B. Rate Limiting
-    const forwardedFor = request.headers.get("x-forwarded-for");
-    const ip =
-      request.headers.get("x-vercel-ip") ||
-      request.headers.get("cf-connecting-ip") ||
-      forwardedFor?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      (await buildHeaderFingerprint(request));
+    const trustedIp = getTrustedClientIp(request);
+    const ip = trustedIp ?? (await buildHeaderFingerprint(request));
 
     let limitKey: keyof typeof RATE_LIMITS = "api";
     if (path.startsWith("/api/audio") || path.startsWith("/api/video")) {
@@ -256,6 +347,15 @@ export default async function proxy(request: NextRequest) {
   );
   response.headers.set("X-DNS-Prefetch-Control", "off");
 
+  if (
+    path.startsWith("/api/") &&
+    !NO_STORE_API_EXCLUDE_PREFIXES.some((prefix) => path.startsWith(prefix))
+  ) {
+    response.headers.set("Cache-Control", "no-store");
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
+  }
+
   const plausibleOrigin = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
     ? getPlausibleOrigin()
     : null;
@@ -298,12 +398,14 @@ export default async function proxy(request: NextRequest) {
   const cspDirectives = [
     "default-src 'self'",
     `script-src ${scriptSrc.join(" ")}`,
+    "script-src-attr 'none'",
     `style-src 'self' 'nonce-${nonce}'`,
     "style-src-attr 'unsafe-inline'",
     `style-src-elem 'self' 'nonce-${nonce}'`,
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "media-src 'self' blob: https:",
+    "worker-src 'self' blob:",
     `connect-src ${connectSrc.join(" ")}`,
     "frame-src 'self' https://lvpr.tv",
     "object-src 'none'",

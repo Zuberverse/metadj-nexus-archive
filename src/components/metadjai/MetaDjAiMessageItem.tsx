@@ -407,7 +407,7 @@ function UiProposalCard({ proposal }: { proposal: UiProposal }) {
       ? 'Jump to the Search bar so you can type immediately.'
       : proposal.action === 'openMusicPanel'
         ? `Open Music and jump to ${proposal.tab ?? "your library"}.`
-      : 'Confirm to open this surface.')
+      : 'Confirm to open this panel.')
 
   const Icon = icon
 

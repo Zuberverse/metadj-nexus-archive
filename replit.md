@@ -1,92 +1,58 @@
-# Replit Deployment Guide — MetaDJ Nexus
+# Replit Deployment Guide - MetaDJ Nexus
 
-## Overview
+**Last Modified**: 2026-01-26 14:20 EST
 
-MetaDJ Nexus is a platform connecting human vision with AI-driven execution for the Metaverse, optimized for deployment on Replit. It provides a creative and immersive experience leveraging Replit's managed infrastructure and Cloudflare R2 for media streaming. Key capabilities include zero-downtime deployments, S3-compatible media streaming with zero egress fees, automatic HTTPS, and integration with analytics and monitoring. The project aims to offer an immersive, creative experience in the Metaverse, removing complexities of server management and focusing on user engagement and scalability.
+## Scope
 
-## User Preferences
+Replit is the only production target for the MVP. Alternative hosting paths live in the archive:
+`docs/archive/2026-01-26-deployment-options-roadmap.md`.
 
-- I want iterative development.
-- Ask before making major changes.
-- Provide detailed explanations for complex concepts.
-- I prefer clear and concise communication.
+## MVP Launch Plan (Replit Only)
 
-## System Architecture
+1. **Verify repo health (local or CI)**  
+   Run: `npm run lint`, `npm run type-check`, `npm test`
+2. **Confirm Replit Secrets**  
+   Set required secrets in Replit (see Environment Variables below).
+3. **Database readiness**  
+   Neon Postgres must be reachable via `DATABASE_URL`. Run `npm run db:push` if schema changes are pending.
+4. **Deploy via Replit Deployments**  
+   Build: `npm run build:replit`  
+   Run: `npm run start:replit`
+5. **Post-deploy checks**  
+   - `https://your-repl.replit.app/api/health`  
+   - Login/signup flow  
+   - MetaDJai chat (server history persists)  
+   - Audio/video streaming (R2)
+6. **Monitor**  
+   Review Replit deployment logs and resource charts.
 
-MetaDJ Nexus is built on a modern web stack for performance and scalability on Replit.
+## Runtime & Commands
 
-**Platform & Frameworks:**
-- **Platform**: Replit
-- **Runtime**: Node.js 20.19+
-- **Framework**: Next.js 16.1.1 (App Router)
-- **Frontend**: React 19.2.0
-- **Build Tool**: Next.js (Turbopack/webpack)
-- **Package Manager**: npm
+- **Local dev (Replit)**: `npm run dev:replit` (port 5000)
+- **Deploy build**: `npm run build:replit`
+- **Deploy start**: `npm run start:replit`
+- **Source of truth**: `.replit` (deployment targets + build/start commands)
 
-**UI/UX Decisions:**
-- Focuses on immersive audio and video experiences with features like scrubbing, volume control, and full-screen cinema video.
-- **Design System**: Uses Cinzel for headings, Poppins for body text, and JetBrains Mono for code.
-- **Button Styling**: Transparent backgrounds, hover effects, and standardized sizing.
-- **Z-Index Hierarchy**: Clearly defined `z-index` values for proper layering of UI elements.
-- **Wisdom Content UI**: Features adaptive title font sizing, reading progress bar, table of contents for multi-section content, and streamlined list views.
+## Environment Variables (Replit Secrets)
 
-**Technical Implementations & Feature Specifications:**
-- **Media Streaming**: Supports HTTP 206 Partial Content for efficient audio/video seeking.
-- **Caching**: Aggressive caching (`Cache-Control: public, max-age=31536000, immutable`) for versioned media files.
-- **Data Storage**: PostgreSQL via Drizzle ORM for user data, preferences, and chat history. Content data (music, collections) is managed via versioned JSON files.
-- **Authentication**: Cookie-based sessions with HMAC-signed tokens, PBKDF2 password hashing, and database-backed admin users with `isAdmin` flag for manual override capability. Includes rate limiting, origin validation for CSRF protection, and terms of service versioning with acceptance tracking. Account settings (email, password, username) are fully editable for all users including admins via the Account Panel.
-- **Deployment**: Automatic and continuous deployment on Replit with zero-downtime rolling updates.
-- **Monitoring**: Integration with Replit's dashboard metrics and internal health endpoints.
-- **Backup & Recovery**: Git-versioned code, Cloudflare R2 for media, and versioned JSON data files.
-- **Audio Settings & Crossfade**: Audio settings are stored in the database for authenticated users (with localStorage as offline backup) and include a 3-second seamless crossfade feature between tracks using dual audio elements and sine/cosine easing curves.
-- **Authentication Policy**: Guest access is not supported. All users must create an account and log in to access the platform experience. The landing page (`/`) and terms page (`/terms`) are the only public routes.
-- **AI Integration (MetaDJai)**: Built with Vercel AI SDK, it uses tool-based data retrieval for on-demand information from the catalog, recommendations, wisdom content, and platform help. It includes robust request limits, tool result limits, spam detection, and security measures like input sanitization, output validation, injection protection, and rate limiting.
-- **Wisdom Content System**: Provides curated content across Guides, Thoughts, and Reflections with specific content structures and UI design standards. Includes a dedicated search bar on the Wisdom dashboard to search across all wisdom content types, plus individual search bars within each content type page (Guides, Thoughts, Reflections) that only search within their respective content. Topic filters are category-specific: Reflections uses "Music" and "Journey"; Guides uses "AI", "Frameworks", and "Music"; Thoughts uses "MetaDJ Nexus", "AI", "Creativity", "Curation", "Frameworks", and "Music".
-- **Wisdom Spotlight Layout**: Hub displays static teaser cards for Thoughts, Guides, and Reflections in a 3-column grid. Continue Reading feature is on the roadmap for future implementation.
-- **Journal System**: Private journaling with database persistence for authenticated users, markdown support, speech-to-text, and encrypted export/import. Features include auto-save (1.5s debounce after changes), auto-delete of empty entries (if both title and content are cleared), per-entry export buttons (in list view and editing toolbar), and a dedicated search bar to filter entries. The "Back to Journal Log" button exits the editor while auto-save handles persistence.
-- **Search Segregation**: Music search bars (left panel browse, header overlay) only show music, collections, and playlists. Wisdom and Journal have their own dedicated search functionality within their respective views.
-- **Queue Display Pattern**: The Queue tab displays a "Now Playing + Up Next" layout. The currently playing track appears prominently at the top with animated audio visualization bars and a cyan accent. Below it, the "Up Next" section shows upcoming tracks (numbered from 1) that are reorderable via drag-and-drop. Only tracks after `currentIndex` are shown in the Up Next list.
-- **Admin Dashboard**: Database-backed admin users (first admin created via `ADMIN_PASSWORD` environment variable on initial login, stored in database with `isAdmin: true` for manual override capability) provide access to platform management and analytics, including event tracking data with visualizations and configurable date ranges. Admin can edit their email and password like regular users. Admin username "admin" is permanent; username updates add aliases instead of replacing. Aliases allow login via any registered alias and are stored in the `usernameAliases` JSON array field. Aliases can be removed manually via database, making those usernames available for regular users. Reserved username logic blocks "admin" and any active admin aliases from being used by other users.
-- **Terms of Service System**: Versioned terms (TERMS_VERSION in src/lib/constants/terms.ts) with acceptance tracking in the database. TermsUpdateModal blocks app access until users accept updated terms. Existing users see the modal on next login after terms update.
+Minimum set (details in `docs/operations/BUILD-DEPLOYMENT-GUIDE.md` and `docs/MEDIA-STORAGE.md`):
 
-## External Dependencies
+- `DATABASE_URL` (Neon Postgres via Replit)
+- `OPENAI_API_KEY` (or other enabled provider key)
+- `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`
+- `LOGGING_CLIENT_KEY` (optional)
+- `PLAUSIBLE_DOMAIN` / `PLAUSIBLE_API_HOST` (optional)
 
--   **Cloudflare R2**: Exclusive storage for all media assets (audio, video).
--   **Plausible Analytics**: Optional, privacy-first analytics.
--   **PostgreSQL Database**: Replit-managed (Neon-backed) for user data, sessions, preferences, chat history, and analytics.
--   **UptimeRobot**: Recommended for external uptime monitoring.
--   **Sentry**: Recommended for external error tracking.
--   **Logging Webhook**: Optional for server-side logging.
+**Note**: Do not edit `.env.local` in this repo. Use Replit Secrets for production.
 
-## Recent Changes
+## Data & Persistence Notes
 
-**Audio & UI Polish (January 16, 2026)**
+- **MetaDJai chat history**: Server-side in Postgres for authenticated users. Local storage is migration-only.
+- **Journal**: Server-side for authenticated users with local backup for drafts.
+- **Music data**: Versioned JSON in repo; media files live in Cloudflare R2.
 
-Resolved audio transition stutter and improved UI consistency:
+## Related Docs
 
-- **Audio Transition Fix**: Eliminated track transition stutter/glitch by implementing `lastAppliedSrcRef` to track applied audio sources. Prevents redundant `pause()`/`load()` calls caused by absolute vs. relative URL comparison issues during React state update timing.
-- **Crossfade Enhancement**: Added guard in `handleEnded` to skip duplicate `onNext()` calls during active crossfade. Crossfade completion now properly pauses secondary audio and advances the queue.
-- **Ended State Guard**: Skip unnecessary `audio.pause()` when track has already ended (`audio.ended === true`) to prevent brief restart artifacts.
-- **Footer Styling**: Updated both landing page and main app footers to match header styling with gradient blobs (`bg-purple-600/5`, `bg-blue-600/5`), backdrop blur, and gradient line separator.
-
-**MVP Audit & Polish (January 15, 2026)**
-
-A comprehensive end-to-end audit was conducted covering UX, error handling, API routes, code quality, accessibility, performance, and security. Key improvements:
-
-- **TypeScript Fix**: Resolved TS7030 error in CinemaOverlay.tsx (useEffect return path)
-- **Security Enhancement**: Added CSRF origin validation to Daydream streams POST and DELETE routes
-- **Code Quality**: Replaced console.error with proper logger in archive route; fixed react-hooks/exhaustive-deps warning in AudioPlayer.tsx using useMemo
-- **Accessibility**: Enhanced FeedbackModal with proper dialog semantics (role="dialog", aria-modal, aria-labelledby), fieldset/legend for radio groups, role="radiogroup" with aria-checked, and role="alert" for status messages
-
-**Audit Reports Generated:**
-- `docs/reports/UX-AUDIT-MVP-READINESS.md`
-- `docs/reports/ACCESSIBILITY-AUDIT-2026-01-15.md`
-- `docs/reports/PERFORMANCE-AUDIT-MVP-READINESS.md`
-
-**MVP Readiness Status:**
-- All 200 unit tests pass
-- TypeScript compiles with zero errors
-- ESLint passes with zero errors (one acceptable warning)
-- Server running successfully on port 5000
-- Strong error handling with multi-layer boundaries
-- Comprehensive security measures in place
+- `docs/operations/BUILD-DEPLOYMENT-GUIDE.md`
+- `docs/strategy/REPLIT-PLATFORM-STRATEGY.md`
+- `docs/operations/UPTIME-MONITORING.md`

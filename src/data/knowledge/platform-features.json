@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "lastUpdated": "2026-01-14",
-    "version": "1.2",
+    "lastUpdated": "2026-01-26",
+    "version": "1.3",
     "source": "Platform Documentation"
   },
   "category": "platform",
@@ -52,7 +52,7 @@
     {
       "id": "platform-views",
       "title": "Platform Views",
-      "content": "MetaDJ Nexus offers four main views: Hub is the home base for browsing music collections and featured content. Cinema provides an immersive visual experience with collection artwork and ambient visuals synced to music playback. Wisdom offers curated knowledge, guides, reflections, and creative philosophy. Journal is a private space for personal ideas and reflections. Users can switch between views using the navigation in the header.",
+      "content": "MetaDJ Nexus offers four main sections: Hub is the home base for browsing music collections and featured content. Cinema provides an immersive visual experience with collection artwork and ambient visuals synced to music playback. Wisdom offers curated knowledge, guides, reflections, and creative philosophy. Journal is a private space for personal ideas and reflections. Users can switch between sections using the navigation in the header.",
       "keywords": [
         "views",
         "hub",
@@ -64,12 +64,12 @@
     },
     {
       "id": "platform-metadjai",
-      "title": "MetaDJai Assistant",
-      "content": "MetaDJai is the AI companion built into MetaDJ Nexus. MetaDJai can help users explore music collections, get recommendations based on mood or genre, learn about the MetaDJ philosophy and ecosystem, navigate platform features, and submit feedback about the platform. Users can open MetaDJai by clicking the MetaDJai button in the header or using the chat bubble on mobile.",
+      "title": "MetaDJai AI Companion",
+      "content": "MetaDJai is the AI companion built into MetaDJ Nexus. MetaDJai helps users explore music collections, get recommendations based on mood or genre, learn about the MetaDJ philosophy and ecosystem, navigate platform features, and submit feedback about the platform. Chat history is saved to your account when you're signed in. Users can open MetaDJai by clicking the MetaDJai button in the header or using the chat bubble on mobile.",
       "keywords": [
         "metadjai",
         "ai",
-        "assistant",
+        "companion",
         "chat",
         "help",
         "recommendations"

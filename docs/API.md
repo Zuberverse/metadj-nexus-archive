@@ -1,6 +1,6 @@
 # MetaDJ Nexus API Documentation
 
-**Last Modified**: 2026-01-14 21:55 EST
+**Last Modified**: 2026-01-26 13:00 EST
 
 ## Overview
 
@@ -532,12 +532,85 @@ Sends a message to MetaDJai and receives a complete response.
 
 Conversation endpoints require authentication and only operate on the current user's records.
 
+#### `GET /api/metadjai/conversations`
+
+Returns active (non-archived) conversations for the authenticated user.
+
+**Query Params**:
+- `limit` (optional, default: `1000`)
+
+**Response**:
+```json
+{ "success": true, "sessions": [{ "id": "...", "title": "New chat" }] }
+```
+
+#### `POST /api/metadjai/conversations`
+
+Creates a new conversation.
+
+**Request Body (optional)**:
+```json
+{
+  "id": "conv_123",            // Optional client id (UUID recommended)
+  "title": "New conversation", // Optional title override
+  "createdAt": 1710000000000,  // Optional ms timestamp (migration use)
+  "updatedAt": 1710000000000
+}
+```
+
+#### `POST /api/metadjai/conversations/migrate`
+
+Migrates legacy local sessions to server storage (used once per client).
+
+**Request Body**:
+```json
+{
+  "sessions": [
+    {
+      "title": "Legacy chat",
+      "createdAt": 1710000000000,
+      "updatedAt": 1710000000000,
+      "messages": [{ "role": "user", "content": "Hello" }]
+    }
+  ]
+}
+```
+
+#### `GET /api/metadjai/conversations/[id]/messages`
+
+Returns all messages for a conversation (chronological).
+
+#### `POST /api/metadjai/conversations/[id]/messages`
+
+Appends one or more messages to a conversation.
+
+**Request Body**:
+```json
+{
+  "messages": [
+    { "id": "msg_1", "role": "user", "content": "Hello", "createdAt": 1710000000000 }
+  ]
+}
+```
+
+#### `DELETE /api/metadjai/conversations/[id]/messages`
+
+Clears all messages for a conversation (resets counts).
+
+#### `PATCH /api/metadjai/conversations/[id]/messages/[messageId]`
+
+Updates a single message (used for regenerate/version updates).
+
+#### `PATCH /api/metadjai/conversations/[id]`
+
+Updates conversation metadata (title/summary).
+
 #### `GET /api/metadjai/conversations/archived`
 
 Returns archived conversations for the authenticated user.
 
 **Query Params**:
-- `limit` (optional, default: `50`)
+- `limit` (optional, default: `1000`)
 
 #### `POST /api/metadjai/conversations/[id]/archive`
 
@@ -549,7 +622,7 @@ Unarchives a conversation.
 
 #### `DELETE /api/metadjai/conversations/[id]`
 
-Permanently deletes an archived conversation.
+Soft deletes an active conversation, or permanently deletes an archived conversation.
 
 **Status Codes**:
 - `200 OK` — Success

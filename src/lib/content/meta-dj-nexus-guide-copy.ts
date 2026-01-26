@@ -57,8 +57,8 @@ export const GUIDE_NAV_SECTIONS: GuideSection[] = [
 
 // Welcome section
 export const GUIDE_WELCOME = {
-  tagline: "Where music, visuals, and creative guidance converge",
-  intro: "MetaDJ Nexus is my living studio and stage: original music, Cinema visuals, Wisdom, a private Journal, and MetaDJai as your creative companion. The full experience unlocks after you create a free account and accept the Terms & Conditions. The Hub is mission control for launching a cinematic listen and catching the latest updates, while the Music panel holds Browse, Playlists, and Queue.",
+  tagline: "Where collections, visuals, and creative guidance converge",
+  intro: "MetaDJ Nexus is my living studio and stage: collections-first music, Cinema visuals, Wisdom, a private Journal, and MetaDJai as your creative companion. The full experience unlocks after you create a free account and accept the Terms & Conditions. The Hub is mission control for launching a cinematic listen and catching the latest updates, while the Music panel holds Browse, Playlists, and Queue.",
   previewNotice:
     "Public Preview is open while the core experience is refined.",
   askAiPrompt: "Questions? Ask MetaDJai for a walkthrough, creative guidance, or a listening flow.",
@@ -98,7 +98,6 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
       "Quick Start checklist (mobile): play a track, open Cinema, open Wisdom, and chat with MetaDJai",
       "Chat with MetaDJai: quick access to your creative companion",
       "Wisdom Spotlight: latest Thought, Guide, and Reflection cards",
-      "Continue reading: resume the last opened Wisdom item",
       "Platform Pulse: preview status and recent updates",
       "News + Events: curated notes when available (quiet during preview)",
     ]
@@ -110,7 +109,7 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
     description: "Original music organized into collections that grow as the creative exploration continues.",
     features: [
       "Browse tab: Featured highlights, Recently Played (last 50 plays), and collections",
-      "Mood Channels: curated energy lanes that unlock as the catalog grows",
+      "Mood Channels (coming soon): curated energy lanes as the catalog grows",
       "Tabs: Browse, Playlists, Queue",
       "Track details: BPM, key, release date, and share links",
       "Share deep links for tracks, collections, and playlists",
@@ -151,9 +150,9 @@ export const GUIDE_CORE_SURFACES: CoreSurface[] = [
     key: "journal",
     title: "Journal",
     icon: "📝",
-    description: "Private, local-first space for capturing ideas, drafts, and reflections.",
+    description: "Private, account-synced space for capturing ideas, drafts, and reflections.",
     features: [
-      "Local-first entries stored in your browser (no cloud sync)",
+      "Entries sync to your account when signed in (local backup keeps drafts safe)",
       "Rich-text editor with formatting toolbar",
       "Voice dictation with a 60-second recording limit",
       "Autosaved drafts and session restore on refresh",
@@ -184,12 +183,12 @@ export const GUIDE_COLLECTIONS: CollectionInfo[] = [
 // MetaDJai section
 export const GUIDE_METADJAI = {
   title: "MetaDJai",
-  description: "MetaDJai is an AI-driven creative companion built on my creative philosophy and methods. It tracks what you're listening to and which surface you're exploring, then uses that context to respond. Transparent about being AI while channeling MetaDJ's voice to help you navigate, create, and explore.",
+  description: "MetaDJai is an AI-driven creative companion built on my creative philosophy and methods. It tracks what you're listening to and which panel or section you're exploring, then uses that context to respond. Transparent about being AI while channeling MetaDJ's voice to help you navigate, create, and explore.",
   howToOpen: "Click MetaDJai in the header (desktop) or the bottom nav (mobile), or press Ctrl/Cmd + J.",
   features: [
     {
       title: "Context-Aware",
-      description: "Knows your now-playing track, active collection, and current surface. Suggestions stay grounded in what you're actually doing."
+      description: "Knows your now-playing track, active collection, and current panel. Suggestions stay grounded in what you're actually doing."
     },
     {
       title: "Actions Menu",
@@ -209,11 +208,11 @@ export const GUIDE_METADJAI = {
     },
     {
       title: "Session History",
-      description: "Chats are saved locally (up to 20 sessions). Use History to revisit or reset threads."
+      description: "Chats are saved to your account with no archive cap during Public Preview. Use History to revisit or reset threads."
     },
     {
       title: "Active Control",
-      description: "When you ask, MetaDJai can propose playback or surface actions. You always confirm before anything happens."
+      description: "When you ask, MetaDJai can propose playback or panel actions. You always confirm before anything happens."
     },
     {
       title: "Voice Input",
@@ -308,7 +307,7 @@ export const GUIDE_SEARCH = {
   ],
   tips: [
     "Search track titles: \"odyssey\" finds \"Metaversal Odyssey\"",
-    "Search collections: \"majestic\" surfaces \"Majestic Ascent\" under Collections",
+    "Search collections: \"majestic\" shows \"Majestic Ascent\" under Collections",
     "Multi-word queries work: \"boss battle\" matches \"Boss Battle\"",
     "Journal results appear after you save entries on this device",
   ],
@@ -347,7 +346,7 @@ export const GUIDE_HELP = {
     },
     {
       title: "MetaDJai",
-      description: "Ask MetaDJai for a walkthrough, creative prompts, or help with any surface you're exploring."
+      description: "Ask MetaDJai for a walkthrough, creative prompts, or help with any panel you're exploring."
     },
     {
       title: "Feedback",

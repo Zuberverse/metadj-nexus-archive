@@ -2,7 +2,7 @@
 
 > **Get up and running with MetaDJ Nexus in 5 minutes**
 
-**Last Modified**: 2026-01-14 21:55 EST
+**Last Modified**: 2026-01-26 12:00 EST
 
 ## Prerequisites
 
@@ -57,6 +57,8 @@ ADMIN_PASSWORD=your-admin-password
 AUTH_SESSION_DURATION=604800
 AUTH_REGISTRATION_ENABLED=true
 ```
+
+> **TLS note**: Production enforces `sslmode=require` (or `ssl=true`). For local Postgres, use `sslmode=disable`.
 
 Set `ADMIN_PASSWORD` to access `/admin`. After setting `DATABASE_URL`, run `npm run db:push` to apply the schema.
 

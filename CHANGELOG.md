@@ -1,11 +1,24 @@
 # Changelog
 
-**Last Modified**: 2026-01-25 14:19 EST
+**Last Modified**: 2026-01-26 12:45 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-26
+
+**MetaDJai**
+- Added PostgreSQL-backed conversation + message persistence with new conversation/message APIs.
+- Migrated local MetaDJai chat history to server storage on best-effort basis with local fallback.
+
+**Security**
+- Tightened origin validation for unsafe methods (origin/referer required; internal secret bypass).
+- Added trusted IP header allowlist and standardized IP extraction across rate limiting/logging.
+- Enforced no-store headers for sensitive API responses (excluding media/wisdom).
+- Enforced TLS for production database connections (sslmode=require or ssl=true).
+- Hardened prompt-injection sanitization and CSP directives (script-src-attr, worker-src).
 
 ### 2026-01-25
 
@@ -181,7 +194,7 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
   - `TOOLS_GUIDELINES`: Both variants condensed ~50%.
 
 **Documentation**
-- Added "Deployment Configuration" section to `SECURITY.md` with rate limiting and spending alert environment variables.
+- Added "Deployment Configuration" section to `docs/SECURITY.md` with rate limiting and spending alert environment variables.
 - Updated timestamps in `docs/README.md`, `docs/PLATFORM-ARCHITECTURE.md`, `docs/SECURITY.md`.
 
 **Dependencies**
@@ -285,7 +298,7 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 
 **Documentation**
 - Fixed `docs/TESTING.md` reference from `test.yml` to `ci.yml`.
-- Updated `component-architecture.md` version from 0.8.0 to 0.9.46.
+- Updated `docs/architecture/component-architecture.md` version from 0.8.0 to 0.9.46.
 - Synced `AGENTS.md` and `CLAUDE.md` parity.
 - Added pre-launch checklist to build/deployment guide and linked it from README.
 - Updated feature index, analytics references, and API code-to-docs map.
@@ -299,7 +312,7 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 
 **Security**
 - Standardized API error messages to prevent information disclosure (generic messages for client, details logged server-side).
-- Updated SECURITY.md review date to current.
+- Updated `docs/SECURITY.md` review date to current.
 - Disabled `upgrade-insecure-requests` in dev CSP to prevent WebKit from upgrading localhost assets to HTTPS (fixes missing CSS/JS in Playwright WebKit).
 
 **Testing**
@@ -727,7 +740,7 @@ Format follows Keep a Changelog, with semantic versioning for public releases.
 **Global Header Consistency**
 - Centralized `text-pop` utility for layered shadow stack
 - "Elegant Shift" gradient pattern for Wisdom headings
-- Patterns formalized in `ui-visual-system.md` and `gradient-system.md`
+- Patterns formalized in `docs/features/ui-visual-system.md` and `docs/features/gradient-system.md`
 
 **Fixes**
 - Dream capture startup: WHIP ingest starts when intermediate cinema track is live

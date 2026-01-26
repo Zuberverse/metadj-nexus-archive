@@ -152,7 +152,7 @@ export function HubExperience({
             Explore MetaDJ&apos;s Imagination
           </h1>
           <p className="text-lg sm:text-xl text-indigo-100/90 font-light max-w-2xl mx-auto">
-            Where human vision meets AI-driven creation
+            Collections-first listening, guided by human vision and AI
           </p>
         </div>
 

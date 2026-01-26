@@ -1,6 +1,7 @@
 import { timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { getAppBaseUrl, getPreviewBaseUrl } from '@/lib/app-url';
+import { resolveClientAddress } from '@/lib/network';
+import { validateOrigin } from '@/lib/validation/origin-validation';
 import { getMaxRequestSize, readRequestBodyWithLimit } from '@/lib/validation/request-size';
 
 /**
@@ -18,16 +19,6 @@ function safeCompare(a: string, b: string): boolean {
 }
 
 const ALLOWED_LEVELS = new Set(['debug', 'info', 'warn', 'error'] as const);
-const DEV_ORIGINS = new Set([
-  'http://localhost:3000',
-  'http://localhost:8100',
-  'https://localhost:3000',
-  'https://localhost:8100',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:8100',
-  'https://127.0.0.1:3000',
-  'https://127.0.0.1:8100',
-]);
 const LOG_RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const LOG_MAX_REQUESTS_PER_WINDOW = 10;
 
@@ -96,18 +87,11 @@ function sanitizeContext(context: unknown) {
 }
 
 function getClientId(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) {
-    const ip = forwarded.split(',')[0]?.trim();
-    if (ip) return `log-${ip}`;
+  const { ip, fingerprint } = resolveClientAddress(request);
+  if (ip !== 'unknown') {
+    return `log-${ip}`;
   }
-
-  const realIp = request.headers.get('x-real-ip');
-  if (realIp) return `log-${realIp}`;
-
-  const ua = request.headers.get('user-agent') || 'unknown';
-  const lang = request.headers.get('accept-language') || 'unknown';
-  return `log-anon-${Buffer.from(`${ua}|${lang}`).toString('base64').slice(0, 16)}`;
+  return `log-${fingerprint.slice(0, 16)}`;
 }
 
 function checkRateLimit(clientId: string): { limited: boolean; retryAfter?: number } {
@@ -176,30 +160,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ delivered: false, reason: 'webhook_unconfigured' }, { status: 202 });
   }
 
-  const origin = request.headers.get('origin');
-  const appBaseUrl = getAppBaseUrl();
-  const previewBaseUrl = getPreviewBaseUrl();
-
-  const allowedHosts = new Set<string>();
-  allowedHosts.add(new URL(appBaseUrl).host);
-  if (previewBaseUrl) {
-    allowedHosts.add(new URL(previewBaseUrl).host);
-  }
-  if (request.nextUrl?.host) {
-    allowedHosts.add(request.nextUrl.host);
-  }
-
-  const originAllowed = (() => {
-    if (!origin) return false;
-    if (DEV_ORIGINS.has(origin)) return true;
-    try {
-      const originHost = new URL(origin).host;
-      return allowedHosts.has(originHost);
-    } catch {
-      return false;
-    }
-  })();
-
+  const { allowed: originAllowed } = validateOrigin(request);
   if (!originAllowed) {
     return NextResponse.json({ delivered: false, reason: 'forbidden_origin' }, { status: 403 });
   }

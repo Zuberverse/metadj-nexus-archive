@@ -97,6 +97,10 @@ const INJECTION_PATTERNS = [
   /\b(ignore|forget)\s+(all\s+)?(previous\s+)?(instructions?|prompts?|rules?)/gi,
   /\byou\s+(are|must|should)\s+now\b/gi,
   /(?:^|\n)\s*new\s+instructions?\s*:/gi,
+  /\bdeveloper\s+message\b/gi,
+  /\b(system|developer|assistant)\s+prompt\b/gi,
+  /\b(begin|end)\s+(system|developer|assistant|prompt)\b/gi,
+  /<<+\s*(system|developer|assistant)\s*>>+/gi,
   // Role manipulation
   /\b(act|behave|respond)\s+as\s+(if\s+you\s+are|a)\b/gi,
   /(?:^|\n)\s*role\s*:\s*/gi,
@@ -109,6 +113,12 @@ const INJECTION_PATTERNS = [
   /\brun\s+command\b/gi,
 ]
 
+function normalizeToolText(value: string): string {
+  return value
+    .normalize("NFKC")
+    .replace(/[\u200b-\u200f\u2028-\u202f\ufeff]/g, "")
+}
+
 /**
  * Sanitize a string value to prevent indirect prompt injection
  *
@@ -116,7 +126,10 @@ const INJECTION_PATTERNS = [
  * @returns Sanitized string with injection patterns neutralized
  */
 function sanitizeInjectionPatterns(value: string): string {
-  let sanitized = value
+  let sanitized = normalizeToolText(value)
+  sanitized = sanitized.replace(/<[^>]*>/g, "")
+  sanitized = sanitized.replace(/```[\s\S]*?```/g, "[filtered code block]")
+  sanitized = sanitized.replace(/`{1,3}/g, "")
 
   for (const pattern of INJECTION_PATTERNS) {
     sanitized = sanitized.replace(pattern, (match) => {

@@ -1,6 +1,6 @@
 # User Guide Update Standard
 
-**Last Modified**: 2026-01-26 11:07 EST
+**Last Modified**: 2026-01-26 00:00 EST
 ## Purpose
 
 This standard ensures the MetaDJ Nexus User Guide remains synchronized with feature releases. Every new feature, UI change, or capability addition must be reflected in the user guide to maintain accurate user documentation.
@@ -51,7 +51,7 @@ Before any feature release (version bump), verify:
 
 ### Cross-Reference
 - [ ] README.md features match guide features
-- [ ] CHANGELOG.md features reflected in guide
+- [ ] ../../CHANGELOG.md features reflected in guide
 ```
 
 ## Content Structure Standards
@@ -133,7 +133,7 @@ During code review, check:
 
 ## Related Documents
 
-- `CHANGELOG.md` — Version history
+- `../../CHANGELOG.md` — Version history
 - `README.md` — Project overview
 - `docs/features/` — Feature specifications
-- `CLAUDE.md` — Development standards
+- `../../CLAUDE.md` — Development standards

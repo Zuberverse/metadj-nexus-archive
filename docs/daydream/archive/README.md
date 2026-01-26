@@ -1,6 +1,6 @@
 # Archive — MetaDJ All Access Daydream Docs
 
-**Last Modified**: 2025-12-19 10:41 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 Read-only archive. Do not edit files directly; add new dated snapshots only.
 
@@ -17,4 +17,4 @@ Preserve historical Daydream payload notes and snapshots for MetaDJ All Access d
 - Add new dated snapshots when superseding active Daydream documentation.
 
 ## Maintenance
-Follow `1-system/3-docs/standards/archive/archive-guide.md` for retention and naming.
+Follow `1-system/3-docs/standards/archive-guide.md` for retention and naming.

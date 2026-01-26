@@ -2,7 +2,7 @@
 
 > **Platform‑level home surface for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-16 22:18 EST
+**Last Modified**: 2026-01-26 14:05 EST
 **Status**: Active (Hero + Wisdom Spotlight + Platform Pulse).
 
 ## Overview
@@ -24,7 +24,7 @@ Order matters; it matches the intended "discover → engage → deepen" rhythm.
 1. **Hero**
    - Glass-neon hero matching the User Guide overlay aesthetic.
    - Headline: **"Explore MetaDJ's Imagination"** — emphasizes the human creative origin behind the platform, aligning with Zuberant's philosophy that "humans conduct meaning."
-   - Subheadline: "Where human vision meets AI-driven creation"
+   - Subheadline: "Collections-first listening, guided by human vision and AI"
    - Primary CTA: **Enter Cinema** (launches "Cinematic Listening": starts the hero track and opens Cinema).
    - Secondary CTA: **Chat with MetaDJai** (opens MetaDJai chat panel).
 

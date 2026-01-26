@@ -39,7 +39,7 @@ export const trackSchema = z.object({
  * Collection type enum
  * Shared between schema and type exports
  */
-export const collectionTypeSchema = z.enum(['collection', 'singles'] as const);
+export const collectionTypeSchema = z.enum(['collection'] as const);
 export type CollectionType = z.infer<typeof collectionTypeSchema>;
 
 /**

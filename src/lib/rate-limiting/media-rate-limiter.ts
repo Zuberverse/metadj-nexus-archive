@@ -12,10 +12,10 @@
  * @module lib/rate-limiting/media-rate-limiter
  */
 
-import { createHash } from 'crypto'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { logger } from '@/lib/logger'
+import { resolveClientAddress } from '@/lib/network'
 import { BoundedMap, DEFAULT_MAX_ENTRIES } from './bounded-map'
 import type { NextRequest } from 'next/server'
 
@@ -152,40 +152,11 @@ function getUpstashMediaRatelimit(): Ratelimit | null {
 // ============================================================================
 
 /**
- * Extract client IP from request
- *
- * Prioritizes x-forwarded-for (behind proxy/CDN), falls back to x-real-ip
+ * Extract client IP from request using trusted proxy headers
  */
-function buildHeaderFingerprint(request: NextRequest): string {
-  const ua = request.headers.get('user-agent') ?? 'unknown'
-  const lang = request.headers.get('accept-language') ?? 'unknown'
-  const encoding = request.headers.get('accept-encoding') ?? 'unknown'
-  const hash = createHash('sha256')
-    .update(`${ua}|${lang}|${encoding}`)
-    .digest('hex')
-    .slice(0, 16)
-  return `anon-${hash}`
-}
-
 export function getClientIp(request: NextRequest): string {
-  const vercelIp = request.headers.get('x-vercel-ip')
-  if (vercelIp) return vercelIp
-
-  const cfIp = request.headers.get('cf-connecting-ip')
-  if (cfIp) return cfIp
-
-  const forwarded = request.headers.get('x-forwarded-for')
-  if (forwarded) {
-    // x-forwarded-for may contain multiple IPs - take the first (original client)
-    const firstIp = forwarded.split(',')[0]?.trim()
-    if (firstIp) return firstIp
-  }
-
-  const realIp = request.headers.get('x-real-ip')
-  if (realIp) return realIp
-
-  // Fallback for development/testing
-  return buildHeaderFingerprint(request)
+  const { ip, fingerprint } = resolveClientAddress(request)
+  return ip !== 'unknown' ? ip : fingerprint
 }
 
 /**

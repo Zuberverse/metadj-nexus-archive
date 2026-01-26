@@ -1,6 +1,6 @@
 # Changelog Standard
 
-**Last Modified**: 2026-01-14 21:23 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 > **Consistent version history documentation for MetaDJ Nexus**
 
@@ -14,7 +14,7 @@ MetaDJ Nexus follows [Keep a Changelog](https://keepachangelog.com/) format with
 
 ## File Location & Format
 
-**File**: `CHANGELOG.md` (root directory, all caps)
+**File**: `../../CHANGELOG.md` (root directory, all caps)
 
 **Header**:
 ```markdown
@@ -268,7 +268,7 @@ Changelog stays in main file. For historical reference beyond current developmen
 ## Quick Reference
 
 ```
-File: CHANGELOG.md
+File: ../../CHANGELOG.md
 Format: Keep a Changelog + Semantic Versioning
 Structure: [Unreleased] → ### Date → **Category** → entries
 Versioning: MAJOR.MINOR.PATCH with milestone names

@@ -1,10 +1,10 @@
 # Cross-Device Sync Plan
 
-**Last Modified**: 2026-01-16 22:18 EST
+**Last Modified**: 2026-01-26 12:30 EST
 
 ## Summary
 
-MetaDJ Nexus is local-first with selective cross-device sync for authenticated users. Audio preferences, recently played history, and journal entries sync across devices via PostgreSQL. The sync is automatic with localStorage fallback for offline resilience.
+MetaDJ Nexus is local-first with selective cross-device sync for authenticated users. Audio preferences, recently played history, journal entries, and MetaDJai chat history sync across devices via PostgreSQL. The sync is automatic with localStorage fallback for offline resilience.
 
 > **Note:** Guest access is not supported. All users must create an account to access the platform.
 
@@ -29,6 +29,11 @@ The following features now sync across devices for logged-in users:
 - **API**: `GET/POST/DELETE /api/journal`
 - **Fallback**: localStorage entry cache + draft keys for offline resilience
 
+### MetaDJai Chat History (2026-01-26)
+- **Storage**: PostgreSQL `conversations` + `messages` tables
+- **API**: `GET/POST /api/metadjai/conversations`, `GET/POST/DELETE /api/metadjai/conversations/[id]/messages`
+- **Fallback**: localStorage migration + best-effort offline cache
+
 **Key Files:**
 - `src/lib/preferences.ts` - Audio preferences CRUD
 - `src/app/api/auth/preferences/route.ts` - Preferences API
@@ -37,6 +42,7 @@ The following features now sync across devices for logged-in users:
 - `src/hooks/use-recently-played.ts` - Hook with DB sync
 - `src/hooks/audio/use-audio-settings.ts` - Audio settings hook with DB sync
 - `src/components/wisdom/Journal.tsx` - Journal UI with API + local fallback
+- `src/hooks/metadjai/use-metadjai-messages.ts` - MetaDJai history sync + migration
 
 ## Current Local-Only Surfaces
 

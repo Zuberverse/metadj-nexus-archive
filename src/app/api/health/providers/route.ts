@@ -17,6 +17,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getCacheStats, isCacheEnabled } from '@/lib/ai/cache'
 import { getProviderHealth, getCircuitBreakerMode } from '@/lib/ai/circuit-breaker'
 import { logger } from '@/lib/logger'
+import { resolveClientAddress } from '@/lib/network'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic' // Always execute, never cache
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
   // Authorization check
   if (!isAuthorized(request)) {
     logger.warn('Unauthorized access attempt to /api/health/providers', {
-      ip: request.headers.get('x-forwarded-for') || 'unknown',
+      ip: resolveClientAddress(request).ip,
     })
     return NextResponse.json(
       { error: 'Unauthorized' },

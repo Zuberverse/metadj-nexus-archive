@@ -328,6 +328,8 @@ export interface MetaDjAiChatProps {
   onSelectSession?: (sessionId: string) => void;
   /** Delete a session from history */
   onDeleteSession?: (sessionId: string) => void;
+  /** Refresh session list from server */
+  onRefreshSessions?: () => void | Promise<void>;
   onRegenerate?: () => Promise<void> | void;
   /** Callback to switch between message versions */
   onSwitchVersion?: (messageId: string, versionIndex: number) => void;

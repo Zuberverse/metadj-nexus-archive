@@ -32,7 +32,7 @@ describe('getWisdomClientId', () => {
       'user-agent': 'TestAgent',
       'accept-language': 'en-US',
     })
-    expect(getWisdomClientId(request)).toContain('wisdom-anon-')
+    expect(getWisdomClientId(request)).toMatch(/^wisdom-[a-f0-9]{16}$/)
   })
 })
 

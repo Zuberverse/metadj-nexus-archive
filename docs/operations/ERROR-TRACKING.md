@@ -1,6 +1,6 @@
 # Error Tracking Setup Guide
 
-**Last Modified**: 2026-01-14 20:08 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 > **Capture and triage client-side errors automatically with Sentry**
 
@@ -42,7 +42,7 @@ MetaDJ Nexus will follow the hardened error-monitoring rollout already proven in
 
 1. **Create Sentry project + access tokens** — reuse the exact variable set MetaDJai documents (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`). Credentials live solely in Replit Secrets, not in git or `.env` committed files.
 2. **Run the `@sentry/wizard` scaffolding** locally, check in the generated `sentry.*.config.ts` files, and wrap `next.config.js` with the Sentry plugin the same way MetaDJai does. No runtime flagging until we flip the DSN in Replit.
-3. **Harden security + privacy defaults** — copy the scrubbers/beforeSend hooks from MetaDJai so logs never include request bodies, queue payloads, or fan data. Update `.claude/commands/SECURITY.md` with a short “Sentry enabled” note when this step goes live.
+3. **Harden security + privacy defaults** — copy the scrubbers/beforeSend hooks from MetaDJai so logs never include request bodies, queue payloads, or fan data. Update `../SECURITY.md` with a short “Sentry enabled” note when this step goes live.
 4. **Replit deployment wiring** — inject the Sentry env vars through the Replit Secrets UI alongside the existing Plausible/LOGGING secrets. That keeps R2 credentials and other infra untouched per the current Replit policy.
 5. **Verification checklist** — same smoke tests as MetaDJai: trigger a deliberate `Sentry.captureException` call, confirm source maps upload during `npm run build`, and set Slack/email alerts in Sentry before promoting to production.
 

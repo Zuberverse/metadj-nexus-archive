@@ -284,6 +284,11 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     startNewSession,
     switchSession,
     deleteSession,
+    ensureSession,
+    persistMessages,
+    persistMessageUpdate,
+    clearSessionMessages,
+    refreshSessions,
   } = useMetaDjAiMessages()
   const { rateLimit, canSend, recordSend } = useMetaDjAiRateLimit()
 
@@ -446,6 +451,8 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
         createdAt: Date.now(),
         status: 'complete',
       }
+
+      const sessionPromise = ensureSession([userMessage])
 
       // Create assistant placeholder
       const assistantMessageId = createMessageId()
@@ -653,6 +660,22 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
         setIsStreaming(false)
         streamingMessageIdRef.current = null
         requestControllerRef.current = null
+
+        try {
+          const sessionId = await sessionPromise
+          const latestUser = messagesRef.current.find((m) => m.id === userMessage.id)
+          const latestAssistant = messagesRef.current.find((m) => m.id === assistantMessageId)
+          const payload: MetaDjAiMessage[] = []
+          if (latestUser) payload.push(latestUser)
+          if (latestAssistant) payload.push(latestAssistant)
+          if (sessionId && payload.length > 0) {
+            await persistMessages(sessionId, payload)
+          }
+        } catch (persistError) {
+          logger.warn('[MetaDJai] Failed to persist messages', {
+            error: persistError instanceof Error ? persistError.message : String(persistError),
+          })
+        }
       }
     },
     [
@@ -666,6 +689,8 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
       setMessages,
       updateMessages,
       announceProviderUsage,
+      ensureSession,
+      persistMessages,
     ]
   )
 
@@ -674,11 +699,14 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     requestControllerRef.current = null
     streamingMessageIdRef.current = null
     lastProviderNoticeRef.current = null
+    if (activeSessionId) {
+      void clearSessionMessages(activeSessionId)
+    }
     clearMessages()
     resetToolCallAccumulator()
     setError(null)
     setIsStreaming(false)
-  }, [clearMessages])
+  }, [activeSessionId, clearMessages, clearSessionMessages])
 
   const stopStreaming = useCallback(() => {
     if (requestControllerRef.current) {
@@ -757,6 +785,7 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     setMessages(updatedMessages)
     setError(null)
     setIsStreaming(true)
+    const sessionPromise = ensureSession()
 
     // Setup abort controller
     const controller = new AbortController()
@@ -923,6 +952,18 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
       setIsStreaming(false)
       streamingMessageIdRef.current = null
       requestControllerRef.current = null
+
+      try {
+        const sessionId = await sessionPromise
+        const latestMessage = messagesRef.current.find((m) => m.id === lastAssistantMessage.id)
+        if (sessionId && latestMessage) {
+          await persistMessageUpdate(sessionId, latestMessage)
+        }
+      } catch (persistError) {
+        logger.warn('[MetaDJai] Failed to persist regenerated message', {
+          error: persistError instanceof Error ? persistError.message : String(persistError),
+        })
+      }
     }
   }, [
     mergedContext,
@@ -933,6 +974,8 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     setMessages,
     updateMessages,
     announceProviderUsage,
+    ensureSession,
+    persistMessageUpdate,
   ])
 
   /**
@@ -1066,5 +1109,6 @@ export function useMetaDjAi(options: UseMetaDjAiOptions = {}) {
     activeSessionId,
     switchSession,
     deleteSession,
+    refreshSessions,
   }
 }

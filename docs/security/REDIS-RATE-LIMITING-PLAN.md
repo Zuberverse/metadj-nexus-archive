@@ -1,6 +1,6 @@
 # Redis Rate Limiting Migration Plan
 
-**Last Modified**: 2025-12-28 11:38 EST
+**Last Modified**: 2026-01-26 00:00 EST
 **Status**: Implemented (Hybrid In-Memory + Upstash)
 **Priority**: Low-Medium (enable Upstash when scaling beyond single instance)
 **Estimated Effort**: 2-4 hours (completed)
@@ -16,7 +16,7 @@ MetaDJ Nexus now ships a **hybrid rate limiter** in `src/lib/ai/rate-limiter.ts`
 - No separate `redis-rate-limiter.ts` or unified wrapper is required
 
 Keep this document as historical rationale and migration context. For current implementation details, see:
-- `docs/SECURITY.md`
+- `../SECURITY.md`
 - `docs/architecture/AI-RESILIENCE-PATTERNS.md`
 
 ---
@@ -760,7 +760,7 @@ Implement when ANY of these conditions occur:
 
 - Current implementation: `/src/lib/ai/rate-limiter.ts`
 - API route: `/src/app/api/metadjai/route.ts`
-- Security overview: `/docs/SECURITY.md`
+- Security overview: `../SECURITY.md`
 
 ---
 

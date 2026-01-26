@@ -2,7 +2,7 @@
 
 > Performance targets and measurement guidelines for MetaDJ Nexus.
 
-**Last Modified**: 2026-01-13 08:56 EST
+**Last Modified**: 2026-01-26 15:10 EST
 
 ## Core Web Vitals Targets
 
@@ -133,6 +133,69 @@ import Image from 'next/image'
 - Dispose Three.js resources
 - Clear intervals/timeouts
 - Manage WebRTC connections
+
+## Performance Optimization Setup (Platform Breakdown)
+
+This section documents the **current performance system** and how it behaves by device class, OS, and browser. It reflects **actual runtime guards** in the codebase.
+
+### Automatic Performance Tiering (All Platforms)
+
+**Where**: `src/hooks/home/use-view-mounting.ts`  
+**Signals**:
+- `prefers-reduced-motion`
+- `navigator.connection.saveData`
+- `navigator.connection.effectiveType` (slow-2g/2g/3g)
+- `navigator.deviceMemory <= 4`
+- `navigator.hardwareConcurrency <= 4`
+
+**Behavior**:
+- **Lazy tier** on low-end signals (reduces mounted views to minimize CPU/memory).
+- **Balanced tier** for mid-range devices.
+- **Eager tier** for high-capability devices (keeps Hub/Wisdom/Journal warm for fast switching).
+
+### Cinema Performance Mode (All Platforms)
+
+**Where**: `src/components/cinema/CinemaOverlay.tsx`  
+**Triggers**:
+- Low-end device detection (low cores/memory or Save-Data).
+- Low FPS detection from visualizers.
+
+**Behavior**:
+- Performance mode lowers GPU/CPU load (lighter shaders, lower DPR, reduced particle counts).
+- Mobile **always** runs performance mode (`shouldUseSidePanels` is false).
+
+### Desktop vs Mobile Defaults
+
+| Device Class | Defaults | Notes |
+|-------------|----------|-------|
+| Desktop (macOS/Windows) | Full UI + 3D/2D visualizers | 3D visualizers available; auto performance mode if low-end signals are detected |
+| Mobile (iOS/Android) | 2D visualizers + video scenes | 3D visualizers hidden to protect GPU/battery; performance mode forced |
+
+### Browser & OS Guidance (Performance-Focused)
+
+| OS | Browser | Default Experience | Performance Notes |
+|----|---------|--------------------|-------------------|
+| macOS | Chrome/Edge | Full (3D+2D) | Best overall GPU throughput; performance mode kicks in on low-end hardware |
+| macOS | Safari | Full (3D+2D) | Performance mode recommended if fans spike or FPS drops |
+| macOS | Firefox | Full (3D+2D) | If WebGL jank appears, toggle to 2D scenes |
+| Windows | Chrome/Edge | Full (3D+2D) | Default target browser; use performance mode on low-end laptops |
+| Windows | Firefox | Full (3D+2D) | Prefer 2D scenes on integrated GPUs |
+| iOS | Safari/Chrome | 2D + video only | Mobile performance mode is always on; 3D visualizers are hidden |
+| Android | Chrome/Firefox | 2D + video only | Mobile performance mode is always on; avoid heavy Dream overlay on weak devices |
+
+### Practical Tuning Checklist
+
+- **Visualizers**: Prefer 2D visualizers on low-end devices; 3D only when FPS is stable.
+- **Dream overlay**: Only enable on strong GPUs; it is optional and can be paused at any time.
+- **Network**: On slow connections, reduce concurrent loads (avoid large video scene swaps).
+- **Reduced motion**: Respect system settings; the app shifts to performance mode automatically.
+
+### Performance Guardrails (Code References)
+
+- **Auto performance mode**: `src/components/cinema/CinemaOverlay.tsx` + `src/components/cinema/VisualizerCinema.tsx`
+- **Device tiering**: `src/hooks/home/use-view-mounting.ts`
+- **3D visualizer gating**: `src/components/cinema/CinemaOverlay.tsx` (desktop-only)
+- **DPR clamping**: 2D visualizers clamp device pixel ratio for performance
 
 ## Monitoring
 

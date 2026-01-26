@@ -1,6 +1,6 @@
 # In-Development Roadmap
 
-**Last Modified**: 2026-01-14 20:08 EST
+**Last Modified**: 2026-01-26 13:00 EST
 
 > Canonical snapshot of features that are actively in development, staged, or otherwise not live in the current MetaDJ Nexus build.
 
@@ -25,7 +25,7 @@
 - **Mood Channels (gated)** — Data + scoring logic ready; UI integration pending (Deep Focus, Energy Boost, Creative Flow)
 
 ### MetaDJai Enhancements
-- **Conversation Persistence** — Sessions preserved across page reloads via localStorage
+- **Conversation Persistence** — Server-backed chat history synced to user accounts
 - **AI Streaming Responses** — Real-time streaming for responsive conversations
 - **ToolLoopAgent + Structured Output** — `/api/metadjai` uses ToolLoopAgent with `Output.object()` reply parsing
 - **Local MCP + DevTools** — MCP tools and DevTools middleware enabled for local-only debugging
@@ -70,6 +70,7 @@
 | --- | --- | --- | --- |
 | Offline mode (PWA) | Retention and mobility; aligns with audio use | Large | Service worker, caching policy |
 | AI DJ curation | Differentiation and personalization | Large | Richer track metadata and AI policy |
+| Singles collections (curated) | Optional format for focused drops without full album context | Medium | Collection metadata rules + filters |
 | Collaborative queues | Social growth and shared listening | Large | Realtime backend and auth |
 | Social sharing (now playing, scenes) | Acquisition loop and brand spread | Medium | Share routes and OG metadata |
 | Tiered access and perks | Revenue path and segmentation | Large | Auth, Stripe, entitlement rules |
@@ -100,4 +101,4 @@
 
 - Treat each bullet as a live contract: if a feature is listed here, it is not yet in production even if code scaffolding exists.
 - Update this roadmap whenever staged functionality changes scope, crosses the finish line, or gains a public milestone.
-- Cross-reference the relevant spec (e.g., `docs/features/wisdom-system.md`, `README.md`, `CHANGELOG.md`) for implementation details.
+- Cross-reference the relevant spec (e.g., `docs/features/wisdom-system.md`, `README.md`, `../../CHANGELOG.md`) for implementation details.

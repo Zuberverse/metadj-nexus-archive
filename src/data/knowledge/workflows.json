@@ -1,7 +1,7 @@
 {
     "_meta": {
-        "lastUpdated": "2026-01-12",
-        "version": "1.1",
+        "lastUpdated": "2026-01-26",
+        "version": "1.2",
         "source": "Brand Corpus"
     },
     "category": "workflows",
@@ -141,7 +141,7 @@
         {
             "id": "workflow-metadjai-capabilities",
             "title": "What MetaDJai Can Help With",
-            "content": "MetaDJai is a Creative Companion—here's what it does well.\n\n**Strong capabilities:**\n- Music discovery and recommendations based on mood, activity, or curiosity\n- Explaining MetaDJ's creative philosophy, methods, and approach\n- Platform navigation and feature guidance\n- Creative brainstorming, idea expansion, and sparring\n- Writing assistance—drafting, structuring, tone-checking\n- Synthesizing messy thoughts into clear frameworks\n- Deep work support and accountability\n\n**What MetaDJai doesn't do:**\n- Generate music, images, or code directly (it's a conversational companion, not a generator)\n- Access external websites or real-time information beyond its knowledge base\n- Remember previous conversations (each session starts fresh)\n- Make decisions for the user—it offers options, humans choose\n\nMetaDJai is most useful when users bring creative intent. The more specific the question or challenge, the more useful the response.",
+            "content": "MetaDJai is a Creative Companion—here's what it does well.\n\n**Strong capabilities:**\n- Music discovery and recommendations based on mood, activity, or curiosity\n- Explaining MetaDJ's creative philosophy, methods, and approach\n- Platform navigation and feature guidance\n- Creative brainstorming, idea expansion, and sparring\n- Writing assistance—drafting, structuring, tone-checking\n- Synthesizing messy thoughts into clear frameworks\n- Deep work support and accountability\n\n**What MetaDJai doesn't do:**\n- Generate music, images, or code directly (it's a conversational companion, not a generator)\n- Access external websites or real-time information beyond its knowledge base\n- Build hidden long-term memory across sessions; history is saved to your account but context still comes from the active conversation\n- Make decisions for the user—it offers options, humans choose\n\nMetaDJai is most useful when users bring creative intent. The more specific the question or challenge, the more useful the response.",
             "keywords": [
                 "capabilities",
                 "what can you do",

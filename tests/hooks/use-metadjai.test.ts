@@ -19,6 +19,11 @@ import { processVercelAIBuffer, handleVercelAIChunk } from '@/hooks/metadjai/use
 import { mapErrorToUserMessage } from '@/lib/ai';
 import type { MetaDjAiMessage } from '@/types/metadjai.types';
 
+// Mock auth context for hooks that depend on it
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({ isAuthenticated: false, isLoading: false }),
+}));
+
 // Mock localStorage (used by rate limit)
 const mockLocalStorage = (() => {
   let store: Record<string, string> = {};
@@ -45,7 +50,7 @@ Object.defineProperty(window, 'localStorage', {
 global.fetch = vi.fn();
 
 // Mock metadjAiSessionStorage
-vi.mock('@/lib/storage/metadjAiSessionStorage', () => ({
+vi.mock('@/lib/storage/metadjai-session-storage', () => ({
   metadjAiSessionStorage: {
     loadMessages: vi.fn(() => []),
     saveMessages: vi.fn(),

@@ -1,6 +1,6 @@
 # Collection Dropdown System
 
-**Last Modified**: 2026-01-13 14:15 EST
+**Last Modified**: 2026-01-26 00:00 EST
 **Status**: ARCHIVED (dropdown removed in v0.8.1 cleanup)
 
 > Unified dropdown selector for browsing collections with integrated subtitles and optional collection details. Styled with MetaDJ's glass morphism and gradient aesthetic for all screen sizes.
@@ -317,6 +317,6 @@ return (
 
 ## Related Documentation
 
-- **Tab Content Reference**: `3-projects/5-software/metadj-nexus/docs/features/tab-content-reference.md`
+- **Tab Content Reference**: `../archive/2026-01-05-tab-content-reference.md`
 - **Collections System**: `3-projects/5-software/metadj-nexus/docs/features/collections-system.md`
 - **Analytics**: `3-projects/5-software/metadj-nexus/docs/features/analytics-quick-reference.md`

@@ -1,6 +1,6 @@
 # Contributing to MetaDJ Nexus
 
-**Last Modified**: 2025-12-29 16:45 EST
+**Last Modified**: 2026-01-26 00:00 EST
 
 Thank you for your interest in contributing to MetaDJ Nexus. This guide covers the development workflow, code standards, and submission process.
 
@@ -59,6 +59,12 @@ XAI_API_KEY=...
 ```
 
 See `.env.example` for all available options with detailed descriptions.
+
+### Documentation Map
+
+Key doc folders:
+- Feature specs: `docs/features/`
+- Reference docs: `docs/reference/`
 
 ### Common Setup Issues
 
@@ -142,9 +148,9 @@ git checkout -b fix/your-bug-fix
 
 **MANDATORY**: Documentation must be updated with code changes.
 
-- Update relevant `docs/features/*.md` specs
+- Update relevant docs in `docs/features/`
 - Update `CHANGELOG.md` (Unreleased section)
-- Update `docs/reference/*.md` if hooks/contexts change
+- Update docs in `docs/reference/` if hooks/contexts change
 - See `docs/reference/code-to-docs-map.md` for where to document changes
 
 ### 4. Run Quality Checks

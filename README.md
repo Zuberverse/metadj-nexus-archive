@@ -5,9 +5,10 @@
 > The primary creative hub for MetaDJ — where human vision meets AI-driven execution to uplift and inspire as you pioneer the Metaverse
 
 *Version: 0.9.46*
-**Last Modified**: 2026-01-16 22:18 EST
+**Last Modified**: 2026-01-26 13:10 EST
 **Platform:** MetaDJ Nexus at **metadjnexus.ai**
 **Social:** **@metadjai**
+**Content Hub:** `2-content/platforms/metadj-nexus/`
 
 ## Public Preview Status
 

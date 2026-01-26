@@ -2,16 +2,16 @@
 
 > **Comprehensive collection tracking and metadata management for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-05 17:00 EST
+**Last Modified**: 2026-01-26 13:00 EST
 ## Overview
 
-The Collections system is the official organizational structure for MetaDJ Nexus music collections, grouping tracks into cohesive units that can represent either full-length collections or curated singles collections. "Music collections" is the formal term; "collections" is the shorthand used in the app. This document serves as the canonical reference for all collection metadata, tracking standards, and update procedures.
+The Collections system is the official organizational structure for MetaDJ Nexus music collections. "Music collections" is the formal term; "collections" is the shorthand used in the app. This document serves as the canonical reference for all collection metadata, tracking standards, and update procedures. **MVP policy**: collection-only (singles are retired for now; see Roadmap note below).
 
 > **UI Reference (v0.8.1+)**: Collections are surfaced through the Left Panel browse experience (`BrowseView.tsx` + `CollectionDetailView.tsx`). The prior `CollectionTabs`/`CollectionManager` UI has been removed; legacy reference lives in `docs/archive/2025-12-collection-tabs-system.md`.
 
-## Collection Types
+## Collection Type
 
-### Full-Length Collections
+### Collections (MVP Standard)
 Official cohesive works released as complete collections with intentional track ordering and thematic unity.
 
 **Characteristics:**
@@ -19,15 +19,6 @@ Official cohesive works released as complete collections with intentional track 
 - Intentional track sequencing
 - Unified artistic vision
 - Released as complete work
-
-### Singles Collections
-Curated groupings of individual tracks that may not have been released together as a cohesive full-length collection.
-
-**Characteristics:**
-- `type: "singles"` in collection metadata
-- Tracks may span different release periods
-- Flexible ordering
-- Organized for browsing convenience
 
 ## Metadata Standards
 
@@ -38,7 +29,7 @@ interface Collection {
   id: string;              // Kebab-case identifier (e.g., "majestic-ascent")
   title: string;           // Display title (e.g., "Majestic Ascent")
   artist: string;          // Always "MetaDJ" for this platform
-  type: "collection" | "singles"; // Collection type classification
+  type: "collection"; // Collection type classification (singles retired for MVP)
   releaseDate: string;     // ISO format (YYYY-MM-DD)
   artworkUrl?: string;     // Path to collection artwork
   trackCount: number;      // Total tracks in collection
@@ -168,6 +159,10 @@ The expandable "About this collection" section was improved:
 Current tag vocabulary (examples):
 - Primary genres: Rock, Techno, Ambient, Electronic, EDM, House, Trance, Hip Hop, Dance, Glitch, Synth, Tech House, Psychedelic
 - Characteristics: Retro Future, Epic, Ethereal, Cosmic, Uplifting, Futuristic, Inspiring, Anthem, Intro, Creative, Metaverse
+
+## Roadmap Note: Singles
+
+Singles collections are paused for MVP scope and clarity. If/when we reintroduce them, they will return as a curated format (not individual one-off releases) with explicit filtering rules.
 
 ## Current Collections
 

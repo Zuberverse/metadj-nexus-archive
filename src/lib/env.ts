@@ -9,6 +9,21 @@
 
 import { z } from 'zod';
 
+const TLS_REQUIRED_SSLMODES = new Set(['require', 'verify-full', 'verify-ca']);
+
+function isDatabaseTlsEnabled(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    const sslmode = parsed.searchParams.get('sslmode')?.toLowerCase();
+    const ssl = parsed.searchParams.get('ssl')?.toLowerCase();
+    if (sslmode && TLS_REQUIRED_SSLMODES.has(sslmode)) return true;
+    if (ssl && (ssl === 'true' || ssl === '1')) return true;
+  } catch {
+    return false;
+  }
+  return false;
+}
+
 /**
  * Server-side environment variables schema
  * These are only accessible in server components and API routes
@@ -22,6 +37,7 @@ const serverEnvSchema = z.object({
 
   // Database
   DATABASE_URL: z.string().url().optional(),
+  TRUSTED_IP_HEADERS: z.string().optional(),
 
   // Authentication
   AUTH_SECRET: z.string().min(32, { message: 'AUTH_SECRET must be at least 32 characters' }),
@@ -143,6 +159,14 @@ const envSchema = serverEnvSchema.merge(clientEnvSchema)
     return Boolean(data.DATABASE_URL);
   }, {
     message: 'DATABASE_URL is required in production',
+    path: ['DATABASE_URL'],
+  })
+  .refine((data) => {
+    if (data.NODE_ENV !== 'production') return true;
+    if (!data.DATABASE_URL) return true;
+    return isDatabaseTlsEnabled(data.DATABASE_URL);
+  }, {
+    message: 'DATABASE_URL must enforce TLS in production (sslmode=require or ssl=true)',
     path: ['DATABASE_URL'],
   })
   .refine((data) => {

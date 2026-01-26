@@ -68,6 +68,7 @@ export function MetaDjAiChat({
   activeSessionId,
   onSelectSession,
   onDeleteSession,
+  onRefreshSessions,
 }: MetaDjAiChatComponentProps) {
   const isPanel = variant === "panel"
   const isFullscreenMobile = isMobileOverlay && variant === "overlay"
@@ -171,22 +172,17 @@ export function MetaDjAiChat({
     navigator.clipboard.writeText(content).catch(() => { })
   }, [])
 
-  const handleArchiveSession = useCallback((sessionId: string) => {
-    // When archiving, remove from local storage (active list)
-    // The archived session is stored in the database
-    if (onDeleteSession) {
-      onDeleteSession(sessionId)
-    }
-  }, [onDeleteSession])
+  const handleArchiveSession = useCallback((_sessionId: string) => {
+    // No-op: popover already refreshes after archive
+  }, [])
 
-  const handleUnarchiveSession = useCallback((sessionId: string) => {
-    // No-op: archived sessions are managed by the API
-    // User can manually reload archived sessions if needed
+  const handleUnarchiveSession = useCallback((_sessionId: string) => {
+    // No-op: popover already refreshes after unarchive
   }, [])
 
   const handleRefreshSessions = useCallback(() => {
-    // No-op: sessions list is auto-refreshed through state management
-  }, [])
+    onRefreshSessions?.()
+  }, [onRefreshSessions])
 
   useEffect(() => {
     if (!isOpen) {
