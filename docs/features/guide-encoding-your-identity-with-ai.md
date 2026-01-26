@@ -13,13 +13,13 @@ writing_style: "Writing Style 0 Core + Philosophical Depth + Educational Clarity
 seo_keywords: ["encode your identity", "AI identity guide", "brand corpus", "personal operating system", "MetaDJ Nexus", "MetaDJai"]
 ---
 
-**Last Modified**: 2025-12-29 12:28 EST
+**Last Modified**: 2026-01-26 09:37 EST
 
 Encoding your identity with AI is not about turning yourself into a brand. It’s about building a reliable mirror.
 
 A mirror that remembers how you think, what you value, how you decide—and then helps you act from that place when you’re tired, overloaded, or moving fast.
 
-MetaDJ Nexus and MetaDJai are both built on that premise. The music, visuals, Wisdom essays, and companion conversations don’t exist in isolation; they’re all downstream of the same encoded identity: the Zuberant Brand Corpus.
+MetaDJ Nexus and MetaDJai are both built on that premise. The music, visuals, Wisdom essays, and companion conversations don’t exist in isolation; they’re all downstream of the same encoded identity: the Zuberant Corpus.
 
 This guide walks you through the high-level pattern I use so you can adapt it for your own life, work, or creative practice.
 
@@ -83,7 +83,7 @@ Instead of shoving your entire identity into a single wall of text, think in lay
 - **Practices** — how you work, make decisions, and learn.  
 - **Artifacts** — examples of your writing, projects, sets, or products.
 
-The Zuberant Brand Corpus is exactly that:
+The Zuberant Corpus is exactly that:
 
 - Foundations: knowledge, MetaDJ biography, MetaDJ profile, purpose/vision.  
 - Practices: frameworks, workflows, decision trees, journaling patterns.  

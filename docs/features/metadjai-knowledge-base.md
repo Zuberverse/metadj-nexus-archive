@@ -2,7 +2,7 @@
 
 > **Complete reference for the MetaDJai knowledge base architecture, content, and extension**
 
-**Last Modified**: 2026-01-14 20:34 EST
+**Last Modified**: 2026-01-26 09:37 EST
 ## Overview
 
 MetaDJai is the AI companion built by Z (the creator behind MetaDJ) and serves as MetaDJ's AI extension inside MetaDJ Nexus. It includes a comprehensive knowledge base system that provides accurate, curated information about MetaDJ, Zuberant, the broader ecosystem vision, creative philosophy, and brand identity. This enables MetaDJai to answer questions about the artist, studio, and creative approach with grounded, consistent responses.
@@ -508,4 +508,4 @@ The knowledge base (`identity.json`) mirrors this 4-facet system for consistency
 
 ### Sync with Brand Corpus
 
-The knowledge base content is derived from the Zuberant Brand Corpus but adapted for public consumption. When corpus documents are updated, review knowledge base for sync needs.
+The knowledge base content is derived from the Zuberant Corpus but adapted for public consumption. When corpus documents are updated, review knowledge base for sync needs.

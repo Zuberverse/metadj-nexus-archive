@@ -118,7 +118,7 @@
             "Encoding your identity with AI is not about turning yourself into a brand. It's about building a reliable mirror.",
             "A mirror that remembers how you think, what you value, how you decide—and then helps you act from that place when you're tired, overloaded, or moving fast.",
             "The difference between AI that creates generic content with your name on it versus AI that genuinely extends your vision comes down to context. AI without your context produces average results. AI with deep understanding of your values, aesthetics, and decision patterns produces work that genuinely amplifies who you are.",
-            "MetaDJ Nexus and MetaDJai are both built on this premise. The music, visuals, Wisdom essays, and companion conversations don't exist in isolation; they're all downstream of the same encoded identity: the Zuberant Brand Corpus.",
+            "MetaDJ Nexus and MetaDJai are both built on this premise. The music, visuals, Wisdom essays, and companion conversations don't exist in isolation; they're all downstream of the same encoded identity: the Zuberant Corpus.",
             "This guide walks you through the pattern I use so you can adapt it for your own life, work, or creative practice."
           ]
         },
@@ -166,7 +166,7 @@
             "- Foundation layer — values, mission, identity, creative philosophy. These load every time.",
             "- Practice layer — how you work, make decisions, and learn. Load when relevant.",
             "- Artifact layer — examples of your writing, projects, sets, or products. Reference when generating similar content.",
-            "The Zuberant Brand Corpus is exactly that: foundations (knowledge, MetaDJ biography, MetaDJ profile, purpose/vision), practices (frameworks, workflows, decision trees, journaling patterns), and artifacts (music collections, blog posts, talks, internal notes).",
+            "The Zuberant Corpus is exactly that: foundations (knowledge, MetaDJ biography, MetaDJ profile, purpose/vision), practices (frameworks, workflows, decision trees, journaling patterns), and artifacts (music collections, blog posts, talks, internal notes).",
             "This structure lets you load the right context for each situation without overwhelming the system with irrelevant detail.",
             "Your move: Create a single folder for your identity corpus. Add a file for each of the three layers above. Start dropping in short notes, examples, and references as you work—don't wait for perfection."
           ]
