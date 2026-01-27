@@ -571,13 +571,20 @@ export function MetaDjAiChat({
 
     if (requiredPadding <= 1) {
       setRestingRunwayPadding(null)
-      return
+    } else {
+      setRestingRunwayPadding(requiredPadding)
     }
 
-    setRestingRunwayPadding(requiredPadding)
+    // Restore scroll position synchronously first
+    container.scrollTop = desiredScrollTop
 
+    // Also restore after a frame to catch any late layout shifts (like buttons appearing)
     const frameId = requestAnimationFrame(() => {
-      container.scrollTop = desiredScrollTop
+      requestAnimationFrame(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = desiredScrollTop
+        }
+      })
     })
 
     return () => cancelAnimationFrame(frameId)
