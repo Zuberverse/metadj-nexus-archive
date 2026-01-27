@@ -2,7 +2,6 @@
 
 import { memo, useRef } from "react"
 import dynamic from "next/dynamic"
-import { X } from "lucide-react"
 import { HomePageAnnouncements } from "@/components/home/HomePageAnnouncements"
 import { AppHeader } from "@/components/layout/AppHeader"
 import { Footer } from "@/components/layout/Footer"
@@ -255,19 +254,7 @@ function MobileShell({
           <div className="absolute -top-[20%] -left-[20%] w-[80%] h-[60%] bg-(--metadj-purple)/5 blur-[80px] pointer-events-none" aria-hidden="true" />
           <div className="absolute top-[40%] -right-[20%] w-[80%] h-[60%] bg-(--metadj-blue)/5 blur-[80px] pointer-events-none" aria-hidden="true" />
 
-          {/* Close button for accessibility - visible alternative to swipe gesture */}
-          <div className="relative z-10 flex justify-end px-4 pt-3 pb-1">
-            <button
-              type="button"
-              onClick={onToggleLeftPanel}
-              aria-label="Close music library"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors focus-ring"
-            >
-              <X className="h-5 w-5" aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden pt-3">
             <ErrorBoundary componentName="Left Panel">
               <LeftPanel
                 queue={queue}
