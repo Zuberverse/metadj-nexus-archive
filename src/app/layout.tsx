@@ -131,7 +131,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${cinzel.variable} ${poppins.variable} font-sans antialiased min-h-full overflow-x-hidden text-foreground`}>
+      <body className={`${cinzel.variable} ${poppins.variable} font-sans antialiased min-h-full overflow-x-hidden text-foreground bg-[var(--bg-surface-base)]`}>
         {/* JSON-LD Structured Data for Music Schema */}
         <script
           id="structured-data"
