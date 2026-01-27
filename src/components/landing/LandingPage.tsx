@@ -368,7 +368,13 @@ export function LandingPage() {
 
                     <button
                       type="submit"
-                      disabled={isSubmitting || authLoading || (mode === 'signup' && !agreedToTerms)}
+                      disabled={
+                        isSubmitting || 
+                        authLoading || 
+                        !email.trim() || 
+                        !password.trim() ||
+                        (mode === 'signup' && (!username.trim() || !agreedToTerms || !!usernameError))
+                      }
                       className="w-full min-h-[48px] py-3 brand-gradient text-white font-heading font-semibold rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       <span className="inline-flex items-center justify-center gap-2 min-w-[140px]">
