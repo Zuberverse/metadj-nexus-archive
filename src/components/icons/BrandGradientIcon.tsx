@@ -38,9 +38,9 @@ export function BrandGradientIcon({
           y2="24"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="#8B5CF6" />
-          <stop offset="50%" stopColor="#06B6D4" />
-          <stop offset="100%" stopColor="#D946EF" />
+          <stop offset="0%" stopColor="#A78BFA" />
+          <stop offset="50%" stopColor="#22D3EE" />
+          <stop offset="100%" stopColor="#E879F9" />
         </linearGradient>
       </defs>
       {children}

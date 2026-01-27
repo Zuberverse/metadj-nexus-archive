@@ -31,14 +31,14 @@
   --gradient-brand: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 50%, #D946EF 100%);
 
   --gradient-1:
-    radial-gradient(circle at 15% 20%, rgba(130, 100, 255, 0.55), transparent 50%),
-    radial-gradient(circle at 85% 25%, rgba(70, 150, 255, 0.50), transparent 48%),
-    radial-gradient(circle at 50% 32%, rgba(147, 100, 255, 0.48), transparent 55%),
-    radial-gradient(circle at 25% 55%, rgba(40, 190, 255, 0.42), transparent 55%),
-    radial-gradient(circle at 75% 50%, rgba(175, 145, 255, 0.45), transparent 55%),
-    radial-gradient(circle at 40% 75%, rgba(120, 90, 220, 0.38), transparent 50%),
-    radial-gradient(circle at 70% 80%, rgba(100, 140, 255, 0.35), transparent 48%),
-    linear-gradient(180deg, #161b42 0%, #161b42 100%);
+    radial-gradient(circle at 15% 20%, rgba(130, 100, 255, 0.45), transparent 50%),
+    radial-gradient(circle at 85% 25%, rgba(70, 150, 255, 0.42), transparent 48%),
+    radial-gradient(circle at 50% 32%, rgba(147, 100, 255, 0.40), transparent 55%),
+    radial-gradient(circle at 25% 55%, rgba(40, 190, 255, 0.35), transparent 55%),
+    radial-gradient(circle at 75% 50%, rgba(175, 145, 255, 0.38), transparent 55%),
+    radial-gradient(circle at 40% 75%, rgba(120, 90, 220, 0.32), transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(100, 140, 255, 0.28), transparent 48%),
+    linear-gradient(180deg, #12162e 0%, #12162e 100%);
 
   --gradient-1-overlay: linear-gradient(135deg,
       hsl(265 75% 66% / 0.18),
