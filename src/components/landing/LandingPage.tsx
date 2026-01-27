@@ -125,18 +125,15 @@ export function LandingPage() {
   ];
 
   return (
-    <div 
-      className="fixed inset-0 text-white bg-[var(--bg-surface-base)] flex flex-col"
-      style={{ touchAction: 'manipulation' }}
-    >
-      {/* Background effects */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="min-h-[100svh] w-full text-white bg-[var(--bg-surface-base)] flex flex-col">
+      {/* Background effects - fixed so they stay in place */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
-      {/* Main content - scrollable area */}
-      <div className="relative z-10 flex-1 flex flex-col overflow-x-hidden overflow-y-auto pb-20 sm:pb-16" style={{ WebkitOverflowScrolling: 'touch' }}>
+      {/* Main content - natural document flow */}
+      <div className="relative z-10 flex-1 flex flex-col">
         {/* Content wrapper */}
         <div className="flex-grow container mx-auto px-4 sm:px-6 py-4 lg:py-6">
           {/* Header */}
@@ -391,8 +388,8 @@ export function LandingPage() {
 
       </div>
 
-      {/* Footer - Absolute positioned at bottom of fixed container */}
-      <footer className="absolute bottom-0 left-0 right-0 z-20 backdrop-blur-3xl">
+      {/* Footer - Part of natural document flow */}
+      <footer className="relative z-20 mt-auto backdrop-blur-3xl">
         <div className="absolute inset-0 bg-[var(--bg-surface-base)]/90 pointer-events-none" />
         
         <div className="absolute -bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
