@@ -222,18 +222,18 @@ export function HubExperience({
                     <div className={clsx("absolute inset-0 opacity-55", card.accent)} />
 
                     <div className="relative z-10 flex flex-col gap-1 min-h-[90px]">
-                      <h3 className="text-sm font-heading font-bold text-heading-solid line-clamp-2">
+                      <h3 className="text-base font-heading font-bold text-heading-solid line-clamp-2">
                         {card.title}
                       </h3>
-                      <p className="text-xs text-white/80 leading-relaxed line-clamp-3">
+                      <p className="text-sm text-white/80 leading-relaxed line-clamp-3">
                         {card.excerpt}
                       </p>
                       <div className="mt-auto pt-1 flex items-center justify-between">
-                        <p className="text-[9px] text-muted-accessible uppercase tracking-wider flex items-center gap-1">
+                        <p className="text-[10px] text-muted-accessible uppercase tracking-wider flex items-center gap-1">
                           <card.icon className="h-2.5 w-2.5" />
                           {card.type}
                         </p>
-                        <p className="text-[9px] text-muted-accessible uppercase tracking-wider">
+                        <p className="text-[10px] text-muted-accessible uppercase tracking-wider">
                           {card.meta}
                         </p>
                       </div>
@@ -284,7 +284,7 @@ export function HubExperience({
                     <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-2.5 py-0.5 text-[10px] font-heading font-semibold text-white/80">
                       Feature in Development
                     </span>
-                    <p className="text-xs text-white/80 leading-relaxed">
+                    <p className="text-sm text-white/80 leading-relaxed">
                       News updates stay quiet while the core experience is refined.
                     </p>
                   </div>
@@ -331,7 +331,7 @@ export function HubExperience({
                     <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-2.5 py-0.5 text-[10px] font-heading font-semibold text-white/80">
                       Feature in Development
                     </span>
-                    <p className="text-xs text-white/80 leading-relaxed">
+                    <p className="text-sm text-white/80 leading-relaxed">
                       Live events and community moments coming soon.
                     </p>
                   </div>
@@ -361,7 +361,7 @@ export function HubExperience({
                 <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 border border-white/20 px-2.5 py-0.5 text-[10px] font-heading font-semibold text-white/80">
                   Public Preview
                 </span>
-                <p className="text-xs text-white/80 leading-relaxed">
+                <p className="text-sm text-white/80 leading-relaxed">
                   {GUIDE_WELCOME.previewNotice}
                 </p>
               </div>
