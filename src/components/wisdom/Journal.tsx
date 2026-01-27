@@ -1273,7 +1273,7 @@ export const Journal: FC = () => {
             )}
 
             {entries.length === 0 ? (
-                <div className="relative z-10 text-center py-20 rounded-2xl border border-white/5 bg-white/3">
+                <div className="relative z-10 text-center py-20 rounded-2xl border border-white/15 bg-black/30">
                     <Book className="h-12 w-12 text-white/20 mx-auto mb-4" />
                     <h3 className="text-xl font-heading font-semibold text-heading-solid mb-2">Empty Journal</h3>
                     <p className="text-muted-accessible max-w-sm mx-auto mb-6">
@@ -1288,7 +1288,7 @@ export const Journal: FC = () => {
                     </button>
                 </div>
             ) : filteredEntries.length === 0 && searchQuery ? (
-                <div className="relative z-10 text-center py-12 rounded-2xl border border-white/5 bg-white/3">
+                <div className="relative z-10 text-center py-12 rounded-2xl border border-white/15 bg-black/30">
                     <Search className="h-10 w-10 text-white/20 mx-auto mb-3" />
                     <h3 className="text-lg font-heading font-semibold text-heading-solid mb-1">No matches found</h3>
                     <p className="text-sm text-muted-accessible">

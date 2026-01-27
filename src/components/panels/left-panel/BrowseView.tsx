@@ -131,7 +131,7 @@ export function BrowseView({
               type="button"
               onClick={() => onCollectionSelect(collection.id)}
               className={clsx(
-                "group flex w-full items-center gap-3 rounded-xl border border-(--border-subtle) bg-white/3 px-2 py-2 transition-all duration-200 text-left focus-ring-glow",
+                "group flex w-full items-center gap-3 rounded-xl border border-(--border-subtle) bg-black/25 px-2 py-2 transition-all duration-200 text-left focus-ring-glow",
                 getCollectionHoverStyles(collection.id)
               )}
               aria-label={`Open collection ${collection.title}`}

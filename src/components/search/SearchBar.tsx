@@ -568,7 +568,7 @@ export function SearchBar({
             <div className="absolute top-[40%] -right-[20%] w-[80%] h-[60%] bg-blue-600/8 blur-[80px] pointer-events-none" />
 
             <div className="relative z-10 flex flex-col flex-1 min-h-0">
-              <div className="flex items-center justify-between gap-3 border-b border-(--border-subtle) px-4 py-3 bg-white/3">
+              <div className="flex items-center justify-between gap-3 border-b border-(--border-subtle) px-4 py-3 bg-black/20">
                 <div className="flex items-center gap-3">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full border border-(--border-standard) bg-white/5 text-white/80">
                     <Search className="h-4 w-4" />

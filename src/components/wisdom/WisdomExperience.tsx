@@ -167,7 +167,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
     return (
       <section className="relative mx-auto flex max-w-3xl flex-col gap-4 px-4 sm:px-6 lg:px-8 pt-8 pb-24 min-[1100px]:pb-8 text-center">
         <h2 className="text-xl font-heading font-semibold text-heading-solid">Couldn&apos;t load Wisdom</h2>
-        <p className="text-sm text-white/70">{error}</p>
+        <p className="text-sm text-white/80">{error}</p>
         <div>
           <button
             type="button"
@@ -219,7 +219,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
         {/* Search bar */}
         <div className="relative z-10 max-w-md mx-auto w-full">
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white/70 transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white/80 transition-colors" />
             <input
               type="text"
               placeholder="Search wisdom..."
@@ -234,7 +234,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-white/10 transition-colors"
                 aria-label="Clear search"
               >
-                <X className="h-4 w-4 text-white/60" />
+                <X className="h-4 w-4 text-white/75" />
               </button>
             )}
           </div>
@@ -245,7 +245,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
           <div className="relative z-10 mt-4 space-y-6">
             {filteredResults.total === 0 ? (
               <div className="text-center py-12">
-                <p className="text-white/60 text-sm">No results found for &quot;{searchQuery}&quot;</p>
+                <p className="text-white/75 text-sm">No results found for &quot;{searchQuery}&quot;</p>
               </div>
             ) : (
               <>
@@ -261,12 +261,12 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
                         <button
                           key={thought.id}
                           onClick={() => handleSearchResultClick("thoughts", thought.id)}
-                          className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/3 hover:bg-white/6 hover:border-purple-500/30 transition-all group"
+                          className="w-full text-left p-4 rounded-xl border border-white/15 bg-black/30 hover:bg-black/40 hover:border-purple-500/30 transition-all group"
                         >
                           <h4 className="font-heading font-semibold text-white group-hover:text-purple-300 transition-colors">
                             {thought.title}
                           </h4>
-                          <p className="text-sm text-white/60 mt-1 line-clamp-2">{thought.excerpt}</p>
+                          <p className="text-sm text-white/75 mt-1 line-clamp-2">{thought.excerpt}</p>
                           {thought.topics && thought.topics.length > 0 && (
                             <div className="flex flex-wrap gap-1.5 mt-2">
                               {thought.topics.slice(0, 3).map((topic) => (
@@ -297,7 +297,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
                         <button
                           key={guide.id}
                           onClick={() => handleSearchResultClick("guides", guide.id)}
-                          className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/3 hover:bg-white/6 hover:border-cyan-500/30 transition-all group"
+                          className="w-full text-left p-4 rounded-xl border border-white/15 bg-black/30 hover:bg-black/40 hover:border-cyan-500/30 transition-all group"
                         >
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300">
@@ -307,7 +307,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
                           <h4 className="font-heading font-semibold text-white group-hover:text-cyan-300 transition-colors">
                             {guide.title}
                           </h4>
-                          <p className="text-sm text-white/60 mt-1 line-clamp-2">{guide.excerpt}</p>
+                          <p className="text-sm text-white/75 mt-1 line-clamp-2">{guide.excerpt}</p>
                         </button>
                       ))}
                     </div>
@@ -326,12 +326,12 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
                         <button
                           key={reflection.id}
                           onClick={() => handleSearchResultClick("reflections", reflection.id)}
-                          className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/3 hover:bg-white/6 hover:border-emerald-500/30 transition-all group"
+                          className="w-full text-left p-4 rounded-xl border border-white/15 bg-black/30 hover:bg-black/40 hover:border-emerald-500/30 transition-all group"
                         >
                           <h4 className="font-heading font-semibold text-white group-hover:text-emerald-300 transition-colors">
                             {reflection.title}
                           </h4>
-                          <p className="text-sm text-white/60 mt-1 line-clamp-2">{reflection.excerpt}</p>
+                          <p className="text-sm text-white/75 mt-1 line-clamp-2">{reflection.excerpt}</p>
                           {reflection.topics && reflection.topics.length > 0 && (
                             <div className="flex flex-wrap gap-1.5 mt-2">
                               {reflection.topics.slice(0, 3).map((topic) => (

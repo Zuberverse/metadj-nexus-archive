@@ -726,7 +726,7 @@ export function AppHeader({
           aria-describedby="search-overlay-description"
         >
           <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-(--bg-surface-base)/95 shadow-[0_22px_60px_rgba(18,15,45,0.65)] backdrop-blur-2xl">
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3 bg-white/3">
+            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3 bg-black/20">
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80">
                   <Search className="h-4 w-4" />
