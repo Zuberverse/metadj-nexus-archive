@@ -17,8 +17,8 @@ export function Footer({ onInfoOpen }: FooterProps) {
       {/* Top gradient line matching Header's bottom line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
-      {/* Extra bottom padding below 1100px to account for bottom nav bar (~72px) */}
-      <div className="relative z-10 mx-auto w-full max-w-(--breakpoint-2xl) px-4 pt-2 pb-14 sm:px-6 sm:py-1.5 min-[1100px]:pb-1.5">
+      {/* Content container - minimal padding on all screen sizes */}
+      <div className="relative z-10 mx-auto w-full max-w-(--breakpoint-2xl) px-4 pt-2 pb-2 sm:px-6 sm:py-1.5">
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between sm:gap-4">
           {/* Legal Notice - Ultra Minimal (Hidden on very small screens, integrated on desktop) */}
           <p className="hidden md:block text-[10px] lg:text-[11px] font-heading font-bold text-muted-accessible leading-relaxed hover:text-white/80 transition-colors duration-300 text-left flex-1 truncate">

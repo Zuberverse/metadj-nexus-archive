@@ -298,7 +298,7 @@ function MobileShell({
         isPlaying={shouldPlay}
       />
       {/* Adaptive view mounting to balance seamless switching with lower-end performance */}
-      <main id="main-content-mobile" tabIndex={-1} className="relative flex flex-col flex-1 min-h-0">
+      <main id="main-content-mobile" tabIndex={-1} className="relative flex flex-col flex-1 min-h-0 pb-[calc(var(--mobile-nav-height,56px)_+_env(safe-area-inset-bottom))]">
         <section
           id="hub-content"
           className={`relative flex-1 ${activeView !== "hub" && activeView !== "cinema" ? "hidden" : ""
