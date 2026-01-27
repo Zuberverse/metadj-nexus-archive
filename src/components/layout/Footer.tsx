@@ -7,12 +7,12 @@ interface FooterProps {
 export function Footer({ onInfoOpen }: FooterProps) {
   return (
     <footer className="relative mt-auto w-full backdrop-blur-3xl">
-      {/* Solid background matching Header */}
-      <div className="absolute inset-0 bg-(--bg-surface-base)/90 pointer-events-none" />
+      {/* Semi-transparent background - allows gradient to show through */}
+      <div className="absolute inset-0 bg-(--bg-surface-base)/60 pointer-events-none" />
       
-      {/* Gradient blobs matching Header */}
-      <div className="absolute -bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
-      <div className="absolute -bottom-[20%] -right-[20%] w-[80%] h-[60%] bg-blue-600/5 blur-[80px] pointer-events-none" />
+      {/* Gradient blobs for vibrancy */}
+      <div className="absolute -bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/10 blur-[80px] pointer-events-none" />
+      <div className="absolute -bottom-[20%] -right-[20%] w-[80%] h-[60%] bg-blue-600/10 blur-[80px] pointer-events-none" />
       
       {/* Top gradient line matching Header's bottom line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
