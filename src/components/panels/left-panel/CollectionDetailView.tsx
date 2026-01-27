@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { ChevronLeft, ChevronDown, ChevronUp, Play, Shuffle, Music2 } from "lucide-react"
+import { ChevronLeft, ChevronDown, ChevronUp, Play, Music2 } from "lucide-react"
 import { ShareButton } from "@/components/ui"
 import { TrackListItem } from "@/components/ui"
 import { usePlayer } from "@/contexts/PlayerContext"
-import { shuffleTracks } from "@/lib/music"
 import type { Track, Collection } from "@/types"
 
 interface CollectionDetailViewProps {
@@ -78,12 +77,6 @@ export function CollectionDetailView({
     onTrackPlay(tracks[0], tracks)
   }, [tracks, onTrackPlay])
 
-  const handleShufflePlay = useCallback(() => {
-    if (tracks.length === 0) return
-    const shuffled = shuffleTracks(tracks)
-    onTrackPlay(shuffled[0], shuffled)
-  }, [tracks, onTrackPlay])
-
   return (
     <div className="flex-1 min-h-0 flex flex-col gap-2">
       <div className="flex items-center gap-2 mb-2">
@@ -141,16 +134,7 @@ export function CollectionDetailView({
                   aria-label="Start playing from the beginning of collection"
                 >
                   <Play className="h-3.5 w-3.5" fill="currentColor" />
-                  Start
-                </button>
-                <button
-                  type="button"
-                  onClick={handleShufflePlay}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-heading font-semibold text-white/90 transition hover:bg-white/10 hover:border-white/30"
-                  aria-label="Shuffle play this collection"
-                >
-                  <Shuffle className="h-3.5 w-3.5" />
-                  Shuffle
+                  Start from beginning
                 </button>
               </div>
             )}
