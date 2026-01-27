@@ -125,21 +125,15 @@ export function LandingPage() {
   ];
 
   return (
-    <div 
-      className="min-h-[100dvh] w-full text-white bg-[var(--bg-surface-base)]"
-      style={{ 
-        WebkitOverflowScrolling: 'touch',
-        touchAction: 'pan-y',
-      }}
-    >
+    <div className="h-[100dvh] w-full text-white bg-[var(--bg-surface-base)] overflow-hidden flex flex-col">
       {/* Background effects - fixed position so they don't affect scroll */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
-      {/* Main scrollable content */}
-      <div className="relative z-10 min-h-[100dvh] flex flex-col justify-between">
+      {/* Main content */}
+      <div className="relative z-10 flex-1 flex flex-col justify-between overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
         {/* Content wrapper */}
         <div className="flex-grow container mx-auto px-4 sm:px-6 py-4 lg:py-6">
           {/* Header */}
