@@ -1,6 +1,6 @@
 # Replit Deployment Guide - MetaDJ Nexus
 
-**Last Modified**: 2026-01-27
+**Last Modified**: 2026-01-27 (UI/UX styling conventions updated)
 
 ## Scope
 
@@ -57,6 +57,47 @@ Minimum set (details in `docs/operations/BUILD-DEPLOYMENT-GUIDE.md` and `docs/ME
 - **MetaDJai chat history**: Server-side in Postgres for authenticated users. localStorage is only used for unauthenticated users or for migration to server.
 - **Journal**: Server-side for authenticated users with local backup for drafts.
 - **Music data**: Versioned JSON in repo; media files live in Cloudflare R2.
+
+## UI/UX Styling Conventions (Updated 2026-01-27)
+
+### Background & Gradient System
+- **Base gradient**: `gradient-1` uses vibrant purple (#7c3aed), blue (#2563eb), and cyan (#06b6d4) colors
+- **Page backgrounds**: Full-page fixed background effects with color blooms and aurora effects on Hub, Wisdom, Journal, and Landing pages
+- **No bottom fade**: Backgrounds maintain consistent vibrancy throughout (no fade to dark)
+
+### Card & Container Styling Standards
+| Use Case | Background | Border |
+|----------|------------|--------|
+| Content cards | `bg-black/30` | `border-white/15` |
+| Wisdom cards | `bg-black/40` | `border-white/15` |
+| Browse items | `bg-black/25` | `border-(--border-subtle)` |
+| Header sections | `bg-black/20` | `border-white/10` |
+
+### Text Opacity Standards
+| Use Case | Class |
+|----------|-------|
+| Primary text | `text-white/90` or `text-heading-solid` |
+| Secondary text | `text-white/80` |
+| Muted text | `text-white/75` or `text-muted-accessible` |
+| Very muted | `text-white/50` |
+
+### Icon Colors (Vibrant)
+- Purple: `#A78BFA`
+- Cyan: `#22D3EE`
+- Pink: `#E879F9`
+
+### Key Files for Styling
+- `src/styles/gradients.css` - Core gradient definitions
+- `src/components/hub/HubExperience.tsx` - Hub page background effects
+- `src/components/wisdom/WisdomExperience.tsx` - Wisdom page styling
+- `src/components/wisdom/Journal.tsx` - Journal page styling
+- `src/components/landing/LandingPage.tsx` - Landing page background
+- `src/components/icons/BrandGradientIcon.tsx` - Vibrant icon colors
+
+### Avoid These Patterns
+- `bg-white/3` - Too faint, use `bg-black/25-40` instead
+- `text-white/60` - Too dim, use `text-white/75` minimum
+- `border-white/5` - Too invisible, use `border-white/15` minimum
 
 ## Related Docs
 
