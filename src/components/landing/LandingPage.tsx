@@ -142,13 +142,13 @@ export function LandingPage() {
               <span className="sr-only">MetaDJ</span>
               <span
                 aria-hidden="true"
-                className="relative flex items-center h-12 sm:h-14 md:h-16 lg:h-20 w-[120px] sm:w-[140px] md:w-[160px] lg:w-[200px]"
+                className="relative flex items-center h-10 min-h-[40px] sm:h-14 md:h-16 lg:h-20 w-[100px] min-w-[100px] sm:w-[140px] md:w-[160px] lg:w-[200px]"
               >
                 <Image
                   src="/images/metadj-logo-wordmark.png"
                   alt=""
                   fill
-                  sizes="(max-width: 640px) 120px, (max-width: 768px) 140px, (max-width: 1024px) 160px, 200px"
+                  sizes="(max-width: 640px) 100px, (max-width: 768px) 140px, (max-width: 1024px) 160px, 200px"
                   priority
                   className="object-contain object-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
                 />
