@@ -667,7 +667,7 @@ export function useAudioPlayback({
     }
   }, [analytics])
 
-  // Retry playback after user interaction
+  // Retry playback after user interaction (unlock overlay tap)
   const retryPlayback = useCallback(() => {
     const audio = audioRef.current
     if (!audio || !track) return
@@ -677,15 +677,19 @@ export function useAudioPlayback({
     setHasError(false)
     setErrorMessage(null)
     
+    // User explicitly tapped to play - ensure shouldPlay is true
+    shouldPlayRef.current = true
+    onShouldPlayChange?.(true)
+    
     if (audio.readyState === 0 || audio.error) {
       audio.load()
       setIsLoading(true)
     }
     
-    if (audio.paused && shouldPlayRef.current) {
+    if (audio.paused) {
       safePlay('retryPlayback')
     }
-  }, [track, safePlay])
+  }, [track, safePlay, onShouldPlayChange])
 
   // Update volume/mute from external props
   useEffect(() => {
