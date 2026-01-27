@@ -143,7 +143,7 @@ export function HubExperience({
     <div className="relative pb-2 min-[1100px]:pb-2 pt-0 space-y-2 min-[1100px]:space-y-3 container mx-auto flex flex-col h-full">
       {/* Hero Section - No container */}
       {/* Hero Section - No container */}
-      <section className="relative px-6 lg:px-8 pb-1 pt-2 flex flex-col items-center justify-center gap-4 text-center min-[1100px]:min-h-0 min-[1100px]:flex-shrink-0">
+      <section className="relative px-6 lg:px-8 pb-1 pt-5 flex flex-col items-center justify-center gap-4 text-center min-[1100px]:min-h-0 min-[1100px]:flex-shrink-0">
         {/* Dynamic Aurora Background */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] brand-gradient opacity-10 blur-[100px] animate-aurora pointer-events-none mix-blend-screen" />
 
