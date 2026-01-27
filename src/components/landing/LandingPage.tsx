@@ -125,7 +125,7 @@ export function LandingPage() {
   ];
 
   return (
-    <div className="h-[100dvh] w-full text-white bg-[var(--bg-surface-base)] overflow-x-hidden overflow-y-hidden flex flex-col">
+    <div className="h-screen w-full text-white bg-[var(--bg-surface-base)] overflow-x-hidden overflow-y-hidden flex flex-col">
       {/* Background effects - fixed position so they don't affect scroll */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
