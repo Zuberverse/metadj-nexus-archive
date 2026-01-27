@@ -125,7 +125,7 @@ export function LandingPage() {
   ];
 
   return (
-    <div className="min-h-[100svh] w-full text-white bg-[var(--bg-surface-base)] flex flex-col overflow-x-hidden">
+    <div className="min-h-screen w-full text-white bg-[var(--bg-surface-base)] overflow-x-hidden">
       {/* Background effects - fixed so they stay in place */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
@@ -389,7 +389,7 @@ export function LandingPage() {
       </div>
 
       {/* Footer - Part of natural document flow */}
-      <footer className="relative z-20 mt-auto backdrop-blur-3xl">
+      <footer className="relative z-20 backdrop-blur-3xl">
         <div className="absolute inset-0 bg-[var(--bg-surface-base)]/90 pointer-events-none" />
         
         <div className="absolute -bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
