@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ChevronLeft } from "lucide-react"
+import { X } from "lucide-react"
 import { TERMS_VERSION } from "@/lib/constants/terms"
 
 export default function TermsPage() {
@@ -22,6 +21,10 @@ export default function TermsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [router])
 
+  const handleClose = () => {
+    router.push("/")
+  }
+
   return (
     <main className="min-h-screen relative overflow-hidden px-4 py-10 sm:py-16">
       <div className="fixed inset-0 gradient-1 pointer-events-none" />
@@ -31,15 +34,17 @@ export default function TermsPage() {
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-cyan-900/30 rounded-full blur-[120px] mix-blend-screen" />
       </div>
 
+      {/* Floating Close Button */}
+      <button
+        onClick={handleClose}
+        className="fixed top-4 right-4 z-50 p-2 rounded-full bg-white/10 border border-white/20 text-white/70 hover:text-white hover:bg-white/20 hover:border-white/30 transition-all duration-200 backdrop-blur-sm"
+        aria-label="Close and return to MetaDJ Nexus"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
       <div className="relative z-10 mx-auto w-full max-w-3xl space-y-10">
         <header className="space-y-6 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-white/60 hover:text-white transition-colors group"
-          >
-            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            Back to MetaDJ Nexus
-          </Link>
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-5xl font-heading font-bold text-gradient-hero tracking-tight">
               Terms &amp; Conditions
