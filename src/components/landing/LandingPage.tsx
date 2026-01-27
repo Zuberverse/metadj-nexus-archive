@@ -4,6 +4,7 @@
  * Landing Page Component
  *
  * Public homepage with login/signup and platform overview.
+ * Mobile-first design with proper touch scrolling.
  */
 
 import { useState } from 'react';
@@ -13,13 +14,6 @@ import { useRouter } from 'next/navigation';
 import { Music, Film, BookOpen, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useModal } from '@/contexts/ModalContext';
-
-/**
- * ARCHIVED ICON NOTE:
- * Previously used lucide-react Bot icon for MetaDJai feature card.
- * Consider for future use: import { Bot } from 'lucide-react'
- * Now using custom MetaDJai pfp image for brand consistency.
- */
 
 type AuthMode = 'login' | 'signup';
 
@@ -76,13 +70,11 @@ export function LandingPage() {
     e.preventDefault();
     setError('');
 
-    // Validate terms agreement for signup
     if (mode === 'signup' && !agreedToTerms) {
       setError('Please agree to the Terms & Conditions');
       return;
     }
 
-    // Validate username for signup
     if (mode === 'signup' && usernameError) {
       setError('Please fix the username error');
       return;
@@ -133,18 +125,25 @@ export function LandingPage() {
   ];
 
   return (
-    <div className="min-h-[100dvh] flex flex-col text-white overscroll-none overflow-x-hidden overflow-y-scroll lg:overflow-y-hidden lg:h-[100dvh]">
-      {/* Hero Section */}
-      <div className="relative lg:overflow-hidden flex-1 lg:min-h-0">
-        {/* Background effects */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        </div>
+    <div 
+      className="min-h-[100dvh] w-full text-white bg-[var(--bg-surface-base)]"
+      style={{ 
+        WebkitOverflowScrolling: 'touch',
+        touchAction: 'pan-y',
+      }}
+    >
+      {/* Background effects - fixed position so they don't affect scroll */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+      </div>
 
-        <div className="relative z-10 container mx-auto px-6 py-4 lg:py-6 lg:h-full flex flex-col">
+      {/* Main scrollable content */}
+      <div className="relative z-10 min-h-[100dvh] flex flex-col">
+        {/* Content wrapper */}
+        <div className="flex-1 container mx-auto px-4 sm:px-6 py-4 lg:py-6">
           {/* Header */}
-          <header className="flex items-center justify-between mb-4 lg:mb-6">
+          <header className="flex items-center justify-between mb-6 lg:mb-8">
             <h1 className="flex items-center gap-2 sm:gap-3 text-pop">
               <span className="sr-only">MetaDJ</span>
               <span
@@ -166,10 +165,10 @@ export function LandingPage() {
             </h1>
           </header>
 
-          {/* Main Content */}
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-center lg:flex-1 lg:min-h-0">
-            {/* Left: Hero Text */}
-            <div className="space-y-4 text-center lg:text-left">
+          {/* Main Content - Stack on mobile, side-by-side on desktop */}
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-10 lg:items-center lg:min-h-[calc(100dvh-180px)]">
+            {/* Left: Hero Text - Hidden on small mobile to prioritize form */}
+            <div className="hidden sm:block space-y-4 text-center lg:text-left order-2 lg:order-1">
               <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-pop">
                 <span className="text-gradient-hero">
                   The Creative Hub
@@ -211,15 +210,27 @@ export function LandingPage() {
               </div>
             </div>
 
+            {/* Mobile-only compact header */}
+            <div className="sm:hidden text-center mb-2 order-1">
+              <h2 className="font-heading text-2xl font-bold leading-tight text-pop mb-2">
+                <span className="text-gradient-hero">The Creative Hub</span>
+                {' '}
+                <span className="text-white/90">for MetaDJ</span>
+              </h2>
+              <p className="text-sm text-white/60">
+                Original music, immersive visuals & AI exploration
+              </p>
+            </div>
+
             {/* Right: Auth Form */}
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-center lg:justify-end order-1 lg:order-2">
               <div className="w-full max-w-md">
-                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 lg:p-8 shadow-2xl">
-                  <div className="flex gap-4 mb-6">
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 sm:p-6 lg:p-8 shadow-2xl">
+                  <div className="flex gap-3 sm:gap-4 mb-5 sm:mb-6">
                     <button
                       type="button"
                       onClick={() => setMode('login')}
-                      className={`flex-1 py-3 rounded-xl font-heading font-semibold transition-all ${
+                      className={`flex-1 py-2.5 sm:py-3 rounded-xl font-heading font-semibold transition-all text-sm sm:text-base ${
                         mode === 'login'
                           ? 'brand-gradient text-white'
                           : 'bg-white/5 text-white/60 hover:text-white'
@@ -230,7 +241,7 @@ export function LandingPage() {
                     <button
                       type="button"
                       onClick={() => setMode('signup')}
-                      className={`flex-1 py-3 rounded-xl font-heading font-semibold transition-all ${
+                      className={`flex-1 py-2.5 sm:py-3 rounded-xl font-heading font-semibold transition-all text-sm sm:text-base ${
                         mode === 'signup'
                           ? 'brand-gradient text-white'
                           : 'bg-white/5 text-white/60 hover:text-white'
@@ -240,9 +251,9 @@ export function LandingPage() {
                     </button>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-white/70 mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium text-white/70 mb-1.5 sm:mb-2">
                         {mode === 'login' ? 'Email or Username' : 'Email'}
                       </label>
                       <input
@@ -255,15 +266,16 @@ export function LandingPage() {
                           e.target.setSelectionRange(len, len);
                         }}
                         placeholder={mode === 'login' ? 'you@example.com or admin' : 'you@example.com'}
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-base placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                         required
+                        autoComplete={mode === 'login' ? 'username' : 'email'}
                         disabled={isSubmitting || authLoading}
                       />
                     </div>
 
                     {mode === 'signup' && (
                       <div>
-                        <label htmlFor="username" className="block text-sm font-medium text-white/70 mb-2">
+                        <label htmlFor="username" className="block text-sm font-medium text-white/70 mb-1.5 sm:mb-2">
                           Username
                         </label>
                         <div className="relative">
@@ -277,7 +289,7 @@ export function LandingPage() {
                               e.target.setSelectionRange(len, len);
                             }}
                             placeholder="your_unique_name"
-                            className={`w-full px-4 py-3 bg-white/5 border rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-1 transition-all ${
+                            className={`w-full px-4 py-3 bg-white/5 border rounded-xl text-white text-base placeholder-white/30 focus:outline-none focus:ring-1 transition-all ${
                               usernameError 
                                 ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500' 
                                 : username.length >= 3 && !usernameChecking
@@ -287,6 +299,7 @@ export function LandingPage() {
                             required
                             minLength={3}
                             maxLength={20}
+                            autoComplete="username"
                             disabled={isSubmitting || authLoading}
                           />
                           {usernameChecking && (
@@ -296,15 +309,15 @@ export function LandingPage() {
                           )}
                         </div>
                         {usernameError ? (
-                          <p className="mt-2 text-xs text-red-400">{usernameError}</p>
+                          <p className="mt-1.5 text-xs text-red-400">{usernameError}</p>
                         ) : (
-                          <p className="mt-2 text-xs text-white/50">3-20 characters, letters, numbers, underscores</p>
+                          <p className="mt-1.5 text-xs text-white/50">3-20 characters, letters, numbers, underscores</p>
                         )}
                       </div>
                     )}
 
                     <div>
-                      <label htmlFor="password" className="block text-sm font-medium text-white/70 mb-2">
+                      <label htmlFor="password" className="block text-sm font-medium text-white/70 mb-1.5 sm:mb-2">
                         Password
                       </label>
                       <input
@@ -317,17 +330,17 @@ export function LandingPage() {
                           e.target.setSelectionRange(len, len);
                         }}
                         placeholder="Enter your password"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-base placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                         required
                         minLength={mode === 'signup' ? 8 : undefined}
+                        autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                         disabled={isSubmitting || authLoading}
                       />
                       {mode === 'signup' && (
-                        <p className="mt-2 text-xs text-white/50">Minimum 8 characters</p>
+                        <p className="mt-1.5 text-xs text-white/50">Minimum 8 characters</p>
                       )}
                     </div>
 
-                    {/* Terms Agreement - Signup only */}
                     {mode === 'signup' && (
                       <div className="flex items-start gap-3">
                         <input
@@ -335,7 +348,7 @@ export function LandingPage() {
                           type="checkbox"
                           checked={agreedToTerms}
                           onChange={(e) => setAgreedToTerms(e.target.checked)}
-                          className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent text-purple-500 accent-purple-500 focus:ring-purple-500 focus:ring-offset-0"
+                          className="mt-1 h-5 w-5 rounded border border-white/30 bg-transparent text-purple-500 accent-purple-500 focus:ring-purple-500 focus:ring-offset-0"
                           required
                           disabled={isSubmitting || authLoading}
                         />
@@ -362,7 +375,7 @@ export function LandingPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting || authLoading || (mode === 'signup' && !agreedToTerms)}
-                      className="w-full h-12 py-3 brand-gradient text-white font-heading font-semibold rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="w-full min-h-[48px] py-3 brand-gradient text-white font-heading font-semibold rounded-xl transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       <span className="inline-flex items-center justify-center gap-2 min-w-[140px]">
                         {isSubmitting || authLoading ? (
@@ -379,54 +392,51 @@ export function LandingPage() {
                       </span>
                     </button>
                   </form>
-
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Footer - matching app footer */}
-      <footer className="relative mt-auto w-full backdrop-blur-3xl">
-        <div className="absolute inset-0 bg-(--bg-surface-base)/90 pointer-events-none" />
-        
-        {/* Gradient blobs matching Header */}
-        <div className="absolute -bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
-        <div className="absolute -bottom-[20%] -right-[20%] w-[80%] h-[60%] bg-blue-600/5 blur-[80px] pointer-events-none" />
-        
-        {/* Top gradient line matching Header's bottom line */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-        <div className="relative z-10 container mx-auto px-4 py-1.5 sm:px-6">
-          <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between sm:gap-4">
-            <p className="hidden md:block text-[10px] lg:text-[11px] font-heading font-bold text-muted-accessible leading-relaxed hover:text-white/80 transition-colors duration-300 text-left flex-1 truncate">
-              MetaDJ Nexus. Original works & AI-driven content. Reproduction prohibited.
-            </p>
-            <div className="flex items-center justify-center gap-x-1 gap-y-2 text-[10px] lg:text-[11px] font-heading font-bold text-muted-accessible sm:justify-end shrink-0">
-              <Link
-                href="/terms"
-                className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center text-muted-accessible hover:text-white transition-colors cursor-pointer touch-manipulation"
-              >
-                Terms
-              </Link>
-              <Link
-                href="/guide"
-                className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center text-muted-accessible hover:text-white transition-colors cursor-pointer touch-manipulation"
-              >
-                Guide
-              </Link>
-              <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-1">
-                <span className="text-white/70 font-black">MetaDJ</span>
-                <span className="text-white/30 text-[8px]" aria-hidden="true">•</span>
-                <span className="text-white/70 font-black">Zuberant</span>
+        {/* Footer */}
+        <footer className="relative mt-auto w-full backdrop-blur-3xl shrink-0">
+          <div className="absolute inset-0 bg-[var(--bg-surface-base)]/90 pointer-events-none" />
+          
+          <div className="absolute -bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-600/5 blur-[80px] pointer-events-none" />
+          <div className="absolute -bottom-[20%] -right-[20%] w-[80%] h-[60%] bg-blue-600/5 blur-[80px] pointer-events-none" />
+          
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+          <div className="relative z-10 container mx-auto px-4 py-3 sm:px-6">
+            <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between sm:gap-4">
+              <p className="hidden md:block text-[10px] lg:text-[11px] font-heading font-bold text-white/50 leading-relaxed hover:text-white/80 transition-colors duration-300 text-left flex-1 truncate">
+                MetaDJ Nexus. Original works & AI-driven content. Reproduction prohibited.
+              </p>
+              <div className="flex items-center justify-center gap-x-1 gap-y-2 text-[10px] lg:text-[11px] font-heading font-bold text-white/50 sm:justify-end shrink-0">
+                <Link
+                  href="/terms"
+                  className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center text-white/50 hover:text-white transition-colors cursor-pointer"
+                >
+                  Terms
+                </Link>
+                <Link
+                  href="/guide"
+                  className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center text-white/50 hover:text-white transition-colors cursor-pointer"
+                >
+                  Guide
+                </Link>
+                <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-1">
+                  <span className="text-white/70 font-black">MetaDJ</span>
+                  <span className="text-white/30 text-[8px]" aria-hidden="true">•</span>
+                  <span className="text-white/70 font-black">Zuberant</span>
+                </div>
               </div>
+              <p className="md:hidden text-[10px] font-heading font-medium uppercase tracking-widest text-white/50 text-center">
+                Original works & AI-driven content
+              </p>
             </div>
-            <p className="md:hidden mt-2 text-[10px] font-heading font-medium uppercase tracking-widest text-muted-accessible text-center">
-              Original works & AI-driven content &bull; Zuberant
-            </p>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
