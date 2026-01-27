@@ -65,12 +65,12 @@ export function MetaDjAiWelcomeState({
             )}
           >
             <div className="flex items-center justify-between w-full">
-              <p className="text-xs font-heading font-bold uppercase tracking-wider text-white/70 group-hover:text-purple-300 transition-colors">{starter.title}</p>
+              <p className="text-sm font-heading font-bold uppercase tracking-wider text-gradient-hero group-hover:brightness-125 transition-all">{starter.title}</p>
               <div className="opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
                 <SendHorizontal className="h-3 w-3 text-purple-300" />
               </div>
             </div>
-            <p className="hidden min-[1100px]:block text-sm text-white/80 group-hover:text-white transition-colors leading-relaxed">{starter.description}</p>
+            <p className="hidden min-[1100px]:block text-xs text-white/75 group-hover:text-white/90 transition-colors leading-relaxed">{starter.description}</p>
           </button>
         ))}
       </div>

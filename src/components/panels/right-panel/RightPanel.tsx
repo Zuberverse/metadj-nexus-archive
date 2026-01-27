@@ -39,23 +39,18 @@ export function RightPanel({ headerHeight, ...panelProps }: RightPanelProps) {
   }
 
   // Content wrapper that is shared between both views
-  // In fullscreen mode: transparent background, no border - content floats on dark backdrop
-  // In side panel mode: solid background with left border
+  // Both fullscreen and side panel modes use the same solid background styling
   const panelContent = (
     <div
-      className={`relative h-full overflow-hidden ${
+      className={`relative h-full overflow-hidden bg-(--bg-surface-base) backdrop-blur-3xl ${
         isFullscreen
-          ? "bg-transparent px-2 pt-0"
-          : "bg-(--bg-surface-base)/90 backdrop-blur-3xl px-2 pt-2 border-l border-white/20"
+          ? "px-2 pt-0 rounded-2xl border border-white/15"
+          : "px-2 pt-2 border-l border-white/20"
       }`}
     >
-      {/* Vibrant Background Blobs - Static for stability (only in side panel mode) */}
-      {!isFullscreen && (
-        <>
-          <div className="absolute -top-[20%] -right-[20%] w-[80%] h-[60%] bg-cyan-500/5 blur-[80px] pointer-events-none" />
-          <div className="absolute bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-500/5 blur-[80px] pointer-events-none" />
-        </>
-      )}
+      {/* Vibrant Background Blobs - Static for stability */}
+      <div className="absolute -top-[20%] -right-[20%] w-[80%] h-[60%] bg-cyan-500/5 blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-[20%] -left-[20%] w-[80%] h-[60%] bg-purple-500/5 blur-[80px] pointer-events-none" />
 
       <div className="relative z-10 h-full">
         <ErrorBoundary componentName="MetaDJai Chat">
@@ -75,11 +70,15 @@ export function RightPanel({ headerHeight, ...panelProps }: RightPanelProps) {
         transition={{ type: "spring", stiffness: 350, damping: 30 }}
       >
         <motion.div
-          className="absolute inset-0 bg-black/95"
+          className="absolute inset-0 bg-(--bg-surface-base)"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-        />
+        >
+          {/* Background gradient blobs for fullscreen mode */}
+          <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[50%] bg-purple-600/10 blur-[100px] pointer-events-none" />
+          <div className="absolute -bottom-[10%] -right-[10%] w-[60%] h-[50%] bg-cyan-600/10 blur-[100px] pointer-events-none" />
+        </motion.div>
         <div className="relative container mx-auto h-full max-w-7xl pt-2 pb-4 px-4 z-10">
           <div role="complementary" aria-label="Chat Panel" className="h-full">
             {panelContent}
