@@ -254,7 +254,7 @@ export function LandingPage() {
                         type={mode === 'login' ? 'text' : 'email'}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder={mode === 'login' ? 'you@example.com or admin' : 'you@example.com'}
+                        placeholder="you@example.com"
                         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-base placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                         required
                         autoComplete={mode === 'login' ? 'username' : 'email'}
