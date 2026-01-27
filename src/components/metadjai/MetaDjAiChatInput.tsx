@@ -324,7 +324,7 @@ export function MetaDjAiChatInput({
               enterKeyHint="send"
               rows={1}
               placeholder="Ask MetaDJai..."
-              className="w-full resize-none bg-transparent px-2.5 py-2.5 text-base text-white placeholder:text-white/70 max-h-32 overflow-y-auto overscroll-contain font-heading focus:outline-none focus-visible:outline-none scrollbar-thin"
+              className="w-full resize-none bg-transparent px-2.5 py-2.5 text-base text-white placeholder:text-white/70 placeholder:font-heading placeholder:uppercase max-h-32 overflow-y-auto overscroll-contain focus:outline-none focus-visible:outline-none scrollbar-thin"
             />
           </div>
         </div>

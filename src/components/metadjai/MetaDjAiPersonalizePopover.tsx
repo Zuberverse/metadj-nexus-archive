@@ -160,6 +160,7 @@ export function MetaDjAiPersonalizePopover({
           hidden={personalizeTab !== "style"}
           className="h-full overflow-y-auto pr-1 scrollbar-on-hover"
         >
+          {/* Style Profiles */}
           <div className="grid gap-2 sm:grid-cols-2">
             {PERSONALIZATION_PROFILES.filter((p) => p.id !== "custom").map((profile) => {
               const isActive = profile.id === personalization.profileId
@@ -228,6 +229,108 @@ export function MetaDjAiPersonalizePopover({
               </div>
             )}
           </div>
+
+          {/* Response Length */}
+          <fieldset className="mt-4">
+            <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+              Response length
+            </legend>
+            <div className="mt-2 grid gap-2 sm:grid-cols-3">
+              {PERSONALIZATION_LENGTH_OPTIONS.map((option) => {
+                const isActive = personalization.responseLength === option.id
+                return (
+                  <label
+                    key={option.id}
+                    className={clsx(
+                      "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
+                      isActive
+                        ? "border-cyan-400/60 bg-cyan-500/10 text-white"
+                        : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="metadjai-length"
+                      value={option.id}
+                      checked={isActive}
+                      onChange={() => onPersonalizationUpdate({ responseLength: option.id })}
+                      className="sr-only"
+                    />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
+                    <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
+
+          {/* Response Format */}
+          <fieldset className="mt-4">
+            <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+              Response format
+            </legend>
+            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+              {PERSONALIZATION_FORMAT_OPTIONS.map((option) => {
+                const isActive = personalization.responseFormat === option.id
+                return (
+                  <label
+                    key={option.id}
+                    className={clsx(
+                      "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
+                      isActive
+                        ? "border-purple-400/60 bg-purple-500/10 text-white"
+                        : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="metadjai-format"
+                      value={option.id}
+                      checked={isActive}
+                      onChange={() => onPersonalizationUpdate({ responseFormat: option.id })}
+                      className="sr-only"
+                    />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
+                    <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
+
+          {/* Tone */}
+          <fieldset className="mt-4">
+            <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+              Tone
+            </legend>
+            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+              {PERSONALIZATION_TONE_OPTIONS.map((option) => {
+                const isActive = personalization.tone === option.id
+                return (
+                  <label
+                    key={option.id}
+                    className={clsx(
+                      "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
+                      isActive
+                        ? "border-indigo-400/60 bg-indigo-500/10 text-white"
+                        : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="metadjai-tone"
+                      value={option.id}
+                      checked={isActive}
+                      onChange={() => onPersonalizationUpdate({ tone: option.id })}
+                      className="sr-only"
+                    />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
+                    <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
         </div>
 
         {/* Profile Tab Panel */}
@@ -238,111 +341,8 @@ export function MetaDjAiPersonalizePopover({
           hidden={personalizeTab !== "profile"}
           className="h-full"
         >
-          <div className="h-full space-y-4 overflow-y-auto rounded-2xl border border-white/10 bg-white/5 px-3 py-3 pr-1 scrollbar-on-hover">
-            {/* Response Length */}
-            <fieldset>
-              <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-                Response length
-              </legend>
-              <div className="mt-2 grid gap-2 sm:grid-cols-3">
-                {PERSONALIZATION_LENGTH_OPTIONS.map((option) => {
-                  const isActive = personalization.responseLength === option.id
-                  return (
-                    <label
-                      key={option.id}
-                      className={clsx(
-                        "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
-                        isActive
-                          ? "border-cyan-400/60 bg-cyan-500/10 text-white"
-                          : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        name="metadjai-length"
-                        value={option.id}
-                        checked={isActive}
-                        onChange={() => onPersonalizationUpdate({ responseLength: option.id })}
-                        className="sr-only"
-                      />
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
-                      <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
-                    </label>
-                  )
-                })}
-              </div>
-            </fieldset>
-
-            {/* Response Format */}
-            <fieldset>
-              <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-                Response format
-              </legend>
-              <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                {PERSONALIZATION_FORMAT_OPTIONS.map((option) => {
-                  const isActive = personalization.responseFormat === option.id
-                  return (
-                    <label
-                      key={option.id}
-                      className={clsx(
-                        "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
-                        isActive
-                          ? "border-purple-400/60 bg-purple-500/10 text-white"
-                          : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        name="metadjai-format"
-                        value={option.id}
-                        checked={isActive}
-                        onChange={() => onPersonalizationUpdate({ responseFormat: option.id })}
-                        className="sr-only"
-                      />
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
-                      <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
-                    </label>
-                  )
-                })}
-              </div>
-            </fieldset>
-
-            {/* Tone */}
-            <fieldset>
-              <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-                Tone
-              </legend>
-              <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                {PERSONALIZATION_TONE_OPTIONS.map((option) => {
-                  const isActive = personalization.tone === option.id
-                  return (
-                    <label
-                      key={option.id}
-                      className={clsx(
-                        "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
-                        isActive
-                          ? "border-indigo-400/60 bg-indigo-500/10 text-white"
-                          : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        name="metadjai-tone"
-                        value={option.id}
-                        checked={isActive}
-                        onChange={() => onPersonalizationUpdate({ tone: option.id })}
-                        className="sr-only"
-                      />
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
-                      <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
-                    </label>
-                  )
-                })}
-              </div>
-            </fieldset>
-
+          <div className="h-full space-y-3 overflow-y-auto rounded-2xl border border-white/10 bg-white/5 px-3 py-3 pr-1 scrollbar-on-hover">
             {/* Profile Fields */}
-            <div className="space-y-3">
               <div>
                 <label htmlFor="metadjai-profile-name" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
                   Name
@@ -388,22 +388,21 @@ export function MetaDjAiPersonalizePopover({
                 />
               </div>
 
-              <div>
-                <label htmlFor="metadjai-personalize-notes" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-                  Additional guidance
-                </label>
-                <textarea
-                  id="metadjai-personalize-notes"
-                  value={personalization.customInstructions}
-                  onChange={(event) => onPersonalizationUpdate({ customInstructions: event.target.value })}
-                  rows={3}
-                  maxLength={MAX_PERSONALIZATION_LENGTH}
-                  placeholder="Example: Keep it concise. Ask one clarifying question. Focus on product planning."
-                  className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
-                />
-                <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
-                  <span>{personalization.customInstructions.length}/{MAX_PERSONALIZATION_LENGTH}</span>
-                </div>
+            <div>
+              <label htmlFor="metadjai-personalize-notes" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+                Additional guidance
+              </label>
+              <textarea
+                id="metadjai-personalize-notes"
+                value={personalization.customInstructions}
+                onChange={(event) => onPersonalizationUpdate({ customInstructions: event.target.value })}
+                rows={3}
+                maxLength={MAX_PERSONALIZATION_LENGTH}
+                placeholder="Example: Keep it concise. Ask one clarifying question. Focus on product planning."
+                className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
+              />
+              <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
+                <span>{personalization.customInstructions.length}/{MAX_PERSONALIZATION_LENGTH}</span>
               </div>
             </div>
           </div>
