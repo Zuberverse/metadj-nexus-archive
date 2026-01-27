@@ -358,7 +358,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             {/* Thoughts card */}
             <button
               onClick={() => setActiveSection("thoughts")}
-              className="group relative rounded-3xl border border-white/10 bg-white/3 p-6 text-left shadow-[var(--shadow-glow-purple)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-white/5 hover:shadow-[var(--shadow-glow-purple)] focus-ring-glow"
+              className="group relative rounded-3xl border border-white/15 bg-black/40 p-6 text-left shadow-[var(--shadow-glow-purple)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-black/50 hover:shadow-[var(--shadow-glow-purple)] focus-ring-glow"
             >
               <div className="mb-4 inline-flex items-center justify-center rounded-full gradient-4 p-3">
                 <BookOpen className="h-6 w-6 text-white" />
@@ -366,8 +366,8 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
               <h3 className="mb-1 text-xl font-heading font-bold text-heading-solid">
                 Thoughts
               </h3>
-              <p className="text-xs text-white/60 mb-2">{data.thoughts.length} essays</p>
-              <p className="text-sm text-white/70 leading-relaxed">
+              <p className="text-xs text-white/80 mb-2">{data.thoughts.length} essays</p>
+              <p className="text-sm text-white/90 leading-relaxed">
                 Personal dispatches on music, AI, creativity, and the evolving MetaDJ work.
               </p>
             </button>
@@ -375,7 +375,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             {/* Guides card */}
             <button
               onClick={() => setActiveSection("guides")}
-              className="group relative rounded-3xl border border-white/10 bg-white/3 p-6 text-left shadow-[var(--shadow-glow-cyan)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-white/5 hover:shadow-[var(--shadow-glow-cyan)] focus-ring-glow"
+              className="group relative rounded-3xl border border-white/15 bg-black/40 p-6 text-left shadow-[var(--shadow-glow-cyan)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-black/50 hover:shadow-[var(--shadow-glow-cyan)] focus-ring-glow"
             >
               <div className="mb-4 inline-flex items-center justify-center rounded-full gradient-4 p-3">
                 <Layers className="h-6 w-6 text-white" />
@@ -383,8 +383,8 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
               <h3 className="mb-1 text-xl font-heading font-bold text-heading-solid">
                 Guides
               </h3>
-              <p className="text-xs text-white/60 mb-2">{data.guides.length} guides</p>
-              <p className="text-sm text-white/70 leading-relaxed">
+              <p className="text-xs text-white/80 mb-2">{data.guides.length} guides</p>
+              <p className="text-sm text-white/90 leading-relaxed">
                 In-depth guides on music production, DJing, AI tools, the Metaverse, and creative
                 techniques that empower your work.
               </p>
@@ -393,7 +393,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
             {/* Reflections card */}
             <button
               onClick={() => setActiveSection("reflections")}
-              className="group relative rounded-3xl border border-white/10 bg-white/3 p-6 text-left shadow-[var(--shadow-glow-emerald)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-white/5 hover:shadow-[var(--shadow-glow-emerald)] focus-ring-glow"
+              className="group relative rounded-3xl border border-white/15 bg-black/40 p-6 text-left shadow-[var(--shadow-glow-emerald)] backdrop-blur-sm transition-all duration-300 hover:border-(--border-active) hover:bg-black/50 hover:shadow-[var(--shadow-glow-emerald)] focus-ring-glow"
             >
               <div className="mb-4 inline-flex items-center justify-center rounded-full gradient-4 p-3">
                 <User className="h-6 w-6 text-white" />
@@ -401,8 +401,8 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
               <h3 className="mb-1 text-xl font-heading font-bold text-heading-solid">
                 Reflections
               </h3>
-              <p className="text-xs text-white/60 mb-2">{data.reflections.length} entries</p>
-              <p className="text-sm text-white/70 leading-relaxed">
+              <p className="text-xs text-white/80 mb-2">{data.reflections.length} entries</p>
+              <p className="text-sm text-white/90 leading-relaxed">
                 Deep dives into the evolution—stories, experiences, and the path from music curator to Digital Jockey.
               </p>
             </button>
