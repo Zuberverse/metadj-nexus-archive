@@ -142,17 +142,16 @@ export function HubExperience({
     <div className="relative pb-2 min-[1100px]:pb-2 pt-0 space-y-2 min-[1100px]:space-y-3 container mx-auto flex flex-col h-full">
       {/* Full-page background effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute inset-0 gradient-1 opacity-95" />
+        <div className="absolute inset-0 gradient-1" />
         {/* Central aurora for vibrancy */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[200%] h-[140%] brand-gradient opacity-28 blur-[100px] mix-blend-screen" />
-        {/* Distributed color blooms */}
-        <div className="absolute top-[5%] left-[10%] w-[550px] h-[550px] bg-purple-500/18 rounded-full blur-[90px]" />
-        <div className="absolute top-[8%] right-[8%] w-[500px] h-[500px] bg-blue-500/15 rounded-full blur-[80px]" />
-        <div className="absolute top-[30%] left-[25%] w-[450px] h-[450px] bg-cyan-500/12 rounded-full blur-[90px]" />
-        <div className="absolute top-[35%] right-[15%] w-[400px] h-[400px] bg-violet-500/14 rounded-full blur-[100px]" />
-        <div className="absolute top-[55%] left-[15%] w-[350px] h-[350px] bg-indigo-500/10 rounded-full blur-[80px]" />
-        {/* Subtle fade to dark at very bottom only */}
-        <div className="absolute bottom-0 left-0 right-0 h-[25%] bg-gradient-to-t from-[#0a0e20]/80 via-transparent to-transparent" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[200%] h-[150%] brand-gradient opacity-30 blur-[120px] mix-blend-screen" />
+        {/* Distributed color blooms - richer saturation */}
+        <div className="absolute top-[5%] left-[8%] w-[600px] h-[600px] bg-purple-500/22 rounded-full blur-[100px]" />
+        <div className="absolute top-[6%] right-[6%] w-[550px] h-[550px] bg-blue-500/20 rounded-full blur-[90px]" />
+        <div className="absolute top-[28%] left-[22%] w-[500px] h-[500px] bg-cyan-500/16 rounded-full blur-[100px]" />
+        <div className="absolute top-[32%] right-[12%] w-[450px] h-[450px] bg-violet-500/18 rounded-full blur-[110px]" />
+        <div className="absolute top-[52%] left-[12%] w-[400px] h-[400px] bg-indigo-500/14 rounded-full blur-[90px]" />
+        <div className="absolute top-[60%] right-[20%] w-[350px] h-[350px] bg-purple-600/12 rounded-full blur-[100px]" />
       </div>
 
       {/* Hero Section */}
