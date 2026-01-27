@@ -130,7 +130,7 @@ export function LandingPage() {
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute inset-0 gradient-1 opacity-90" />
         {/* Central aurora - consistent with Hub/Wisdom/Journal */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] brand-gradient opacity-15 blur-[100px] mix-blend-screen" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] brand-gradient opacity-20 blur-[100px] mix-blend-screen" />
         {/* Distributed blooms for added depth */}
         <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]" />
         <div className="absolute top-[15%] right-[10%] w-[450px] h-[450px] bg-blue-600/8 rounded-full blur-[100px]" />

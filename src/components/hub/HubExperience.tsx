@@ -144,7 +144,7 @@ export function HubExperience({
       {/* Hero Section - No container */}
       <section className="relative px-6 lg:px-8 pb-1 pt-5 flex flex-col items-center justify-center gap-4 text-center min-[1100px]:min-h-0 min-[1100px]:flex-shrink-0">
         {/* Dynamic Aurora Background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] brand-gradient opacity-15 blur-[100px] pointer-events-none mix-blend-screen" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] brand-gradient opacity-20 blur-[100px] pointer-events-none mix-blend-screen" />
 
         <div className="relative z-10 space-y-2">
           <h1 className="font-heading font-black leading-[0.9] text-[clamp(1.5rem,3.5vw,2.75rem)] tracking-tight max-w-[90vw] mx-auto text-pop text-gradient-hero">

@@ -193,7 +193,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
     return (
       <section className="relative mx-auto flex max-w-5xl flex-col gap-6 px-4 sm:px-6 lg:px-8 pt-6 pb-24 min-[1100px]:pb-6">
         {/* Dynamic Aurora Background - matching Hub design */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] brand-gradient opacity-15 blur-[100px] pointer-events-none mix-blend-screen" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] brand-gradient opacity-20 blur-[100px] pointer-events-none mix-blend-screen" />
 
         {/* Header */}
         <header className="relative z-10 text-center space-y-3">
@@ -405,7 +405,7 @@ export const WisdomExperience: FC<WisdomExperienceComponentProps> = ({
   return (
     <section className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-6 pb-24 min-[1100px]:pb-6">
       {/* Dynamic Aurora Background - matching Hub design */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] brand-gradient opacity-15 blur-[100px] pointer-events-none mix-blend-screen" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] brand-gradient opacity-20 blur-[100px] pointer-events-none mix-blend-screen" />
 
       {activeSection === "thoughts" && (
         <Thoughts
