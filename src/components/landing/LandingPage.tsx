@@ -404,14 +404,14 @@ export function LandingPage() {
         
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
         <div className="relative z-10 container mx-auto px-4 py-2 sm:px-6">
-          <div className="flex items-center justify-center gap-x-1 font-heading font-bold">
+          <div className="flex items-center justify-center gap-x-1 text-xs lg:text-sm font-heading font-bold">
             <Link
               href="/terms"
-              className="min-h-[40px] px-2 inline-flex items-center justify-center text-xs text-purple-300/70 hover:text-purple-200 transition-colors cursor-pointer"
+              className="min-h-[44px] min-w-[44px] px-3 inline-flex items-center justify-center text-muted-accessible hover:text-white transition-colors cursor-pointer touch-manipulation"
             >
               Terms
             </Link>
-            <div className="flex items-center gap-2 border-l border-white/10 pl-3 ml-1 text-[10px]">
+            <div className="flex items-center gap-2 border-l border-white/10 pl-3 ml-1 text-[11px] lg:text-xs">
               <span className="text-white/70 font-black">MetaDJ</span>
               <span className="text-white/30 text-[8px]" aria-hidden="true">•</span>
               <span className="text-white/70 font-black">Zuberant</span>

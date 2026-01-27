@@ -26,7 +26,7 @@ export function Footer({ onInfoOpen }: FooterProps) {
           </p>
 
           {/* Links Row - WCAG 2.5.5 compliant touch targets (44x44px) */}
-          <div className="flex items-center justify-center gap-x-1 gap-y-2 text-[10px] lg:text-[11px] font-heading font-bold text-muted-accessible sm:justify-end shrink-0">
+          <div className="flex items-center justify-center gap-x-1 gap-y-2 text-xs lg:text-sm font-heading font-bold text-muted-accessible sm:justify-end shrink-0">
             {onInfoOpen ? (
               <button
                 type="button"
