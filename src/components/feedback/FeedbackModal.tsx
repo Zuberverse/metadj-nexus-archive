@@ -111,7 +111,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               aria-label="Close feedback modal"
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-white/70" />
+              <X className="w-5 h-5 text-white/70" aria-hidden="true" />
             </button>
           </div>
 
@@ -253,7 +253,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 </>
               ) : (
                 <>
-                  <SendHorizonal className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <SendHorizonal className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                   Submit Feedback
                 </>
               )}

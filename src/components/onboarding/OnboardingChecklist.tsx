@@ -128,7 +128,7 @@ export const OnboardingChecklist: FC<OnboardingChecklistProps> = ({
                     : "border-white/10 bg-white/5 text-white/70"
                 )}
               >
-                {isComplete ? <CheckCircle2 className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
+                {isComplete ? <CheckCircle2 className="h-4 w-4" aria-hidden="true" /> : <Icon className="h-4 w-4" aria-hidden="true" />}
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-heading-solid">{step.title}</p>

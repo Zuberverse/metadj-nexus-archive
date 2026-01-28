@@ -33,6 +33,12 @@ vi.mock("@/lib/logger", () => ({
   },
 }))
 
+// Mock origin validation to allow all requests in tests
+vi.mock("@/lib/validation/origin-validation", () => ({
+  validateOrigin: () => ({ allowed: true, origin: "http://localhost:8100" }),
+  buildOriginForbiddenResponse: vi.fn(),
+}))
+
 describe("MetaDJai routes", () => {
   beforeEach(() => {
     getEnvMock.mockReset()

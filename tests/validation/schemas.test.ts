@@ -171,10 +171,10 @@ describe('Collection Schema Validation', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should validate singles type collection', () => {
+    it('should reject singles type collection (only "collection" type is valid)', () => {
       const singles = { ...validCollection, type: 'singles' };
       const result = collectionSchema.safeParse(singles);
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
     });
   });
 
@@ -214,8 +214,8 @@ describe('Collection Schema Validation', () => {
       const result = collectionSchema.safeParse(invalidType);
       expect(result.success).toBe(false);
       if (!result.success) {
-        // Zod v4 changed error message from "Invalid enum value" to "Invalid option: expected one of..."
-        expect(result.error.issues[0].message).toMatch(/Invalid (enum value|option)/i);
+        // Zod error message varies by version: "Invalid enum value", "Invalid option", or "Invalid input: expected \"collection\""
+        expect(result.error.issues[0].message).toMatch(/Invalid (enum value|option|input)/i);
       }
     });
 

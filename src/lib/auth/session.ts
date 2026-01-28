@@ -13,13 +13,15 @@ const SESSION_COOKIE_NAME = 'nexus_session';
 const SESSION_DURATION = parseInt(process.env.AUTH_SESSION_DURATION || '604800', 10); // 7 days default
 const E2E_AUTH_BYPASS =
   process.env.E2E_AUTH_BYPASS === 'true' && process.env.NODE_ENV !== 'production';
+const E2E_ADMIN = process.env.E2E_ADMIN === 'true';
 
 function getE2ESession(): SessionUser {
+  const admin = E2E_AUTH_BYPASS && E2E_ADMIN;
   return {
-    id: 'e2e-user',
-    email: 'e2e@local.test',
-    username: 'e2e',
-    isAdmin: false,
+    id: admin ? 'e2e-admin' : 'e2e-user',
+    email: admin ? 'admin@local.test' : 'e2e@local.test',
+    username: admin ? 'admin' : 'e2e',
+    isAdmin: admin,
     emailVerified: true,
     termsVersion: TERMS_VERSION,
   };

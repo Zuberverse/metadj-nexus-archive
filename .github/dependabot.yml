@@ -2,12 +2,14 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
     groups:
       production-dependencies:
+        dependency-type: "production"
         patterns:
           - "*"
         exclude-patterns:
@@ -22,6 +24,7 @@ updates:
           - "tailwindcss"
           - "typescript"
       development-dependencies:
+        dependency-type: "development"
         patterns:
           - "@types/*"
           - "eslint*"

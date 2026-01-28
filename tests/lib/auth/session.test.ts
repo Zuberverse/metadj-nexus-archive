@@ -28,7 +28,7 @@ describe('auth session', () => {
 
   it('returns stub session when E2E bypass is enabled', async () => {
     process.env.E2E_AUTH_BYPASS = 'true';
-    process.env.NODE_ENV = 'test';
+    vi.stubEnv('NODE_ENV', 'test');
 
     const { getSession, isE2EAuthBypassEnabled } = await import('@/lib/auth/session');
     const session = await getSession();
@@ -44,9 +44,27 @@ describe('auth session', () => {
     });
   });
 
+  it('returns admin stub session when E2E bypass + E2E_ADMIN are enabled', async () => {
+    process.env.E2E_AUTH_BYPASS = 'true';
+    process.env.E2E_ADMIN = 'true';
+    vi.stubEnv('NODE_ENV', 'test');
+
+    const { getSession } = await import('@/lib/auth/session');
+    const session = await getSession();
+
+    expect(session).toEqual({
+      id: 'e2e-admin',
+      email: 'admin@local.test',
+      username: 'admin',
+      isAdmin: true,
+      emailVerified: true,
+      termsVersion: TERMS_VERSION,
+    });
+  });
+
   it('returns null when no session cookie is present', async () => {
     process.env.E2E_AUTH_BYPASS = 'false';
-    process.env.NODE_ENV = 'test';
+    vi.stubEnv('NODE_ENV', 'test');
     cookieStore.get.mockReturnValue(undefined);
 
     const { getSession, isE2EAuthBypassEnabled } = await import('@/lib/auth/session');

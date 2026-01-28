@@ -109,14 +109,24 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.4.49",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "vite-tsconfig-paths": "^6.0.3",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.10",
+    "vitest-axe": "^0.1.0"
   },
   "engines": {
     "node": ">=20.19.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix --max-warnings=0"
+    ],
+    "*.{js,mjs}": [
+      "eslint --fix --max-warnings=0"
+    ]
   }
 }

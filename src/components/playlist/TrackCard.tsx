@@ -165,7 +165,7 @@ export const TrackCard = React.memo(function TrackCard({
                 className="inline-flex items-center justify-center rounded-full border border-(--border-elevated) text-(--text-secondary) transition-all duration-75 hover:bg-(--glass-strong) hover:border-(--border-active) hover:text-white focus-ring-glow touch-manipulation h-11 w-11"
                 aria-label={`Show details for ${track.title}`}
               >
-                <Info className="h-3.5 w-3.5" />
+                <Info className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             )}
             <AddToPlaylistButton trackId={track.id} trackTitle={track.title} />
@@ -184,12 +184,12 @@ export const TrackCard = React.memo(function TrackCard({
               >
                 {showAdded ? (
                   <>
-                    <Check className="h-3.5 w-3.5" />
+                    <Check className="h-3.5 w-3.5" aria-hidden="true" />
                     <span className="hidden sm:inline">Added</span>
                   </>
                 ) : (
                   <>
-                    <ListPlus className="h-3.5 w-3.5" />
+                    <ListPlus className="h-3.5 w-3.5" aria-hidden="true" />
                     <span className="hidden sm:inline">Add to Queue</span>
                   </>
                 )}
@@ -203,7 +203,7 @@ export const TrackCard = React.memo(function TrackCard({
       {showAdded && (
         <div className="absolute inset-0 flex items-center justify-center bg-purple-900/40 rounded-xl sm:rounded-2xl backdrop-blur-xs pointer-events-none z-20 animate-in fade-in zoom-in-95 duration-300">
           <div className="flex items-center gap-2 brand-gradient px-4 py-2 rounded-full text-white font-semibold shadow-[0_0_20px_rgba(139,92,246,0.5)] border border-white/20">
-            <Check className="h-5 w-5" />
+            <Check className="h-5 w-5" aria-hidden="true" />
             Added to queue
           </div>
         </div>

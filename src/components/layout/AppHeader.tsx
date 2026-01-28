@@ -413,7 +413,7 @@ export function AppHeader({
                   <span className="truncate flex-1 text-sm font-heading font-semibold text-white/90 group-hover/music:text-white transition-colors">
                     {currentTrack ? currentTrack.title : "Play Music"}
                   </span>
-                  <ChevronDown className={clsx("h-3.5 w-3.5 shrink-0 text-white/50 group-hover/music:text-white transition-all duration-300", isLeftPanelOpen && leftPanelTab === "browse" && "rotate-180")} strokeWidth={3} />
+                  <ChevronDown className={clsx("h-3.5 w-3.5 shrink-0 text-white/50 group-hover/music:text-white transition-all duration-300", isLeftPanelOpen && leftPanelTab === "browse" && "rotate-180")} strokeWidth={3} aria-hidden="true" />
                 </button>
 
                 <div className="flex items-center gap-0.5 shrink-0">
@@ -424,7 +424,7 @@ export function AppHeader({
                     className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition focus-ring-glow touch-manipulation disabled:opacity-40 disabled:hover:bg-white/5"
                     aria-label="Previous track"
                   >
-                    <SkipBack className="h-4 w-4" />
+                    <SkipBack className="h-4 w-4" aria-hidden="true" />
                   </button>
 
                   <button
@@ -435,11 +435,11 @@ export function AppHeader({
                     aria-label={playbackControls?.isLoading ? "Loading" : playbackControls?.isPlaying ? "Pause" : "Play"}
                   >
                     {playbackControls?.isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                     ) : playbackControls?.isPlaying ? (
-                      <Pause className="h-4 w-4" />
+                      <Pause className="h-4 w-4" aria-hidden="true" />
                     ) : (
-                      <Play className="h-4 w-4 ml-0.5" />
+                      <Play className="h-4 w-4 ml-0.5" aria-hidden="true" />
                     )}
                   </button>
 
@@ -450,7 +450,7 @@ export function AppHeader({
                     className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition focus-ring-glow touch-manipulation disabled:opacity-40 disabled:hover:bg-white/5"
                     aria-label="Next track"
                   >
-                    <SkipForward className="h-4 w-4" />
+                    <SkipForward className="h-4 w-4" aria-hidden="true" />
                   </button>
 
                   <button
@@ -460,7 +460,7 @@ export function AppHeader({
                     className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/5 text-white/80 hover:bg-white/10 hover:text-white transition focus-ring-glow touch-manipulation disabled:opacity-40 disabled:hover:bg-white/5"
                     aria-label={isLeftPanelOpen && leftPanelTab === "queue" ? "Close Queue" : "Open Queue"}
                   >
-                    <ListMusic className="h-4 w-4" />
+                    <ListMusic className="h-4 w-4" aria-hidden="true" />
                   </button>
                   <button
                     id="tour-search-toggle"
@@ -473,7 +473,7 @@ export function AppHeader({
                     aria-label="Search music"
                     aria-pressed={isSearchOverlayOpen}
                   >
-                    <Search className="h-4 w-4" />
+                    <Search className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -504,9 +504,9 @@ export function AppHeader({
                   aria-expanded={isDropdownOpen}
                   aria-label={`Current view: ${activeFeature.label}. Click to change view.`}
                 >
-                  <ActiveIcon className="h-4 w-4 text-cyan-300" />
+                  <ActiveIcon className="h-4 w-4 text-cyan-300" aria-hidden="true" />
                   <span className="text-sm font-heading font-bold uppercase tracking-wide">{activeFeature.label}</span>
-                  <ChevronDown className={clsx("h-3.5 w-3.5 text-white/70 transition-transform duration-200", isDropdownOpen && "rotate-180")} />
+                  <ChevronDown className={clsx("h-3.5 w-3.5 text-white/70 transition-transform duration-200", isDropdownOpen && "rotate-180")} aria-hidden="true" />
                 </button>
 
                 {isDropdownOpen && (
@@ -532,7 +532,7 @@ export function AppHeader({
                               : "text-white/70 hover:bg-white/10 hover:text-white"
                           )}
                         >
-                          <Icon className={clsx("h-4 w-4 shrink-0", isActive ? "text-cyan-300" : "text-white/60")} />
+                          <Icon className={clsx("h-4 w-4 shrink-0", isActive ? "text-cyan-300" : "text-white/60")} aria-hidden="true" />
                           <span className="text-sm font-heading font-semibold">{feature.label}</span>
                         </button>
                       )
@@ -581,6 +581,7 @@ export function AppHeader({
                           iconSizes[feature.id],
                           isActive ? "text-cyan-300" : "text-white/70"
                         )}
+                        aria-hidden="true"
                       />
                       <span className="whitespace-nowrap transition-colors duration-300">{feature.label}</span>
                     </button>

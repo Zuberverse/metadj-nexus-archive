@@ -9,14 +9,14 @@
 #
 # This is a deliberate trade-off: fast local iteration vs. comprehensive CI validation.
 
-echo "🔍 Running pre-commit quality checks..."
+echo "Running pre-commit quality checks..."
 
-# Run lint check (zero warnings enforced)
-echo "📝 Checking code style (ESLint)..."
-npm run lint || exit 1
+# Run lint-staged (ESLint --fix on staged files only, zero warnings enforced)
+echo "Checking code style (ESLint via lint-staged)..."
+npx lint-staged || exit 1
 
-# Run type check
-echo "🔤 Checking types (TypeScript)..."
+# Run type check (full project required for TypeScript resolution)
+echo "Checking types (TypeScript)..."
 npm run type-check || exit 1
 
-echo "✅ All pre-commit checks passed!"
+echo "All pre-commit checks passed!"

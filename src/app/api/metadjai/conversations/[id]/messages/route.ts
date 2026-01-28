@@ -61,7 +61,10 @@ function normalizeVersions(versions: unknown): MetaDjAiMessage['versions'] | und
         toolsUsed: toolsUsed && toolsUsed.length > 0 ? toolsUsed : undefined,
       };
     })
-    .filter((entry): entry is NonNullable<MetaDjAiMessage['versions']>[number] => Boolean(entry));
+    .filter(
+      (entry): entry is { content: string; createdAt: number; toolsUsed: string[] | undefined } =>
+        Boolean(entry)
+    );
   return normalized.length > 0 ? normalized : undefined;
 }
 

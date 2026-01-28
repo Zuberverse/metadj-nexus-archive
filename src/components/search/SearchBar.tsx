@@ -514,7 +514,7 @@ export function SearchBar({
 
         {/* Search icon - positioned inside input */}
         {!hideIcon && (
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/60 group-focus-within:text-white/80 transition-colors z-10" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/60 group-focus-within:text-white/80 transition-colors z-10" aria-hidden="true" />
         )}
 
         {/* Search Input */}
@@ -549,7 +549,7 @@ export function SearchBar({
           className="absolute right-0.5 top-1/2 -translate-y-1/2 h-8 w-8 min-h-[44px] min-w-[44px] rounded-full hover:bg-(--glass-light) active:bg-(--glass-medium) flex items-center justify-center transition-colors z-10 touch-manipulation focus-ring"
           aria-label="Clear search"
         >
-          <X className="h-4 w-4 text-(--text-muted)" />
+          <X className="h-4 w-4 text-(--text-muted)" aria-hidden="true" />
         </button>
       )}
 
@@ -571,7 +571,7 @@ export function SearchBar({
               <div className="flex items-center justify-between gap-3 border-b border-(--border-subtle) px-4 py-3 bg-black/20">
                 <div className="flex items-center gap-3">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full border border-(--border-standard) bg-white/5 text-white/80">
-                    <Search className="h-4 w-4" />
+                    <Search className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div className="leading-tight">
                     <p className="text-[0.65rem] uppercase tracking-[0.32em] text-(--text-muted)">Search</p>
@@ -688,7 +688,7 @@ export function SearchBar({
                                   className={`w-full text-left flex items-start gap-3 p-2 rounded-xl transition-colors focus-ring ${hoveredIndex === actualIndex ? 'bg-white/10' : 'hover:bg-white/5'}`}
                                 >
                                   <span className="flex h-10 w-10 items-center justify-center rounded-full border border-(--border-subtle) bg-white/5 text-cyan-200 shrink-0">
-                                    <BookOpen className="h-4 w-4" />
+                                    <BookOpen className="h-4 w-4" aria-hidden="true" />
                                   </span>
                                   <div className="min-w-0">
                                     <p className="font-heading font-semibold text-heading-solid text-sm truncate">{entry.title}</p>
@@ -722,7 +722,7 @@ export function SearchBar({
                                   className={`w-full text-left flex items-start gap-3 p-2 rounded-xl transition-colors focus-ring ${hoveredIndex === actualIndex ? 'bg-white/10' : 'hover:bg-white/5'}`}
                                 >
                                   <span className="flex h-10 w-10 items-center justify-center rounded-full border border-(--border-subtle) bg-white/5 text-purple-200 shrink-0">
-                                    <Book className="h-4 w-4" />
+                                    <Book className="h-4 w-4" aria-hidden="true" />
                                   </span>
                                   <div className="min-w-0">
                                     <p className="font-heading font-semibold text-heading-solid text-sm truncate">{entry.title}</p>

@@ -1,7 +1,11 @@
 // Vitest setup file with React Testing Library configuration
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import { afterEach, expect, vi } from 'vitest';
+import * as matchers from 'vitest-axe/matchers';
+
+// Enable axe-core accessibility matchers (e.g. expect(container).toHaveNoViolations())
+expect.extend(matchers);
 
 if (!process.env.AUTH_SECRET) {
   process.env.AUTH_SECRET = 'test-auth-secret-32-characters-minimum';

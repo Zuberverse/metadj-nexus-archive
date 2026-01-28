@@ -299,7 +299,7 @@ function NowPlayingSectionComponent({
                     className="h-9 w-9 min-h-[44px] min-w-[44px] flex items-center justify-center text-white/70 hover:text-white focus-ring-glow transition touch-manipulation"
                     aria-label="Previous track"
                   >
-                    <SkipBack className="h-4 w-4" />
+                    <SkipBack className="h-4 w-4" aria-hidden="true" />
                   </button>
                   <button
                     type="button"
@@ -308,7 +308,7 @@ function NowPlayingSectionComponent({
                     aria-label={isPlaying ? "Pause" : "Play"}
                     aria-pressed={isPlaying}
                   >
-                    {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current ml-0.5" />}
+                    {isPlaying ? <Pause className="h-4 w-4 fill-current" aria-hidden="true" /> : <Play className="h-4 w-4 fill-current ml-0.5" aria-hidden="true" />}
                   </button>
                   <button
                     type="button"
@@ -316,7 +316,7 @@ function NowPlayingSectionComponent({
                     className="h-9 w-9 min-h-[44px] min-w-[44px] flex items-center justify-center text-white/70 hover:text-white focus-ring-glow transition touch-manipulation"
                     aria-label="Next track"
                   >
-                    <SkipForward className="h-4 w-4" />
+                    <SkipForward className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -379,7 +379,7 @@ function NowPlayingSectionComponent({
                   aria-label="Toggle shuffle"
                   aria-pressed={isShuffleEnabled}
                 >
-                  <Shuffle className="h-5 w-5" />
+                  <Shuffle className="h-5 w-5" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
@@ -390,7 +390,7 @@ function NowPlayingSectionComponent({
                   )}
                   aria-label={`Repeat: ${repeatMode === "none" ? "off" : repeatMode}`}
                 >
-                  {repeatMode === "track" ? <Repeat1 className="h-5 w-5" /> : <Repeat className="h-5 w-5" />}
+                  {repeatMode === "track" ? <Repeat1 className="h-5 w-5" aria-hidden="true" /> : <Repeat className="h-5 w-5" aria-hidden="true" />}
                 </button>
                 <ShareButton track={track} size="sm" variant="icon" className="text-muted-accessible hover:text-white/80" />
                 {onShowDetails && (
@@ -400,7 +400,7 @@ function NowPlayingSectionComponent({
                     className="h-9 w-9 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-muted-accessible hover:text-white/80 transition focus-ring-glow touch-manipulation"
                     aria-label="Track info"
                   >
-                    <Info className="h-5 w-5" />
+                    <Info className="h-5 w-5" aria-hidden="true" />
                   </button>
                 )}
                 <button
@@ -409,14 +409,14 @@ function NowPlayingSectionComponent({
                   className="h-9 w-9 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-muted-accessible hover:text-white/80 transition focus-ring-glow touch-manipulation"
                   aria-label="Audio settings"
                 >
-                  <Settings className="h-5 w-5" />
+                  <Settings className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
           ) : (
             <div className="relative z-10 flex items-center gap-3 py-2">
               <div className="w-11 h-11 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center shrink-0">
-                <Play className="h-5 w-5 opacity-40" />
+                <Play className="h-5 w-5 opacity-40" aria-hidden="true" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-heading font-bold text-heading-solid">Choose a track</p>
@@ -428,7 +428,7 @@ function NowPlayingSectionComponent({
                 className="h-9 w-9 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-white/60 hover:text-white hover:bg-white/10 transition focus-ring-glow touch-manipulation"
                 aria-label="Audio settings"
               >
-                <Settings className="h-5 w-5" />
+                <Settings className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
           )}
@@ -483,7 +483,7 @@ function NowPlayingSectionComponent({
                     className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-white/60 transition hover:text-white hover:bg-white/10 focus-ring-glow touch-manipulation"
                     aria-label="Track info"
                   >
-                    <Info className="h-5 w-5" />
+                    <Info className="h-5 w-5" aria-hidden="true" />
                   </button>
                 )}
                 <button
@@ -492,7 +492,7 @@ function NowPlayingSectionComponent({
                   className="inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-white/60 transition hover:text-white hover:bg-white/10 focus-ring-glow touch-manipulation"
                   aria-label="Audio settings"
                 >
-                  <Settings className="h-5 w-5" />
+                  <Settings className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -510,7 +510,7 @@ function NowPlayingSectionComponent({
                   aria-label="Toggle shuffle"
                   aria-pressed={isShuffleEnabled}
                 >
-                  <Shuffle className="h-5 w-5" />
+                  <Shuffle className="h-5 w-5" aria-hidden="true" />
                 </button>
 
                 <div className="flex items-center gap-4">
@@ -520,7 +520,7 @@ function NowPlayingSectionComponent({
                     className="text-white/70 hover:text-white focus-ring-glow transition transform hover:scale-110"
                     aria-label="Previous track"
                   >
-                    <SkipBack className="h-5 w-5" />
+                    <SkipBack className="h-5 w-5" aria-hidden="true" />
                   </button>
                   <button
                     type="button"
@@ -529,7 +529,7 @@ function NowPlayingSectionComponent({
                     aria-label={isPlaying ? "Pause" : "Play"}
                     aria-pressed={isPlaying}
                   >
-                    {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current ml-0.5" />}
+                    {isPlaying ? <Pause className="h-5 w-5 fill-current" aria-hidden="true" /> : <Play className="h-5 w-5 fill-current ml-0.5" aria-hidden="true" />}
                   </button>
                   <button
                     type="button"
@@ -537,7 +537,7 @@ function NowPlayingSectionComponent({
                     className="text-white/70 hover:text-white focus-ring-glow transition transform hover:scale-110"
                     aria-label="Next track"
                   >
-                    <SkipForward className="h-5 w-5" />
+                    <SkipForward className="h-5 w-5" aria-hidden="true" />
                   </button>
                 </div>
 
@@ -551,9 +551,9 @@ function NowPlayingSectionComponent({
                   aria-label={`Repeat: ${repeatMode === "none" ? "off" : repeatMode}`}
                 >
                   {repeatMode === "track" ? (
-                    <Repeat1 className="h-5 w-5" />
+                    <Repeat1 className="h-5 w-5" aria-hidden="true" />
                   ) : (
-                    <Repeat className="h-5 w-5" />
+                    <Repeat className="h-5 w-5" aria-hidden="true" />
                   )}
                 </button>
               </div>
@@ -618,10 +618,10 @@ function NowPlayingSectionComponent({
               className="absolute top-0 right-0 inline-flex h-8 w-8 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-white/60 transition hover:text-white hover:bg-white/10 focus-ring-glow touch-manipulation"
               aria-label="Audio settings"
             >
-              <Settings className="h-5 w-5" />
+              <Settings className="h-5 w-5" aria-hidden="true" />
             </button>
             <div className="w-14 h-14 rounded-full border border-white/10 bg-white/5 flex items-center justify-center shadow-inner">
-              <Play className="h-6 w-6 opacity-40" />
+              <Play className="h-6 w-6 opacity-40" aria-hidden="true" />
             </div>
             <div className="text-center space-y-1">
               <p className="text-sm font-heading font-bold tracking-wide text-heading-solid opacity-80">Choose a track to start listening</p>

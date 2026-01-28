@@ -138,9 +138,9 @@ export function MobileBottomNav({
               {/* Icon with active state - Special items (Music/AI) use BrandGradientIcon when active */}
               <div className="flex items-center justify-center h-5 w-5 mb-0.5 z-10">
                 {active && item.isSpecial ? (
-                  <BrandGradientIcon icon={Icon} className="h-4.5 w-4.5" />
+                  <BrandGradientIcon icon={Icon} className="h-4.5 w-4.5" aria-hidden="true" />
                 ) : (
-                  <Icon className={`h-4 w-4 transition-colors duration-200 ${active ? "text-white" : "text-muted-accessible"}`} />
+                  <Icon className={`h-4 w-4 transition-colors duration-200 ${active ? "text-white" : "text-muted-accessible"}`} aria-hidden="true" />
                 )}
               </div>
 

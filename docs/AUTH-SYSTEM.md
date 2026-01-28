@@ -2,7 +2,7 @@
 
 > Comprehensive documentation for the auth system, feedback collection, and admin dashboard.
 
-**Last Modified**: 2026-01-27 (Updated: Argon2id password hashing, admin bootstrap, email verification roadmap)
+**Last Modified**: 2026-01-27 16:59 EST
 
 ## Table of Contents
 
@@ -166,6 +166,10 @@ ADMIN_PASSWORD=your-admin-password-here         # Only used to create initial ad
 # Optional
 AUTH_SESSION_DURATION=604800                     # Session duration in seconds (default: 7 days)
 AUTH_REGISTRATION_ENABLED=true                   # Enable/disable user registration
+
+# Local Development (no database required)
+E2E_AUTH_BYPASS=false                            # Bypass auth entirely (non-production only)
+E2E_ADMIN=false                                  # Make bypass session an admin user
 ```
 
 > **Note**: `ADMIN_PASSWORD` is only used for first-time admin account creation (bootstrap). After the admin account exists in the database, authentication always uses the stored password hash. You can remove or change this env var after bootstrap without affecting admin login.
@@ -472,23 +476,24 @@ Located in `server/storage.ts`:
 5. **Add 2FA** for admin accounts
 6. **Audit logging** for security-sensitive actions
 
-### Email Verification (Future Enhancement)
+### Email Verification — Planned (schema ready, routes pending)
 
-**Current Status (MVP):** Email verification is **not enforced**. Users can register and use the platform immediately. The `emailVerified` field defaults to `false` but does not block access.
+**Status:** Email verification is **not enforced**. Users can register and use the platform immediately. The `emailVerified` field defaults to `false` but does not block access. The database schema and storage layer are fully prepared; only API routes and the email transport remain.
 
-**Database Infrastructure (Ready):**
-- `email_verification_tokens` table exists with token storage, expiration, and user linking
+**Infrastructure Ready:**
+- `email_verification_tokens` table with token hash, expiration, user linking, IP audit trail
+- Unique index on `tokenHash` for O(1) lookups
 - `users.emailVerified` boolean field tracks verification status
-- Schema supports the full verification flow
+- Storage functions in `server/storage.ts`: `createEmailVerificationToken()`, `findEmailVerificationToken()`, `findEmailVerificationByToken()`, `consumeEmailVerificationToken()`, `deleteVerificationTokensForUser()`
 
-**Recommended Future Implementation: Resend**
+**Recommended Email Transport: Resend**
 
-When ready to implement email verification, we recommend **Resend** for its simplicity and free tier (3,000 emails/month).
+When ready to implement, use **Resend** for its simplicity and free tier (3,000 emails/month).
 
 **Setup Steps:**
 1. Create a Resend account at https://resend.com
 2. Verify your domain (or use Resend's test domain for development)
-3. Add `RESEND_API_KEY` to Replit Secrets
+3. Add `RESEND_API_KEY` to environment secrets
 4. Install the package: `npm install resend`
 
 **Implementation Outline:**
@@ -501,7 +506,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVerificationEmail(email: string, token: string) {
   const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}`;
-  
+
   await resend.emails.send({
     from: 'MetaDJ Nexus <noreply@yourdomain.com>',
     to: email,
@@ -511,21 +516,70 @@ export async function sendVerificationEmail(email: string, token: string) {
 }
 ```
 
-**Flow Changes Required:**
-1. On registration: Generate token, store in `email_verification_tokens`, send email
-2. Add `/api/auth/verify-email` route to validate token and set `emailVerified: true`
-3. Optionally add UI prompts for unverified users
+**Remaining Work:**
+1. On registration: Generate token, hash with SHA-256, store hash via `createEmailVerificationToken()`, email the raw token
+2. Add `/api/auth/verify-email` route: hash incoming token, call `findEmailVerificationByToken()`, then `consumeEmailVerificationToken()` + `updateUserEmailVerified()`
+3. Add UI prompts for unverified users (non-blocking banner)
 4. Add resend verification email endpoint
 
 **Files to Create/Modify:**
-| File | Purpose |
-|------|---------|
-| `src/lib/email/resend.ts` | Email sending service |
-| `src/app/api/auth/verify-email/route.ts` | Token verification endpoint |
-| `src/app/api/auth/register/route.ts` | Add email sending after registration |
-| `src/app/api/auth/resend-verification/route.ts` | Resend verification email |
+| File | Action | Purpose |
+|------|--------|---------|
+| `src/lib/email/resend.ts` | Create | Email sending service |
+| `src/app/api/auth/verify-email/route.ts` | Create | Token verification endpoint |
+| `src/app/api/auth/register/route.ts` | Modify | Add email sending after registration |
+| `src/app/api/auth/resend-verification/route.ts` | Create | Resend verification email |
+| `src/components/account/AccountPanel.tsx` | Modify | Add unverified email banner |
 
 **Cost:** Resend free tier includes 3,000 emails/month, sufficient for MVP growth.
+
+### Password Reset — Planned (schema ready, routes pending)
+
+**Status:** Password reset is **not yet implemented**. Authenticated users can change their password via the Account Panel (requires current password). The forgot-password flow for unauthenticated users requires API routes and email transport.
+
+**Infrastructure Ready:**
+- `password_resets` table with token hash, expiration, single-use enforcement, IP audit trail
+- Unique index on `tokenHash` for O(1) lookups; cascade on user deletion
+- Storage functions in `server/storage.ts`: `createPasswordResetToken()`, `findPasswordResetByToken()`, `markPasswordResetUsed()`, `deletePasswordResetsForUser()`
+
+**Planned Flow:**
+
+```
+1. User submits email on forgot-password form
+2. POST /api/auth/forgot-password
+3. Server looks up user by email (always returns success to prevent enumeration)
+4. If user exists: generate random token, SHA-256 hash it, store hash via createPasswordResetToken()
+5. Email the raw token as a reset link
+6. User clicks link → GET /reset-password?token=xxx (client-side page)
+7. User submits new password + token
+8. POST /api/auth/reset-password
+9. Server hashes incoming token, calls findPasswordResetByToken()
+10. If valid: update password via updateUserPassword(), mark token used, delete other tokens
+11. Redirect to login
+```
+
+**Security Considerations:**
+- Tokens expire after 1 hour (configurable)
+- Single-use: marked via `usedAt` timestamp
+- IP address captured for audit trail
+- Response always returns success to prevent email enumeration
+- Rate-limited to prevent abuse (Upstash or in-memory)
+- All existing sessions should be invalidated after password reset
+
+**Remaining Work:**
+1. Create forgot-password and reset-password API routes
+2. Create reset-password client page
+3. Add "Forgot password?" link to login form
+4. Share the Resend email transport with email verification
+
+**Files to Create/Modify:**
+| File | Action | Purpose |
+|------|--------|---------|
+| `src/lib/email/resend.ts` | Create (shared with email verification) | Email sending service |
+| `src/app/api/auth/forgot-password/route.ts` | Create | Accept email, generate + email token |
+| `src/app/api/auth/reset-password/route.ts` | Create | Validate token, update password |
+| `src/app/reset-password/page.tsx` | Create | Reset password form UI |
+| `src/components/landing/LandingPage.tsx` | Modify | Add "Forgot password?" link |
 
 ### Admin Account Security
 
@@ -630,6 +684,70 @@ The platform tracks which version of Terms of Service each user has accepted:
 - Verify logged in as admin user
 - Check session cookie contains `isAdmin: true`
 - Clear cookies and re-login as admin
+
+### Local Development Testing (No Database)
+
+You can test the full app locally **without a database** using the E2E auth bypass. This is ideal for UI development, MetaDJai settings testing, and localStorage-based features.
+
+**Setup:**
+
+Add to your `.env.local`:
+
+```bash
+NODE_ENV=development
+AUTH_SECRET=LocalDevSecretKeyAtLeast32Characters!
+E2E_AUTH_BYPASS=true
+E2E_ADMIN=true
+```
+
+| Variable | Purpose |
+|----------|---------|
+| `E2E_AUTH_BYPASS=true` | Bypasses all auth — no login required, no database needed |
+| `E2E_ADMIN=true` | Makes the bypass session an admin user (access to `/admin`, admin UI) |
+| `E2E_ADMIN=false` (or omitted) | Regular user session (no admin access) |
+
+**What works without a database:**
+- Full app UI (Hub, Cinema, Wisdom, Journal)
+- MetaDJai chat interface and personalization settings (localStorage)
+- Audio playback and queue management (localStorage)
+- Admin dashboard UI (with `E2E_ADMIN=true`)
+- All localStorage-persisted features (volume, cinema scene, journal entries)
+- Preferences API (returns in-memory defaults)
+
+**What requires a database:**
+- User registration and login (bypassed entirely)
+- Feedback submission and management
+- Persistent server-side preferences
+- MetaDJai conversation history (server-stored)
+- Admin user management
+
+**How it works:**
+
+When `E2E_AUTH_BYPASS=true` and `NODE_ENV !== 'production'`, the `getSession()` function returns a mock session instead of reading cookies:
+
+- With `E2E_ADMIN=true`: Returns admin session (`id: 'e2e-admin'`, `username: 'admin'`, `isAdmin: true`)
+- Without `E2E_ADMIN`: Returns regular user session (`id: 'e2e-user'`, `username: 'e2e'`, `isAdmin: false`)
+
+API routes that depend on database storage (preferences, conversations, journal) detect the bypass via `isE2EAuthBypassEnabled()` and return in-memory defaults instead of querying Postgres.
+
+**Quick start:**
+
+```bash
+# 1. Copy env template
+cp .env.example .env.local
+
+# 2. Set bypass variables in .env.local
+#    E2E_AUTH_BYPASS=true
+#    E2E_ADMIN=true
+#    AUTH_SECRET=LocalDevSecretKeyAtLeast32Characters!
+
+# 3. Run dev server
+npm run dev
+
+# 4. Open https://localhost:8100 — you're logged in as admin
+```
+
+> **Safety**: E2E bypass is blocked in production (`NODE_ENV=production`). It cannot be accidentally enabled on deployed instances.
 
 ### Debug Mode
 

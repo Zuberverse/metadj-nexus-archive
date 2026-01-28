@@ -98,7 +98,6 @@ function CollectionArtworkComponent({
           setIsLoading(false);
           setHasError(true);
         }}
-        unoptimized={artworkUrl.startsWith('http')} // External images
       />
 
       {/* Subtle gradient overlay for depth */}

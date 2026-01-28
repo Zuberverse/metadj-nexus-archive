@@ -38,6 +38,50 @@ const TRUSTED_IP_HEADERS = (() => {
 
 const NO_STORE_API_EXCLUDE_PREFIXES = ["/api/audio", "/api/video", "/api/wisdom"];
 
+// CORS: Strict allowed-origins list
+const CORS_ALLOWED_ORIGINS: string[] = (() => {
+  const origins: string[] = [];
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (appUrl) {
+    try {
+      origins.push(new URL(appUrl).origin);
+    } catch {
+      // Invalid URL; skip
+    }
+  }
+  if (process.env.NODE_ENV === "development") {
+    origins.push(
+      "http://localhost:8100",
+      "https://localhost:8100",
+      "http://localhost:3000",
+      "https://localhost:3000",
+      "http://127.0.0.1:8100",
+      "https://127.0.0.1:8100"
+    );
+  }
+  // Deduplicate
+  return [...new Set(origins)];
+})();
+
+const CORS_ALLOWED_METHODS = "GET, POST, PUT, PATCH, DELETE, OPTIONS";
+const CORS_ALLOWED_HEADERS = "Content-Type, Authorization, X-Requested-With";
+const CORS_MAX_AGE = "86400"; // 24 hours
+
+function isAllowedOrigin(origin: string | null): string | null {
+  if (!origin) return null;
+  return CORS_ALLOWED_ORIGINS.includes(origin) ? origin : null;
+}
+
+function buildCorsHeaders(allowedOrigin: string): Record<string, string> {
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Methods": CORS_ALLOWED_METHODS,
+    "Access-Control-Allow-Headers": CORS_ALLOWED_HEADERS,
+    "Access-Control-Max-Age": CORS_MAX_AGE,
+    Vary: "Origin",
+  };
+}
+
 // Types for local fallback
 interface RateLimitRecord {
   count: number;
@@ -245,9 +289,26 @@ function getTrustedClientIp(request: NextRequest): string | null {
 export default async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
+  // CORS origin check (used for /api/* routes)
+  const requestOrigin = request.headers.get("origin");
+  const allowedOrigin = path.startsWith("/api/")
+    ? isAllowedOrigin(requestOrigin)
+    : null;
+
   // 1. API Handling & Security
   if (path.startsWith("/api/")) {
-    // A. Request Size Limiting
+    // A. CORS — Preflight
+    if (request.method === "OPTIONS") {
+      // Preflight: respond immediately; no further processing needed
+      return new NextResponse(null, {
+        status: 204,
+        headers: allowedOrigin
+          ? buildCorsHeaders(allowedOrigin)
+          : { Vary: "Origin" },
+      });
+    }
+
+    // B. Request Size Limiting (body-carrying methods only)
     if (
       request.method === "POST" ||
       request.method === "PUT" ||
@@ -270,7 +331,7 @@ export default async function proxy(request: NextRequest) {
       // If content-length is missing, per-route handlers enforce streamed size limits.
     }
 
-    // B. Rate Limiting
+    // C. Rate Limiting
     const trustedIp = getTrustedClientIp(request);
     const ip = trustedIp ?? (await buildHeaderFingerprint(request));
 
@@ -321,6 +382,7 @@ export default async function proxy(request: NextRequest) {
             "Content-Type": "application/json",
             "Retry-After": "60",
             ...limitHeaders,
+            ...(allowedOrigin ? buildCorsHeaders(allowedOrigin) : { Vary: "Origin" }),
           },
         }
       );
@@ -424,6 +486,17 @@ export default async function proxy(request: NextRequest) {
       "Strict-Transport-Security",
       "max-age=31536000; includeSubDomains; preload"
     );
+  }
+
+  // 3. CORS Headers for API Responses
+  if (allowedOrigin) {
+    const corsHeaders = buildCorsHeaders(allowedOrigin);
+    for (const [key, value] of Object.entries(corsHeaders)) {
+      response.headers.set(key, value);
+    }
+  } else if (path.startsWith("/api/")) {
+    // Always include Vary: Origin on API routes so caches key on origin
+    response.headers.set("Vary", "Origin");
   }
 
   return response;

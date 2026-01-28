@@ -154,7 +154,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
                 )}
                 aria-label="Close modal"
               >
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               </button>
             )}
           </div>

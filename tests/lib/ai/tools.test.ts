@@ -95,9 +95,9 @@ describe('ai/tools', () => {
     const { getPlatformHelp } = await loadTools({ OPENAI_API_KEY: undefined })
     const result = await getPlatformHelp.execute({ feature: 'overview' })
     expect(result.title).toContain('MetaDJ Nexus')
-    expect('surfaces' in result).toBe(true)
-    if ('surfaces' in result) {
-      expect(Array.isArray(result.surfaces)).toBe(true)
+    expect('sections' in result).toBe(true)
+    if ('sections' in result) {
+      expect(Array.isArray(result.sections)).toBe(true)
     }
   })
 

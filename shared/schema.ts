@@ -2,7 +2,9 @@
  * Database Schema
  *
  * Complete PostgreSQL schema for MetaDJ Nexus using Drizzle ORM.
- * Includes: users, sessions, preferences, conversations, messages.
+ * Includes: users, sessions, preferences, conversations, messages,
+ * email verification tokens, password resets, login attempts,
+ * analytics events, feedback, journal entries, recently played.
  */
 
 import { relations, sql } from 'drizzle-orm';
@@ -47,7 +49,18 @@ export const users = pgTable(
 );
 
 /**
- * Email verification tokens - For verifying user email addresses
+ * Email verification tokens — Planned feature (schema ready, routes pending)
+ *
+ * Stores hashed tokens sent via email to verify user email addresses.
+ * On registration (or email change), a token is generated, hashed with SHA-256,
+ * and stored here. The raw token is sent to the user's email as a verification link.
+ * When the user clicks the link, the token is hashed and looked up to verify ownership.
+ *
+ * Flow: register -> generate token -> store hash here -> email raw token -> user clicks link
+ *       -> hash incoming token -> find match -> mark used -> set users.emailVerified = true
+ *
+ * Security: Only the SHA-256 hash is stored; the raw token never touches the database.
+ * Tokens auto-invalidated by creating a new one (old tokens deleted per user).
  */
 export const emailVerificationTokens = pgTable(
   'email_verification_tokens',
@@ -60,16 +73,19 @@ export const emailVerificationTokens = pgTable(
     email: varchar('email', { length: 255 }).notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     usedAt: timestamp('used_at'),
+    /** IP address of the verification request, for security audit trail */
+    ipAddress: varchar('ip_address', { length: 45 }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [
+    uniqueIndex('email_verification_tokens_token_hash_idx').on(table.tokenHash),
     index('email_verification_tokens_user_id_idx').on(table.userId),
     index('email_verification_tokens_expires_at_idx').on(table.expiresAt),
   ]
 );
 
 /**
- * Sessions table - Server-side session storage (optional, for enhanced security)
+ * Sessions table — Server-side session storage (optional, for enhanced security)
  */
 export const sessions = pgTable(
   'sessions',
@@ -79,6 +95,14 @@ export const sessions = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     expiresAt: timestamp('expires_at').notNull(),
+    /**
+     * Planned: Token rotation for sliding session windows.
+     * When a session is refreshed, a new rotationToken is issued and the old one
+     * is invalidated. This prevents session fixation attacks by ensuring that
+     * stolen session IDs become invalid after the legitimate user's next request.
+     * The client presents the rotation token to extend the session; the server
+     * verifies it, issues a new one, and updates expiresAt.
+     */
     rotationToken: varchar('rotation_token', { length: 64 }),
     ipAddress: varchar('ip_address', { length: 45 }),
     userAgent: text('user_agent'),
@@ -92,7 +116,21 @@ export const sessions = pgTable(
 );
 
 /**
- * Password reset tokens
+ * Password reset tokens — Planned feature (schema ready, routes pending)
+ *
+ * Stores hashed tokens for password reset requests. When a user requests a
+ * password reset, a cryptographically random token is generated, hashed with
+ * SHA-256, and stored here. The raw token is sent to the user's email as a
+ * reset link. When the user submits a new password with the token, the token
+ * is hashed and looked up to authorize the password change.
+ *
+ * Flow: forgot password -> generate token -> store hash here -> email raw token
+ *       -> user clicks link -> hash incoming token -> find valid match
+ *       -> update password -> mark token used
+ *
+ * Security: Only the SHA-256 hash is stored; the raw token never touches the database.
+ * Tokens are single-use (marked via usedAt) and time-limited (expiresAt).
+ * The ipAddress field enables security audit trails for reset requests.
  */
 export const passwordResets = pgTable(
   'password_resets',
@@ -104,9 +142,12 @@ export const passwordResets = pgTable(
     tokenHash: varchar('token_hash', { length: 255 }).notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     usedAt: timestamp('used_at'),
+    /** IP address of the reset request, for security audit trail */
+    ipAddress: varchar('ip_address', { length: 45 }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [
+    uniqueIndex('password_resets_token_hash_idx').on(table.tokenHash),
     index('password_resets_user_id_idx').on(table.userId),
     index('password_resets_expires_at_idx').on(table.expiresAt),
   ]

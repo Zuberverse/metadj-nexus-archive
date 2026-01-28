@@ -152,7 +152,7 @@ export const ErrorDisplay = forwardRef<HTMLDivElement, ErrorDisplayProps>(
         >
           <div className="flex items-start gap-3">
             <div className={iconContainerStyles.toast}>
-              {icon ?? <AlertCircle className={iconStyles.toast} strokeWidth={1.5} />}
+              {icon ?? <AlertCircle className={iconStyles.toast} strokeWidth={1.5} aria-hidden="true" />}
             </div>
 
             <div className="flex-1 min-w-0">
@@ -199,7 +199,7 @@ export const ErrorDisplay = forwardRef<HTMLDivElement, ErrorDisplayProps>(
           <div className="max-w-md w-full text-center border border-(--border-subtle) rounded-3xl bg-card/40 backdrop-blur-xl px-8 py-10 shadow-[0_25px_60px_rgba(41,12,90,0.55)]">
             <div className="mx-auto mb-6 inline-flex">
               <div className={iconContainerStyles.fullscreen}>
-                {icon ?? <AlertCircle className={iconStyles.fullscreen} strokeWidth={1.5} />}
+                {icon ?? <AlertCircle className={iconStyles.fullscreen} strokeWidth={1.5} aria-hidden="true" />}
               </div>
             </div>
 
@@ -213,7 +213,7 @@ export const ErrorDisplay = forwardRef<HTMLDivElement, ErrorDisplayProps>(
                   variant="secondary"
                   size="lg"
                   onClick={retry}
-                  leftIcon={<RefreshCw className="w-4 h-4 group-hover:animate-spin" />}
+                  leftIcon={<RefreshCw className="w-4 h-4 group-hover:animate-spin" aria-hidden="true" />}
                   className="w-full group"
                 >
                   Try Again
@@ -237,7 +237,7 @@ export const ErrorDisplay = forwardRef<HTMLDivElement, ErrorDisplayProps>(
       >
         <div className="flex flex-col items-center text-center">
           <div className={iconContainerStyles.inline}>
-            {icon ?? <AlertCircle className={iconStyles.inline} strokeWidth={1.5} />}
+            {icon ?? <AlertCircle className={iconStyles.inline} strokeWidth={1.5} aria-hidden="true" />}
           </div>
 
           <h3 className={titleStyles.inline}>{displayTitle}</h3>
@@ -249,7 +249,7 @@ export const ErrorDisplay = forwardRef<HTMLDivElement, ErrorDisplayProps>(
               variant="secondary"
               size="sm"
               onClick={retry}
-              leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
+              leftIcon={<RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />}
             >
               Try Again
             </Button>

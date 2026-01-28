@@ -69,7 +69,7 @@ describe('buildMetaDjAiSystemInstructions', () => {
 
     expect(instructions).toContain('<current_music>')
     expect(instructions).toContain('Cosmic vibes')
-    expect(instructions).toContain('Current surface: Cinema')
+    expect(instructions).toContain('Current panel: Cinema.')
     expect(instructions).toContain('You are running on GPT 4o Mini')
     expect(instructions).toContain('<session_context>')
     expect(instructions).toContain('<music_catalog>')

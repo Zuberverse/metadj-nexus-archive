@@ -12,6 +12,7 @@ import {
   sessions,
   userPreferences,
   loginAttempts,
+  passwordResets,
   feedback,
   conversations,
   messages,
@@ -24,6 +25,7 @@ import {
   type UserPreference,
   type NewUserPreference,
   type LoginAttempt,
+  type PasswordReset,
   type Feedback,
   type NewFeedback,
   type Conversation,
@@ -310,7 +312,28 @@ export async function findEmailVerificationToken(userId: string): Promise<EmailV
       )
     )
     .limit(1);
-  
+
+  return token || null;
+}
+
+/**
+ * Find a valid email verification token by its hash.
+ * Used when a user clicks the verification link — the raw token from the URL
+ * is hashed and looked up here. Returns null if token is expired or already used.
+ */
+export async function findEmailVerificationByToken(tokenHash: string): Promise<EmailVerificationToken | null> {
+  const [token] = await db
+    .select()
+    .from(emailVerificationTokens)
+    .where(
+      and(
+        eq(emailVerificationTokens.tokenHash, tokenHash),
+        isNull(emailVerificationTokens.usedAt),
+        gte(emailVerificationTokens.expiresAt, new Date())
+      )
+    )
+    .limit(1);
+
   return token || null;
 }
 
@@ -334,6 +357,87 @@ export async function deleteVerificationTokensForUser(userId: string): Promise<v
   await db
     .delete(emailVerificationTokens)
     .where(eq(emailVerificationTokens.userId, userId));
+}
+
+// ============================================================================
+// Password Reset Operations (Planned — schema ready, routes pending)
+// ============================================================================
+
+/**
+ * Create a password reset token.
+ * Deletes any existing unused tokens for the user first (single active token policy).
+ */
+export async function createPasswordResetToken(
+  userId: string,
+  tokenHash: string,
+  expiresAt: Date,
+  ipAddress?: string | null
+): Promise<PasswordReset> {
+  const id = generateId('pwreset');
+
+  // Invalidate any existing tokens for this user
+  await db
+    .delete(passwordResets)
+    .where(eq(passwordResets.userId, userId));
+
+  const [token] = await db
+    .insert(passwordResets)
+    .values({
+      id,
+      userId,
+      tokenHash,
+      expiresAt,
+      ipAddress: ipAddress || null,
+      createdAt: new Date(),
+    })
+    .returning();
+
+  return token;
+}
+
+/**
+ * Find a valid password reset token by its hash.
+ * Used when a user submits the reset form — the raw token from the URL
+ * is hashed and looked up here. Returns null if token is expired or already used.
+ */
+export async function findPasswordResetByToken(tokenHash: string): Promise<PasswordReset | null> {
+  const [token] = await db
+    .select()
+    .from(passwordResets)
+    .where(
+      and(
+        eq(passwordResets.tokenHash, tokenHash),
+        isNull(passwordResets.usedAt),
+        gte(passwordResets.expiresAt, new Date())
+      )
+    )
+    .limit(1);
+
+  return token || null;
+}
+
+/**
+ * Mark a password reset token as used (single-use enforcement).
+ * Called after the password has been successfully changed.
+ */
+export async function markPasswordResetUsed(tokenId: string): Promise<PasswordReset | null> {
+  const [updated] = await db
+    .update(passwordResets)
+    .set({ usedAt: new Date() })
+    .where(eq(passwordResets.id, tokenId))
+    .returning();
+
+  return updated || null;
+}
+
+/**
+ * Delete all password reset tokens for a user.
+ * Called after a successful password change to invalidate any remaining tokens.
+ */
+export async function deletePasswordResetsForUser(userId: string): Promise<void> {
+  await db
+    .delete(passwordResets)
+    .where(eq(passwordResets.userId, userId));
 }
 
 /**
