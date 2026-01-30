@@ -2,7 +2,7 @@
 
 > **Complete reference for Vercel AI SDK implementation in MetaDJ Nexus**
 
-**Last Modified**: 2026-01-26 13:00 EST
+**Last Modified**: 2026-01-30 14:30 EST
 
 ## Overview
 
@@ -692,10 +692,16 @@ const result = await generateText({
 })
 ```
 
-**User Personalization Layer** (planned):
-- Opt‑in user profiles that let listeners share context about themselves (goals, tastes, current projects, constraints, preferred collaboration style).
-- Stored server-side for authenticated users, with a clear “what MetaDJai knows about me” panel and granular toggles.
+**User Personalization Layer** (active):
+- Opt-in user profiles let listeners share context about themselves (name, interests, current projects, custom instructions, tone, response length, response format).
+- Settings apply in **real-time** to every message sent—no need to start a new chat. Each API request includes the current personalization payload, and the system prompt is rebuilt fresh for every call.
+- Character limits: Name (100), all other fields (1500).
+- Personality presets (Creative, Professional, Casual, Technical, Friendly) provide quick starting points; Custom mode unlocks all fields.
+- AI behavior is also influenced by conversation history, so for the most dramatic personality shift, start a new chat.
+- Stored client-side in localStorage with server-side sync planned.
 - Injected into the MetaDJai system instructions to enable deeper, more personal collaboration without breaking transparency or control.
+- Key files: `src/lib/ai/personalization.ts`, `src/components/metadjai/MetaDjAiPersonalizePopover.tsx`.
+
 
 **Agentic Multi‑Step Tool Calling** (active):
 - `ToolLoopAgent` powers the non-streaming MetaDJai endpoint for consistent loop control and tool chaining.

@@ -1,6 +1,6 @@
 # Replit Deployment Guide - MetaDJ Nexus
 
-**Last Modified**: 2026-01-27 (UI/UX styling conventions updated)
+**Last Modified**: 2026-01-30 (Dream window sizes, personalization real-time behavior)
 
 ## Scope
 
@@ -98,6 +98,25 @@ Minimum set (details in `docs/operations/BUILD-DEPLOYMENT-GUIDE.md` and `docs/ME
 - `bg-white/3` - Too faint, use `bg-black/25-40` instead
 - `text-white/60` - Too dim, use `text-white/75` minimum
 - `border-white/5` - Too invisible, use `border-white/15` minimum
+
+## MetaDJai Personalization
+
+- **Real-time application**: Personalization settings apply immediately to your next message in any chat (new or existing). Each API request includes the current personalization payload.
+- **Conversation context**: The AI also considers conversation history when responding. For the most dramatic personality change, start a new chat.
+- **Character limits**: Name (100), all other fields (1500)
+- **Key files**: `src/components/metadjai/MetaDjAiPersonalizePopover.tsx`, `src/hooks/metadjai/use-metadjai.ts`, `src/lib/ai/personalization.ts`
+
+## Cinema Dream Window Sizes
+
+Dream window sizes (desktop floating window, square aspect ratio):
+
+| Size | Dimensions (clamp) |
+|------|-------------------|
+| Small | 230px - 31vh - 374px |
+| Default | 288px - 46vh - 490px |
+| Large | 346px - 64vh - 605px |
+
+Mobile uses full-width responsive sizing.
 
 ## Related Docs
 

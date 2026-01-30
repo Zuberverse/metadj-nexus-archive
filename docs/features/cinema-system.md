@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-25 14:19 EST
+**Last Modified**: 2026-01-30 14:30 EST
 
 ## Overview
 
@@ -518,6 +518,11 @@ Synthwave outrun horizon: neon sun + perspective grid on a cosmic sky, with twin
 
 Dream ships as an optional AI remix layer inside Cinema:
 - **Toggle-based**: Dream ON creates a stream, shows a 15s warm‑up countdown, then reveals the AI overlay. Status polling continues through a ~60s grace window plus a short post-poll buffer before surfacing a failure.
+- **Window sizes (desktop)**: Dream floating windows use square aspect ratios with responsive clamp sizing:
+  - Small: `clamp(230px, 31vh, 374px)`
+  - Default: `clamp(288px, 46vh, 490px)`
+  - Large: `clamp(346px, 64vh, 605px)`
+- **Mobile sizing**: Full-width responsive sizing with fixed height breakpoints.
 - **WHIP startup retries**: Not-ready WHIP responses during warm-up (404/409/429/5xx) are retried with exponential backoff to avoid false errors on quick stop/start.
 - **Audio-reactive bounce animation**: When Dream is streaming and music is playing, the avatar iframe container performs subtle bounce animations triggered by bass peaks (threshold: 0.55, cooldown: 1.2s). The bounce translates the container up by 8-15px based on bass intensity and returns smoothly.
 - **Ingest source**: **Webcam only** — no fallbacks to visualizers or video scenes. If webcam is unavailable, Dream shows an error state.
