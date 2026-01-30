@@ -66,37 +66,7 @@ export function MetaDjAiPersonalizePopover({
         </button>
       </div>
 
-      <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 shrink-0">
-        <div>
-          <p className="text-sm font-semibold text-white">Personalize responses</p>
-          <p className="text-xs text-white/60">Apply a profile + optional notes.</p>
-        </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={personalization.enabled}
-          aria-label="Toggle personalization"
-          onClick={() => onPersonalizationToggle(!personalization.enabled)}
-          className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center focus-ring-glow"
-        >
-          <span
-            className={clsx(
-              "absolute h-6 w-11 rounded-full border transition",
-              personalization.enabled
-                ? "border-cyan-400/60 bg-cyan-500/30"
-                : "border-white/20 bg-white/10"
-            )}
-          />
-          <span
-            className={clsx(
-              "absolute left-1 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform",
-              personalization.enabled ? "translate-x-5" : "translate-x-0"
-            )}
-          />
-        </button>
-      </div>
-
-      <div className="mt-3 flex justify-center shrink-0">
+      <div className="mt-1 flex justify-center shrink-0">
         <div
           role="tablist"
           aria-label="Personalize sections"
@@ -232,8 +202,8 @@ export function MetaDjAiPersonalizePopover({
 
           {/* Response Length */}
           <fieldset className="mt-4">
-            <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-              Response length
+            <legend className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-heading-solid">
+              Response Length
             </legend>
             <div className="mt-2 grid gap-2 sm:grid-cols-3">
               {PERSONALIZATION_LENGTH_OPTIONS.map((option) => {
@@ -264,43 +234,9 @@ export function MetaDjAiPersonalizePopover({
             </div>
           </fieldset>
 
-          {/* Response Format */}
-          <fieldset className="mt-4">
-            <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-              Response format
-            </legend>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {PERSONALIZATION_FORMAT_OPTIONS.map((option) => {
-                const isActive = personalization.responseFormat === option.id
-                return (
-                  <label
-                    key={option.id}
-                    className={clsx(
-                      "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
-                      isActive
-                        ? "border-purple-400/60 bg-purple-500/10 text-white"
-                        : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      name="metadjai-format"
-                      value={option.id}
-                      checked={isActive}
-                      onChange={() => onPersonalizationUpdate({ responseFormat: option.id })}
-                      className="sr-only"
-                    />
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
-                    <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
-                  </label>
-                )
-              })}
-            </div>
-          </fieldset>
-
           {/* Tone */}
           <fieldset className="mt-4">
-            <legend className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+            <legend className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-heading-solid">
               Tone
             </legend>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -331,6 +267,40 @@ export function MetaDjAiPersonalizePopover({
               })}
             </div>
           </fieldset>
+
+          {/* Response Format */}
+          <fieldset className="mt-4">
+            <legend className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-heading-solid">
+              Response Format
+            </legend>
+            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+              {PERSONALIZATION_FORMAT_OPTIONS.map((option) => {
+                const isActive = personalization.responseFormat === option.id
+                return (
+                  <label
+                    key={option.id}
+                    className={clsx(
+                      "group flex cursor-pointer flex-col gap-1 rounded-2xl border px-4 py-3 text-left transition-all",
+                      isActive
+                        ? "border-purple-400/60 bg-purple-500/10 text-white"
+                        : "border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:bg-white/8"
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="metadjai-format"
+                      value={option.id}
+                      checked={isActive}
+                      onChange={() => onPersonalizationUpdate({ responseFormat: option.id })}
+                      className="sr-only"
+                    />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">{option.label}</span>
+                    <span className="text-[11px] text-white/60 group-hover:text-white/80">{option.description}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
         </div>
 
         {/* Profile Tab Panel */}
@@ -344,7 +314,7 @@ export function MetaDjAiPersonalizePopover({
           <div className="h-full space-y-3 overflow-y-auto rounded-2xl border border-white/10 bg-white/5 px-3 py-3 pr-1 scrollbar-on-hover">
             {/* Profile Fields */}
               <div>
-                <label htmlFor="metadjai-profile-name" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+                <label htmlFor="metadjai-profile-name" className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-heading-solid">
                   Name
                 </label>
                 <input
@@ -352,14 +322,17 @@ export function MetaDjAiPersonalizePopover({
                   type="text"
                   value={personalization.displayName}
                   onChange={(event) => onPersonalizationUpdate({ displayName: event.target.value })}
-                  maxLength={80}
+                  maxLength={100}
                   placeholder="How should MetaDJai address you?"
                   className="mt-2 w-full rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
                 />
+                <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
+                  <span>{personalization.displayName.length}/100</span>
+                </div>
               </div>
 
               <div>
-                <label htmlFor="metadjai-profile-interests" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
+                <label htmlFor="metadjai-profile-interests" className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-heading-solid">
                   Interests
                 </label>
                 <textarea
@@ -367,53 +340,54 @@ export function MetaDjAiPersonalizePopover({
                   value={personalization.interests}
                   onChange={(event) => onPersonalizationUpdate({ interests: event.target.value })}
                   rows={2}
-                  maxLength={240}
+                  maxLength={1500}
                   placeholder="Music, visuals, strategy, tech, etc."
                   className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
                 />
+                <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
+                  <span>{personalization.interests.length}/1500</span>
+                </div>
               </div>
 
               <div>
-                <label htmlFor="metadjai-profile-projects" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-                  Current projects
+                <label htmlFor="metadjai-profile-projects" className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-heading-solid">
+                  Current Projects
                 </label>
                 <textarea
                   id="metadjai-profile-projects"
                   value={personalization.currentProjects}
                   onChange={(event) => onPersonalizationUpdate({ currentProjects: event.target.value })}
                   rows={2}
-                  maxLength={240}
+                  maxLength={1500}
                   placeholder="What are you building right now?"
                   className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
                 />
+                <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
+                  <span>{personalization.currentProjects.length}/1500</span>
+                </div>
               </div>
 
             <div>
-              <label htmlFor="metadjai-personalize-notes" className="text-[11px] font-heading font-semibold uppercase tracking-[0.18em] text-white/70">
-                Additional guidance
+              <label htmlFor="metadjai-personalize-notes" className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-heading-solid">
+                Additional Guidance
               </label>
               <textarea
                 id="metadjai-personalize-notes"
                 value={personalization.customInstructions}
                 onChange={(event) => onPersonalizationUpdate({ customInstructions: event.target.value })}
-                rows={3}
-                maxLength={MAX_PERSONALIZATION_LENGTH}
+                rows={4}
+                maxLength={15000}
                 placeholder="Example: Keep it concise. Ask one clarifying question. Focus on product planning."
                 className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
               />
               <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
-                <span>{personalization.customInstructions.length}/{MAX_PERSONALIZATION_LENGTH}</span>
+                <span>{personalization.customInstructions.length}/15000</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {!personalization.enabled && (
-        <p className="mt-3 text-[11px] text-muted-accessible">
-          Turn on Personalize to apply these preferences.
-        </p>
-      )}
     </div>
   )
 }

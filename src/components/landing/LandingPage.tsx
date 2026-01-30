@@ -376,28 +376,33 @@ export function LandingPage() {
                     </div>
 
                     {mode === 'signup' && (
-                      <div className="flex items-start gap-3">
-                        <input
-                          id="terms"
-                          type="checkbox"
-                          checked={agreedToTerms}
-                          onChange={(e) => setAgreedToTerms(e.target.checked)}
-                          className="mt-1 h-5 w-5 rounded border border-white/30 bg-transparent text-purple-500 accent-purple-500 focus:ring-purple-500 focus:ring-offset-0"
-                          required
-                          disabled={isSubmitting || authLoading}
-                        />
-                        <label htmlFor="terms" className="text-sm text-white/70 leading-relaxed">
-                          I agree to the{' '}
-                          <Link
-                            href="/terms"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-purple-400 hover:text-purple-300 underline underline-offset-2"
-                          >
-                            Terms & Conditions
-                          </Link>
-                        </label>
-                      </div>
+                      <>
+                        <div className="flex items-start gap-3">
+                          <input
+                            id="terms"
+                            type="checkbox"
+                            checked={agreedToTerms}
+                            onChange={(e) => setAgreedToTerms(e.target.checked)}
+                            className="mt-1 h-5 w-5 rounded border border-white/30 bg-transparent text-purple-500 accent-purple-500 focus:ring-purple-500 focus:ring-offset-0"
+                            required
+                            disabled={isSubmitting || authLoading}
+                          />
+                          <label htmlFor="terms" className="text-sm text-white/70 leading-relaxed">
+                            I agree to the{' '}
+                            <Link
+                              href="/terms"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-purple-400 hover:text-purple-300 underline underline-offset-2"
+                            >
+                              Terms & Conditions
+                            </Link>
+                          </label>
+                        </div>
+                        <p className="text-xs text-white/50 text-center">
+                          No email verification required for now. Coming soon.
+                        </p>
+                      </>
                     )}
 
                     {error && (

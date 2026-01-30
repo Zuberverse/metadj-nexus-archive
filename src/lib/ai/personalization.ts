@@ -24,9 +24,9 @@ export const PERSONALIZATION_PROFILES: MetaDjAiPersonalizationProfile[] = [
   },
   {
     id: "creative",
-    label: "Creative Director",
-    description: "Bold taste, expressive direction.",
-    prompt: "Lead with bold creative direction and taste-led options. Offer 2–3 distinct angles when it helps.",
+    label: "Creative Mentor",
+    description: "Bold taste, supportive guidance.",
+    prompt: "Lead with bold creative direction and supportive guidance. Offer 2–3 distinct angles when it helps.",
   },
   {
     id: "mentor",
@@ -36,9 +36,9 @@ export const PERSONALIZATION_PROFILES: MetaDjAiPersonalizationProfile[] = [
   },
   {
     id: "dj",
-    label: "DJ Focus",
-    description: "Music-first, vibe-driven.",
-    prompt: "When music comes up, focus on vibe, sequencing, and listening suggestions.",
+    label: "DJ",
+    description: "Curating vibes, orchestrating experiences.",
+    prompt: "Approach like a DJ—curate sonic experiences, read the energy, guide emotional journeys through music and creative direction.",
   },
   {
     id: "custom",
@@ -63,10 +63,10 @@ export const PERSONALIZATION_FORMAT_OPTIONS: Array<{
   label: string
   description: string
 }> = [
-  { id: "bullets", label: "Bullets", description: "Tight, scannable lists." },
-  { id: "steps", label: "Steps", description: "Sequenced, actionable flow." },
-  { id: "paragraphs", label: "Paragraphs", description: "Narrative, flowing text." },
   { id: "mixed", label: "Mixed", description: "Blend as needed." },
+  { id: "paragraphs", label: "Paragraphs", description: "Narrative, flowing text." },
+  { id: "steps", label: "Steps", description: "Sequenced, actionable flow." },
+  { id: "bullets", label: "Bullets", description: "Tight, scannable lists." },
 ]
 
 export const PERSONALIZATION_TONE_OPTIONS: Array<{
@@ -74,9 +74,9 @@ export const PERSONALIZATION_TONE_OPTIONS: Array<{
   label: string
   description: string
 }> = [
-  { id: "direct", label: "Direct", description: "Straight to the point." },
   { id: "warm", label: "Warm", description: "Supportive and encouraging." },
   { id: "visionary", label: "Visionary", description: "Future-forward, big picture." },
+  { id: "direct", label: "Direct", description: "Straight to the point." },
   { id: "technical", label: "Technical", description: "Precise and systematic." },
 ]
 
@@ -95,7 +95,7 @@ const profileMap = PERSONALIZATION_PROFILES.reduce<Record<MetaDjAiPersonalizatio
 )
 
 export const DEFAULT_PERSONALIZATION_STATE: MetaDjAiPersonalizationState = {
-  enabled: false,
+  enabled: true,
   profileId: "default",
   responseLength: "balanced",
   responseFormat: "mixed",
@@ -151,10 +151,10 @@ export function normalizePersonalizationState(candidate: unknown): MetaDjAiPerso
     responseLength: normalizedLength,
     responseFormat: normalizedFormat,
     tone: normalizedTone,
-    displayName: displayName.trim().slice(0, 80),
-    interests: interests.trim().slice(0, 240),
-    currentProjects: currentProjects.trim().slice(0, 240),
-    customInstructions: customInstructions.trim().slice(0, MAX_PERSONALIZATION_LENGTH),
+    displayName: displayName.trim().slice(0, 100),
+    interests: interests.trim().slice(0, 1500),
+    currentProjects: currentProjects.trim().slice(0, 1500),
+    customInstructions: customInstructions.trim().slice(0, 15000),
   }
 }
 

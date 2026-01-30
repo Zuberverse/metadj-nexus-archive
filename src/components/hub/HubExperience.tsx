@@ -164,7 +164,7 @@ export function HubExperience({
             Explore MetaDJ&apos;s Imagination
           </h1>
           <p className="text-base sm:text-lg text-indigo-100/90 font-light max-w-2xl mx-auto">
-            Collections-first listening, guided by human vision and AI
+            A journey into the Metaverse, guided by human vision and AI
           </p>
         </div>
 
