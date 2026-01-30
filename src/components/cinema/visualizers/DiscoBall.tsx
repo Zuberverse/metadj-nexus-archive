@@ -713,7 +713,7 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
   })
 
   return (
-    <group>
+    <group position={[0, -1.2, 0]}>
       <mesh renderOrder={0}>
         <sphereGeometry args={[DISCO_CORE_RADIUS, performanceMode ? 42 : 64, performanceMode ? 28 : 48]} />
         <shaderMaterial
