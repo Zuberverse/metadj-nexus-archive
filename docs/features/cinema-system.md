@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-30 13:51 EST
+**Last Modified**: 2026-01-30 18:49 EST
 
 ## Overview
 
@@ -21,9 +21,20 @@ To maintain a premium "high-fidelity" aesthetic, all MetaDJ visualizers must adh
 2.  **Core Sparks & Pings (2D)**: Canvas-based visualizers use a dual-pass "Core Ping" or "Core Spark" method:
     - **Pass 1**: The primary particle/block drawn in the target brand color with a standard alpha.
     - **Pass 2**: A smaller, high-alpha white "ping" drawn inside the core to create a "striking" visual center.
-3.  **High-Luminance Thresholds**: Post-processing Bloom must use a high luminance threshold (typically `0.4` or higher) to ensure only the sharpest "core" elements contribute to the glow, preventing a "muddy" or "foggy" scene.
+3.  **High-Luminance Thresholds**: Post-processing Bloom must use a high luminance threshold (typically `0.55` or higher) to ensure only the sharpest "core" elements contribute to the glow, preventing a "muddy" or "foggy" scene.
 4.  **No Black Endpoints**: Gradients must never terminate at pure black. Use deep charcoal (`#0a0e1f`) or brand-tinted darks to preserve visual depth.
 5.  **Grid Snapping (2D/Retro)**: For 8-bit or pixel visualizers, coordinates must be aggressively snapped to the pixel grid (`Math.round(val / pixel) * pixel`) to prevent sub-pixel blurring.
+
+### Anti-Flicker Guidelines
+
+Flicker in 3D particle visualizers is caused by brightness values crossing the bloom threshold erratically between frames. When using `AdditiveBlending`, overlapping particles sum their colors — creating hotspots that fluctuate as particles rotate. These must be controlled:
+
+1.  **Color clamp ceiling ≤ 1.5**: Never allow fragment colors above `vec3(1.5)`. Higher clamps (1.8+) create extreme additive peaks that oscillate above/below bloom threshold.
+2.  **Bloom threshold ≥ 0.55**: Lower thresholds cause too many particles to bloom, amplifying frame-to-frame brightness variance into visible flicker.
+3.  **Spark/core multipliers ≤ 1.5x**: Keep the `spark * N` factor in fragment shaders at or below 1.5. Higher multipliers (2.5x) create brightness peaks that swing wildly with overlap changes.
+4.  **Avoid stacking brightness boosts**: The chain `core multiplier → vibrancy boost → white mix → color clamp` compounds. Each step should be modest; the product matters more than individual values.
+5.  **Chromatic aberration offset ≤ 0.0005**: Larger offsets (0.002+) create visible RGB fringing that degrades perceived quality. Keep barely perceptible.
+6.  **Test with and without audio**: Flicker often only appears at idle (when particles aren't moving enough to mask it) or during quiet passages between tracks.
 
 Cinema currently opens into the **Virtualizer** (audio‑reactive visualizers + video scenes). **Moments** is a future production mode for curated audio + video, with a Cinema menu toggle planned once Moments content is available.
 
@@ -48,7 +59,9 @@ Cinema now auto‑enables performance mode when it detects low‑end device sign
 
 - **Auto triggers**: <= 4 CPU cores, <= 4GB device memory, Save-Data enabled, or low FPS in 3D scenes.
 - **Quality dials down**: lower visualizer complexity is used via `performanceMode=true`.
-- **Post‑processing disabled**: bloom/aberration are turned off to preserve frame rate.
+- **DPR capped at 1.5**: Canvas `dpr` uses `[1, 1.5]` (not `[1, 2]`) to prevent GPU overload on fullscreen Retina displays. This 44% pixel reduction keeps FPS above 30 and avoids triggering auto-degradation.
+- **Desktop minimum bloom**: Desktop always gets at least "lite" bloom (single-pass, no mipmapBlur, 65% intensity). Bloom is what transforms individual particle points into cohesive glowing visuals — disabling it entirely makes particles look like scattered dots.
+- **Mobile bloom off**: Mobile (`!shouldUseSidePanels`) disables bloom entirely for maximum performance.
 - **Sticky for session**: once activated, it remains on to avoid oscillation.
 
 ### View Transition Fade
@@ -136,17 +149,20 @@ All visualizers use `@react-three/postprocessing` Bloom:
 
 | Visualizer | Threshold | Intensity | Radius | Notes |
 |------------|-----------|-----------|--------|-------|
-| Cosmos | 0.3 | 0.85 | 0.18 | Tighter radius for high-fidelity glow |
-| Black Hole | 0.25 | 0.75 | 0.15 | Crisp particles, minimal blur |
-| Space Travel | 0.55 | 0.35 | 0.15 | Subtle ambient glow |
-| Disco Ball | 0.25 (reactive) | 0.9 (reactive) | 0.2 | Sparkle emphasis |
+| Cosmos | 0.6 | 0.65 | 0.14 | High threshold prevents additive flicker in dense core |
+| Black Hole | 0.65 | 0.55 | 0.12 | Only event horizon ring blooms; particles stay clean |
+| Space Travel | 0.6 | 0.5 | 0.17 | Subtle ambient glow for warp tunnel |
+| Disco Ball | 0.55 | 0.8 | 0.16 | Balances sparkle emphasis with flicker prevention |
+
+Chromatic aberration: fixed at `0.0004` offset (barely perceptible depth cue without visible RGB fringing).
 
 #### Static Post-Processing (Bloom Stability)
 
 3D scenes use **static bloom settings** to prevent glow pulsing artifacts:
 - **Static Bloom**: Intensity and threshold remain constant—particles handle audio reactivity via motion and color.
-- **Static Chromatic Aberration**: Fixed offset prevents flicker.
+- **Static Chromatic Aberration**: Fixed offset (`0.0004`) prevents flicker. Never exceed `0.001`.
 - **Rationale**: Reactive bloom on top of reactive particles creates double-pulsing. Separating motion reactivity (particles) from brightness reactivity (bloom) eliminates artifacts.
+- **Anti-flicker**: See the Anti-Flicker Guidelines section above. All bloom thresholds must be ≥ 0.55, and fragment color clamps must be ≤ 1.5.
 
 ---
 

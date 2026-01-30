@@ -720,11 +720,9 @@ export function CinemaOverlay({
             seed={combineSeeds(currentTrack?.id ?? "no-track", currentScene.id)}
             performanceMode={isPerformanceMode}
             postProcessing={
-              autoPerformanceMode
-                ? "off"
-                : isPerformanceMode
-                  ? (shouldUseSidePanels ? "lite" : "off")
-                  : "full"
+              isPerformanceMode
+                ? (shouldUseSidePanels ? "lite" : "off")
+                : "full"
             }
             onCanvasReady={handleVisualizerCanvasReady}
             enablePerformanceMonitoring={shouldMonitorPerformance}

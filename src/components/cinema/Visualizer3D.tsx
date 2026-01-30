@@ -50,13 +50,13 @@ const BlackHole = dynamic<Visualizer3DRendererProps>(
 
 // HIGH FIDELITY: Tighter bloom radius and higher threshold for sharper, defined glow
 const BLOOM_SETTINGS = {
-  "explosion": { threshold: 0.42, intensity: 1.1, radius: 0.16 },
-  "black-hole": { threshold: 0.4, intensity: 1.0, radius: 0.15 },
+  "explosion": { threshold: 0.6, intensity: 0.65, radius: 0.14 },
+  "black-hole": { threshold: 0.65, intensity: 0.55, radius: 0.12 },
   "space-travel": { threshold: 0.6, intensity: 0.5, radius: 0.17 },
-  "disco-ball": { threshold: 0.42, intensity: 1.1, radius: 0.19 }
+  "disco-ball": { threshold: 0.55, intensity: 0.8, radius: 0.16 }
 } as const
 
-const CHROMATIC_OFFSET = new THREE.Vector2(0.002, 0.002)
+const CHROMATIC_OFFSET = new THREE.Vector2(0.0004, 0.0004)
 
 export function Visualizer3D({
   bassLevel,
@@ -82,7 +82,7 @@ export function Visualizer3D({
   // STATIC bloom - particles already have audio reactivity built in
   // Reactive bloom on top of reactive particles creates double-pulsing artifact
   const chromaticOffset = useMemo(() => {
-    return new THREE.Vector2(0.002, 0.002)
+    return new THREE.Vector2(0.0004, 0.0004)
   }, [])
 
   return (

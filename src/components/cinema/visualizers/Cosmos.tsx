@@ -327,22 +327,22 @@ const CosmosShader = {
       inner = pow(inner, 2.0);
       outer = pow(outer, 3.0);
 
-      float strength = spark * 2.5 + core * 1.5 + inner * 0.6 + outer * 0.2;
+      float strength = spark * 1.5 + core * 1.3 + inner * 0.6 + outer * 0.2;
       strength *= vGlow;
 
       vec3 color = vColor;
 
-      // Core brightening for definition - intensified for spark
-      color *= 1.0 + spark * 0.6 + core * 0.3;
+      // Core brightening for definition
+      color *= 1.0 + spark * 0.3 + core * 0.2;
 
       // Boost vibrancy
-      color *= 1.35;
+      color *= 1.2;
 
-      // Mix in some white for the ultimate spark center
-      color = mix(color, vec3(1.4), spark * 0.5);
+      // Subtle core highlight (reduced to prevent additive flicker)
+      color = mix(color, vec3(1.2), spark * 0.25);
 
       // Clamp to prevent harsh spots
-      color = clamp(color, vec3(0.0), vec3(1.8));
+      color = clamp(color, vec3(0.0), vec3(1.4));
 
       float finalAlpha = vAlpha * strength;
 

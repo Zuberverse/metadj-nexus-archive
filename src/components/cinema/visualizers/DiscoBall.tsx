@@ -464,7 +464,7 @@ const DiscoFacetShader = {
       float pop = smoothstep(0.6, 1.0, uHigh) * 0.4 + smoothstep(0.7, 1.0, uBass) * 0.3;
       color += base * pop;
 
-      color = clamp(color, vec3(0.0), vec3(1.8));
+      color = clamp(color, vec3(0.0), vec3(1.5));
 
       float alpha = vAlpha * soft * (0.7 + spec * 0.8);
       // Threshold for crispness

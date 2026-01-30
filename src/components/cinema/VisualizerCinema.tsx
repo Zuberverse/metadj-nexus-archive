@@ -145,7 +145,7 @@ export function VisualizerCinema({
       {renderer === "3d" ? (
         <Canvas
           frameloop={active ? "always" : "never"}
-          dpr={effectivePerformanceMode ? 1 : [1, 2]}
+          dpr={effectivePerformanceMode ? 1 : [1, 1.5]}
           camera={{ position: [0, 0, 15], fov: 45 }}
           gl={{
             antialias: false,
