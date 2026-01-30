@@ -154,7 +154,7 @@ export function normalizePersonalizationState(candidate: unknown): MetaDjAiPerso
     displayName: displayName.trim().slice(0, 100),
     interests: interests.trim().slice(0, 1500),
     currentProjects: currentProjects.trim().slice(0, 1500),
-    customInstructions: customInstructions.trim().slice(0, 15000),
+    customInstructions: customInstructions.trim().slice(0, 1500),
   }
 }
 

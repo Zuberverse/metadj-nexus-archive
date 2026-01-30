@@ -376,12 +376,12 @@ export function MetaDjAiPersonalizePopover({
                 value={personalization.customInstructions}
                 onChange={(event) => onPersonalizationUpdate({ customInstructions: event.target.value })}
                 rows={4}
-                maxLength={15000}
+                maxLength={1500}
                 placeholder="Example: Keep it concise. Ask one clarifying question. Focus on product planning."
                 className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-muted-accessible focus-ring-light"
               />
               <div className="mt-1 flex items-center justify-end text-[10px] text-muted-accessible">
-                <span>{personalization.customInstructions.length}/15000</span>
+                <span>{personalization.customInstructions.length}/1500</span>
               </div>
             </div>
           </div>

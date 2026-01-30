@@ -674,19 +674,8 @@ export function AppHeader({
               </div>
             </div>
 
-            {/* RIGHT ZONE: Account, MetaDJai Toggle */}
+            {/* RIGHT ZONE: MetaDJai Toggle, Account */}
             <div className="flex items-center gap-2 shrink-0">
-              {user && (
-                <button
-                  type="button"
-                  onClick={() => setAccountOpen(true)}
-                  className="hidden min-[1100px]:inline-flex items-center justify-center h-9 w-9 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/80 hover:text-white hover:border-purple-400/40 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation"
-                  aria-label="Account Settings"
-                  title="Account Settings"
-                >
-                  <User className="h-4 w-4" />
-                </button>
-              )}
               {/* MetaDJai Pill Button - Hidden below 1100px (bottom nav handles it) */}
               <button
                 id="tour-toggle-ai"
@@ -711,6 +700,17 @@ export function AppHeader({
                   strokeWidth={3}
                 />
               </button>
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => setAccountOpen(true)}
+                  className="hidden min-[1100px]:inline-flex items-center justify-center h-9 w-9 rounded-full border border-(--border-subtle) bg-black/20 backdrop-blur-md text-white/80 hover:text-white hover:border-purple-400/40 hover:bg-white/10 transition-all duration-300 focus-ring-glow touch-manipulation"
+                  aria-label="Account Settings"
+                  title="Account Settings"
+                >
+                  <User className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </div>
         </div>

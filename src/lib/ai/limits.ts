@@ -59,11 +59,10 @@ export const MAX_MESSAGE_HISTORY = 12;
 /**
  * Maximum personalization instruction length (characters)
  *
- * Rationale: 500 chars is enough for custom AI behavior preferences
- * without bloating every request. Users can express tone, style,
- * and format preferences concisely.
+ * Rationale: 1500 chars allows for detailed custom AI behavior preferences
+ * including tone, style, format, and personal context for tailored responses.
  */
-export const MAX_PERSONALIZATION_LENGTH = 500;
+export const MAX_PERSONALIZATION_LENGTH = 1500;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONTEXT LIMITS

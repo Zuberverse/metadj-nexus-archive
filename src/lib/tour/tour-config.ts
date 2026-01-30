@@ -1,9 +1,11 @@
 export type TourStepId =
+    | 'welcome'
     | 'start-cinematic'
     | 'music-toggle'
     | 'music-tabs'
     | 'player-controls'
     | 'search-toggle'
+    | 'nav-hub'
     | 'nav-cinema'
     | 'nav-wisdom'
     | 'nav-journal'
@@ -23,10 +25,18 @@ export interface TourStep {
 
 export const GLOBAL_TOUR_STEPS: TourStep[] = [
     {
+        popover: {
+            title: 'Welcome to MetaDJ Nexus',
+            description: 'Your creative hub for music, visuals, and AI-powered exploration. Let\'s take a quick tour of the key features.',
+            side: 'bottom',
+            align: 'center',
+        },
+    },
+    {
         element: '#tour-start-cinematic',
         popover: {
             title: 'Enter Cinema',
-            description: 'Launch the hero track and open Cinema for the full-screen visual layer.',
+            description: 'Start the signature experience — immersive visuals synced to MetaDJ\'s original music.',
             side: 'bottom',
             align: 'start',
         },
@@ -34,8 +44,8 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
     {
         element: '#tour-toggle-music',
         popover: {
-            title: 'Music Panel',
-            description: 'Open the Music panel for Library, Playlists, and your Queue.',
+            title: 'Music Library',
+            description: 'Browse all tracks and collections. Click to expand the full music panel.',
             side: 'bottom',
             align: 'start',
         },
@@ -43,8 +53,8 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
     {
         element: '#tour-music-tabs',
         popover: {
-            title: 'Library • Playlists • Queue',
-            description: 'Jump between the catalog, saved sets, and the active queue.',
+            title: 'Browse • Playlists • Queue',
+            description: 'Switch between the full catalog, your saved playlists, and the current playback queue.',
             side: 'right',
             align: 'start',
         },
@@ -52,8 +62,8 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
     {
         element: '#metadj-audio-player',
         popover: {
-            title: 'Player Controls',
-            description: 'Control playback, shuffle, repeat, volume, and full-screen mode.',
+            title: 'Audio Player',
+            description: 'Full playback controls — play/pause, skip, shuffle, repeat, volume, and enter Cinema mode.',
             side: 'top',
             align: 'center',
         },
@@ -61,17 +71,25 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
     {
         element: '#tour-search-toggle',
         popover: {
-            title: 'Search',
-            description: 'Search tracks and collections from anywhere in the app.',
-            side: 'top',
+            title: 'Quick Search',
+            description: 'Instantly find tracks, collections, and content across the entire platform.',
+            side: 'bottom',
             align: 'center',
+        },
+    },
+    {
+        element: '#tour-nav-hub',
+        popover: {
+            title: 'Hub',
+            description: 'Your home base — discover featured content, news, events, and wisdom highlights.',
+            side: 'bottom',
         },
     },
     {
         element: '#tour-nav-cinema',
         popover: {
             title: 'Cinema',
-            description: 'Switch to Cinema for visualizers, scenes, and Dream overlays (when Daydream is configured).',
+            description: 'Full-screen visual experience with dynamic visualizers and ambient scenes.',
             side: 'bottom',
         },
     },
@@ -79,7 +97,7 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
         element: '#tour-nav-wisdom',
         popover: {
             title: 'Wisdom',
-            description: 'Thoughts, Guides, and Reflections behind the music.',
+            description: 'Explore Thoughts, Guides, and Reflections — creative insights and production philosophy.',
             side: 'bottom',
         },
     },
@@ -87,7 +105,7 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
         element: '#tour-nav-journal',
         popover: {
             title: 'Journal',
-            description: 'A private, local-first space to capture ideas and drafts.',
+            description: 'Your private creative notebook — capture ideas, drafts, and reflections locally.',
             side: 'bottom',
         },
     },
@@ -95,7 +113,7 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
         element: '#tour-toggle-ai',
         popover: {
             title: 'MetaDJai',
-            description: 'Your creative companion for guidance, prompts, and context-aware help.',
+            description: 'Your AI creative companion — get personalized guidance, answer questions, and explore the platform.',
             side: 'bottom',
             align: 'end',
         },
@@ -103,16 +121,16 @@ export const GLOBAL_TOUR_STEPS: TourStep[] = [
     {
         element: '#tour-toggle-guide',
         popover: {
-            title: 'User Guide',
-            description: 'Open the guide anytime for quick starts, shortcuts, and deep dives.',
+            title: 'Help & Guide',
+            description: 'Access the user guide anytime for tips, keyboard shortcuts, and feature documentation.',
             side: 'bottom',
             align: 'end',
         },
     },
     {
         popover: {
-            title: "You're Set",
-            description: 'Start in the Hub, cue a track, then dive into Cinema, Wisdom, Journal, or MetaDJai when inspiration hits.',
+            title: 'Ready to Explore',
+            description: 'Start in the Hub, play some music, then dive into Cinema, Wisdom, or chat with MetaDJai.',
             side: 'top',
             align: 'center',
         },

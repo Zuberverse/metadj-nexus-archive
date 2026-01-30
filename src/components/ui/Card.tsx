@@ -114,6 +114,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
           variantStyles[variant],
           sizeStyles[size],
           hoverGradient && 'hover-gradient',
+          asButton && 'cursor-pointer',
           className
         )}
         {...props}
