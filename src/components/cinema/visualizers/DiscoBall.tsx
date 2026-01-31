@@ -131,7 +131,7 @@ const DiscoCoreShader = {
       vec3 pos = position;
 
       float energy = uBass * 0.9 + uMid * 0.6 + uHigh * 0.75;
-      float breath = 1.0 + sin(uTime * 0.55) * 0.012 + energy * 0.02;
+      float breath = 1.0 + sin(uTime * 0.55) * 0.012 + uBass * 0.018 + uMid * 0.008 + energy * 0.008;
       pos *= breath;
 
       float rotY = uRotation * 0.58;
@@ -253,9 +253,12 @@ const DiscoCoreShader = {
       float spec = (spec1 + spec2);
 
       float energy = uBass * 0.8 + uMid * 0.45 + uHigh * 0.75;
-      spec *= (0.55 + uHigh * 0.95 + uBass * 0.45);
+      // Area 5: specular intensifies with high frequencies (brighter reflections)
+      // Bass adds warmth, highs add sharpness — club spotlight feel
+      spec *= (0.5 + uHigh * 0.7 + uBass * 0.3 + energy * 0.1);
 
-      float phase = uColorPhase * 0.03 + rnd * 3.0 + st.y * 1.1;
+      // Area 6: color phase multiplier increased for visible rapid cycling during peaks
+      float phase = uColorPhase * 0.06 + rnd * 3.0 + st.y * 1.1;
       float band = fract(phase);
       vec3 tint;
       if (band < 0.33) {
@@ -285,18 +288,23 @@ const DiscoCoreShader = {
       color = mix(color, uStarBase * 0.02, grout * 0.75);
 
       // --- Random Tile Twinkle Logic ---
-      // Use the random value per tile (rnd) and time to create flashing
-      float flashSpeed = 1.0; 
+      // Area 5: flash speed and frequency scale with energy
+      // Quiet passages: slow, rare flashes. Energetic: rapid, frequent flashes
+      float flashSpeed = 0.8 + energy * 2.5 + uHigh * 1.5;
       float flashOffset = rnd * 50.0;
       float tileFlash = sin(uTime * flashSpeed + flashOffset) * 0.5 + 0.5;
-      
-      // Make flashes sharp/rare (pow) but frequent enough (threshold)
-      tileFlash = pow(tileFlash, 12.0); 
+
+      // Lower exponent during energy = more tiles flash simultaneously
+      float flashSharpness = 12.0 - energy * 6.0;
+      flashSharpness = max(flashSharpness, 4.0);
+      tileFlash = pow(tileFlash, flashSharpness);
       tileFlash = smoothstep(0.1, 1.0, tileFlash);
 
+      // Area 5: bass pulses core brightness
+      float bassBright = 1.0 + uBass * 0.3;
+
       // Color the flash: mix the base tint with white for a bright pastel glow
-      // or rotate lightly for variety.
-      vec3 flashColor = mix(tint, vec3(1.0), 0.6) * tileFlash * 2.0;
+      vec3 flashColor = mix(tint, vec3(1.0), 0.6) * tileFlash * 2.0 * bassBright;
 
       // Add flash to the tile (masked by tileMask so grout doesn't flash)
       color += flashColor * tileMask;
@@ -327,6 +335,7 @@ const DiscoFacetShader = {
     uColor3: { value: new THREE.Color(VISUALIZER_COLORS.magenta) },
     uColor4: { value: new THREE.Color(VISUALIZER_COLORS.indigo) },
     uStarBase: { value: new THREE.Color(VISUALIZER_COLORS.starBase) },
+    uDensityScale: { value: 1.0 },
   },
   vertexShader: `
     uniform float uTime;
@@ -336,6 +345,7 @@ const DiscoFacetShader = {
     uniform float uHigh;
     uniform float uColorPhase;
     uniform float uPixelRatio;
+    uniform float uDensityScale;
 
     attribute float aSize;
     attribute vec3 aRandom;
@@ -350,7 +360,9 @@ const DiscoFacetShader = {
     void main() {
       vec3 pos = position;
 
-      float breath = 1.0 + uBass * 0.12 + sin(uTime * 0.6 + aColorIdx * 6.0) * 0.015;
+      // Area 3/7: bass makes facets "pop" outward (breathing with beat)
+      float energy = uBass * 0.8 + uMid * 0.5 + uHigh * 0.6;
+      float breath = 1.0 + uBass * 0.09 + uMid * 0.03 + sin(uTime * 0.6 + aColorIdx * 6.0) * 0.015;
       pos *= breath;
 
       float rotY = uRotation * 0.6;
@@ -371,7 +383,8 @@ const DiscoFacetShader = {
         pos.z
       );
 
-      float jitterAmp = 0.04 + uHigh * 0.12;
+      // Area 3: jitter amplifies during energetic passages
+      float jitterAmp = 0.02 + uHigh * 0.09 + uBass * 0.04 + energy * 0.03;
       pos += (aRandom - 0.5) * jitterAmp * sin(uTime * 1.8 + aColorIdx * 12.0);
 
       vec3 normalObj = normalize(pos);
@@ -381,13 +394,16 @@ const DiscoFacetShader = {
       vViewDir = normalize(-mvPosition.xyz);
 
       vColorIdx = aColorIdx;
-      vSparkle = fract(aColorIdx * 21.0 + uColorPhase * 0.1);
+      // Area 3: sparkle responds more to high frequencies
+      vSparkle = fract(aColorIdx * 21.0 + uColorPhase * 0.15 + uHigh * 0.3);
 
-      float size = aSize * (0.85 + uHigh * 0.9 + uBass * 0.5);
+      // Area 3: high frequencies intensify sparkle via size boost
+      float size = aSize * (0.8 + uHigh * 0.5 + uBass * 0.3 + energy * 0.15);
       gl_PointSize = size * uPixelRatio * (30.0 / -mvPosition.z);
 
       gl_Position = projectionMatrix * mvPosition;
       vAlpha = 0.85;
+      vAlpha *= uDensityScale;
     }
   `,
   fragmentShader: `
@@ -417,8 +433,8 @@ const DiscoFacetShader = {
       float soft = 1.0 - smoothstep(0.0, 0.48, dist);
       soft = pow(soft, 1.8);
 
-      // Increased multiplier from 3.0 to 12.0 for more color variety across the ball
-      float phase = uColorPhase * 0.04 + vColorIdx * 12.0;
+      // Area 6: color phase responds more to energy — rapid cycling during peaks
+      float phase = uColorPhase * 0.07 + vColorIdx * 12.0;
       float band = fract(phase);
       vec3 base;
       if (band < 0.33) {
@@ -444,10 +460,14 @@ const DiscoFacetShader = {
       float spec2 = pow(max(dot(vNormal, halfDir2), 0.0), 85.0);
       float spec = (spec1 + spec2) * (0.6 + uHigh * 1.1 + uBass * 0.5);
 
-      // Changed threshold from 0.7 to 0.45 to make more checkers glow
-      // Increased multipliers for potentially faster/more varied twinkling
-      float sparkle = sin(uTime * (1.5 + vColorIdx * 1.2) + vColorIdx * 18.0) * 0.5 + 0.5;
-      sparkle = smoothstep(0.45, 1.0, sparkle);
+      float energy = uBass * 0.7 + uMid * 0.35 + uHigh * 0.6;
+
+      // Area 3: sparkle intensifies with high frequencies — reflections catching light
+      float sparkleSpeed = 1.5 + vColorIdx * 1.2 + uHigh * 3.0;
+      float sparkle = sin(uTime * sparkleSpeed + vColorIdx * 18.0) * 0.5 + 0.5;
+      // Lower threshold during high energy = more simultaneous sparkles
+      float sparkleThreshold = 0.45 - energy * 0.15;
+      sparkle = smoothstep(sparkleThreshold, 1.0, sparkle);
       spec *= sparkle;
 
       float rim = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 2.5);
@@ -457,11 +477,12 @@ const DiscoFacetShader = {
       color += vec3(1.0) * spec; // Specular adds white/glowing checkers
       color += rimColor;
 
-      float energy = uBass * 0.7 + uMid * 0.35 + uHigh * 0.6;
       color *= 0.9 + energy * 0.35;
 
-      // Facet popping: brief intensity boost based on frequency energy
-      float pop = smoothstep(0.6, 1.0, uHigh) * 0.4 + smoothstep(0.7, 1.0, uBass) * 0.3;
+      // Area 3: facet popping — bass makes facets visually "pop" with brightness
+      float pop = smoothstep(0.5, 0.9, uHigh) * 0.25
+        + smoothstep(0.6, 1.0, uBass) * 0.22
+        + smoothstep(0.7, 1.0, energy) * 0.1;
       color += base * pop;
 
       color = clamp(color, vec3(0.0), vec3(1.5));
@@ -535,6 +556,7 @@ const HaloShader = {
     uColor1: { value: new THREE.Color(VISUALIZER_COLORS.purple) },
     uColor2: { value: new THREE.Color(VISUALIZER_COLORS.cyan) },
     uColor3: { value: new THREE.Color(VISUALIZER_COLORS.magenta) },
+    uDensityScale: { value: 1.0 },
   },
   vertexShader: `
     uniform float uTime;
@@ -544,6 +566,7 @@ const HaloShader = {
     uniform float uHigh;
     uniform float uColorPhase;
     uniform float uPixelRatio;
+    uniform float uDensityScale;
 
     attribute float aSize;
     attribute vec3 aRandom;
@@ -556,26 +579,40 @@ const HaloShader = {
     void main() {
       vec3 pos = position;
 
+      float energy = uBass * 0.8 + uMid * 0.5 + uHigh * 0.6;
+
       float swirl = uRotation * (0.4 + aColorIdx * 0.6);
       float c = cos(swirl);
       float s = sin(swirl);
       pos = vec3(pos.x * c - pos.z * s, pos.y, pos.x * s + pos.z * c);
 
-      float wave = sin(uTime * 0.8 + aColorIdx * 8.0) * (0.15 + uBass * 0.6);
-      pos.y += wave * (0.8 + aRandom.x);
+      // Area 4: bass creates wave-like motion through the halo ring
+      // Multiple wave frequencies for organic, propagating feel
+      float wave1 = sin(uTime * 0.8 + aColorIdx * 8.0) * (0.08 + uBass * 0.45);
+      float wave2 = sin(uTime * 1.3 + aColorIdx * 12.0 + 2.0) * uBass * 0.2;
+      pos.y += (wave1 + wave2) * (0.8 + aRandom.x);
 
-      float outward = 1.0 + uBass * 0.08 + uMid * 0.05;
+      // Area 4: during buildups, halo expands outward and becomes more active
+      // Quiet: tight and calm. Energy: expanded and dynamic
+      float outward = 1.0 + uBass * 0.07 + uMid * 0.05 + energy * 0.03;
       pos *= outward;
+
+      // Area 4: lateral jitter increases with energy (more active during peaks)
+      float haloJitter = energy * 0.07;
+      pos += (aRandom - 0.5) * haloJitter * sin(uTime * 2.0 + aColorIdx * 15.0);
 
       vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
       gl_Position = projectionMatrix * mvPosition;
 
-      float size = aSize * (0.7 + uHigh * 0.6);
+      // Area 4: size responds to energy — calm passages = smaller, peaks = larger
+      float size = aSize * (0.6 + uHigh * 0.4 + energy * 0.15);
       gl_PointSize = size * uPixelRatio * (24.0 / -mvPosition.z);
 
       vColorIdx = aColorIdx;
-      vTwinkle = fract(aColorIdx * 14.0 + uColorPhase * 0.15);
-      vAlpha = 0.6 + aRandom.y * 0.4;
+      // Area 4: high frequencies make individual halo particles twinkle more
+      vTwinkle = fract(aColorIdx * 14.0 + uColorPhase * 0.15 + uHigh * 0.5);
+      vAlpha = 0.5 + aRandom.y * 0.35 + energy * 0.15;
+      vAlpha *= uDensityScale;
     }
   `,
   fragmentShader: `
@@ -609,11 +646,16 @@ const HaloShader = {
         base = mix(uColor2, uColor3, (phase - 0.5) / 0.5);
       }
 
-      float twinkle = sin(uTime * (1.6 + vTwinkle * 1.8) + vTwinkle * 10.0) * 0.5 + 0.5;
-      twinkle = pow(twinkle, 2.0);
+      // Area 4: high frequencies accelerate twinkle rate — shimmer during bright passages
+      float twinkleSpeed = 1.6 + vTwinkle * 1.8 + uHigh * 3.5;
+      float twinkle = sin(uTime * twinkleSpeed + vTwinkle * 10.0) * 0.5 + 0.5;
+      // Sharper twinkle during calm, softer during energy (more particles glow)
+      float twinklePow = 2.5 - uHigh * 1.0;
+      twinklePow = max(twinklePow, 1.2);
+      twinkle = pow(twinkle, twinklePow);
 
-      float energy = uBass * 0.6 + uHigh * 0.5;
-      float glow = 0.35 + twinkle * 0.9 + energy * 0.6;
+      float energy = uBass * 0.7 + uMid * 0.3 + uHigh * 0.6;
+      float glow = 0.3 + twinkle * 1.0 + energy * 0.7;
 
       vec3 color = base * glow;
       color = clamp(color, vec3(0.0), vec3(1.6));
@@ -635,6 +677,21 @@ let rotationAccum = 0
 let colorPhaseAccum = 0
 let shockwaveRadius = 0
 let shockwaveAlpha = 0
+// Transient detection: track previous raw levels for delta calculation
+let prevRawBass = 0
+let prevRawMid = 0
+// Rotational impulse: decaying acceleration spike on bass hits
+let rotationImpulse = 0
+// Z-axis wobble impulse from bass transients
+let wobbleImpulse = 0
+// Energy accumulator: builds during sustained high-energy passages
+let sustainedEnergy = 0
+// Secondary shockwave for mid-frequency peaks
+let shockwave2Radius = 0
+let shockwave2Alpha = 0
+// Shockwave intensity: varies size/alpha based on hit strength
+let shockwaveIntensity = 0
+let shockwave2Intensity = 0
 
 export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = false }: DiscoBallProps) {
   const coreMaterialRef = useRef<THREE.ShaderMaterial>(null)
@@ -653,42 +710,93 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
     [performanceMode],
   )
 
+  const facetDensityScale = performanceMode ? 1.0 : Math.sqrt(LOW_FACET_COUNT / HIGH_FACET_COUNT)
+  const haloDensityScale = performanceMode ? 1.0 : Math.sqrt(LOW_HALO_COUNT / HIGH_HALO_COUNT)
+
   useFrame((state, delta) => {
     if (!coreMaterialRef.current || !facetsMaterialRef.current || !haloMaterialRef.current) return
 
     const time = state.clock.getElapsedTime()
     const clampedDelta = Math.min(delta, 0.1)
 
-    const prevBass = smoothedBass
-    smoothedBass = THREE.MathUtils.lerp(smoothedBass, Math.pow(bassLevel, 1.6), 0.06)
-    smoothedMid = THREE.MathUtils.lerp(smoothedMid, midLevel, 0.045)
-    smoothedHigh = THREE.MathUtils.lerp(smoothedHigh, Math.pow(highLevel, 1.4), 0.055)
+    // --- Transient detection (raw deltas before smoothing) ---
+    const bassDelta = bassLevel - prevRawBass
+    const midDelta = midLevel - prevRawMid
+    prevRawBass = bassLevel
+    prevRawMid = midLevel
 
-    // Trigger shockwave on bass hit
-    if (bassLevel > 0.75 && (bassLevel - prevBass) > 0.1) {
+    // --- Smoothing with differentiated attack/release ---
+    // Faster attack (0.12) to catch transients, slower release (0.04) for smooth decay
+    const bassAttack = bassLevel > smoothedBass ? 0.05 : 0.015
+    const midAttack = midLevel > smoothedMid ? 0.045 : 0.012
+    const highAttack = highLevel > smoothedHigh ? 0.05 : 0.018
+    smoothedBass = THREE.MathUtils.lerp(smoothedBass, Math.pow(bassLevel, 1.6), bassAttack)
+    smoothedMid = THREE.MathUtils.lerp(smoothedMid, midLevel, midAttack)
+    smoothedHigh = THREE.MathUtils.lerp(smoothedHigh, Math.pow(highLevel, 1.4), highAttack)
+
+    // --- Energy accumulation (area 8): sustained energy builds over time ---
+    const instantEnergy = smoothedBass * 1.1 + smoothedMid * 0.7 + smoothedHigh * 0.6
+    // Build up slowly during high energy, decay slowly during low energy
+    const energyTarget = instantEnergy > 0.5 ? Math.min(instantEnergy * 0.8, 1.0) : 0
+    sustainedEnergy = THREE.MathUtils.lerp(sustainedEnergy, energyTarget, instantEnergy > sustainedEnergy ? 0.008 : 0.003)
+
+    // --- Rotational impulse (area 1): bass transients create acceleration spikes ---
+    if (bassDelta > 0.12) {
+      // Scale impulse by how hard the transient hit
+      rotationImpulse = Math.min(rotationImpulse + bassDelta * 2.0, 1.5)
+    }
+    // Decay the impulse (fast initial decay, then slow tail)
+    rotationImpulse *= 0.85
+
+    // --- Z-axis wobble impulse (area 1): bass transients create wobble ---
+    if (bassDelta > 0.16) {
+      wobbleImpulse = Math.min(wobbleImpulse + bassDelta * 1.0, 0.8)
+    }
+    wobbleImpulse *= 0.88
+
+    // --- Primary shockwave (area 2): transient-based triggering ---
+    // Trigger on bass transients (sudden increases), not just threshold
+    if (bassDelta > 0.2 && bassLevel > 0.55) {
       shockwaveRadius = DISCO_RADIUS * 1.0
-      shockwaveAlpha = 0.8
+      // Intensity scales with transient strength — bigger hits make bigger waves
+      shockwaveIntensity = Math.min(bassDelta * 4.0, 1.0)
+      shockwaveAlpha = Math.max(shockwaveAlpha, 0.4 + shockwaveIntensity * 0.3)
     }
 
-    // Shockwave animation
-    shockwaveRadius += clampedDelta * 15.0
-    shockwaveAlpha = THREE.MathUtils.lerp(shockwaveAlpha, 0, 0.1)
+    // --- Secondary shockwave (area 2): mid-frequency pulse ring ---
+    if (midDelta > 0.18 && midLevel > 0.5) {
+      shockwave2Radius = DISCO_RADIUS * 0.8
+      shockwave2Intensity = Math.min(midDelta * 3.0, 0.7)
+      shockwave2Alpha = Math.max(shockwave2Alpha, 0.2 + shockwave2Intensity * 0.2)
+    }
+
+    // Shockwave animation — speed varies with intensity
+    shockwaveRadius += clampedDelta * (12.0 + shockwaveIntensity * 8.0)
+    shockwaveAlpha = THREE.MathUtils.lerp(shockwaveAlpha, 0, 0.08)
+    shockwave2Radius += clampedDelta * 10.0
+    shockwave2Alpha = THREE.MathUtils.lerp(shockwave2Alpha, 0, 0.12)
 
     if (shockwaveMaterialRef.current) {
       shockwaveMaterialRef.current.uniforms.uTime.value = time
       shockwaveMaterialRef.current.uniforms.uBass.value = smoothedBass
-      shockwaveMaterialRef.current.uniforms.uRadius.value = shockwaveRadius
-      shockwaveMaterialRef.current.uniforms.uAlpha.value = shockwaveAlpha
+      // Combine both shockwaves: use whichever is currently more visible
+      const useSecondary = shockwave2Alpha > shockwaveAlpha
+      shockwaveMaterialRef.current.uniforms.uRadius.value = useSecondary ? shockwave2Radius : shockwaveRadius
+      shockwaveMaterialRef.current.uniforms.uAlpha.value = Math.max(shockwaveAlpha, shockwave2Alpha * 0.7)
     }
 
-    const energy = smoothedBass * 1.1 + smoothedMid * 0.7 + smoothedHigh * 0.6
+    // --- Rotation dynamics (area 1): wider range, impulse-driven ---
+    const baseRotSpeed = 0.14
+    // Sustained energy gradually increases base rotation speed
+    const sustainedRotBoost = sustainedEnergy * 0.2
+    rotationAccum += (baseRotSpeed + instantEnergy * 0.35 + rotationImpulse + sustainedRotBoost) * clampedDelta
 
-    const baseRotSpeed = 0.18
-    rotationAccum += (baseRotSpeed + energy * 0.5) * clampedDelta
-
-    const colorSpeed = 0.45 + smoothedBass * 1.0 + smoothedMid * 0.5 + smoothedHigh * 0.35
+    // --- Color dynamics (area 6): dramatic acceleration with audio ---
+    // Quiet: slow elegant cycling. Peak: rapid club-light shifts
+    const colorSpeed = 0.15 + smoothedBass * 0.8 + smoothedMid * 0.35 + smoothedHigh * 0.25 + sustainedEnergy * 0.25
     colorPhaseAccum += colorSpeed * clampedDelta
 
+    // --- Pass enhanced values to core shader (area 5) ---
     coreMaterialRef.current.uniforms.uTime.value = time
     coreMaterialRef.current.uniforms.uRotation.value = rotationAccum
     coreMaterialRef.current.uniforms.uBass.value = smoothedBass
@@ -696,6 +804,7 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
     coreMaterialRef.current.uniforms.uHigh.value = smoothedHigh
     coreMaterialRef.current.uniforms.uColorPhase.value = colorPhaseAccum
 
+    // --- Pass enhanced values to facet shader (areas 3, 6) ---
     facetsMaterialRef.current.uniforms.uTime.value = time
     facetsMaterialRef.current.uniforms.uRotation.value = rotationAccum
     facetsMaterialRef.current.uniforms.uBass.value = smoothedBass
@@ -703,7 +812,9 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
     facetsMaterialRef.current.uniforms.uHigh.value = smoothedHigh
     facetsMaterialRef.current.uniforms.uColorPhase.value = colorPhaseAccum
     facetsMaterialRef.current.uniforms.uPixelRatio.value = state.viewport.dpr
+    facetsMaterialRef.current.uniforms.uDensityScale.value = facetDensityScale
 
+    // --- Pass enhanced values to halo shader (area 4) ---
     haloMaterialRef.current.uniforms.uTime.value = time
     haloMaterialRef.current.uniforms.uRotation.value = rotationAccum * 0.6
     haloMaterialRef.current.uniforms.uBass.value = smoothedBass
@@ -711,17 +822,29 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
     haloMaterialRef.current.uniforms.uHigh.value = smoothedHigh
     haloMaterialRef.current.uniforms.uColorPhase.value = colorPhaseAccum
     haloMaterialRef.current.uniforms.uPixelRatio.value = state.viewport.dpr
+    haloMaterialRef.current.uniforms.uDensityScale.value = haloDensityScale
 
+    // --- Facet breathing (area 7): stronger bass + mid component ---
     if (facetsRef.current) {
-      const breathe = 1.0 + Math.sin(time * 0.5) * 0.02 + smoothedBass * 0.03
+      const breathe = 1.0
+        + Math.sin(time * 0.5) * 0.015                   // gentle idle oscillation
+        + smoothedBass * 0.03                              // bass pulse
+        + smoothedMid * 0.012                              // mid-frequency breathing layer
+        + sustainedEnergy * 0.01                           // sustained energy expansion
       facetsRef.current.scale.setScalar(breathe)
-      facetsRef.current.rotation.y += clampedDelta * (0.12 + smoothedMid * 0.03)
-      facetsRef.current.rotation.x += clampedDelta * (0.008 + smoothedHigh * 0.015)
+      // Y-rotation: base spin + mid response + sustained energy bonus
+      facetsRef.current.rotation.y += clampedDelta * (0.12 + smoothedMid * 0.025 + sustainedEnergy * 0.02)
+      facetsRef.current.rotation.x += clampedDelta * (0.008 + smoothedHigh * 0.01)
+      // Z-axis wobble from bass transients (area 1)
+      facetsRef.current.rotation.z += clampedDelta * wobbleImpulse * 0.15
     }
 
+    // --- Halo dynamics (area 4): calm vs active, bass waves ---
     if (haloRef.current) {
-      haloRef.current.rotation.y += clampedDelta * (0.05 + smoothedBass * 0.08)
-      haloRef.current.rotation.z += clampedDelta * (0.02 + smoothedHigh * 0.05)
+      // Base rotation slows during quiet, accelerates during energy
+      const haloRotSpeed = 0.03 + smoothedBass * 0.06 + sustainedEnergy * 0.04
+      haloRef.current.rotation.y += clampedDelta * haloRotSpeed
+      haloRef.current.rotation.z += clampedDelta * (0.015 + smoothedHigh * 0.03 + sustainedEnergy * 0.015)
     }
   })
 

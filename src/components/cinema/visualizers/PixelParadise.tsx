@@ -355,6 +355,9 @@ function drawPixelPortal(
   const safeBass = clamp01(bass)
   const safeMid = clamp01(mid)
   const safeHigh = clamp01(high)
+  // Power curves for wider dynamic range between quiet and loud
+  const dynamicBass = Math.pow(safeBass, 1.4)
+  const dynamicHigh = Math.pow(safeHigh, 1.3)
   const grid = performanceMode ? 2 : 1
 
   ctx.globalCompositeOperation = "source-over"
@@ -405,7 +408,8 @@ function drawPixelPortal(
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
 
-    const nebulaAlpha = 0.07 + safeMid * 0.09 + safeHigh * 0.08
+    // Nebula more dramatic: subtler at rest, bolder during peaks
+    const nebulaAlpha = 0.04 + Math.pow(safeMid, 1.3) * 0.12 + dynamicHigh * 0.1
     const drift = minSide * (0.2 + safeBass * 0.06)
     const radiusBase = minSide * (0.55 + safeMid * 0.16)
 
@@ -426,8 +430,8 @@ function drawPixelPortal(
     ctx.restore()
   }
 
-  // Cosmic sparkle field (subtle, audio-reactive twinkle).
-  const sparkleBoost = (0.8 + safeHigh * 0.6) * (0.86 + intensityBoost * 0.14)
+  // Cosmic sparkle field: subtler during calm, brighter during peaks
+  const sparkleBoost = (0.6 + dynamicHigh * 0.85) * (0.86 + intensityBoost * 0.14)
   for (const star of stars) {
     const twinkle = Math.sin(time * star.twinkleSpeed + star.phase) * 0.5 + 0.5
     const alpha = star.baseAlpha * (0.4 + twinkle * 0.75) * sparkleBoost
@@ -491,7 +495,7 @@ function drawPixelPortal(
     }
   }
 
-  const targetSpeed = (30 + (safeBass * 1.15 + safeMid * 0.65 + safeHigh * 0.9) * 115) * (0.92 + intensityBoost * 0.08)
+  const targetSpeed = (20 + (dynamicBass * 1.2 + safeMid * 0.7 + dynamicHigh * 0.95) * 135) * (0.92 + intensityBoost * 0.08)
   smoothedSpeedRef.current = lerp(smoothedSpeedRef.current, targetSpeed, delta * (performanceMode ? 8 : 12))
   const speedScale = smoothedSpeedRef.current
 
@@ -528,7 +532,8 @@ function drawPixelPortal(
     if (block.x < -wrapMargin) block.x += width + wrapMargin * 2
     if (block.x > width + wrapMargin) block.x -= width + wrapMargin * 2
 
-    const colorT = (block.colorIdx + time * 0.12 + safeHigh * 0.7) % 1
+    // Color cycling accelerates with energy for more musical response
+    const colorT = (block.colorIdx + time * (0.08 + safeMid * 0.08 + dynamicHigh * 0.12) + dynamicHigh * 0.8) % 1
     const [r, g, b] = samplePalette(colorT)
 
     const sparklePhase = Math.sin(time * (2.6 + block.colorIdx * 1.2) + block.wobblePhase * 1.7)
@@ -671,7 +676,8 @@ function drawPixelPortal(
     ctx.fillRect(0, 0, width, height)
   }
 
-  const baseRotation = time * (0.32 + safeMid * 0.6)
+  // Portal rotation: slower during calm, faster during intense passages
+  const baseRotation = time * (0.22 + Math.pow(safeMid, 1.2) * 0.75 + dynamicBass * 0.15)
   const laneSpread = (performanceMode ? 0.07 : 0.09) * (1 - safeMid * 0.4)
   const ringBaseAlpha = 0.22 + safeHigh * 0.32
 
@@ -930,6 +936,7 @@ export function PixelParadise({ active = true, bassLevel, midLevel, highLevel, s
     let smoothedMid = 0
     let smoothedHigh = 0
     let smoothedEnergy = 0
+    let accumulatedEnergy = 0
     let intensityMode: IntensityMode = "standard"
     let intensityHoldUntil = 0
     let beatInterval = 0.55
@@ -945,13 +952,24 @@ export function PixelParadise({ active = true, bassLevel, midLevel, highLevel, s
       if (width > 0 && height > 0) {
         const { bass, mid, high } = audioRef.current
 
-        // Smooth audio for more intentional motion.
-        smoothedBass = lerp(smoothedBass, Math.pow(clamp01(bass), 1.35), performanceMode ? 0.12 : 0.08)
-        smoothedMid = lerp(smoothedMid, clamp01(mid), performanceMode ? 0.1 : 0.075)
-        smoothedHigh = lerp(smoothedHigh, Math.pow(clamp01(high), 1.15), performanceMode ? 0.11 : 0.08)
+        // Asymmetric smoothing: fast attack (~0.06), slow release (~0.02) for musical response
+        const bassTarget = Math.pow(clamp01(bass), 1.35)
+        const midTarget = clamp01(mid)
+        const highTarget = Math.pow(clamp01(high), 1.15)
+        smoothedBass = smoothedBass < bassTarget
+          ? lerp(smoothedBass, bassTarget, performanceMode ? 0.085 : 0.06)
+          : lerp(smoothedBass, bassTarget, performanceMode ? 0.04 : 0.02)
+        smoothedMid = smoothedMid < midTarget
+          ? lerp(smoothedMid, midTarget, performanceMode ? 0.07 : 0.055)
+          : lerp(smoothedMid, midTarget, performanceMode ? 0.035 : 0.025)
+        smoothedHigh = smoothedHigh < highTarget
+          ? lerp(smoothedHigh, highTarget, performanceMode ? 0.08 : 0.06)
+          : lerp(smoothedHigh, highTarget, performanceMode ? 0.04 : 0.02)
 
         const energy = clamp01(smoothedBass * 0.55 + smoothedMid * 0.32 + smoothedHigh * 0.28)
         smoothedEnergy = lerp(smoothedEnergy, energy, 0.06)
+        // Slow-decaying energy accumulator for musical arc awareness
+        accumulatedEnergy = accumulatedEnergy + (energy - accumulatedEnergy) * 0.005
 
         // Automatic intensity mode (no sliders; no extra UI).
         if (time >= intensityHoldUntil) {
@@ -977,7 +995,9 @@ export function PixelParadise({ active = true, bassLevel, midLevel, highLevel, s
           }
         }
 
-        const intensityBoost = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.25 : 1
+        // Musical arc: accumulated energy nudges intensity during sustained loud passages
+        const baseIntensity = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.25 : 1
+        const intensityBoost = baseIntensity + accumulatedEnergy * 0.1
 
         // Beat detection (bass rise), used to keep shockwaves rhythmic.
         const lastBass = lastBassRef.current

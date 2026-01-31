@@ -104,8 +104,11 @@ function drawEightBitAdventure(
   const horizonY = height * 0.5
   const groundY = height * 0.78
 
-  const worldBoost = intensityMode === "focus" ? 0.9 : intensityMode === "hype" ? 1.08 : 1
-  const speed = (95 + safeMid * 135 + safeBass * 95) * (performanceMode ? 0.9 : 1) * worldBoost
+  // Speed: wider dynamic range — contemplative walk during quiet, intense sprint during peaks
+  const worldBoost = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.12 : 1
+  const dynamicMid = Math.pow(safeMid, 1.3)
+  const dynamicBass = Math.pow(safeBass, 1.4)
+  const speed = (65 + dynamicMid * 165 + dynamicBass * 115) * (performanceMode ? 0.9 : 1) * worldBoost
   scrollRef.current += speed * delta
 
   // Beat-like bass jump: one clear action per bass rise.
@@ -365,8 +368,8 @@ function drawEightBitAdventure(
   } else {
     hero.y = groundTop
   }
-  // More dynamic run animation - faster when music is intense
-  hero.runPhase += delta * (8.5 + safeMid * 6.5 + safeBass * 3.5)
+  // Run animation: gentle walk during quiet, sprinting during peaks
+  hero.runPhase += delta * (6 + dynamicMid * 8.5 + dynamicBass * 4.5)
 
   // Clear background.
   ctx.globalCompositeOperation = "source-over"
@@ -412,19 +415,21 @@ function drawEightBitAdventure(
   ctx.save()
   ctx.translate(shakeX, shakeY)
 
-  // Stars - enhanced audio-reactive twinkle
+  // Stars: subtler during calm, brighter and more alive during peaks
   ctx.globalCompositeOperation = "lighter"
-  const sparkleBoost = (0.75 + safeHigh * 0.85) * (0.86 + intensityBoost * 0.2)
-  const bassSizePulse = 1 + safeBass * 0.4 + dropPulse * 0.3
+  const dynamicHigh = Math.pow(safeHigh, 1.3)
+  const sparkleBoost = (0.55 + dynamicHigh * 1.05) * (0.86 + intensityBoost * 0.2)
+  const bassSizePulse = 1 + dynamicBass * 0.5 + dropPulse * 0.35
   for (const star of stars) {
-    const twinkle = Math.sin(time * star.twinkleSpeed * (1 + safeHigh * 0.5) + star.phase) * 0.5 + 0.5
-    const dramaticTwinkle = Math.pow(twinkle, 0.7)
-    const alpha = star.baseAlpha * (0.3 + dramaticTwinkle * 1.1) * sparkleBoost
+    // Twinkle speed responds more to highs
+    const twinkle = Math.sin(time * star.twinkleSpeed * (1 + dynamicHigh * 0.7) + star.phase) * 0.5 + 0.5
+    const dramaticTwinkle = Math.pow(twinkle, 0.6)
+    const alpha = star.baseAlpha * (0.2 + dramaticTwinkle * 1.2) * sparkleBoost
     if (alpha <= 0.004) continue
 
-    // More noticeable color shift with music
-    const colorShift = (star.tintIdx + time * 0.06 + safeHigh * 0.25 + safeMid * 0.15) % 1
-    const tinted = mixRgb(samplePalette(colorShift), [255, 255, 255], 0.5 + safeHigh * 0.15)
+    // Color cycling accelerates with energy; cooler at rest, warmer at peaks
+    const colorShift = (star.tintIdx + time * (0.04 + dynamicHigh * 0.06) + dynamicHigh * 0.3 + dynamicMid * 0.18) % 1
+    const tinted = mixRgb(samplePalette(colorShift), [255, 255, 255], 0.55 + dynamicHigh * 0.12)
 
     // Size pulsing on bass for prominent stars
     const isProminent = star.size >= 2
@@ -521,8 +526,9 @@ function drawEightBitAdventure(
   // Road band (audio-reactive hue).
   const roadY = snap(groundY + pixel * 3)
   const roadH = Math.max(pixel * 12, snap((height - groundY) * 0.55))
-  const [rr, rg, rb] = samplePalette((0.14 + time * 0.05 + safeMid * 0.2) % 1)
-  ctx.fillStyle = `rgba(${rr}, ${rg}, ${rb}, ${0.12 + safeBass * 0.2})`
+  // Road hue: cooler during quiet, warmer/brighter during peaks
+  const [rr, rg, rb] = samplePalette((0.14 + time * (0.03 + dynamicMid * 0.04) + dynamicMid * 0.25) % 1)
+  ctx.fillStyle = `rgba(${rr}, ${rg}, ${rb}, ${0.08 + dynamicBass * 0.28})`
   ctx.fillRect(0, roadY, width, roadH)
 
   // Road stripes.
@@ -927,6 +933,7 @@ export function EightBitAdventure({
     let smoothedMid = 0
     let smoothedHigh = 0
     let smoothedEnergy = 0
+    let accumulatedEnergy = 0
     let intensityMode: IntensityMode = "standard"
     let intensityHoldUntil = 0
     let beatInterval = 0.55
@@ -943,21 +950,24 @@ export function EightBitAdventure({
       if (width > 0 && height > 0) {
         const { bass, mid, high } = audioRef.current
 
-        // Smooth audio for more intentional motion.
-        smoothedBass = lerp(
-          smoothedBass,
-          Math.pow(clamp01(bass), 1.25),
-          performanceMode ? 0.11 : 0.08
-        )
-        smoothedMid = lerp(smoothedMid, clamp01(mid), performanceMode ? 0.09 : 0.07)
-        smoothedHigh = lerp(
-          smoothedHigh,
-          Math.pow(clamp01(high), 1.1),
-          performanceMode ? 0.1 : 0.075
-        )
+        // Asymmetric smoothing: fast attack (~0.06), slow release (~0.02)
+        const bassTarget = Math.pow(clamp01(bass), 1.25)
+        const midTarget = clamp01(mid)
+        const highTarget = Math.pow(clamp01(high), 1.1)
+        smoothedBass = smoothedBass < bassTarget
+          ? lerp(smoothedBass, bassTarget, performanceMode ? 0.08 : 0.06)
+          : lerp(smoothedBass, bassTarget, performanceMode ? 0.035 : 0.02)
+        smoothedMid = smoothedMid < midTarget
+          ? lerp(smoothedMid, midTarget, performanceMode ? 0.07 : 0.05)
+          : lerp(smoothedMid, midTarget, performanceMode ? 0.03 : 0.022)
+        smoothedHigh = smoothedHigh < highTarget
+          ? lerp(smoothedHigh, highTarget, performanceMode ? 0.075 : 0.06)
+          : lerp(smoothedHigh, highTarget, performanceMode ? 0.035 : 0.02)
 
         const energy = clamp01(smoothedBass * 0.5 + smoothedMid * 0.3 + smoothedHigh * 0.28)
         smoothedEnergy = lerp(smoothedEnergy, energy, 0.06)
+        // Slow-decaying energy accumulator: sustained loud passages feel different
+        accumulatedEnergy = accumulatedEnergy + (energy - accumulatedEnergy) * 0.005
 
         // Automatic intensity mode (no user controls).
         if (time >= intensityHoldUntil) {
@@ -983,7 +993,9 @@ export function EightBitAdventure({
           }
         }
 
-        const intensityBoost = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.18 : 1
+        // Musical arc: accumulated energy nudges intensity up during sustained loud passages
+        const baseIntensity = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.18 : 1
+        const intensityBoost = baseIntensity + accumulatedEnergy * 0.1
 
         // Beat detection (bass rise) to drive "drop" moments (shake/moon/hero aura).
         const bassDelta = bass - prevBass

@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-30 18:49 EST
+**Last Modified**: 2026-01-31 12:40 EST
 
 ## Overview
 
@@ -97,7 +97,7 @@ All 3D visualizers adhere to these core principles:
 #### Motion Principles
 
 - **Forward-only motion**: Accumulated rotation/phase values that never reverse direction
-- **Asymmetric lerp**: Fast acceleration (0.08-0.12), slow deceleration (0.02-0.04) for musical punch
+- **Asymmetric lerp**: Fast acceleration (0.05-0.07), slow deceleration (0.015-0.025) for musical punch without seizure-level intensity
 - **Power curves**: Bass and high frequencies use `pow()` curves (1.5-2.5) for dynamic punch
 - **Delta clamping**: Frame time capped at 50ms to handle drops gracefully
 - **Smooth interpolation**: Audio levels lerped to prevent jitter
@@ -110,9 +110,9 @@ uBass: number    // Low frequency energy (0-1), power-curved
 uMid: number     // Mid frequency energy (0-1)
 uHigh: number    // High frequency energy (0-1)
 
-// Asymmetric lerp pattern
-const lerpUp = 0.1;   // Fast attack
-const lerpDown = 0.03; // Slow release
+// Asymmetric lerp pattern (reduced rates prevent seizure-level reactivity)
+const lerpUp = 0.06;   // Fast attack (was 0.1)
+const lerpDown = 0.02; // Slow release
 smoothedBass += (targetBass - smoothedBass) * (targetBass > smoothedBass ? lerpUp : lerpDown);
 ```
 
@@ -143,9 +143,20 @@ vec3 colorBlend = brandCyan * c1 + brandPurple * c2 + brandMagenta * c3;
 
 #### Post-Processing
 
-All visualizers use `@react-three/postprocessing` Bloom:
+All 3D visualizers use `@react-three/postprocessing` Bloom via `Visualizer3D.tsx`, which supports four post-processing tiers:
+
+| Tier | Bloom Intensity | Bloom Radius | mipmapBlur | Chromatic Aberration | Vignette | Use Case |
+|------|----------------|-------------|------------|---------------------|----------|----------|
+| **off** | None | — | — | — | — | Mobile / low-end |
+| **lite** | 65% | 10% | No | No | No | Performance mode desktop |
+| **balanced** | 50% | 80% | No | No | No | **Desktop default** — subtle cinematic glow without color washout |
+| **full** | 100% | 100% | Yes | 0.0004 | Yes | Maximum fidelity (opt-in) |
+
+Desktop defaults to **"balanced"** to prevent the washed-out/whiter appearance that "full" bloom causes when combined with high particle density and additive blending. Mobile uses **"off"** for maximum performance.
 
 **Implementation Note**: `three` is intentionally pinned to the 0.182.x line to satisfy `postprocessing` peer dependency requirements. If upgrading Three.js, upgrade postprocessing in lockstep and re‑verify visualizer stability.
+
+Per-visualizer bloom settings (used by "full" tier):
 
 | Visualizer | Threshold | Intensity | Radius | Notes |
 |------------|-----------|-----------|--------|-------|
@@ -382,21 +393,21 @@ uColor4: #a855f7  // Indigo
 const audioEnergy = smoothedBass + smoothedMid * 0.5 + smoothedHigh * 0.3
 
 const idleSpeed = 1.5
-const bassBurst = Math.pow(smoothedBass, 1.8) * 16.0
-const midCruise = smoothedMid * 10.0
-const highAccent = smoothedHigh * 6.0
+const bassBurst = Math.pow(smoothedBass, 1.8) * 9.0    // Reduced from 16 for smoother acceleration
+const midCruise = smoothedMid * 5.0                      // Reduced from 10
+const highAccent = smoothedHigh * 2.5                    // Reduced from 6
 
 // Slow variety wave scales with overall energy for natural ebb/flow
-const varietyWave = (Math.sin(time * 0.08) * 0.5 + 0.5) * audioEnergy * 6.0
+const varietyWave = (Math.sin(time * 0.08) * 0.5 + 0.5) * audioEnergy * 3.0  // Reduced from 6
 
 const targetSpeed = idleSpeed + bassBurst + midCruise + highAccent + varietyWave
 
 // Clamp speed to keep stars readable and prevent white‑out
 smoothedSpeed = THREE.MathUtils.lerp(smoothedSpeed, targetSpeed, accelRate)
-smoothedSpeed = Math.min(28.0, Math.max(1.0, smoothedSpeed))
+smoothedSpeed = Math.min(22.0, Math.max(1.0, smoothedSpeed))  // Ceiling reduced from 28
 
 // In shader: speed‑based dimming to prevent bloom wash‑out
-float speedDim = 1.0 - smoothstep(15.0, 28.0, uSpeed) * 0.25
+float speedDim = 1.0 - smoothstep(12.0, 22.0, uSpeed) * 0.25
 ```
 
 #### Unique Features

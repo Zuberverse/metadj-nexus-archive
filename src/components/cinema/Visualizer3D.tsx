@@ -16,7 +16,7 @@ interface Visualizer3DProps {
   /** When true, uses lower particle counts and lower-cost rendering defaults. */
   performanceMode?: boolean
   /** Postprocessing preset (independent of particle quality). */
-  postProcessing?: "off" | "lite" | "full"
+  postProcessing?: "off" | "lite" | "balanced" | "full"
   /** Enable performance monitoring and logging */
   enablePerformanceMonitoring?: boolean
   /** Callback when performance mode is recommended due to low FPS */
@@ -73,10 +73,21 @@ export function Visualizer3D({
   const resolvedPostProcessing = postProcessing ?? postProcessingMode
   const shouldPostProcess = resolvedPostProcessing !== "off"
   const isLite = resolvedPostProcessing === "lite"
+  const isBalanced = resolvedPostProcessing === "balanced"
 
-  const bloomIntensity = isLite ? bloomSettings.intensity * 0.65 : bloomSettings.intensity
-  const bloomThreshold = isLite ? Math.max(0.05, bloomSettings.threshold - 0.15) : bloomSettings.threshold
-  const bloomRadius = isLite ? bloomSettings.radius * 0.9 : bloomSettings.radius
+  const bloomIntensity = isLite
+    ? bloomSettings.intensity * 0.65
+    : isBalanced
+      ? bloomSettings.intensity * 0.5
+      : bloomSettings.intensity
+  const bloomThreshold = isLite
+    ? Math.max(0.05, bloomSettings.threshold - 0.15)
+    : bloomSettings.threshold
+  const bloomRadius = isLite
+    ? bloomSettings.radius * 0.9
+    : isBalanced
+      ? bloomSettings.radius * 0.8
+      : bloomSettings.radius
   const sharedProps = { bassLevel, midLevel, highLevel, performanceMode }
 
   // STATIC bloom - particles already have audio reactivity built in
@@ -110,6 +121,15 @@ export function Visualizer3D({
 
       {shouldPostProcess &&
         (isLite ? (
+          <EffectComposer enableNormalPass={false}>
+            <Bloom
+              luminanceThreshold={bloomThreshold}
+              mipmapBlur={false}
+              intensity={bloomIntensity}
+              radius={bloomRadius}
+            />
+          </EffectComposer>
+        ) : isBalanced ? (
           <EffectComposer enableNormalPass={false}>
             <Bloom
               luminanceThreshold={bloomThreshold}

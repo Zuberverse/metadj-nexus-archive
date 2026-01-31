@@ -48,6 +48,12 @@ const STAR_TINTS: [number, number, number][] = [
   hexToRgb(VISUALIZER_COLORS.cyanTintLight),
 ]
 
+function lerpAudio(current: number, target: number, attack: number, release: number) {
+  return current < target
+    ? current + (target - current) * attack
+    : current + (target - current) * release
+}
+
 export function StarlightDrift({
   active = true,
   bassLevel,
@@ -62,6 +68,7 @@ export function StarlightDrift({
   const starsRef = useRef<Star[]>([])
   const activeRef = useRef(active)
   const audioRef = useRef({ bass: 0, mid: 0, high: 0 })
+  const smoothedRef = useRef({ bass: 0, mid: 0, high: 0, energy: 0 })
   const gradientRef = useRef<CanvasGradient | null>(null)
 
   audioRef.current.bass = clamp01(bassLevel)
@@ -145,24 +152,46 @@ export function StarlightDrift({
         ctx.fillRect(0, 0, width, height)
       }
 
-      const bass = audioRef.current.bass
-      const mid = audioRef.current.mid
-      const high = audioRef.current.high
+      // Asymmetric smoothing: fast attack, slow release for musical response
+      const rawBass = audioRef.current.bass
+      const rawMid = audioRef.current.mid
+      const rawHigh = audioRef.current.high
+      const sm = smoothedRef.current
+      sm.bass = lerpAudio(sm.bass, Math.pow(rawBass, 1.5), 0.07, 0.02)
+      sm.mid = lerpAudio(sm.mid, rawMid, 0.06, 0.025)
+      sm.high = lerpAudio(sm.high, Math.pow(rawHigh, 1.3), 0.065, 0.02)
+
+      const bass = sm.bass
+      const mid = sm.mid
+      const high = sm.high
+
       const energy = Math.min(1, bass * 0.65 + mid * 0.3 + high * 0.2)
-      const speedBoost = 0.5 + energy * 1.1
+      // Slow-decaying energy accumulator for musical arc awareness
+      sm.energy = sm.energy + (energy - sm.energy) * 0.005
+      const accumulatedEnergy = sm.energy
+
+      // Dynamic range: quiet passages feel contemplative, peaks feel dramatic
+      const dynamicEnergy = Math.pow(energy, 1.4)
+      const speedBoost = 0.3 + dynamicEnergy * 1.5 + accumulatedEnergy * 0.3
+
+      // Color temperature shift: cooler during quiet, warmer during peaks
+      const colorWarmth = Math.pow(energy, 1.2) * 0.3 + accumulatedEnergy * 0.15
 
       // Nebula Gas Clouds
       if (!performanceMode) {
         ctx.save()
         ctx.globalCompositeOperation = "screen"
-        const nTime = now * 0.0001
+        const nTime = now * 0.0001 * (0.7 + dynamicEnergy * 0.6)
         for (let i = 0; i < 2; i++) {
           const nx = width * (0.5 + Math.sin(nTime * (i + 1)) * 0.2)
           const ny = height * (0.5 + Math.cos(nTime * (i + 1.5)) * 0.2)
-          const nr = Math.max(width, height) * (0.4 + energy * 0.2)
-          const [r, g, b] = i === 0 ? [139, 92, 246] : [6, 182, 212] // Purple and Cyan
+          const nr = Math.max(width, height) * (0.35 + dynamicEnergy * 0.3 + accumulatedEnergy * 0.1)
+          // Shift from cool purple/cyan to warmer magenta during peaks
+          const [r, g, b] = i === 0
+            ? [Math.round(139 + colorWarmth * 78), Math.round(92 - colorWarmth * 22), 246]
+            : [Math.round(6 + colorWarmth * 50), Math.round(182 - colorWarmth * 40), Math.round(212 + colorWarmth * 27)]
           const grad = ctx.createRadialGradient(nx, ny, 0, nx, ny, nr)
-          grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${0.08 + energy * 0.08})`)
+          grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${0.05 + dynamicEnergy * 0.12 + accumulatedEnergy * 0.04})`)
           grad.addColorStop(1, "rgba(10, 14, 31, 0)")
           ctx.fillStyle = grad
           ctx.fillRect(0, 0, width, height)
@@ -177,14 +206,17 @@ export function StarlightDrift({
           star.x = random() * width
         }
 
-        const flicker = 0.7 + Math.sin(now * 0.0015 * star.twinkle + star.x) * 0.3
-        const alpha = star.alpha * flicker * (0.95 + energy * 0.55)
-        const size = star.size + energy * 0.8 + (performanceMode ? 0.4 : 0)
+        // Twinkle speed responds to highs for sparkling effect
+        const twinkleSpeed = 0.0012 + high * 0.001
+        const flicker = 0.7 + Math.sin(now * twinkleSpeed * star.twinkle + star.x) * 0.3
+        // Wider dynamic range: quiet stars are subtler, loud stars are brighter
+        const dynamicAlpha = star.alpha * flicker * (0.6 + dynamicEnergy * 0.9 + accumulatedEnergy * 0.2)
+        const size = star.size + dynamicEnergy * 1.2 + accumulatedEnergy * 0.3 + (performanceMode ? 0.4 : 0)
 
-        // Warp Speed Effect (Radial Trails)
-        if (energy > 0.7) {
-          const trailLen = energy * 20
-          ctx.strokeStyle = `rgba(${star.tint[0]}, ${star.tint[1]}, ${star.tint[2]}, ${alpha * 0.5})`
+        // Warp Speed Effect (Radial Trails) - wider trigger range with dynamic energy
+        if (dynamicEnergy > 0.5) {
+          const trailLen = dynamicEnergy * 28 + accumulatedEnergy * 8
+          ctx.strokeStyle = `rgba(${star.tint[0]}, ${star.tint[1]}, ${star.tint[2]}, ${dynamicAlpha * 0.4})`
           ctx.lineWidth = size
           ctx.beginPath()
           ctx.moveTo(star.x, star.y)
@@ -193,24 +225,25 @@ export function StarlightDrift({
         }
 
         // Define clean edges with high-contrast fill
-        ctx.fillStyle = `rgba(${star.tint[0]}, ${star.tint[1]}, ${star.tint[2]}, ${alpha.toFixed(3)})`
+        ctx.fillStyle = `rgba(${star.tint[0]}, ${star.tint[1]}, ${star.tint[2]}, ${dynamicAlpha.toFixed(3)})`
         ctx.beginPath()
         ctx.arc(star.x, star.y, size, 0, Math.PI * 2)
         ctx.fill()
 
-        // NEW: Sharper core ping for "striking" visuals
-        if (alpha > 0.4) {
-          ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.6).toFixed(3)})`
+        // Sharper core ping for "striking" visuals
+        if (dynamicAlpha > 0.35) {
+          ctx.fillStyle = `rgba(255, 255, 255, ${(dynamicAlpha * 0.65).toFixed(3)})`
           ctx.beginPath()
           ctx.arc(star.x, star.y, size * 0.35, 0, Math.PI * 2)
           ctx.fill()
         }
       })
 
-      // Constellation Ties
-      if (!performanceMode && (mid > 0.6 || high > 0.6)) {
+      // Constellation Ties - lower threshold for more visible connections
+      if (!performanceMode && (mid > 0.45 || high > 0.45)) {
         ctx.save()
-        ctx.strokeStyle = `rgba(255, 255, 255, ${Math.max(mid, high) * 0.15})`
+        const tieIntensity = Math.max(mid, high)
+        ctx.strokeStyle = `rgba(255, 255, 255, ${tieIntensity * 0.18 + accumulatedEnergy * 0.04})`
         ctx.lineWidth = 0.5
         for (let i = 0; i < starsRef.current.length; i += 10) {
           const s1 = starsRef.current[i]
@@ -219,7 +252,9 @@ export function StarlightDrift({
             const dx = s1.x - s2.x
             const dy = s1.y - s2.y
             const dist = Math.sqrt(dx * dx + dy * dy)
-            if (dist < 100) {
+            // Wider reach during loud passages
+            const maxDist = 80 + dynamicEnergy * 60
+            if (dist < maxDist) {
               ctx.beginPath()
               ctx.moveTo(s1.x, s1.y)
               ctx.lineTo(s2.x, s2.y)

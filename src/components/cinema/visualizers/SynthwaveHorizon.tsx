@@ -422,15 +422,19 @@ function drawSynthwaveHorizon(
 
   const horizonY = height * 0.62
   const sunRadiusBase = Math.min(width, height) * 0.18
-  const sunRadius = sunRadiusBase * (1 + safeBass * 0.08 + dropPulse * 0.055)
+  // Sun breathes more dramatically with bass: subtle idle, pronounced peaks
+  const dynamicBass = Math.pow(safeBass, 1.4)
+  const dynamicHigh = Math.pow(safeHigh, 1.3)
+  const sunRadius = sunRadiusBase * (1 + dynamicBass * 0.12 + dropPulse * 0.07)
   const sunX = width * 0.5
   const sunY = horizonY + sunRadius * 0.06
 
-  // Stars
-  const sparkleBoost = (0.8 + safeHigh * 0.5) * (0.86 + intensityBoost * 0.14)
+  // Stars: subtler during quiet, twinkling brighter during peaks
+  const sparkleBoost = (0.6 + dynamicHigh * 0.75) * (0.86 + intensityBoost * 0.14)
   for (const star of stars) {
-    const twinkle = Math.sin(time * star.twinkleSpeed + star.phase) * 0.5 + 0.5
-    const alpha = star.baseAlpha * (0.35 + twinkle * 0.9) * sparkleBoost
+    // Twinkle speed responds to highs for sparkling effect
+    const twinkle = Math.sin(time * star.twinkleSpeed * (1 + dynamicHigh * 0.4) + star.phase) * 0.5 + 0.5
+    const alpha = star.baseAlpha * (0.25 + twinkle * 1.05) * sparkleBoost
     if (alpha <= 0.004) continue
 
     const tinted = mixRgb(samplePalette(star.tintIdx), [255, 255, 255], 0.64)
@@ -458,7 +462,8 @@ function drawSynthwaveHorizon(
 
     const bandCount = 3
     const segments = 80
-    const baseAlpha = 0.05 + safeMid * 0.12 + safeHigh * 0.08
+    // Aurora: nearly invisible during quiet, vivid during peaks
+    const baseAlpha = 0.03 + Math.pow(safeMid, 1.3) * 0.15 + dynamicHigh * 0.1
 
     for (let band = 0; band < bandCount; band++) {
       const bandSeed = band * 0.33 + 0.18
@@ -496,7 +501,8 @@ function drawSynthwaveHorizon(
     ctx.globalCompositeOperation = "lighter"
 
     const flyerBoost = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.15 : 1
-    const speedBoost = (0.85 + safeMid * 0.75 + safeBass * 0.25) * flyerBoost
+    // Flyer speed: leisurely drift during quiet, zippy during peaks
+    const speedBoost = (0.65 + Math.pow(safeMid, 1.2) * 0.95 + dynamicBass * 0.3) * flyerBoost
     const bobAmp = ((performanceMode ? 1.0 : 1.6) + safeBass * (performanceMode ? 2.6 : 5.2)) * (0.92 + flyerBoost * 0.08)
     const skyTop = height * 0.06
     const skyBottom = height * 0.42
@@ -660,8 +666,9 @@ function drawSynthwaveHorizon(
     ctx.fill()
   }
 
-  const gridAlphaBase = 0.18 + safeBass * 0.22
-  const gridTint = mixRgb(samplePalette(0.25 + safeHigh * 0.15), samplePalette(0.85), 0.45)
+  // Grid lines: dimmer during calm, blazing during peaks
+  const gridAlphaBase = 0.12 + dynamicBass * 0.32
+  const gridTint = mixRgb(samplePalette(0.25 + dynamicHigh * 0.2), samplePalette(0.85), 0.45)
   ctx.strokeStyle = `rgba(${gridTint[0]}, ${gridTint[1]}, ${gridTint[2]}, ${gridAlphaBase})`
   ctx.lineWidth = 1
 
@@ -681,7 +688,8 @@ function drawSynthwaveHorizon(
   }
 
   const rows = performanceMode ? 22 : 30
-  const scrollSpeed = (0.18 + tempoHz * 0.12) * (0.85 + safeBass * 0.35) * (0.92 + intensityBoost * 0.08)
+  // Grid scroll: contemplative crawl during quiet, rushing during peaks
+  const scrollSpeed = (0.12 + tempoHz * 0.14) * (0.7 + dynamicBass * 0.55) * (0.92 + intensityBoost * 0.08)
   const scroll = (time * scrollSpeed) % 1
   const pulseZ = beatPhase
   const bassPulse = Math.pow(safeBass, 1.25)
@@ -697,9 +705,9 @@ function drawSynthwaveHorizon(
 
     const wrapDist = Math.min(Math.abs(z - pulseZ), 1 - Math.abs(z - pulseZ))
     const pulseGlow = Math.exp(-wrapDist * wrapDist * 90) * bassPulse * 1.9
-    const rowAlpha = (0.12 + (1 - t) * 0.3) * (0.9 + safeBass * 0.4 + pulseGlow)
-    // More vibrant gradient for the grid lines
-    const [rr, rg, rb] = samplePalette((0.18 + z * 0.45 + safeHigh * 0.2 + time * 0.1) % 1)
+    const rowAlpha = (0.08 + (1 - t) * 0.3) * (0.85 + dynamicBass * 0.55 + pulseGlow)
+    // Color cycling accelerates with energy
+    const [rr, rg, rb] = samplePalette((0.18 + z * 0.45 + dynamicHigh * 0.25 + time * (0.07 + safeMid * 0.06)) % 1)
     ctx.strokeStyle = `rgba(${rr}, ${rg}, ${rb}, ${rowAlpha})`
 
     ctx.beginPath()
@@ -852,6 +860,7 @@ export function SynthwaveHorizon({
     let smoothedMid = 0
     let smoothedHigh = 0
     let smoothedEnergy = 0
+    let accumulatedEnergy = 0
     let intensityMode: IntensityMode = "standard"
     let intensityHoldUntil = 0
     let beatInterval = 0.55
@@ -868,13 +877,24 @@ export function SynthwaveHorizon({
       if (width > 0 && height > 0) {
         const { bass, mid, high } = audioRef.current
 
-        // Smooth audio for more intentional motion.
-        smoothedBass = lerp(smoothedBass, Math.pow(clamp01(bass), 1.25), performanceMode ? 0.11 : 0.08)
-        smoothedMid = lerp(smoothedMid, clamp01(mid), performanceMode ? 0.09 : 0.07)
-        smoothedHigh = lerp(smoothedHigh, Math.pow(clamp01(high), 1.1), performanceMode ? 0.1 : 0.075)
+        // Asymmetric smoothing: fast attack (~0.06), slow release (~0.02)
+        const bassTarget = Math.pow(clamp01(bass), 1.25)
+        const midTarget = clamp01(mid)
+        const highTarget = Math.pow(clamp01(high), 1.1)
+        smoothedBass = smoothedBass < bassTarget
+          ? lerp(smoothedBass, bassTarget, performanceMode ? 0.08 : 0.06)
+          : lerp(smoothedBass, bassTarget, performanceMode ? 0.04 : 0.02)
+        smoothedMid = smoothedMid < midTarget
+          ? lerp(smoothedMid, midTarget, performanceMode ? 0.07 : 0.05)
+          : lerp(smoothedMid, midTarget, performanceMode ? 0.03 : 0.022)
+        smoothedHigh = smoothedHigh < highTarget
+          ? lerp(smoothedHigh, highTarget, performanceMode ? 0.075 : 0.06)
+          : lerp(smoothedHigh, highTarget, performanceMode ? 0.035 : 0.02)
 
         const energy = clamp01(smoothedBass * 0.48 + smoothedMid * 0.3 + smoothedHigh * 0.28)
         smoothedEnergy = lerp(smoothedEnergy, energy, 0.06)
+        // Slow-decaying energy accumulator for musical arc awareness
+        accumulatedEnergy = accumulatedEnergy + (energy - accumulatedEnergy) * 0.005
 
         // Automatic intensity mode (no user controls).
         if (time >= intensityHoldUntil) {
@@ -900,7 +920,9 @@ export function SynthwaveHorizon({
           }
         }
 
-        const intensityBoost = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.18 : 1
+        // Musical arc: accumulated energy nudges intensity during sustained loud passages
+        const baseIntensity = intensityMode === "focus" ? 0.85 : intensityMode === "hype" ? 1.18 : 1
+        const intensityBoost = baseIntensity + accumulatedEnergy * 0.1
 
         // Beat detection (bass rise) to sync grid pulses and sun flares.
         const bassDelta = bass - prevBass

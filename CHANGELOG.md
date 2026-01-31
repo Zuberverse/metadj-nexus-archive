@@ -1,11 +1,32 @@
 # Changelog
 
-**Last Modified**: 2026-01-28 17:20 EST
+**Last Modified**: 2026-01-31 12:40 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-01-31
+
+**Cinema — Visual Consistency**
+- Added density compensation (`uDensityScale` uniform) to all 4 3D visualizers (Cosmos, BlackHole, SpaceTravel, DiscoBall) so desktop's higher particle counts produce the same brightness as mobile's lower counts via `sqrt(LOW/HIGH)` scaling.
+- Added "balanced" post-processing tier to `Visualizer3D.tsx` (50% bloom intensity, 80% radius, no chromatic aberration/vignette). Desktop now defaults to "balanced" instead of "full" to prevent washed-out colors.
+
+**Cinema — Smoothness**
+- Replaced hard `if` thresholds with `smoothstep()` in Cosmos and BlackHole vertex shaders for C1-continuous transitions.
+- Reduced jitter frequencies in Cosmos from 13-17 Hz to 5-7 Hz to prevent aliasing at sub-60fps.
+- Added asymmetric audio smoothing (fast attack / slow release) to BlackHole and SpaceTravel.
+- Capped impulse accumulation in SpaceTravel (camera shake) and DiscoBall (rotation/wobble) to prevent unbounded buildup during rapid bass hits.
+
+**Cinema — Audio Reactivity Tuning**
+- Reduced all audio-reactive parameters by ~40-60% across all 4 3D visualizers (rotation, displacement, color cycling, tilt, size, transients) to eliminate seizure-level intensity while preserving musical responsiveness.
+- Reduced audio smoothing attack rates across all 5 2D visualizers (SpectrumRing, StarlightDrift, SynthwaveHorizon, EightBitAdventure, PixelParadise) from 0.085-0.14 to 0.05-0.085 for consistency with tuned 3D scenes.
+- SpaceTravel speed dynamics halved (bass drive 18→9, mid cruise 10→5, ceiling 35→22).
+- DiscoBall shockwave trigger thresholds raised and magnitudes reduced.
+
+**Documentation**
+- Updated `docs/features/cinema-system.md` with new post-processing tier table, reduced lerp rates, and SpaceTravel speed dynamics.
 
 ### 2026-01-28
 

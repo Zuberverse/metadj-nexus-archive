@@ -27,7 +27,7 @@ interface VisualizerCinemaProps {
   /** When true, renders with lower GPU/CPU cost. */
   performanceMode?: boolean
   /** Postprocessing preset for the 3D renderer. */
-  postProcessing?: "off" | "lite" | "full"
+  postProcessing?: "off" | "lite" | "balanced" | "full"
   /** Optional callback for capturing the underlying <canvas> element (2D or 3D). */
   onCanvasReady?: (canvas: HTMLCanvasElement | null) => void
   /** Enable performance monitoring and logging for 3D scenes */

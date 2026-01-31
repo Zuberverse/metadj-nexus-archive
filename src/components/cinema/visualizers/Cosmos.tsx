@@ -45,12 +45,12 @@ function generateCosmosData(particleCount: number) {
     let angle: number
 
     if (isCore) {
-      // Core particles - dense bright center
-      radius = t * t * 3.5 + 0.2
+      // Core particles - dense bright center, concentrated for spherical prominence
+      radius = t * t * 2.5 + 0.15
       angle = random() * Math.PI * 2
     } else if (isHalo) {
-      // Halo particles - diffuse outer glow
-      radius = 9.0 + t * 6.0 // 9 to 15
+      // Halo particles - diffuse outer glow, extended reach to fill viewport
+      radius = 9.0 + t * 10.0 // 9 to 19
       angle = random() * Math.PI * 2
     } else {
       // Spiral arm particles - extended reach
@@ -60,8 +60,9 @@ function generateCosmosData(particleCount: number) {
       angle = armAngle + spiralTwist + (random() - 0.5) * 0.7
     }
 
-    // Flattened disk with thickness variation
-    const heightSpread = isCore ? 0.5 : isHalo ? 0.8 : 0.2 * (1 + radius * 0.04)
+    // Flattened disk with thickness variation — core is more spherical for prominence
+    // Halo has more vertical spread to fill upper/lower screen areas
+    const heightSpread = isCore ? 1.4 : isHalo ? 1.5 : 0.2 * (1 + radius * 0.04)
     const y = (random() - 0.5) * heightSpread
 
     const x = Math.cos(angle) * radius
@@ -71,9 +72,9 @@ function generateCosmosData(particleCount: number) {
     positions[i * 3 + 1] = y
     positions[i * 3 + 2] = z
 
-    // Size variation - core brighter, halo softer
+    // Size variation - core larger for spherical prominence, halo softer
     if (isCore) {
-      sizes[i] = 0.5 + random() * 0.6
+      sizes[i] = 0.6 + random() * 0.7
     } else if (isHalo) {
       sizes[i] = 0.4 + random() * 0.5
     } else {
@@ -105,6 +106,11 @@ const CosmosShader = {
     uColorPhase: { value: 0 },
     uPulsePhase: { value: 0 },
     uPixelRatio: { value: 1.0 },
+    // New uniforms for enhanced audio reactivity
+    uEnergyHistory: { value: 0 },   // Slow-moving sustained energy (0-1)
+    uBassImpact: { value: 0 },      // Fast-attack bass transient detector
+    uTurbulenceLevel: { value: 0 }, // Dynamic turbulence intensity
+    uDensityScale: { value: 1.0 },   // Compensate additive brightness when HIGH particle count
   },
   vertexShader: `
     uniform float uTime;
@@ -115,6 +121,10 @@ const CosmosShader = {
     uniform float uColorPhase;
     uniform float uPulsePhase;
     uniform float uPixelRatio;
+    uniform float uEnergyHistory;
+    uniform float uBassImpact;
+    uniform float uTurbulenceLevel;
+    uniform float uDensityScale;
 
     attribute float aSize;
     attribute vec3 aRandom;
@@ -178,8 +188,13 @@ const CosmosShader = {
       float r = length(pos.xz);
       vRadius = r;
 
-      // Spiral rotation - inner rotates faster (Keplerian-ish)
-      float rotSpeed = 1.0 / sqrt(max(r, 0.5));
+      // === ROTATION: Enhanced Keplerian differential with bass-driven acceleration ===
+      // Inner particles respond more dramatically to bass — galaxy stirred by energy
+      // Bass impact creates stronger differential: inner arms whip faster on hits
+      float keplerian = 1.0 / sqrt(max(r, 0.5));
+      // Bass impact amplifies the differential — inner particles accelerate harder
+      float bassKick = 1.0 + uBassImpact * 2.5 * keplerian;
+      float rotSpeed = keplerian * bassKick;
       float angle = uRotation * rotSpeed;
       float c = cos(angle);
       float s = sin(angle);
@@ -189,28 +204,72 @@ const CosmosShader = {
         pos.x * s + pos.z * c
       );
 
-      // Breathing pulse - audio-driven only (no idle breathing to prevent glow pulse)
-      float pulse = sin(uPulsePhase - r * 0.5) * 0.5 + 0.5;
-      float pulse2 = sin(uPulsePhase * 1.5 - r * 0.3) * 0.5 + 0.5;
-      float breathe = 1.0 + pulse * uBass * 0.25 + pulse2 * uMid * 0.1;
-      // Removed idle sin(uTime) breathing - was causing constant glow pulse
-      rotatedPos.xz *= breathe;
+      // Outer-edge attenuation: sparse outer particles get reduced displacement
+      // to prevent flicker. Extended to match wider halo.
+      float outerFade = 1.0 - smoothstep(12.0, 18.0, r);
 
-      // ENHANCED Vertical wave motion - more dramatic
-      float vertWave = sin(uPulsePhase * 0.7 - r * 0.3 + aRandom.x * 3.0) * 0.2;
-      float vertWave2 = sin(uPulsePhase * 1.2 - r * 0.5 + aRandom.y * 2.0) * 0.1;
-      rotatedPos.y += vertWave * uMid + vertWave2 * uBass * 0.5;
+      // === BREATHING: Multi-layered radial expansion waves ===
+      // Layer 1: Bass creates radial expansion waves propagating outward
+      // The wave travels from center outward — like a shockwave through the galaxy
+      float bassWaveSpeed = 2.5;
+      float bassWaveWidth = 0.8; // Wider waves for smoother look
+      float bassWave1 = sin(uPulsePhase * bassWaveSpeed - r * bassWaveWidth) * 0.5 + 0.5;
+      float bassWave2 = sin(uPulsePhase * bassWaveSpeed * 0.6 - r * bassWaveWidth * 1.3 + 1.0) * 0.5 + 0.5;
+      // Outer particles get the wave later — creates propagation feel
+      float radialExpansion = 1.0 + (bassWave1 * uBass * 0.16 + bassWave2 * uBass * 0.07) * outerFade;
 
-      // ENHANCED Turbulence - more responsive to audio
-      float noise = snoise(pos * 0.15 + vec3(uTime * 0.06));
-      float audioTurb = 0.1 + uMid * 0.3 + uBass * 0.15;
-      rotatedPos += normalize(vec3(pos.x, 0.0, pos.z)) * noise * audioTurb;
+      // Layer 2: Mid-frequency gentle breathing — slower, more global
+      float midBreath = sin(uPulsePhase * 0.8 - r * 0.2) * 0.5 + 0.5;
+      radialExpansion += midBreath * uMid * 0.04 * outerFade;
+
+      // Energy history adds a slow, sustained expansion during loud passages
+      radialExpansion += uEnergyHistory * 0.03 * outerFade;
+
+      rotatedPos.xz *= radialExpansion;
+
+      // === VERTICAL WAVES: Mid frequencies create undulating waves through the disk ===
+      // Primary vertical wave — mid-driven, propagates through disk angle
+      float diskAngle = atan(rotatedPos.z, rotatedPos.x);
+      float vertWave1 = sin(uPulsePhase * 0.7 - r * 0.3 + aRandom.x * 3.0) * 0.14;
+      // Secondary wave at different frequency — creates interference pattern
+      float vertWave2 = sin(uPulsePhase * 1.1 - r * 0.45 + diskAngle * 2.0) * 0.07;
+      // Tertiary wave — angular, creates ripples across spiral arms
+      float vertWave3 = sin(uPulsePhase * 0.5 + diskAngle * 3.0 - r * 0.15) * 0.05;
+      rotatedPos.y += (vertWave1 * uMid + vertWave2 * uMid * 0.7 + vertWave3 * uBass * 0.5) * outerFade;
+
+      // Bass creates a global "heave" — the whole disk lifts and settles
+      float bassHeave = sin(uPulsePhase * 0.4) * uBass * 0.03;
+      rotatedPos.y += bassHeave * outerFade;
+
+      // === HIGH-FREQUENCY JITTER: Individual particle sparkle ===
+      // Each particle gets tiny random displacement proportional to high frequencies
+      // Uses per-particle random seeds for unique motion
+      // Attenuated at edges to prevent sparse-particle flicker
+      float jitterAmount = uHigh * 0.05 * outerFade;
+      float jitterX = sin(uTime * 5.0 * aRandom.x + aRandom.y * 100.0) * jitterAmount;
+      float jitterY = sin(uTime * 7.0 * aRandom.y + aRandom.z * 100.0) * jitterAmount * 0.6;
+      float jitterZ = sin(uTime * 6.0 * aRandom.z + aRandom.x * 100.0) * jitterAmount;
+      rotatedPos += vec3(jitterX, jitterY, jitterZ);
+
+      // === TURBULENCE: Dynamic — settled elegance vs heated gas ===
+      // Base turbulence is calm; energy history and audio levels heat it up
+      float noise1 = snoise(pos * 0.15 + vec3(uTime * 0.06));
+      float noise2 = snoise(pos * 0.3 + vec3(uTime * 0.1, 0.0, uTime * 0.08));
+      // Low energy: gentle flow. High energy: particles feel alive, like heated gas
+      float turbBase = 0.06;
+      float turbAudio = uTurbulenceLevel * 0.25;
+      float turbEnergy = uEnergyHistory * 0.08;
+      float audioTurb = turbBase + turbAudio + turbEnergy;
+      // Primary turbulence — radial displacement (attenuated at edges)
+      rotatedPos += normalize(vec3(pos.x, 0.0, pos.z) + 0.001) * noise1 * audioTurb * outerFade;
+      // Secondary turbulence — adds vertical chaos during high energy
+      rotatedPos.y += noise2 * audioTurb * 0.4 * outerFade;
 
       vec4 mvPosition = modelViewMatrix * vec4(rotatedPos, 1.0);
       gl_Position = projectionMatrix * mvPosition;
 
       // HIGH FIDELITY: Stable particle sizes (minimal audio response to prevent glow pulse)
-      float sizeBoost = 1.0 + uHigh * 0.12 + uBass * 0.08;  // Subtle size variation only
+      float sizeBoost = 1.0 + uHigh * 0.06 + uBass * 0.04;
       float baseSize = 0.6 * aSize * sizeBoost;
       gl_PointSize = baseSize * (350.0 / -mvPosition.z) * uPixelRatio;
       gl_PointSize = clamp(gl_PointSize, 2.0, 50.0);
@@ -254,40 +313,59 @@ const CosmosShader = {
       float outerRegion = smoothstep(6.0, 12.0, r);
       baseColor = mix(baseColor, mix(baseColor, deepBlue, 0.3), outerRegion);
 
-      // Core brightness boost - purple/cyan, no white
-      if (r < 3.0) {
-        float coreGlow = 1.0 - r / 3.0;
-        baseColor += violetCore * coreGlow * 0.4;
-        baseColor += cyan * coreGlow * 0.25;
-        baseColor += purple * coreGlow * 0.3;
-      }
+      // Core brightness boost - purple/cyan, no white (smooth falloff, no hard threshold)
+      float coreGlow = 1.0 - smoothstep(0.0, 3.5, r);
+      baseColor += violetCore * coreGlow * 0.4;
+      baseColor += cyan * coreGlow * 0.25;
+      baseColor += purple * coreGlow * 0.3;
 
-      // Audio-reactive color modulation - USE BLENDING NOT ADDITION
-      float audioEnergy = uBass * 0.6 + uMid * 0.35 + uHigh * 0.25;
+      // === ENERGY-DRIVEN COLOR EVOLUTION ===
+      // audioEnergy for immediate response, energyHistory for sustained mood
+      float audioEnergy = uBass * 0.4 + uMid * 0.2 + uHigh * 0.15;
+
+      // Quiet passages: shift toward deeper, cooler tones (blue/indigo)
+      // Building energy: shift toward warmer purple/magenta
+      // Peak energy: cyan/electric highlights intensify
+      float quietness = 1.0 - smoothstep(0.0, 0.3, uEnergyHistory);
+      float building = smoothstep(0.2, 0.6, uEnergyHistory) * (1.0 - smoothstep(0.6, 1.0, uEnergyHistory));
+      float peaking = smoothstep(0.5, 0.9, uEnergyHistory);
+
+      // Cool shift during quiet passages — deeper indigo/blue tones
+      baseColor = mix(baseColor, mix(baseColor, deepBlue, 0.25), quietness);
+      baseColor = mix(baseColor, mix(baseColor, vec3(0.12, 0.15, 0.6), 0.15), quietness);
+
+      // Warm shift during buildups — purple/magenta warmth
+      vec3 buildColor = mix(purple, magenta, 0.35);
+      baseColor = mix(baseColor, mix(baseColor, buildColor, 0.2), building);
+
+      // Electric highlights at peak — cyan intensifies
+      baseColor = mix(baseColor, mix(baseColor, cyan, 0.2), peaking * uHigh);
+      baseColor = mix(baseColor, mix(baseColor, electricBlue, 0.15), peaking);
 
       // Create audio-reactive accent colors (blended, not added)
       vec3 bassAccent = mix(purple, indigo, 0.4);    // Purple/indigo for bass
       vec3 midAccent = mix(deepBlue, purple, 0.5);   // Deep blue/purple for mids
       vec3 highAccent = mix(cyan, magenta, 0.2);     // Cyan with magenta hint for highs
 
-      // Blend accents INTO base color (preserves saturation)
-      baseColor = mix(baseColor, bassAccent, uBass * 0.15);
-      baseColor = mix(baseColor, midAccent, uMid * 0.12);
-      baseColor = mix(baseColor, highAccent, uHigh * 0.1);
+      // Blend accents INTO base color — stronger response at high energy
+      float accentBoost = 1.0 + uEnergyHistory * 0.25;
+      baseColor = mix(baseColor, bassAccent, uBass * 0.08 * accentBoost);
+      baseColor = mix(baseColor, midAccent, uMid * 0.06 * accentBoost);
+      baseColor = mix(baseColor, highAccent, uHigh * 0.05 * accentBoost);
 
-      // Cycling color overlay - purple/cyan dominant (also blended)
+      // Cycling color overlay - speed accelerates with energy
       float cycle = uColorPhase + r * 0.1 + aArmIndex * 3.0;
       float cyc1 = pow(sin(cycle) * 0.5 + 0.5, 0.7);         // Purple
       float cyc2 = pow(sin(cycle + 2.094) * 0.5 + 0.5, 0.9); // Cyan
       float cyc3 = pow(sin(cycle + 4.189) * 0.5 + 0.5, 1.5); // Indigo
       float cyc4 = pow(sin(cycle + 3.14) * 0.5 + 0.5, 2.0);  // Magenta (subtle)
       vec3 cycleColor = normalize(purple * cyc1 + cyan * cyc2 * 0.7 + indigo * cyc3 * 0.5 + magenta * cyc4 * 0.2 + 0.001);
-      // Blend cycling color gently (more when audio active)
-      float cycleStrength = 0.08 + audioEnergy * 0.12;
+      // Blend cycling color — stronger when audio active, accelerated by energy
+      float cycleStrength = 0.05 + audioEnergy * 0.08 + uEnergyHistory * 0.03;
       baseColor = mix(baseColor, cycleColor, cycleStrength);
 
       // Brightness boost - subtle, preserves color (no audio multiplier to prevent washout)
-      baseColor *= 1.22;
+      baseColor *= 1.12;
 
       // STRONG saturation push - counteract any desaturation from blending
       float luminance = dot(baseColor, vec3(0.299, 0.587, 0.114));
@@ -298,10 +376,12 @@ const CosmosShader = {
       // Stable glow factor - minimal pulsing to prevent bloom flicker
       vGlow = 1.0;
 
-      // Alpha falloff - extended range to fill more space
-      float edgeFade = 1.0 - smoothstep(12.0, 15.5, r);
-      float centerFade = smoothstep(0.15, 0.8, r);
-      vAlpha = edgeFade * centerFade;
+      // Alpha falloff - extended to match wider halo reach
+      float edgeFade = 1.0 - smoothstep(14.0, 19.5, r);
+      // Gentler center fade — keeps core bright for spherical prominence
+      float centerFade = smoothstep(0.05, 0.4, r);
+      vAlpha = edgeFade * mix(centerFade, 1.0, 0.5);
+      vAlpha *= uDensityScale;
     }
   `,
   fragmentShader: `
@@ -317,32 +397,32 @@ const CosmosShader = {
       // Sharp circular cutoff
       if (d > 0.45) discard;
 
-      // HIGH FIDELITY: Sharp core with controlled glow
-      float core = 1.0 - smoothstep(0.0, 0.06, d);  // Tighter bright core
-      float spark = 1.0 - smoothstep(0.0, 0.02, d); // NEW: Core Spark for extra ping
-      float inner = 1.0 - smoothstep(0.0, 0.15, d); // Sharper inner glow
+      // Sharp core with controlled glow — reduced spark to prevent bloom flicker
+      float core = 1.0 - smoothstep(0.0, 0.08, d);  // Slightly wider core
+      float spark = 1.0 - smoothstep(0.0, 0.03, d); // Subtle core spark
+      float inner = 1.0 - smoothstep(0.0, 0.15, d); // Inner glow
       float outer = 1.0 - smoothstep(0.0, 0.45, d); // Outer edge
 
       // Sharper falloff curve for defined particles
       inner = pow(inner, 2.0);
       outer = pow(outer, 3.0);
 
-      float strength = spark * 1.5 + core * 1.3 + inner * 0.6 + outer * 0.2;
+      float strength = spark * 0.8 + core * 1.2 + inner * 0.6 + outer * 0.2;
       strength *= vGlow;
 
       vec3 color = vColor;
 
       // Core brightening for definition
-      color *= 1.0 + spark * 0.3 + core * 0.2;
+      color *= 1.0 + core * 0.2;
 
       // Boost vibrancy
-      color *= 1.2;
+      color *= 1.15;
 
-      // Subtle core highlight (reduced to prevent additive flicker)
-      color = mix(color, vec3(1.2), spark * 0.25);
+      // Subtle core highlight (toned down to prevent flicker)
+      color = mix(color, vec3(1.0), spark * 0.12);
 
-      // Clamp to prevent harsh spots
-      color = clamp(color, vec3(0.0), vec3(1.4));
+      // Tighter clamp to prevent bloom-amplified hot spots
+      color = clamp(color, vec3(0.0), vec3(1.15));
 
       float finalAlpha = vAlpha * strength;
 
@@ -364,6 +444,13 @@ interface CosmosState {
   smoothedBass: number
   smoothedMid: number
   smoothedHigh: number
+  // Enhanced audio reactivity state
+  energyHistory: number       // Slow-moving sustained energy (2-3 second window)
+  bassImpact: number          // Fast-attack transient for bass hits
+  prevBassLevel: number       // Previous frame bass for transient detection
+  turbulenceLevel: number     // Dynamic turbulence intensity
+  tiltImpactX: number         // Bass-driven rotational punch (X axis)
+  tiltImpactZ: number         // Bass-driven rotational punch (Z axis)
 }
 
 function createInitialCosmosState(): CosmosState {
@@ -375,6 +462,12 @@ function createInitialCosmosState(): CosmosState {
     smoothedBass: 0,
     smoothedMid: 0,
     smoothedHigh: 0,
+    energyHistory: 0,
+    bassImpact: 0,
+    prevBassLevel: 0,
+    turbulenceLevel: 0,
+    tiltImpactX: 0,
+    tiltImpactZ: 0,
   }
 }
 
@@ -388,6 +481,8 @@ export function Cosmos({ bassLevel, midLevel, highLevel, performanceMode = false
     [performanceMode],
   )
 
+  const densityScale = performanceMode ? 1.0 : Math.sqrt(LOW_PARTICLE_COUNT / HIGH_PARTICLE_COUNT)
+
   useFrame((state, delta) => {
     if (!materialRef.current || !pointsRef.current) return
 
@@ -395,36 +490,73 @@ export function Cosmos({ bassLevel, midLevel, highLevel, performanceMode = false
     const clampedDelta = Math.min(delta, 0.1)
     const s = stateRef.current
 
-    // Smooth audio
-    s.smoothedBass = THREE.MathUtils.lerp(s.smoothedBass, Math.pow(bassLevel, 1.4), 0.045)
-    s.smoothedMid = THREE.MathUtils.lerp(s.smoothedMid, midLevel, 0.04)
-    s.smoothedHigh = THREE.MathUtils.lerp(s.smoothedHigh, Math.pow(highLevel, 1.2), 0.045)
+    // === AUDIO SMOOTHING: Fast attack, slow release for musical dynamics ===
+    // Bass: fast attack (0.06) for punch on hits, very slow release (0.008) for drama
+    const bassTarget = Math.pow(bassLevel, 1.4)
+    const bassRate = bassTarget > s.smoothedBass ? 0.06 : 0.008
+    s.smoothedBass = THREE.MathUtils.lerp(s.smoothedBass, bassTarget, bassRate)
 
-    // ENHANCED Rotation with stronger audio acceleration
-    const idleSpeed = 0.12
-    const bassBurst = Math.pow(s.smoothedBass, 1.4) * 0.8  // Stronger bass response
-    const midBoost = s.smoothedMid * 0.35                   // Stronger mid response
-    const highAccent = s.smoothedHigh * 0.2
-    const varietyWave = (Math.sin(time * 0.035) * 0.5 + 0.5) * 0.1
+    // Mids: slightly softer attack (0.05), slow release (0.008) — melodic flow
+    const midTarget = midLevel
+    const midRate = midTarget > s.smoothedMid ? 0.05 : 0.008
+    s.smoothedMid = THREE.MathUtils.lerp(s.smoothedMid, midTarget, midRate)
 
-    const targetRotationSpeed = idleSpeed + bassBurst + midBoost + highAccent + varietyWave
+    // Highs: fast attack (0.06) for crisp response, moderate release (0.015)
+    const highTarget = Math.pow(highLevel, 1.2)
+    const highRate = highTarget > s.smoothedHigh ? 0.06 : 0.015
+    s.smoothedHigh = THREE.MathUtils.lerp(s.smoothedHigh, highTarget, highRate)
 
-    // Faster acceleration on hits, slower decel for drama
-    const accelRate = targetRotationSpeed > s.smoothedRotationSpeed ? 0.08 : 0.005
+    // === ENERGY ACCUMULATION: Musical arc over 2-3 seconds ===
+    // Tracks sustained energy — brief hits barely register, sustained passages build up
+    // This creates the "musical story" — quiet intro vs sustained drop feel totally different
+    const instantEnergy = s.smoothedBass * 0.5 + s.smoothedMid * 0.3 + s.smoothedHigh * 0.2
+    // Very slow attack (0.006 = ~2.5 second ramp), ultra-slow release (0.003 = ~5 second decay)
+    const energyRate = instantEnergy > s.energyHistory ? 0.006 : 0.003
+    s.energyHistory = THREE.MathUtils.lerp(s.energyHistory, instantEnergy, energyRate)
+    s.energyHistory = Math.min(s.energyHistory, 1.0) // Clamp
+
+    // === BASS IMPACT: Transient detection for hits ===
+    // Detects sudden bass increases — the "punch" of a kick drum or drop
+    const bassDelta = Math.max(0, bassLevel - s.prevBassLevel)
+    const bassTransient = Math.pow(bassDelta, 0.6)
+    const impactRate = bassTransient > s.bassImpact ? 0.08 : 0.008
+    s.bassImpact = THREE.MathUtils.lerp(s.bassImpact, bassTransient, impactRate)
+    s.prevBassLevel = bassLevel
+
+    // === TURBULENCE: Tracks combined audio activity for particle turbulence ===
+    const turbTarget = s.smoothedBass * 0.5 + s.smoothedMid * 0.35 + s.smoothedHigh * 0.15
+    const turbRate = turbTarget > s.turbulenceLevel ? 0.08 : 0.01
+    s.turbulenceLevel = THREE.MathUtils.lerp(s.turbulenceLevel, turbTarget, turbRate)
+
+    // === ROTATION: Wider dynamic range, more dramatic contrast ===
+    const idleSpeed = 0.08 // Lower idle — quiet passages feel more still
+    // Bass burst now uses squared smoothedBass for more explosive response at peaks
+    const bassBurst = Math.pow(s.smoothedBass, 1.6) * 0.7
+    const midBoost = s.smoothedMid * 0.25
+    const highAccent = s.smoothedHigh * 0.12
+    // Energy history adds a sustained baseline during loud passages
+    const energyBaseline = s.energyHistory * 0.3
+    const varietyWave = (Math.sin(time * 0.035) * 0.5 + 0.5) * 0.08
+
+    const targetRotationSpeed = idleSpeed + bassBurst + midBoost + highAccent + energyBaseline + varietyWave
+
+    // Faster acceleration on hits (0.10), much slower deceleration (0.003) — spinning top drama
+    const accelRate = targetRotationSpeed > s.smoothedRotationSpeed ? 0.06 : 0.003
     s.smoothedRotationSpeed = THREE.MathUtils.lerp(s.smoothedRotationSpeed, targetRotationSpeed, accelRate)
-    s.smoothedRotationSpeed = Math.max(s.smoothedRotationSpeed, 0.08)
+    s.smoothedRotationSpeed = Math.max(s.smoothedRotationSpeed, 0.06) // Lower minimum for quieter idle
 
     s.accumulatedRotation += s.smoothedRotationSpeed * clampedDelta
 
-    // Pulse phase - ripples outward (very slow at idle to prevent glow pulse)
-    const pulseSpeed = 0.15 + s.smoothedBass * 2.0 + s.smoothedMid * 1.0
+    // === PULSE PHASE: Drives radial wave propagation in shader ===
+    const pulseSpeed = 0.08 + s.smoothedBass * 1.2 + s.smoothedMid * 0.6 + s.bassImpact * 1.5
     s.accumulatedPulsePhase += pulseSpeed * clampedDelta
 
-    // Color phase - very slow at idle (fast cycling causes brightness variation)
-    const colorSpeed = 0.05 + s.smoothedBass * 0.6 + s.smoothedMid * 0.3 + s.smoothedHigh * 0.2
+    // === COLOR PHASE: Accelerates dramatically with energy ===
+    // Quiet: barely moves (0.03). Peak energy: races (1.5+). Creates dramatic color evolution.
+    const colorSpeed = 0.02 + s.smoothedBass * 0.35 + s.smoothedMid * 0.2 + s.smoothedHigh * 0.15 + s.energyHistory * 0.25
     s.accumulatedColorPhase += colorSpeed * clampedDelta
 
-    // Update uniforms
+    // === UPDATE UNIFORMS ===
     materialRef.current.uniforms.uTime.value = time
     materialRef.current.uniforms.uRotation.value = s.accumulatedRotation
     materialRef.current.uniforms.uPixelRatio.value = state.viewport.dpr
@@ -433,10 +565,29 @@ export function Cosmos({ bassLevel, midLevel, highLevel, performanceMode = false
     materialRef.current.uniforms.uHigh.value = s.smoothedHigh
     materialRef.current.uniforms.uColorPhase.value = s.accumulatedColorPhase
     materialRef.current.uniforms.uPulsePhase.value = s.accumulatedPulsePhase
+    materialRef.current.uniforms.uEnergyHistory.value = s.energyHistory
+    materialRef.current.uniforms.uBassImpact.value = s.bassImpact
+    materialRef.current.uniforms.uTurbulenceLevel.value = s.turbulenceLevel
+    materialRef.current.uniforms.uDensityScale.value = densityScale
 
-    // Gentle tilt for 3D depth feel
-    const tiltX = Math.PI * 0.15 + Math.sin(time * 0.15) * 0.04 * (1 + s.smoothedBass * 0.3)
-    const tiltZ = Math.cos(time * 0.12) * 0.03 * (1 + s.smoothedMid * 0.2)
+    // === TILT: Bass impact creates camera-like rotational punch ===
+    // Each bass hit imparts a small rotational impulse that decays slowly
+    // Direction varies with time so consecutive hits don't always push the same way
+    const impactDirection = Math.sin(time * 0.7)
+    const impactDirectionZ = Math.cos(time * 0.9)
+    // Fast attack on impact, slow exponential decay (0.004) — like a physical system settling
+    s.tiltImpactX = THREE.MathUtils.lerp(s.tiltImpactX, s.bassImpact * impactDirection * 0.04, 0.06)
+    s.tiltImpactX *= (1.0 - 0.004)
+    s.tiltImpactZ = THREE.MathUtils.lerp(s.tiltImpactZ, s.bassImpact * impactDirectionZ * 0.03, 0.06)
+    s.tiltImpactZ *= (1.0 - 0.004)
+
+    // Base tilt (gentle ambient sway) + impact tilt (bass punches) + energy sway (more at high energy)
+    const ambientSwayScale = 1 + s.energyHistory * 0.2
+    const tiltX = Math.PI * 0.15
+      + Math.sin(time * 0.15) * 0.025 * ambientSwayScale
+      + s.tiltImpactX
+    const tiltZ = Math.cos(time * 0.12) * 0.018 * ambientSwayScale
+      + s.tiltImpactZ
     pointsRef.current.rotation.x = tiltX
     pointsRef.current.rotation.z = tiltZ
   })

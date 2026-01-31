@@ -722,7 +722,7 @@ export function CinemaOverlay({
             postProcessing={
               isPerformanceMode
                 ? (shouldUseSidePanels ? "lite" : "off")
-                : "full"
+                : "balanced"
             }
             onCanvasReady={handleVisualizerCanvasReady}
             enablePerformanceMonitoring={shouldMonitorPerformance}
