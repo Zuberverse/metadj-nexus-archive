@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2026-01-31 12:40 EST
+**Last Modified**: 2026-02-01 11:16 EST
 
 ## Overview
 
@@ -97,10 +97,11 @@ All 3D visualizers adhere to these core principles:
 #### Motion Principles
 
 - **Forward-only motion**: Accumulated rotation/phase values that never reverse direction
-- **Asymmetric lerp**: Fast acceleration (0.05-0.07), slow deceleration (0.015-0.025) for musical punch without seizure-level intensity
-- **Power curves**: Bass and high frequencies use `pow()` curves (1.5-2.5) for dynamic punch
+- **Asymmetric lerp**: Fast attack (0.04-0.085), slow release (0.008-0.025) for musical punch without seizure-level intensity. Performance mode uses slightly higher rates (top of range) for responsiveness on lower-end hardware.
+- **Power curves**: Bass and high frequencies use `pow()` curves (1.3-2.2) for dynamic punch
 - **Delta clamping**: Frame time capped at 50ms to handle drops gracefully
 - **Smooth interpolation**: Audio levels lerped to prevent jitter
+- **Impulse capping**: Burst events (rotation, wobble, shockwave) use `Math.min()` to prevent unbounded accumulation during rapid bass hits
 
 #### Audio Reactivity Architecture
 
@@ -111,10 +112,27 @@ uMid: number     // Mid frequency energy (0-1)
 uHigh: number    // High frequency energy (0-1)
 
 // Asymmetric lerp pattern (reduced rates prevent seizure-level reactivity)
+// 3D visualizers: per-band rates (bass ~0.05-0.06 up / 0.008-0.015 down)
+// 2D visualizers: 0.06-0.085 up / 0.02-0.025 down (performance mode slightly higher)
 const lerpUp = 0.06;   // Fast attack (was 0.1)
 const lerpDown = 0.02; // Slow release
 smoothedBass += (targetBass - smoothedBass) * (targetBass > smoothedBass ? lerpUp : lerpDown);
 ```
+
+#### Density Compensation
+
+Desktop uses higher particle counts for smoother visuals, but more particles + `AdditiveBlending` = brighter/whiter. All 3D visualizers apply a `uDensityScale` uniform in the vertex shader to compensate:
+
+```typescript
+// Scale alpha so additive accumulation produces identical brightness at any particle count
+const densityScale = performanceMode ? 1.0 : Math.sqrt(LOW_COUNT / HIGH_COUNT);
+// Cosmos: sqrt(10000/18000) ≈ 0.745, BlackHole: sqrt(6000/12000) ≈ 0.707, etc.
+
+// In vertex shader:
+vAlpha *= uDensityScale;
+```
+
+Why `sqrt`: overlap probability in 2D projection scales with the square root of density, not linearly.
 
 #### Intensity Scaling
 
@@ -218,9 +236,9 @@ magenta: #d946ef  // Accent only (on high frequencies)
 |-----------|--------|
 | Bass | Rotation acceleration (+80%), breathing pulse (+25%), subtle color pump |
 | Mid | Electric blue waves, vertical motion, turbulence, rotation boost (+35%) |
-| High | Cyan shimmer, subtle magenta sparkle, minimal size variation (+12%) |
+| High | Cyan shimmer, subtle magenta sparkle, minimal size variation (+6%) |
 
-**Idle Stability**: At idle (no audio), color cycling and pulse phases run at 0.05 and 0.15 respectively—nearly imperceptible to prevent glow fluctuation.
+**Idle Stability**: At idle (no audio), color cycling runs at base speed 0.02 and pulse phase at 0.08—nearly imperceptible to prevent glow fluctuation.
 
 #### High-Fidelity Rendering
 
@@ -228,12 +246,15 @@ magenta: #d946ef  // Accent only (on high frequencies)
 |-----------|-------|---------|
 | Particle base size | 0.6 | Larger for definition |
 | Size multiplier | 350.0 | Prominent particles |
-| Size audio response | +12% high, +8% bass | Stable—minimal fluctuation |
+| Size audio response | +6% high, +4% bass | Stable—minimal fluctuation |
 | Min/max size | 2.0-50.0 px | No tiny noise particles |
 | Core smoothstep | 0.0-0.08 | Tight bright center |
-| Inner smoothstep | 0.0-0.2 | Controlled glow |
+| Inner smoothstep | 0.0-0.15 | Controlled glow (tighter than outer) |
 | Outer smoothstep | 0.0-0.45 | Sharp edge cutoff |
-| Alpha discard | 0.15 | Removes fuzzy particles |
+| Inner/outer power curves | 2.0 / 3.0 | Sharper falloff for defined particles |
+| Alpha discard | 0.14 | Removes fuzzy particles |
+| Vibrancy boost | 1.15× | Fragment color intensity |
+| Color clamp | 1.15 | Conservative ceiling (anti-flicker) |
 | vGlow | 1.0 (static) | No brightness pulsing |
 
 #### Unique Features
@@ -243,7 +264,7 @@ magenta: #d946ef  // Accent only (on high frequencies)
 - Outer halo layer fills space without noise
 - Deep blue outer regions for cosmic depth
 - No white in palette—purple/violet core instead
-- Saturation boost (1.4x) for rich colors
+- Saturation boost (1.6×) for rich colors
 - **Idle stability**: No breathing/pulsing without audio
 
 ---
@@ -293,9 +314,9 @@ color4: #a855f7  // Indigo (ending color)
 |-----------|--------|
 | Bass | Orbital speed, ripple strength (+200%), subtle color pump |
 | Mid | Disk turbulence, ripple amplitude, electric blue accent |
-| High | Minimal size variation (+10%), magenta accent |
+| High | Minimal size variation (+5%), magenta accent |
 
-**Idle Stability**: At idle, color/ripple/flow phases run at 0.05-0.15—nearly imperceptible. Event horizon breathing removed.
+**Idle Stability**: At idle, color/ripple/flow phases run at base speeds (0.02-0.08)—nearly imperceptible. Event horizon breathing removed.
 
 #### Unique Features
 
@@ -304,6 +325,9 @@ color4: #a855f7  // Indigo (ending color)
 - Event horizon with gradient flow (audio-driven speed)
 - Audio-reactive wave patterns on event horizon ring
 - Radial distance affects particle behavior (inner = hotter, faster)
+- Bass transient detection triggers ripple pulses and tilt impulses
+- 3-second energy history window for sustained-loudness awareness
+- Color temperature blending (cool at quiet → warm at peaks)
 - **Idle stability**: No breathing/pulsing without audio
 
 #### Technical Note: Grain/Flicker Prevention
@@ -324,10 +348,10 @@ BlackHole requires careful parameter tuning to prevent visual grain and flickeri
 | Base particle size | 0.18 | 0.45 | Larger particles for high-fidelity definition |
 | Size multiplier | 320.0 | 380.0 | More prominent particles |
 | Min particle size | 1.0 | 2.5 px | No sub-pixel noise |
-| Turbulence amplitude | 0.05 + bass×0.3 | 0.03 + bass×0.15 | Reduces depth jitter |
-| Ripple strength | 0.1 + bass×0.18 | 0.06 + bass×0.12 | Balanced wave visibility vs stability |
-| Wobble amplitude | bass×0.15 | bass×0.1 | Reduces radial size fluctuation |
-| Discard threshold | 0.04 | 0.22 | Higher threshold removes fuzzy particles |
+| Turbulence amplitude | 0.05 + bass×0.3 | 0.03 + bass×0.08 + mid×0.04 | Reduces depth jitter; mid adds organic motion |
+| Ripple strength | 0.1 + bass×0.18 | 0.04 + bass×0.08 | Further reduced for smoothness |
+| Wobble amplitude | bass×0.15 | bass×0.05 | Heavily reduced for stability |
+| Discard threshold | 0.04 | 0.16 | Higher threshold removes fuzzy particles |
 | Core smoothstep | 0.0-0.1 | 0.0-0.06 | Tighter bright core |
 | Inner smoothstep | 0.0-0.3 | 0.0-0.18 | Controlled glow layer |
 | Outer smoothstep | 0.0-0.5 | 0.0-0.42 | Sharp edge cutoff |
@@ -383,37 +407,45 @@ uColor4: #a855f7  // Indigo
 
 | Frequency | Effect |
 |-----------|--------|
-| Bass | Punchy acceleration bursts, nebula brightness |
-| Mid | Sustained cruising speed |
-| High | Speed accents, star twinkle |
+| Bass | Punchy acceleration bursts, nebula brightness pulsing, warp burst trigger |
+| Mid | Sustained cruising speed, nebula breathing (expand/contract), gentle tunnel sway |
+| High | Speed accents, star twinkle + size variation, star color shifting |
 
 #### Speed Dynamics
 
 ```typescript
 const audioEnergy = smoothedBass + smoothedMid * 0.5 + smoothedHigh * 0.3
 
-const idleSpeed = 1.5
-const bassBurst = Math.pow(smoothedBass, 1.8) * 9.0    // Reduced from 16 for smoother acceleration
-const midCruise = smoothedMid * 5.0                      // Reduced from 10
-const highAccent = smoothedHigh * 2.5                    // Reduced from 6
+const idleSpeed = 1.0
+const bassDrive = Math.pow(smoothedBass, 2.2) * 9.0     // Cubic curve for punch
+const midCruise = smoothedMid * 5.0
+const highAccent = smoothedHigh * 2.5
 
 // Slow variety wave scales with overall energy for natural ebb/flow
-const varietyWave = (Math.sin(time * 0.08) * 0.5 + 0.5) * audioEnergy * 3.0  // Reduced from 6
+const varietyWave = (Math.sin(time * 0.08) * 0.5 + 0.5) * audioEnergy * 3.0
 
-const targetSpeed = idleSpeed + bassBurst + midCruise + highAccent + varietyWave
+// Warp burst: extreme speed spike on heavy bass transients
+// Triggers when bassTransient > 0.06 && smoothedBass > 0.55, capped at 0.7 intensity
+const warpBoost = warpBurstIntensity * 12.0
+
+const targetSpeed = idleSpeed + bassDrive + midCruise + highAccent + varietyWave + warpBoost
 
 // Clamp speed to keep stars readable and prevent white‑out
 smoothedSpeed = THREE.MathUtils.lerp(smoothedSpeed, targetSpeed, accelRate)
-smoothedSpeed = Math.min(22.0, Math.max(1.0, smoothedSpeed))  // Ceiling reduced from 28
+smoothedSpeed = Math.min(22.0, Math.max(1.0, smoothedSpeed))
 
 // In shader: speed‑based dimming to prevent bloom wash‑out
-float speedDim = 1.0 - smoothstep(12.0, 22.0, uSpeed) * 0.25
+float speedDim = 1.0 - smoothstep(15.0, 35.0, uSpeed) * 0.25
 ```
 
 #### Unique Features
 
 - Slow variety wave adds natural ebb and flow during consistent audio sections
 - Speed-based brightness dimming prevents white wash-out at high speeds
+- **Warp burst mechanic**: Heavy bass transients trigger dramatic speed spikes (threshold: bass > 0.55, capped at 0.7 intensity, ~96% decay/sec)
+- **Star stretching**: Stars become motion-streaked at high speeds for warp tunnel effect
+- Bass transient detection with rotation momentum accumulation
+- Camera drift + bass-reactive Z-rotation shake (impulse clamped ±0.08, drift base 0.008)
 - White core effect reduced (25%) to preserve brand colors
 - Stars use tinted base colors instead of pure white
 - Tighter color clamp (1.05) for controlled brightness
@@ -428,25 +460,28 @@ A large futuristic mirror sphere with a mirror-tile core layered under glitterin
 
 #### Visual Characteristics
 
-- **Mirror-tile core sphere** (~5.4 radius) with a shader-driven facet grid + reflective “cosmic” environment to make the disco ball read as a real mirror surface rather than a particle sphere
-- **14,000 facet particles** forming a prominent mirror‑sphere (~5.6 radius)
+- **Mirror-tile core sphere** (~4.8 radius, `DISCO_CORE_RADIUS`) with a shader-driven facet grid + reflective "cosmic" environment to make the disco ball read as a real mirror surface rather than a particle sphere
+- **14,000 facet particles** forming a prominent mirror‑sphere (~5.0 radius, `DISCO_RADIUS`)
 - **6,500 halo particles** in a wide orbital field with spiral drift
 - **Physically‑inspired lighting**: dual moving light vectors, strong specular glints, and rim glow
 - **Additive sparkle** with controlled clamping to avoid bloom white‑out
-- **Breathing scale** and subtle axis wobble for organic motion
+- **Breathing scale** and subtle axis wobble for organic motion (wobble impulse capped at 0.8, rotation impulse capped at 1.5)
 
 #### Audio Response
 
 | Frequency | Effect |
 |-----------|--------|
-| Bass | Sphere pulse, rotation acceleration, halo expansion, **shockwave trigger** |
-| Mid | Sustained halo swirl and drift |
+| Bass | Sphere pulse, rotation acceleration, halo expansion, **primary shockwave trigger** |
+| Mid | Sustained halo swirl and drift, **secondary shockwave trigger** |
 | High | Specular sparkle intensity, facet jitter, **facet glow pop** |
 
 #### Unique Features
 
-- **Bass Shockwaves**: Strong bass hits trigger a radial expanding shockwave shader on the sphere surface.
-- **Facet Popping**: Individual facets can "pop" or glow brighter based on randomized frequency-driven intensity boosts.
+- **Bass Shockwaves**: Strong bass transients (`bassDelta > 0.12`, level > 0.55) trigger a primary radial expanding shockwave on the sphere surface.
+- **Mid Shockwaves**: Mid-frequency peaks (`midDelta > 0.18`, level > 0.5) trigger a secondary independent shockwave ring.
+- **Facet Popping**: Facets "pop" brighter via deterministic `smoothstep` thresholds on high (0.5-0.9), bass (0.6-1.0), and energy (0.7-1.0) — not per-facet random.
+- **Impulse capping**: Rotation impulse capped at 1.5, wobble at 0.8, with exponential decay (0.85/0.88) to prevent unbounded accumulation.
+- **Sustained energy accumulator**: 3-second energy window influences rotation speed and color phase evolution.
 
 ---
 
@@ -556,6 +591,56 @@ Synthwave outrun horizon: neon sun + perspective grid on a cosmic sky, with twin
 - **Aurora Ribbons**: Vibrancy and alpha pulse in response to mid/high frequency energy.
 - **Bouncing Grid**: The perspective grid rows perform a rhythmic vertical "bounce" synchronized with the bass.
 
+### Spectrum Ring Visualizer
+
+**File**: `src/components/cinema/visualizers/SpectrumRing.tsx`
+
+A radial spectrum halo with a neon glow pulse, frequency burst particles, and a secondary inner ring. Minimal and focused — designed for contemplative listening.
+
+#### Visual Characteristics
+
+- DPR‑aware full‑screen canvas
+- **Track‑seeded variation**: ring segments and burst particles vary per track
+- **Primary ring** with per‑segment length and alpha responding to frequency bands
+- **Secondary inner ring** (bass‑responsive) with dynamic length variation
+- **Neon glow pulse** driven by accumulated energy for sustained intensity
+- **Frequency burst particles** spawned on bass/mid/high peaks with delta‑based movement
+- **Inner halo ring** with bass‑responsive radius and energy glow
+- **Core stroke** on each segment for crispness
+- Color temperature shifts cooler during quiet passages, warmer during peaks
+
+#### Audio Response
+
+| Frequency | Effect |
+|-----------|--------|
+| Bass | Ring radius breathing, inner ring expansion, burst particle spawning |
+| Mid | Segment length variation, ring rotation speed, energy accumulation |
+| High | Burst particle spawning, sparkle alpha, color cycling acceleration |
+
+### Starlight Drift Visualizer
+
+**File**: `src/components/cinema/visualizers/StarlightDrift.tsx`
+
+A slow starfield drift with shimmering constellations, nebula gas clouds, and warp speed trails. Ambient and contemplative, designed for lower‑energy tracks.
+
+#### Visual Characteristics
+
+- DPR‑aware full‑screen canvas
+- **Track‑seeded variation**: star positions, sizes, and tints vary per track
+- **Nebula gas clouds**: soft radial gradient clouds that shift from cool purple/cyan to warmer magenta during peaks
+- **Warp speed effect**: radial trails triggered by energy buildup, creating brief streak effects
+- **Constellation ties**: stars within proximity thresholds connect with faint lines (reach extends during loud passages)
+- **Core ping**: each star uses a sharper high‑contrast core for "striking" visuals
+- Color temperature shifts from cool to warm based on sustained energy
+
+#### Audio Response
+
+| Frequency | Effect |
+|-----------|--------|
+| Bass | Star brightness boost, nebula expansion, energy accumulation |
+| Mid | Star drift speed, nebula cloud size breathing |
+| High | Twinkle speed + sparkle, warp trail trigger, constellation tie visibility |
+
 ---
 
 ## Dream (Daydream StreamDiffusion)
@@ -656,8 +741,8 @@ Generated graphics that respond to audio frequency data in real-time. Visualizer
 | `pixel-paradise` | Pixel Portal | Retro‑future portal drift: neon pixels orbit a glowing gateway | retro, brand-colors, moderate | 2D (HTML5 canvas) |
 | `synthwave-horizon` | Synthwave Horizon | Outrun grid and neon sun on a cosmic horizon | synthwave, brand-colors, moderate | 2D (HTML5 canvas) |
 | `eight-bit-adventure` | 8-Bit Adventure | MetaDJ-styled pixel hero with headphones, loot sparks, and sword slashes | adventure, brand-colors, moderate | 2D (HTML5 canvas) |
-| `spectrum-ring` | Spectrum Ring | Radial spectrum halo with gentle pulse and starlit glow | ambient, brand-colors, subtle | 2D (HTML5 canvas) |
-| `starlight-drift` | Starlight Drift | Slow starfield drift with shimmering constellations | cosmic, cool, subtle | 2D (HTML5 canvas) |
+| `spectrum-ring` | Spectrum Ring | Radial spectrum halo with neon glow pulse, frequency burst particles, and inner ring | ambient, brand-colors, subtle | 2D (HTML5 canvas) |
+| `starlight-drift` | Starlight Drift | Slow starfield drift with nebula clouds, constellation ties, and warp trails | cosmic, cool, subtle | 2D (HTML5 canvas) |
 
 **Roadmap note**: Spectrum Ring is now live as a low‑distraction 2D experiment. **Waveform and Frequency Bars are explicitly not planned.**
 
