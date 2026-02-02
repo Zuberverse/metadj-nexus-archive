@@ -6,7 +6,6 @@ export {
   CinemaVideoError,
   CinemaLoadingState,
   CinemaAwaitingMusic,
-  CinemaPaused,
   CinemaWebcamError,
   CinemaWebGLContextLoss,
 } from './CinemaStateOverlays'

@@ -56,8 +56,6 @@ const BLOOM_SETTINGS = {
   "disco-ball": { threshold: 0.55, intensity: 0.8, radius: 0.16 }
 } as const
 
-const CHROMATIC_OFFSET = new THREE.Vector2(0.0004, 0.0004)
-
 export function Visualizer3D({
   bassLevel,
   midLevel,

@@ -112,7 +112,6 @@ const DiskShader = {
     varying float vRadius;
     varying vec3 vColor;
     varying vec3 vPos;
-    varying float vTwinkle;
 
     vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -259,9 +258,6 @@ const DiskShader = {
 
       vPos = rotatedPos;
 
-      // Twinkle effect disabled to reduce graininess
-      vTwinkle = 0.0;
-
       vec4 mvPosition = modelViewMatrix * vec4(rotatedPos, 1.0);
       gl_Position = projectionMatrix * mvPosition;
 
@@ -362,7 +358,6 @@ const DiskShader = {
   fragmentShader: `
     varying float vAlpha;
     varying vec3 vColor;
-    varying float vTwinkle;
 
     void main() {
       vec2 uv = gl_PointCoord.xy - 0.5;
@@ -383,7 +378,6 @@ const DiskShader = {
       float strength = core * 1.6 + inner * 0.6 + outer * 0.25;
 
       vec3 color = vColor * 1.45;
-      color = mix(color, color * 1.15, vTwinkle);
 
       // Core brightening
       color *= 1.0 + core * 0.3;

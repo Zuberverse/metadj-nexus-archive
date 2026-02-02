@@ -670,28 +670,45 @@ const HaloShader = {
   `
 }
 
-let smoothedBass = 0
-let smoothedMid = 0
-let smoothedHigh = 0
-let rotationAccum = 0
-let colorPhaseAccum = 0
-let shockwaveRadius = 0
-let shockwaveAlpha = 0
-// Transient detection: track previous raw levels for delta calculation
-let prevRawBass = 0
-let prevRawMid = 0
-// Rotational impulse: decaying acceleration spike on bass hits
-let rotationImpulse = 0
-// Z-axis wobble impulse from bass transients
-let wobbleImpulse = 0
-// Energy accumulator: builds during sustained high-energy passages
-let sustainedEnergy = 0
-// Secondary shockwave for mid-frequency peaks
-let shockwave2Radius = 0
-let shockwave2Alpha = 0
-// Shockwave intensity: varies size/alpha based on hit strength
-let shockwaveIntensity = 0
-let shockwave2Intensity = 0
+interface DiscoBallState {
+  smoothedBass: number
+  smoothedMid: number
+  smoothedHigh: number
+  rotationAccum: number
+  colorPhaseAccum: number
+  shockwaveRadius: number
+  shockwaveAlpha: number
+  prevRawBass: number
+  prevRawMid: number
+  rotationImpulse: number
+  wobbleImpulse: number
+  sustainedEnergy: number
+  shockwave2Radius: number
+  shockwave2Alpha: number
+  shockwaveIntensity: number
+  shockwave2Intensity: number
+}
+
+function createDiscoBallState(): DiscoBallState {
+  return {
+    smoothedBass: 0,
+    smoothedMid: 0,
+    smoothedHigh: 0,
+    rotationAccum: 0,
+    colorPhaseAccum: 0,
+    shockwaveRadius: 0,
+    shockwaveAlpha: 0,
+    prevRawBass: 0,
+    prevRawMid: 0,
+    rotationImpulse: 0,
+    wobbleImpulse: 0,
+    sustainedEnergy: 0,
+    shockwave2Radius: 0,
+    shockwave2Alpha: 0,
+    shockwaveIntensity: 0,
+    shockwave2Intensity: 0,
+  }
+}
 
 export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = false }: DiscoBallProps) {
   const coreMaterialRef = useRef<THREE.ShaderMaterial>(null)
@@ -700,6 +717,7 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
   const haloRef = useRef<THREE.Points>(null)
   const haloMaterialRef = useRef<THREE.ShaderMaterial>(null)
   const shockwaveMaterialRef = useRef<THREE.ShaderMaterial>(null)
+  const stateRef = useRef<DiscoBallState>(createDiscoBallState())
 
   const facets = useMemo(
     () => (performanceMode ? LOW_FACET_DATA : HIGH_FACET_DATA),
@@ -715,112 +733,113 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
 
   useFrame((state, delta) => {
     if (!coreMaterialRef.current || !facetsMaterialRef.current || !haloMaterialRef.current) return
+    const s = stateRef.current
 
     const time = state.clock.getElapsedTime()
     const clampedDelta = Math.min(delta, 0.1)
 
     // --- Transient detection (raw deltas before smoothing) ---
-    const bassDelta = bassLevel - prevRawBass
-    const midDelta = midLevel - prevRawMid
-    prevRawBass = bassLevel
-    prevRawMid = midLevel
+    const bassDelta = bassLevel - s.prevRawBass
+    const midDelta = midLevel - s.prevRawMid
+    s.prevRawBass = bassLevel
+    s.prevRawMid = midLevel
 
     // --- Smoothing with differentiated attack/release ---
     // Faster attack (0.12) to catch transients, slower release (0.04) for smooth decay
-    const bassAttack = bassLevel > smoothedBass ? 0.05 : 0.015
-    const midAttack = midLevel > smoothedMid ? 0.045 : 0.012
-    const highAttack = highLevel > smoothedHigh ? 0.05 : 0.018
-    smoothedBass = THREE.MathUtils.lerp(smoothedBass, Math.pow(bassLevel, 1.6), bassAttack)
-    smoothedMid = THREE.MathUtils.lerp(smoothedMid, midLevel, midAttack)
-    smoothedHigh = THREE.MathUtils.lerp(smoothedHigh, Math.pow(highLevel, 1.4), highAttack)
+    const bassAttack = bassLevel > s.smoothedBass ? 0.05 : 0.015
+    const midAttack = midLevel > s.smoothedMid ? 0.045 : 0.012
+    const highAttack = highLevel > s.smoothedHigh ? 0.05 : 0.018
+    s.smoothedBass = THREE.MathUtils.lerp(s.smoothedBass, Math.pow(bassLevel, 1.6), bassAttack)
+    s.smoothedMid = THREE.MathUtils.lerp(s.smoothedMid, midLevel, midAttack)
+    s.smoothedHigh = THREE.MathUtils.lerp(s.smoothedHigh, Math.pow(highLevel, 1.4), highAttack)
 
     // --- Energy accumulation (area 8): sustained energy builds over time ---
-    const instantEnergy = smoothedBass * 1.1 + smoothedMid * 0.7 + smoothedHigh * 0.6
+    const instantEnergy = s.smoothedBass * 1.1 + s.smoothedMid * 0.7 + s.smoothedHigh * 0.6
     // Build up slowly during high energy, decay slowly during low energy
     const energyTarget = instantEnergy > 0.5 ? Math.min(instantEnergy * 0.8, 1.0) : 0
-    sustainedEnergy = THREE.MathUtils.lerp(sustainedEnergy, energyTarget, instantEnergy > sustainedEnergy ? 0.008 : 0.003)
+    s.sustainedEnergy = THREE.MathUtils.lerp(s.sustainedEnergy, energyTarget, instantEnergy > s.sustainedEnergy ? 0.008 : 0.003)
 
     // --- Rotational impulse (area 1): bass transients create acceleration spikes ---
     if (bassDelta > 0.12) {
       // Scale impulse by how hard the transient hit
-      rotationImpulse = Math.min(rotationImpulse + bassDelta * 2.0, 1.5)
+      s.rotationImpulse = Math.min(s.rotationImpulse + bassDelta * 2.0, 1.5)
     }
     // Decay the impulse (fast initial decay, then slow tail)
-    rotationImpulse *= 0.85
+    s.rotationImpulse *= 0.85
 
     // --- Z-axis wobble impulse (area 1): bass transients create wobble ---
     if (bassDelta > 0.16) {
-      wobbleImpulse = Math.min(wobbleImpulse + bassDelta * 1.0, 0.8)
+      s.wobbleImpulse = Math.min(s.wobbleImpulse + bassDelta * 1.0, 0.8)
     }
-    wobbleImpulse *= 0.88
+    s.wobbleImpulse *= 0.88
 
     // --- Primary shockwave (area 2): transient-based triggering ---
     // Trigger on bass transients (sudden increases), not just threshold
     if (bassDelta > 0.2 && bassLevel > 0.55) {
-      shockwaveRadius = DISCO_RADIUS * 1.0
+      s.shockwaveRadius = DISCO_RADIUS * 1.0
       // Intensity scales with transient strength — bigger hits make bigger waves
-      shockwaveIntensity = Math.min(bassDelta * 4.0, 1.0)
-      shockwaveAlpha = Math.max(shockwaveAlpha, 0.4 + shockwaveIntensity * 0.3)
+      s.shockwaveIntensity = Math.min(bassDelta * 4.0, 1.0)
+      s.shockwaveAlpha = Math.max(s.shockwaveAlpha, 0.4 + s.shockwaveIntensity * 0.3)
     }
 
     // --- Secondary shockwave (area 2): mid-frequency pulse ring ---
     if (midDelta > 0.18 && midLevel > 0.5) {
-      shockwave2Radius = DISCO_RADIUS * 0.8
-      shockwave2Intensity = Math.min(midDelta * 3.0, 0.7)
-      shockwave2Alpha = Math.max(shockwave2Alpha, 0.2 + shockwave2Intensity * 0.2)
+      s.shockwave2Radius = DISCO_RADIUS * 0.8
+      s.shockwave2Intensity = Math.min(midDelta * 3.0, 0.7)
+      s.shockwave2Alpha = Math.max(s.shockwave2Alpha, 0.2 + s.shockwave2Intensity * 0.2)
     }
 
     // Shockwave animation — speed varies with intensity
-    shockwaveRadius += clampedDelta * (12.0 + shockwaveIntensity * 8.0)
-    shockwaveAlpha = THREE.MathUtils.lerp(shockwaveAlpha, 0, 0.08)
-    shockwave2Radius += clampedDelta * 10.0
-    shockwave2Alpha = THREE.MathUtils.lerp(shockwave2Alpha, 0, 0.12)
+    s.shockwaveRadius += clampedDelta * (12.0 + s.shockwaveIntensity * 8.0)
+    s.shockwaveAlpha = THREE.MathUtils.lerp(s.shockwaveAlpha, 0, 0.08)
+    s.shockwave2Radius += clampedDelta * 10.0
+    s.shockwave2Alpha = THREE.MathUtils.lerp(s.shockwave2Alpha, 0, 0.12)
 
     if (shockwaveMaterialRef.current) {
       shockwaveMaterialRef.current.uniforms.uTime.value = time
-      shockwaveMaterialRef.current.uniforms.uBass.value = smoothedBass
+      shockwaveMaterialRef.current.uniforms.uBass.value = s.smoothedBass
       // Combine both shockwaves: use whichever is currently more visible
-      const useSecondary = shockwave2Alpha > shockwaveAlpha
-      shockwaveMaterialRef.current.uniforms.uRadius.value = useSecondary ? shockwave2Radius : shockwaveRadius
-      shockwaveMaterialRef.current.uniforms.uAlpha.value = Math.max(shockwaveAlpha, shockwave2Alpha * 0.7)
+      const useSecondary = s.shockwave2Alpha > s.shockwaveAlpha
+      shockwaveMaterialRef.current.uniforms.uRadius.value = useSecondary ? s.shockwave2Radius : s.shockwaveRadius
+      shockwaveMaterialRef.current.uniforms.uAlpha.value = Math.max(s.shockwaveAlpha, s.shockwave2Alpha * 0.7)
     }
 
     // --- Rotation dynamics (area 1): wider range, impulse-driven ---
     const baseRotSpeed = 0.14
     // Sustained energy gradually increases base rotation speed
-    const sustainedRotBoost = sustainedEnergy * 0.2
-    rotationAccum += (baseRotSpeed + instantEnergy * 0.35 + rotationImpulse + sustainedRotBoost) * clampedDelta
+    const sustainedRotBoost = s.sustainedEnergy * 0.2
+    s.rotationAccum += (baseRotSpeed + instantEnergy * 0.35 + s.rotationImpulse + sustainedRotBoost) * clampedDelta
 
     // --- Color dynamics (area 6): dramatic acceleration with audio ---
     // Quiet: slow elegant cycling. Peak: rapid club-light shifts
-    const colorSpeed = 0.15 + smoothedBass * 0.8 + smoothedMid * 0.35 + smoothedHigh * 0.25 + sustainedEnergy * 0.25
-    colorPhaseAccum += colorSpeed * clampedDelta
+    const colorSpeed = 0.15 + s.smoothedBass * 0.8 + s.smoothedMid * 0.35 + s.smoothedHigh * 0.25 + s.sustainedEnergy * 0.25
+    s.colorPhaseAccum += colorSpeed * clampedDelta
 
     // --- Pass enhanced values to core shader (area 5) ---
     coreMaterialRef.current.uniforms.uTime.value = time
-    coreMaterialRef.current.uniforms.uRotation.value = rotationAccum
-    coreMaterialRef.current.uniforms.uBass.value = smoothedBass
-    coreMaterialRef.current.uniforms.uMid.value = smoothedMid
-    coreMaterialRef.current.uniforms.uHigh.value = smoothedHigh
-    coreMaterialRef.current.uniforms.uColorPhase.value = colorPhaseAccum
+    coreMaterialRef.current.uniforms.uRotation.value = s.rotationAccum
+    coreMaterialRef.current.uniforms.uBass.value = s.smoothedBass
+    coreMaterialRef.current.uniforms.uMid.value = s.smoothedMid
+    coreMaterialRef.current.uniforms.uHigh.value = s.smoothedHigh
+    coreMaterialRef.current.uniforms.uColorPhase.value = s.colorPhaseAccum
 
     // --- Pass enhanced values to facet shader (areas 3, 6) ---
     facetsMaterialRef.current.uniforms.uTime.value = time
-    facetsMaterialRef.current.uniforms.uRotation.value = rotationAccum
-    facetsMaterialRef.current.uniforms.uBass.value = smoothedBass
-    facetsMaterialRef.current.uniforms.uMid.value = smoothedMid
-    facetsMaterialRef.current.uniforms.uHigh.value = smoothedHigh
-    facetsMaterialRef.current.uniforms.uColorPhase.value = colorPhaseAccum
+    facetsMaterialRef.current.uniforms.uRotation.value = s.rotationAccum
+    facetsMaterialRef.current.uniforms.uBass.value = s.smoothedBass
+    facetsMaterialRef.current.uniforms.uMid.value = s.smoothedMid
+    facetsMaterialRef.current.uniforms.uHigh.value = s.smoothedHigh
+    facetsMaterialRef.current.uniforms.uColorPhase.value = s.colorPhaseAccum
     facetsMaterialRef.current.uniforms.uPixelRatio.value = state.viewport.dpr
     facetsMaterialRef.current.uniforms.uDensityScale.value = facetDensityScale
 
     // --- Pass enhanced values to halo shader (area 4) ---
     haloMaterialRef.current.uniforms.uTime.value = time
-    haloMaterialRef.current.uniforms.uRotation.value = rotationAccum * 0.6
-    haloMaterialRef.current.uniforms.uBass.value = smoothedBass
-    haloMaterialRef.current.uniforms.uMid.value = smoothedMid
-    haloMaterialRef.current.uniforms.uHigh.value = smoothedHigh
-    haloMaterialRef.current.uniforms.uColorPhase.value = colorPhaseAccum
+    haloMaterialRef.current.uniforms.uRotation.value = s.rotationAccum * 0.6
+    haloMaterialRef.current.uniforms.uBass.value = s.smoothedBass
+    haloMaterialRef.current.uniforms.uMid.value = s.smoothedMid
+    haloMaterialRef.current.uniforms.uHigh.value = s.smoothedHigh
+    haloMaterialRef.current.uniforms.uColorPhase.value = s.colorPhaseAccum
     haloMaterialRef.current.uniforms.uPixelRatio.value = state.viewport.dpr
     haloMaterialRef.current.uniforms.uDensityScale.value = haloDensityScale
 
@@ -828,23 +847,23 @@ export function DiscoBall({ bassLevel, midLevel, highLevel, performanceMode = fa
     if (facetsRef.current) {
       const breathe = 1.0
         + Math.sin(time * 0.5) * 0.015                   // gentle idle oscillation
-        + smoothedBass * 0.03                              // bass pulse
-        + smoothedMid * 0.012                              // mid-frequency breathing layer
-        + sustainedEnergy * 0.01                           // sustained energy expansion
+        + s.smoothedBass * 0.03                            // bass pulse
+        + s.smoothedMid * 0.012                            // mid-frequency breathing layer
+        + s.sustainedEnergy * 0.01                         // sustained energy expansion
       facetsRef.current.scale.setScalar(breathe)
       // Y-rotation: base spin + mid response + sustained energy bonus
-      facetsRef.current.rotation.y += clampedDelta * (0.12 + smoothedMid * 0.025 + sustainedEnergy * 0.02)
-      facetsRef.current.rotation.x += clampedDelta * (0.008 + smoothedHigh * 0.01)
+      facetsRef.current.rotation.y += clampedDelta * (0.12 + s.smoothedMid * 0.025 + s.sustainedEnergy * 0.02)
+      facetsRef.current.rotation.x += clampedDelta * (0.008 + s.smoothedHigh * 0.01)
       // Z-axis wobble from bass transients (area 1)
-      facetsRef.current.rotation.z += clampedDelta * wobbleImpulse * 0.15
+      facetsRef.current.rotation.z += clampedDelta * s.wobbleImpulse * 0.15
     }
 
     // --- Halo dynamics (area 4): calm vs active, bass waves ---
     if (haloRef.current) {
       // Base rotation slows during quiet, accelerates during energy
-      const haloRotSpeed = 0.03 + smoothedBass * 0.06 + sustainedEnergy * 0.04
+      const haloRotSpeed = 0.03 + s.smoothedBass * 0.06 + s.sustainedEnergy * 0.04
       haloRef.current.rotation.y += clampedDelta * haloRotSpeed
-      haloRef.current.rotation.z += clampedDelta * (0.015 + smoothedHigh * 0.03 + sustainedEnergy * 0.015)
+      haloRef.current.rotation.z += clampedDelta * (0.015 + s.smoothedHigh * 0.03 + s.sustainedEnergy * 0.015)
     }
   })
 

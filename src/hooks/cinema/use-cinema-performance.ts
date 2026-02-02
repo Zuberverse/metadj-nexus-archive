@@ -28,6 +28,9 @@ export const PERFORMANCE_THRESHOLDS = {
   SAMPLE_SIZE: 60,
   /** Interval (ms) for logging performance metrics */
   LOG_INTERVAL_MS: 10_000,
+  /** Grace period (ms) before FPS monitoring begins — shader compilation causes
+   *  temporary FPS dips that should not trigger permanent performance mode. */
+  WARMUP_MS: 5_000,
 } as const
 
 /** Performance metrics exposed by the hook */
@@ -89,6 +92,7 @@ export function useCinemaPerformance(
   const criticalFramesRef = useRef(0)
   const hasRecommendedRef = useRef(false)
   const initializedRef = useRef(false)
+  const startTimeRef = useRef(0)
 
   // State for exposing metrics
   const [metrics, setMetrics] = useState<CinemaPerformanceMetrics>({
@@ -147,6 +151,7 @@ export function useCinemaPerformance(
       initializedRef.current = true
       lastTimeRef.current = now
       lastLogTimeRef.current = now
+      startTimeRef.current = now
       return
     }
 
@@ -155,6 +160,10 @@ export function useCinemaPerformance(
 
     // Skip anomalous frame times (e.g., tab switch, debugger pause)
     if (delta > 500) return
+
+    // Grace period: shader compilation causes temporary FPS dips that
+    // should not pollute metrics or trigger performance mode.
+    if (now - startTimeRef.current < PERFORMANCE_THRESHOLDS.WARMUP_MS) return
 
     // Add to circular buffer
     const idx = frameIndexRef.current % PERFORMANCE_THRESHOLDS.SAMPLE_SIZE
@@ -206,6 +215,7 @@ export function useCinemaPerformance(
       criticalFramesRef.current = 0
       hasRecommendedRef.current = false
       initializedRef.current = false
+      startTimeRef.current = 0
     }
   }, [])
 

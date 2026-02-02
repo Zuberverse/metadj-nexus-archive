@@ -107,48 +107,6 @@ export function CinemaAwaitingMusic({
   )
 }
 
-interface CinemaPausedProps {
-  controlsVisible: boolean
-  onTap: (e: React.MouseEvent | React.TouchEvent) => void
-  onPlay: () => void
-}
-
-/**
- * CinemaPaused - Shown when cinema has a track but audio is paused
- */
-export function CinemaPaused({
-  controlsVisible,
-  onTap,
-  onPlay,
-}: CinemaPausedProps) {
-  return (
-    <div
-      className={`absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/30 text-center text-white ${controlsVisible ? 'pointer-events-none' : ''}`}
-      onClick={onTap}
-      onTouchStart={onTap}
-    >
-      {/* Play button */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation()
-          onPlay()
-        }}
-        className="relative pointer-events-auto group"
-        aria-label="Play"
-      >
-        <div className="absolute inset-0 animate-pulse rounded-full bg-purple-500/20 [animation-duration:2s]" />
-        <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-white/40 bg-white/10 backdrop-blur-md transition-all group-hover:bg-white/20 group-hover:border-white/60">
-          <Play className="h-9 w-9 text-white ml-1" />
-        </div>
-      </button>
-
-      <span className="text-xs uppercase tracking-[0.35em] text-white/70 pointer-events-none">
-        Paused
-      </span>
-    </div>
-  )
-}
 
 interface CinemaWebcamErrorProps {
   webcamError: string

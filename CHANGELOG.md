@@ -1,11 +1,27 @@
 # Changelog
 
-**Last Modified**: 2026-01-31 12:40 EST
+**Last Modified**: 2026-02-02 16:40 EST
 
 All notable changes to MetaDJ Nexus are documented here.
 Format follows Keep a Changelog, with semantic versioning for public releases.
 
 ## [Unreleased]
+
+### 2026-02-02
+
+**Cinema — FPS Warmup**
+- Added 5-second warmup grace period to `use-cinema-performance.ts` so shader compilation dips don't trigger permanent performance mode degradation on capable hardware.
+
+**Cinema — Code Cleanup**
+- Moved module-scoped animation state to `useRef` in SpaceTravel (14 variables) and DiscoBall (16 variables) to prevent state bleed across component remounts during scene switching.
+- Removed dead `vTwinkle` shader varying from BlackHole (always zero, no-op mix).
+- Removed orphaned glitch system from PixelParadise (`GlitchFragment` interface, ref, and draw parameter — feature was previously disabled).
+- Removed unused `CinemaPaused` component and barrel export.
+- Removed disabled prompt bar feature from CinemaOverlay (~70 lines: state, effects, callbacks, JSX, imports).
+- Removed dead refs (`overlayRef`, `r3fCanvasRef`) from CinemaOverlay.
+- Removed unused `suspendAutoHide` parameter and suspend/resume effect from `use-cinema-controls.ts`.
+- Removed duplicate `CHROMATIC_OFFSET` constant from Visualizer3D.
+- Removed duplicate comment in EightBitAdventure.
 
 ### 2026-01-31
 

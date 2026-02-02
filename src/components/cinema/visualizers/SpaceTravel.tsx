@@ -376,28 +376,44 @@ const NebulaShader = {
   `
 }
 
-let accumulatedZOffset = 0
-let accumulatedRotation = 0
-let accumulatedColorPhase = 0
-let smoothedSpeed = 2.0
-let smoothedBass = 0
-let smoothedMid = 0
-let smoothedHigh = 0
-let nebulaBurstIntensity = 0
-let nebulaBurstTimer = 0
 const NEBULA_BURST_INTERVAL_MIN = 4
 const NEBULA_BURST_INTERVAL_MAX = 12
-let nextBurstTime = 6
 
-// Warp burst state — brief extreme speed spikes on heavy bass transients
-let warpBurstIntensity = 0
-let prevBassForTransient = 0
+interface SpaceTravelState {
+  accumulatedZOffset: number
+  accumulatedRotation: number
+  accumulatedColorPhase: number
+  smoothedSpeed: number
+  smoothedBass: number
+  smoothedMid: number
+  smoothedHigh: number
+  nebulaBurstIntensity: number
+  nebulaBurstTimer: number
+  nextBurstTime: number
+  warpBurstIntensity: number
+  prevBassForTransient: number
+  cameraBassImpulse: number
+  rotationMomentum: number
+}
 
-// Camera bass-hit reaction — Z-rotation impulse on transients
-let cameraBassImpulse = 0
-
-// Rotation momentum — accumulated rotational energy from bass
-let rotationMomentum = 0
+function createSpaceTravelState(): SpaceTravelState {
+  return {
+    accumulatedZOffset: 0,
+    accumulatedRotation: 0,
+    accumulatedColorPhase: 0,
+    smoothedSpeed: 2.0,
+    smoothedBass: 0,
+    smoothedMid: 0,
+    smoothedHigh: 0,
+    nebulaBurstIntensity: 0,
+    nebulaBurstTimer: 0,
+    nextBurstTime: 6,
+    warpBurstIntensity: 0,
+    prevBassForTransient: 0,
+    cameraBassImpulse: 0,
+    rotationMomentum: 0,
+  }
+}
 
 export function SpaceTravel({ bassLevel, midLevel, highLevel, performanceMode = false }: SpaceTravelProps) {
   const { camera } = useThree()
@@ -405,6 +421,7 @@ export function SpaceTravel({ bassLevel, midLevel, highLevel, performanceMode = 
   const starMaterialRef = useRef<THREE.ShaderMaterial>(null)
   const nebulaRef = useRef<THREE.Points>(null)
   const nebulaMaterialRef = useRef<THREE.ShaderMaterial>(null)
+  const stateRef = useRef<SpaceTravelState>(createSpaceTravelState())
 
   const stars = useMemo(
     () => (performanceMode ? LOW_STAR_DATA : HIGH_STAR_DATA),
@@ -428,116 +445,117 @@ export function SpaceTravel({ bassLevel, midLevel, highLevel, performanceMode = 
 
   useFrame((state, delta) => {
     if (!starMaterialRef.current || !nebulaMaterialRef.current) return
+    const s = stateRef.current
 
     const time = state.clock.getElapsedTime()
     const clampedDelta = Math.min(delta, 0.1)
 
     // --- Audio smoothing ---
     // Bass: slightly faster attack for transient detection
-    const bassSmRate = Math.pow(bassLevel, 1.5) > smoothedBass ? 0.035 : 0.008
-    smoothedBass = THREE.MathUtils.lerp(smoothedBass, Math.pow(bassLevel, 1.5), bassSmRate)
-    smoothedMid = THREE.MathUtils.lerp(smoothedMid, midLevel, 0.02)
-    smoothedHigh = THREE.MathUtils.lerp(smoothedHigh, Math.pow(highLevel, 1.3), 0.03)
+    const bassSmRate = Math.pow(bassLevel, 1.5) > s.smoothedBass ? 0.035 : 0.008
+    s.smoothedBass = THREE.MathUtils.lerp(s.smoothedBass, Math.pow(bassLevel, 1.5), bassSmRate)
+    s.smoothedMid = THREE.MathUtils.lerp(s.smoothedMid, midLevel, 0.02)
+    s.smoothedHigh = THREE.MathUtils.lerp(s.smoothedHigh, Math.pow(highLevel, 1.3), 0.03)
 
-    const audioEnergy = smoothedBass + smoothedMid * 0.5 + smoothedHigh * 0.3
+    const audioEnergy = s.smoothedBass + s.smoothedMid * 0.5 + s.smoothedHigh * 0.3
 
     // --- Bass transient detection ---
     // Compare current bass to previous frame to detect sudden hits
-    const bassTransient = Math.max(0, smoothedBass - prevBassForTransient)
-    prevBassForTransient = smoothedBass
+    const bassTransient = Math.max(0, s.smoothedBass - s.prevBassForTransient)
+    s.prevBassForTransient = s.smoothedBass
 
     // --- Warp burst mechanic ---
     // When bass exceeds threshold with a strong transient, trigger a warp punch
-    if (bassTransient > 0.06 && smoothedBass > 0.55 && warpBurstIntensity < 0.2) {
+    if (bassTransient > 0.06 && s.smoothedBass > 0.55 && s.warpBurstIntensity < 0.2) {
       // Intensity scales with how hard the hit is
-      warpBurstIntensity = Math.max(warpBurstIntensity, Math.min(0.7, 0.3 + bassTransient * 3.0))
+      s.warpBurstIntensity = Math.max(s.warpBurstIntensity, Math.min(0.7, 0.3 + bassTransient * 3.0))
     }
     // Rapid exponential decay — the burst is felt, not sustained
-    warpBurstIntensity *= Math.pow(0.04, clampedDelta) // ~96% decay per second
+    s.warpBurstIntensity *= Math.pow(0.04, clampedDelta) // ~96% decay per second
 
     // --- Speed dynamics (CORE) ---
     const idleSpeed = 1.0
 
     // More explosive bass response — cubic curve for that warp-drive feel
-    const bassDrive = Math.pow(smoothedBass, 2.2) * 9.0
+    const bassDrive = Math.pow(s.smoothedBass, 2.2) * 9.0
 
-    const midCruise = smoothedMid * 5.0
+    const midCruise = s.smoothedMid * 5.0
 
-    const highAccent = smoothedHigh * 2.5
+    const highAccent = s.smoothedHigh * 2.5
 
     const varietyWave = (Math.sin(time * 0.08) * 0.5 + 0.5) * audioEnergy * 3.0
 
     // Warp burst adds a massive brief spike
-    const warpBoost = warpBurstIntensity * 12.0
+    const warpBoost = s.warpBurstIntensity * 12.0
 
     const targetSpeed = idleSpeed + bassDrive + midCruise + highAccent + varietyWave + warpBoost
 
     // Asymmetric smoothing: fast acceleration, very slow deceleration
     // Acceleration: snappy response to energy (like engaging thrusters)
     // Deceleration: heavy inertia (massive ship coasting down)
-    const accelRate = targetSpeed > smoothedSpeed ? 0.035 : 0.004
-    smoothedSpeed = THREE.MathUtils.lerp(smoothedSpeed, targetSpeed, accelRate)
-    smoothedSpeed = Math.max(smoothedSpeed, 0.8)
-    smoothedSpeed = Math.min(smoothedSpeed, 22.0)
+    const accelRate = targetSpeed > s.smoothedSpeed ? 0.035 : 0.004
+    s.smoothedSpeed = THREE.MathUtils.lerp(s.smoothedSpeed, targetSpeed, accelRate)
+    s.smoothedSpeed = Math.max(s.smoothedSpeed, 0.8)
+    s.smoothedSpeed = Math.min(s.smoothedSpeed, 22.0)
 
-    accumulatedZOffset += smoothedSpeed * clampedDelta
+    s.accumulatedZOffset += s.smoothedSpeed * clampedDelta
 
     // --- Tunnel rotation ---
     // Base rotation: slow persistent twist
     const baseRotationSpeed = 0.015
     // Bass adds rotational momentum (accumulated, so it builds during energetic passages)
-    rotationMomentum += smoothedBass * 0.006 * clampedDelta
+    s.rotationMomentum += s.smoothedBass * 0.006 * clampedDelta
     // Mid creates gentle oscillating sway — navigating through the tunnel
-    const midSway = Math.sin(time * 0.3) * smoothedMid * 0.003
+    const midSway = Math.sin(time * 0.3) * s.smoothedMid * 0.003
     // Friction: momentum decays slowly
-    rotationMomentum *= Math.pow(0.7, clampedDelta)
-    accumulatedRotation += (baseRotationSpeed + rotationMomentum + midSway) * clampedDelta
+    s.rotationMomentum *= Math.pow(0.7, clampedDelta)
+    s.accumulatedRotation += (baseRotationSpeed + s.rotationMomentum + midSway) * clampedDelta
 
     // --- Color evolution ---
     // Quiet passages: slow cool-tone cycling. Peaks: rapid shifting through nebulae
-    const colorSpeed = 0.1 + smoothedBass * 0.8 + smoothedMid * 0.3 + smoothedHigh * 0.2
+    const colorSpeed = 0.1 + s.smoothedBass * 0.8 + s.smoothedMid * 0.3 + s.smoothedHigh * 0.2
         + audioEnergy * 0.25
-    accumulatedColorPhase += colorSpeed * clampedDelta
+    s.accumulatedColorPhase += colorSpeed * clampedDelta
 
     // --- Star uniforms ---
     starMaterialRef.current.uniforms.uTime.value = time
-    starMaterialRef.current.uniforms.uZOffset.value = accumulatedZOffset
-    starMaterialRef.current.uniforms.uSpeed.value = smoothedSpeed
-    starMaterialRef.current.uniforms.uRotation.value = accumulatedRotation
-    starMaterialRef.current.uniforms.uBass.value = smoothedBass
-    starMaterialRef.current.uniforms.uMid.value = smoothedMid
-    starMaterialRef.current.uniforms.uHigh.value = smoothedHigh
-    starMaterialRef.current.uniforms.uColorPhase.value = accumulatedColorPhase
+    starMaterialRef.current.uniforms.uZOffset.value = s.accumulatedZOffset
+    starMaterialRef.current.uniforms.uSpeed.value = s.smoothedSpeed
+    starMaterialRef.current.uniforms.uRotation.value = s.accumulatedRotation
+    starMaterialRef.current.uniforms.uBass.value = s.smoothedBass
+    starMaterialRef.current.uniforms.uMid.value = s.smoothedMid
+    starMaterialRef.current.uniforms.uHigh.value = s.smoothedHigh
+    starMaterialRef.current.uniforms.uColorPhase.value = s.accumulatedColorPhase
     starMaterialRef.current.uniforms.uDensityScale.value = starDensityScale
 
     // --- Nebula burst system (improved) ---
     // Timer-based ambient bursts
-    nebulaBurstTimer += clampedDelta
-    if (nebulaBurstTimer >= nextBurstTime) {
-      nebulaBurstIntensity = Math.max(nebulaBurstIntensity, 0.3 + audioEnergy * 0.25)
-      nebulaBurstTimer = 0
-      nextBurstTime = NEBULA_BURST_INTERVAL_MIN + Math.random() * (NEBULA_BURST_INTERVAL_MAX - NEBULA_BURST_INTERVAL_MIN)
+    s.nebulaBurstTimer += clampedDelta
+    if (s.nebulaBurstTimer >= s.nextBurstTime) {
+      s.nebulaBurstIntensity = Math.max(s.nebulaBurstIntensity, 0.3 + audioEnergy * 0.25)
+      s.nebulaBurstTimer = 0
+      s.nextBurstTime = NEBULA_BURST_INTERVAL_MIN + Math.random() * (NEBULA_BURST_INTERVAL_MAX - NEBULA_BURST_INTERVAL_MIN)
     }
     // Bass transient triggers — feels like punching through a nebula
-    if (bassTransient > 0.03 && smoothedBass > 0.4 && nebulaBurstIntensity < 0.3) {
-      nebulaBurstIntensity = Math.max(nebulaBurstIntensity, 0.3 + bassTransient * 3.0)
+    if (bassTransient > 0.03 && s.smoothedBass > 0.4 && s.nebulaBurstIntensity < 0.3) {
+      s.nebulaBurstIntensity = Math.max(s.nebulaBurstIntensity, 0.3 + bassTransient * 3.0)
     }
     // Sustained energy keeps bursts glowing longer
-    nebulaBurstIntensity = Math.min(0.7, nebulaBurstIntensity)
-    if (nebulaBurstIntensity > 0) {
+    s.nebulaBurstIntensity = Math.min(0.7, s.nebulaBurstIntensity)
+    if (s.nebulaBurstIntensity > 0) {
       // Decay rate varies: slower during sustained energy, faster during quiet
       const burstDecayRate = 0.5 + (1.0 - audioEnergy) * 0.8
-      nebulaBurstIntensity = Math.max(0, nebulaBurstIntensity - clampedDelta * burstDecayRate)
+      s.nebulaBurstIntensity = Math.max(0, s.nebulaBurstIntensity - clampedDelta * burstDecayRate)
     }
 
     // --- Nebula uniforms ---
     nebulaMaterialRef.current.uniforms.uTime.value = time
-    nebulaMaterialRef.current.uniforms.uZOffset.value = accumulatedZOffset
-    nebulaMaterialRef.current.uniforms.uRotation.value = accumulatedRotation
-    nebulaMaterialRef.current.uniforms.uBass.value = smoothedBass
-    nebulaMaterialRef.current.uniforms.uMid.value = smoothedMid
-    nebulaMaterialRef.current.uniforms.uColorPhase.value = accumulatedColorPhase
-    nebulaMaterialRef.current.uniforms.uBurstIntensity.value = nebulaBurstIntensity
+    nebulaMaterialRef.current.uniforms.uZOffset.value = s.accumulatedZOffset
+    nebulaMaterialRef.current.uniforms.uRotation.value = s.accumulatedRotation
+    nebulaMaterialRef.current.uniforms.uBass.value = s.smoothedBass
+    nebulaMaterialRef.current.uniforms.uMid.value = s.smoothedMid
+    nebulaMaterialRef.current.uniforms.uColorPhase.value = s.accumulatedColorPhase
+    nebulaMaterialRef.current.uniforms.uBurstIntensity.value = s.nebulaBurstIntensity
     nebulaMaterialRef.current.uniforms.uDensityScale.value = nebulaDensityScale
 
     // --- Camera drift & bass-hit reaction ---
@@ -546,16 +564,16 @@ export function SpaceTravel({ bassLevel, midLevel, highLevel, performanceMode = 
       // Alternate direction for variety, scaled by transient strength
       const direction = Math.sin(time * 1.7) > 0 ? 1 : -1
       const impulseAdd = direction * bassTransient * 0.05
-      cameraBassImpulse = THREE.MathUtils.clamp(cameraBassImpulse + impulseAdd, -0.08, 0.08)
+      s.cameraBassImpulse = THREE.MathUtils.clamp(s.cameraBassImpulse + impulseAdd, -0.08, 0.08)
     }
     // Impulse decays quickly
-    cameraBassImpulse *= Math.pow(0.02, clampedDelta) // fast spring-back
+    s.cameraBassImpulse *= Math.pow(0.02, clampedDelta) // fast spring-back
 
     // Drift scales with speed — feels like turbulence at warp
-    const speedFactor = smoothedSpeed / 22.0
+    const speedFactor = s.smoothedSpeed / 22.0
     const driftAmount = 0.008 + speedFactor * 0.03
     const driftSpeed = 0.1 + speedFactor * 0.04
-    const drift = Math.sin(time * driftSpeed) * driftAmount + cameraBassImpulse
+    const drift = Math.sin(time * driftSpeed) * driftAmount + s.cameraBassImpulse
     const tilt = Math.cos(time * driftSpeed * 0.7) * driftAmount * 0.4
 
     // Smooth return to center during quiet passages (lower lerp = slower = smoother)

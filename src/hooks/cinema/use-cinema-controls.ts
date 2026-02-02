@@ -15,8 +15,6 @@ interface UseCinemaControlsOptions {
   cinemaEnabled: boolean
   /** Whether queue panel is open (controls stay visible when open) */
   isQueueOpen: boolean
-  /** Keep controls visible and pause auto-hide (temporary override state) */
-  suspendAutoHide?: boolean
 }
 
 interface UseCinemaControlsReturn {
@@ -41,7 +39,6 @@ interface UseCinemaControlsReturn {
 export function useCinemaControls({
   cinemaEnabled,
   isQueueOpen,
-  suspendAutoHide = false,
 }: UseCinemaControlsOptions): UseCinemaControlsReturn {
   const [cinemaControlsVisible, setCinemaControlsVisible] = useState(true)
   const cinemaControlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -61,14 +58,14 @@ export function useCinemaControls({
     }
 
     // Don't set auto-hide timer if queue is open
-    if (isQueueOpen || suspendAutoHide) {
+    if (isQueueOpen) {
       return
     }
 
     cinemaControlsTimeoutRef.current = setTimeout(() => {
       setCinemaControlsVisible(false)
     }, getTimeout())
-  }, [isQueueOpen, suspendAutoHide, getTimeout])
+  }, [isQueueOpen, getTimeout])
 
   // Hide controls immediately
   const hideCinemaControlsImmediately = useCallback(() => {
@@ -89,7 +86,7 @@ export function useCinemaControls({
         cinemaControlsTimeoutRef.current = null
       }
 
-      if (!isQueueOpen && !suspendAutoHide) {
+      if (!isQueueOpen) {
         cinemaControlsTimeoutRef.current = setTimeout(() => {
           setCinemaControlsVisible(false)
         }, getTimeout())
@@ -109,25 +106,7 @@ export function useCinemaControls({
         cinemaControlsTimeoutRef.current = null
       }
     }
-  }, [cinemaEnabled, isQueueOpen, suspendAutoHide, getTimeout])
-
-  // Suspend/resume auto-hide when requested (e.g., Dream startup countdown)
-  useEffect(() => {
-    if (!cinemaEnabled) return
-
-    if (suspendAutoHide) {
-      if (cinemaControlsTimeoutRef.current) {
-        clearTimeout(cinemaControlsTimeoutRef.current)
-        cinemaControlsTimeoutRef.current = null
-      }
-      setCinemaControlsVisible(true)
-      return
-    }
-
-    if (!isQueueOpen) {
-      resetCinemaControlsTimer()
-    }
-  }, [cinemaEnabled, suspendAutoHide, isQueueOpen, resetCinemaControlsTimer])
+  }, [cinemaEnabled, isQueueOpen, getTimeout])
 
   // Handle queue open/close
   useEffect(() => {

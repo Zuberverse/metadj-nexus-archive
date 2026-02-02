@@ -79,17 +79,6 @@ interface Spark {
   phase: number
 }
 
-interface GlitchFragment {
-  x: number
-  y: number
-  w: number
-  h: number
-  vx: number
-  vy: number
-  age: number
-  duration: number
-  colorIdx: number
-}
 
 type IntensityMode = "focus" | "standard" | "hype"
 
@@ -347,7 +336,6 @@ function drawPixelPortal(
   energyArcs: EnergyArc[],
   shockwaves: Shockwave[],
   sparks: Spark[],
-  glitches: GlitchFragment[],
   rng: () => number,
   smoothedSpeedRef: React.MutableRefObject<number>,
   performanceMode: boolean
@@ -661,8 +649,6 @@ function drawPixelPortal(
     }
   }
 
-  // Glitch fragments removed - user found them distracting
-
   // Darken the portal core after block glow, then lay the portal ring on top.
   ctx.globalCompositeOperation = "source-over"
   if (background?.portalCore) {
@@ -785,7 +771,6 @@ export function PixelParadise({ active = true, bassLevel, midLevel, highLevel, s
   const portalPixelsRef = useRef<PortalPixel[]>([])
   const shockwavesRef = useRef<Shockwave[]>([])
   const sparksRef = useRef<Spark[]>([])
-  const glitchesRef = useRef<GlitchFragment[]>([])
   const lastBassRef = useRef(0)
   const lastShockwaveAtRef = useRef(0)
   const activeRef = useRef(active)
@@ -921,7 +906,6 @@ export function PixelParadise({ active = true, bassLevel, midLevel, highLevel, s
       // Reset short-lived state on resize to avoid weird jumps.
       sparksRef.current = []
       shockwavesRef.current = []
-      glitchesRef.current = []
     }
 
     resize()
@@ -1057,7 +1041,6 @@ export function PixelParadise({ active = true, bassLevel, midLevel, highLevel, s
           energyArcsRef.current,
           shockwavesRef.current,
           sparksRef.current,
-          glitchesRef.current,
           motionRandom,
           smoothedSpeedRef,
           performanceMode

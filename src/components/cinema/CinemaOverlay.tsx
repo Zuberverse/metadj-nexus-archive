@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react"
-import { Maximize2, Minimize2, Send, RotateCcw } from "lucide-react"
+import { Maximize2, Minimize2 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { usePlayer } from "@/contexts/PlayerContext"
 import { useUI } from "@/contexts/UIContext"
@@ -19,7 +19,6 @@ import { useCspStyle } from "@/hooks/use-csp-style"
 import { useResponsivePanels } from "@/hooks/use-responsive-panels"
 import { trackDreamToggled, trackSceneChanged } from "@/lib/analytics"
 import { buildVideoSources } from "@/lib/cinema/video-utils"
-import { DREAM_PROMPT_DEFAULT, DREAM_PROMPT_BASE } from "@/lib/daydream/config"
 import { logger } from "@/lib/logger"
 import { combineSeeds } from "@/lib/visualizers/seed"
 import { CinemaDreamControls } from "./CinemaDreamControls"
@@ -172,9 +171,7 @@ export function CinemaOverlay({
   const [frameSize, setFrameSize] = useState<"small" | "default" | "large">("default")
   const [framePosition, setFramePosition] = useState<"center" | "bottom-center" | "bottom-left" | "bottom-right" | "top" | "bottom">("center")
   const [isOverlayHidden, setIsOverlayHidden] = useState(false)
-  const overlayRef = useRef<HTMLDivElement | null>(null)
   const graceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const r3fCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const [visualizerCanvasEl, setVisualizerCanvasEl] = useState<HTMLCanvasElement | null>(null)
 
   // Avatar bounce animation state - reacts to bass peaks
@@ -244,80 +241,9 @@ export function CinemaOverlay({
     captureReadyRef,
   })
 
-  // Local state for editing the dream prompt
-  const [editingPrompt, setEditingPrompt] = useState(dreamPromptBase)
-  const [isSubmitAnimating, setIsSubmitAnimating] = useState(false)
-  const [promptTextareaHeight, setPromptTextareaHeight] = useState("auto")
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  // Prompt bar is temporarily disabled; flip to true to re-enable the UI.
-  const promptBarEnabled = false
-  const promptTextareaStyleId = useCspStyle({ height: promptTextareaHeight })
-
-  // Sync editingPrompt when dreamPromptBase changes externally
-  useEffect(() => {
-    setEditingPrompt(dreamPromptBase)
-  }, [dreamPromptBase])
-
-  useEffect(() => {
-    if (!promptBarEnabled) return
-    const textarea = textareaRef.current
-    if (!textarea) return
-    setPromptTextareaHeight("auto")
-    const frame = window.requestAnimationFrame(() => {
-      setPromptTextareaHeight(`${Math.min(textarea.scrollHeight, 120)}px`)
-    })
-    return () => window.cancelAnimationFrame(frame)
-  }, [editingPrompt, promptBarEnabled])
-
-  // Handle submitting the prompt - only force sync if text IS SAME (re-roll)
-  // If text changed, the setDreamPromptBase update will trigger the natural sync effect in use-dream
-  const handlePromptSubmit = useCallback(() => {
-    const trimmed = editingPrompt.trim()
-    if (trimmed) {
-      // Trigger visual feedback animation on send button
-      setIsSubmitAnimating(true)
-      setTimeout(() => setIsSubmitAnimating(false), 150)
-
-      // Check if prompt actually changed
-      const hasChanged = trimmed !== dreamPromptBase
-
-      // Update the prompt base (will trigger normal sync if text changed)
-      setDreamPromptBase(trimmed)
-
-      // Only force sync if text is the same (explicit user re-roll)
-      // If we force sync on a generic change, we might race with the state update
-      // and send the OLD prompt before the new one settles.
-      if (!hasChanged) {
-        logger.debug("[Dream] Forcing sync for same prompt (re-roll)")
-        forceDreamSync()
-      }
-    }
-  }, [editingPrompt, dreamPromptBase, setDreamPromptBase, forceDreamSync])
-
-  // Handle resetting to the default prompt (applies immediately)
-  const handlePromptReset = useCallback(() => {
-    setEditingPrompt(DREAM_PROMPT_BASE)
-    const alreadyDefault = dreamPromptBase === DREAM_PROMPT_BASE
-    setDreamPromptBase(DREAM_PROMPT_BASE)
-    // If we're already on the default, force a re-sync (treat like a re-roll)
-    if (alreadyDefault) {
-      logger.debug("[Dream] Forcing sync for reset-to-default (re-roll)")
-      forceDreamSync()
-    }
-  }, [dreamPromptBase, setDreamPromptBase, forceDreamSync])
-
-  // Handle keyboard events for the prompt textarea - Enter submits, Shift+Enter inserts a newline
-  const handlePromptKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handlePromptSubmit()
-    }
-  }, [handlePromptSubmit])
-
   const [webglContextLost, setWebglContextLost] = useState(false)
   const [webglRecovering, setWebglRecovering] = useState(false)
   const handleVisualizerCanvasReady = useCallback((canvas: HTMLCanvasElement | null) => {
-    r3fCanvasRef.current = canvas
     setVisualizerCanvasEl(canvas)
   }, [])
 
@@ -877,7 +803,6 @@ export function CinemaOverlay({
 
       {/* Controls overlay */}
       <div
-        ref={overlayRef}
         className={`absolute inset-0 flex flex-col transition-opacity duration-200 ${controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         data-csp-style={controlsInsetStyleId}
@@ -961,66 +886,6 @@ export function CinemaOverlay({
 
         {/* Spacer */}
         <div className="flex-1" />
-
-        {/* Dream prompt bar (editable) - z-40 to layer above Dream overlay (z-30) */}
-        {/* Positioned at bottom-8 (2rem) to align with iframe bottom edge when frame is at bottom-center */}
-        {promptBarEnabled && controlsVisible && (dreamStatus.status === "connecting" || dreamStatus.status === "streaming") && (
-          <div className={`absolute left-0 right-0 flex flex-col items-center px-2 md:px-4 pointer-events-none z-40 gap-2 ${
-            !shouldUseSidePanels ? "bottom-24" : "bottom-8"
-          }`}>
-            {/* Live updates unavailable message */}
-            {dreamPatchSupported === false && (
-              <div className="pointer-events-auto text-center text-xs text-amber-300/90 bg-black/40 rounded-full px-3 py-1 backdrop-blur-sm">
-                Live updates unavailable — changes will apply on restart
-              </div>
-            )}
-            {/* Width matches Dream iframe: responsive clamp sizing */}
-            <div className={`pointer-events-auto w-full ${
-              !shouldUseSidePanels
-                ? "max-w-[min(60vw,269px)]"
-                : frameSize === "large"
-                  ? "max-w-[clamp(346px,64vh,605px)]"
-                  : frameSize === "default"
-                    ? "max-w-[clamp(288px,46vh,490px)]"
-                    : "max-w-[clamp(230px,31vh,374px)]"
-            }`}>
-              <div className="flex items-center gap-3 rounded-full border border-white/30 bg-black/50 px-3 py-1.5 shadow-xl backdrop-blur-xl transition-all duration-300 hover:bg-black/40 hover:border-white/50 focus-within:border-purple-500/50 focus-within:shadow-[0_0_25px_rgba(168,85,247,0.18)]">
-                <span className="text-[11px] uppercase tracking-[0.2em] text-white/90 whitespace-nowrap font-medium pl-1">
-                  Prompt
-                </span>
-                <textarea
-                  ref={textareaRef}
-                  value={editingPrompt}
-                  onChange={(e) => setEditingPrompt(e.target.value)}
-                  onKeyDown={handlePromptKeyDown}
-                  aria-label="Dream prompt"
-                  placeholder="Describe your visual style..."
-                  rows={1}
-                  className="w-full min-h-[24px] max-h-[120px] resize-none overflow-hidden bg-transparent text-sm text-white font-medium placeholder:text-white/40 leading-relaxed translate-y-[1px]"
-                  data-csp-style={promptTextareaStyleId}
-                />
-                <button
-                  type="button"
-                  onClick={handlePromptReset}
-                  aria-label="Reset to default prompt"
-                  title="Reset to default"
-                  className="flex-shrink-0 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white transition-all hover:scale-105 active:scale-95"
-                >
-                  <RotateCcw className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handlePromptSubmit}
-                  disabled={!editingPrompt.trim()}
-                  aria-label="Send prompt"
-                  className={`flex-shrink-0 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:scale-105 active:scale-95 ${isSubmitAnimating ? "scale-95 bg-white/30" : ""}`}
-                >
-                  <Send className="h-4 w-4 rotate-45" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
     </div >

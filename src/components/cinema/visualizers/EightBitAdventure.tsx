@@ -408,7 +408,6 @@ function drawEightBitAdventure(
   // Reduced shake: higher exponent = only strong bass causes shake, lower multiplier = less intense
   const shake = Math.pow(shakeBass, performanceMode ? 3.2 : 2.8) * (performanceMode ? 1.5 : 2.5) * shakeMode
   // Slower shake frequency for less jarring effect
-  // Slower shake frequency for less jarring effect
   const shakeX = Math.sin(time * (18 + safeBass * 10)) * shake
   const shakeY = Math.cos(time * (14 + safeBass * 8)) * shake * 0.8 // Increased vertical shake for impact
 

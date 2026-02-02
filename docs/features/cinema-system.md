@@ -2,7 +2,7 @@
 
 > **Visual experience layer for MetaDJ Nexus**
 
-**Last Modified**: 2026-02-01 11:16 EST
+**Last Modified**: 2026-02-02 16:39 EST
 
 ## Overview
 
@@ -55,9 +55,9 @@ Cinema is one of the heaviest surfaces (WebGL + shaders + post‑processing). To
 
 ### Adaptive Performance Mode
 
-Cinema now auto‑enables performance mode when it detects low‑end device signals or sustained low FPS in 3D scenes. When performance mode is active:
+Cinema auto‑enables performance mode when it detects low‑end device signals or sustained low FPS in 3D scenes. A **5‑second warmup grace period** ignores FPS during shader compilation so temporary startup dips don't trigger permanent degradation. When performance mode is active:
 
-- **Auto triggers**: <= 4 CPU cores, <= 4GB device memory, Save-Data enabled, or low FPS in 3D scenes.
+- **Auto triggers**: <= 4 CPU cores, <= 4GB device memory, Save-Data enabled, or sustained low FPS after warmup in 3D scenes.
 - **Quality dials down**: lower visualizer complexity is used via `performanceMode=true`.
 - **DPR capped at 1.5**: Canvas `dpr` uses `[1, 1.5]` (not `[1, 2]`) to prevent GPU overload on fullscreen Retina displays. This 44% pixel reduction keeps FPS above 30 and avoids triggering auto-degradation.
 - **Desktop minimum bloom**: Desktop always gets at least "lite" bloom (single-pass, no mipmapBlur, 65% intensity). Bloom is what transforms individual particle points into cohesive glowing visuals — disabling it entirely makes particles look like scattered dots.
@@ -657,7 +657,7 @@ Dream ships as an optional AI remix layer inside Cinema:
 - **Ingest source**: **Webcam only** — no fallbacks to visualizers or video scenes. If webcam is unavailable, Dream shows an error state.
 - **Camera pre-check**: Uses the Permissions API when available to skip a redundant getUserMedia pre-check if camera permission is already granted.
 - **Auto-hide behavior**: Cinema controls still fade after ~5s of inactivity during the Dream countdown; pointer/tap resets the timer.
-- **Prompt bar**: Temporarily disabled (partially implemented). Prompt base stays locked to default; persona selection is the only live prompt control right now.
+- **Prompt bar**: Removed (previously disabled). Prompt base stays locked to default; persona selection is the only live prompt control.
 - **Persona dropdown**: Selects the leading prompt token (Androgynous / Female / Male) that prefixes the prompt base.
 - **Prompt sync timing**: Persona changes sync after the countdown completes and the stream is active (WHIP connected or status poll confirms). The hook retries warm-up failures (404/409/429/5xx) so updates apply as soon as Daydream is ready.
 - **Live parameter updates**: Persona (gender) toggles update the stream in real-time without requiring restart. The sync effect in `use-dream.ts` watches for `resolvedPrompt` changes and triggers PATCH requests to `/api/daydream/streams/{id}/parameters` with the updated prompt. If Daydream rejects PATCH repeatedly, live updates pause for the session and changes apply on restart.
@@ -835,7 +835,7 @@ The Cinema system displays contextual overlays based on playback state:
 | State | Component | Display |
 |-------|-----------|---------|
 | No track loaded | None | Clean Cinema surface awaiting audio—no prompt shown |
-| Track paused | `CinemaPaused` | Centered play button with pulse animation, "Paused" label |
+| Track paused | None | Visualizer continues rendering at idle; controls auto‑hide as normal |
 | Track playing | None | Clean Cinema surface, controls appear on tap/hover |
 | Video error | `CinemaVideoError` | Error message with retry button |
 | Loading | `CinemaLoadingState` | Loading indicator |
@@ -984,7 +984,7 @@ On mobile devices (< 1024px):
 | Setting | Value |
 |---------|-------|
 | Model | `stabilityai/sd-turbo` |
-| Default Prompt Base | `cartoon magical dj blue sparkle` (locked; prompt bar disabled) |
+| Default Prompt Base | `cartoon magical dj blue sparkle` (locked) |
 | Persona Prefix | `androgynous` / `female` / `male` (selectable) |
 | Full Prompt | `{persona} {promptBase}` |
 | Negative Prompt | `blurry, low quality, flat, 2d` |
@@ -1030,7 +1030,7 @@ Potential directions:
 - **Session continuity**: visuals evolve across a set rather than resetting per track, building a coherent arc.
 
 ### Other Future Enhancements
-- [ ] Dream prompt bar (partially implemented, currently disabled)
+- [ ] Dream prompt bar (removed from codebase; re-implement when needed)
 - [ ] Spectrum Ring 2D visualizer (next low‑distraction candidate)
 - [ ] User‑created visual packs
 - [ ] Additional 3D visualizer styles
