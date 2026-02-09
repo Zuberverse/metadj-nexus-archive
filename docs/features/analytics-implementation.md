@@ -2,7 +2,7 @@
 
 > **Authoritative map of Plausible instrumentation and extension patterns**
 
-**Last Modified**: 2026-01-15
+**Last Modified**: 2026-02-07 22:27 EST
 
 ## Overview
 

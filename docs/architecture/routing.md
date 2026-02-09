@@ -1,6 +1,6 @@
 # Routing & Navigation Contracts — MetaDJ Nexus
 
-**Last Modified**: 2026-01-15
+**Last Modified**: 2026-02-07 22:27 EST
 
 > MetaDJ Nexus uses a protected single-route experience at `/app`. Hub/Cinema/Wisdom are state-driven views inside `/app` (no route changes for view switching).
 

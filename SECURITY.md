@@ -1,5 +1,7 @@
 # Security Policy
 
+**Last Modified**: 2026-02-07 22:27 EST
+
 ## Supported Versions
 
 MetaDJ Nexus is currently in active development. Security updates are provided for the following versions:
