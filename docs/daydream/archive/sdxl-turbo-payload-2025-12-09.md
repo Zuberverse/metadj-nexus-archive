@@ -1,5 +1,7 @@
 # Archived Payload — SDXL Turbo (Pre SD-Turbo Switch)
 
+**Last Modified**: 2026-02-11 19:29 EST
+
 **Captured**: 2025-12-09  
 **Context**: Previous All Access Dream defaults before switching to `stabilityai/sd-turbo`. Keep for quick rollback/reference.
 

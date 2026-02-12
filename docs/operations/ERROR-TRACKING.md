@@ -1,6 +1,6 @@
 # Error Tracking Setup Guide
 
-**Last Modified**: 2026-01-26 00:00 EST
+**Last Modified**: 2026-02-11 15:18 EST
 
 > **Capture and triage client-side errors automatically with Sentry**
 
@@ -820,7 +820,7 @@ Error: "SecurityError: Failed to execute 'texImage2D'"
 
 After implementing error tracking:
 
-1. **Document deployment workflow** → See `3-projects/5-software/resources/workflows/DEPLOYMENT-WORKFLOW.md`
+1. **Document deployment workflow** → See `3-projects/5-software/resources/workflows/deployment-workflow.md`
 2. **Add security scanning** → See `3-projects/5-software/metadj-nexus/docs/security/SECURITY-SCANNING.md`
 3. **Create incident response playbook**
 4. **Set up post-mortem template**

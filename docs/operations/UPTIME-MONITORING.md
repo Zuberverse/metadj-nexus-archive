@@ -2,7 +2,7 @@
 
 > **Get alerted when MetaDJ Nexus goes down before users notice**
 
-**Last Modified**: 2026-01-14 21:55 EST
+**Last Modified**: 2026-02-11 15:18 EST
 **Version**: 0.8.0
 **Status**: Ready to implement (Set up after launch when domain is finalized)
 
@@ -541,7 +541,7 @@ Solution:
 After implementing uptime monitoring:
 
 1. **Set up error tracking** → See `3-projects/5-software/metadj-nexus/docs/operations/ERROR-TRACKING.md`
-2. **Document deployment workflow** → See `3-projects/5-software/resources/workflows/DEPLOYMENT-WORKFLOW.md`
+2. **Document deployment workflow** → See `3-projects/5-software/resources/workflows/deployment-workflow.md`
 3. **Add security scanning** → See `3-projects/5-software/metadj-nexus/docs/security/SECURITY-SCANNING.md`
 4. **Create incident response playbook**
 
